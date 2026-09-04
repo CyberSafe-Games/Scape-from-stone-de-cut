@@ -6,6 +6,7 @@ from src.systems.combat_engine import CombatEngine
 from src.ui.card_view import CardView
 from src.ui.entity_view import EntityView
 from src.ui.floating_text import FloatingTextManager
+from src.ui.coin_hud import CoinHUD
 from src.ui.helpers import draw_text, draw_health_bar
 from src.config.settings import WIDTH, HEIGHT
 from src.config.colors import (
@@ -39,6 +40,9 @@ class BattleScene(BaseScene):
         # Inicializa o motor puro de combate com callbacks para efeitos visuais
         self.engine = CombatEngine(on_event_callback=self._handle_combat_event)
 
+        # Sistema de moedas (instanciado apos o engine para ter acesso ao player)
+        self.coin_hud = CoinHUD(self.engine.player)
+
         self.enemy_turn_timer = 0
         self.menu_button_rect = pygame.Rect(WIDTH - 120, 20, 100, 40)
         self.end_turn_rect = pygame.Rect(WIDTH - 160, HEIGHT - 200, 130, 50)
@@ -56,11 +60,16 @@ class BattleScene(BaseScene):
             self.floating_texts.spawn(
                 kwargs["x"], kwargs["y"], kwargs["text"], kwargs["color"]
             )
+        elif event_name == "coin_drop":
+            self.coin_hud.spawn_coins(
+                kwargs["amount"], kwargs["x"], kwargs["y"]
+            )
 
     def update(self, dt):
         self.engine.update_message(dt)
         self.entity_view.update(dt)
         self.floating_texts.update(dt)
+        self.coin_hud.update(dt)
 
         # ----------------------------------------------------
         # Turno do Inimigo
@@ -222,6 +231,9 @@ class BattleScene(BaseScene):
         # 11. Textos Flutuantes
         self.floating_texts.draw(surface, self.asset_manager.font)
 
+        # 12. HUD de Moedas (por cima de tudo, exceto overlays de game over/vitoria)
+        self.coin_hud.draw(surface, self.asset_manager.font, self.asset_manager.coin_icon)
+
         # 12. Mensagem de Alerta (Ex: "Energia insuficiente!")
         if self.engine.message:
             draw_text(
@@ -367,6 +379,7 @@ class BattleScene(BaseScene):
             # Reiniciar partida em Game Over
             if event.key == pygame.K_r and self.engine.state == "game_over":
                 self.engine = CombatEngine(on_event_callback=self._handle_combat_event)
+                self.coin_hud = CoinHUD(self.engine.player)
                 self.floating_texts.clear()
                 self.enemy_turn_timer = 0
 

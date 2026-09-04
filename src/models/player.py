@@ -10,6 +10,11 @@ class Player(Combatant):
         self.energy = energy_max
         self.is_player = True
         self.is_miniboss = False
+        self.coins = 0
+
+    def add_coins(self, amount):
+        """Incrementa o saldo de moedas do jogador."""
+        self.coins += amount
 
     def reset_energy(self):
         """Restaura a energia para o valor máximo no início do turno."""

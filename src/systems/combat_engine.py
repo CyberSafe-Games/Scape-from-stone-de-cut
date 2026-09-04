@@ -102,6 +102,17 @@ class CombatEngine:
 
         # Verifica condição de vitória imediata
         if not self.enemy.is_alive():
+            # Calcula recompensa de moedas com base no tipo de inimigo
+            if self.enemy.is_miniboss:
+                coin_amount = random.randint(50, 70)
+            else:
+                coin_amount = random.randint(30, 50)
+            self.on_event(
+                "coin_drop",
+                amount=coin_amount,
+                x=ENEMY_X,
+                y=ENEMY_Y,
+            )
             self.state = "victory"
             self.generate_rewards()
 

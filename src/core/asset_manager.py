@@ -8,6 +8,7 @@ from src.config.settings import (
     PLAYER_ASSETS_DIR,
     CARD_ASSETS_DIR,
     CARD_EFFECTS_DIR,
+    COIN_ICON_PATH,
 )
 from src.config.colors import WHITE
 
@@ -43,11 +44,13 @@ class AssetManager:
         self._player_sprites = {}
         self._background = None
         self._fallback_sprite = None
+        self._coin_icon = None
 
         self._init_fonts()
         self._load_background()
         self._load_player_sprites()
         self._load_card_action_sprites()
+        self._load_coin_icon()
 
     def _init_fonts(self):
         """Inicializa as fontes tipográficas do jogo."""
@@ -92,6 +95,24 @@ class AssetManager:
     @property
     def background(self):
         return self._background
+
+    def _load_coin_icon(self):
+        """Carrega o icone de moeda (48x48). Fallback: circulo dourado procedural."""
+        ICON_SIZE = 48
+        try:
+            raw = pygame.image.load(COIN_ICON_PATH).convert_alpha()
+            self._coin_icon = pygame.transform.smoothscale(raw, (ICON_SIZE, ICON_SIZE))
+        except (pygame.error, FileNotFoundError):
+            # Fallback procedural: círculo dourado
+            surf = pygame.Surface((ICON_SIZE, ICON_SIZE), pygame.SRCALPHA)
+            pygame.draw.circle(surf, (255, 200, 50), (ICON_SIZE // 2, ICON_SIZE // 2), ICON_SIZE // 2)
+            pygame.draw.circle(surf, (220, 160, 20), (ICON_SIZE // 2, ICON_SIZE // 2), ICON_SIZE // 2, 3)
+            self._coin_icon = surf
+            print(f"[AVISO] Ícone de moeda não encontrado: {COIN_ICON_PATH}")
+
+    @property
+    def coin_icon(self):
+        return self._coin_icon
 
     @staticmethod
     def fit_character_sprite(image, target_height=130, max_width=105):
