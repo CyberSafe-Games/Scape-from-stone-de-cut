@@ -2,6 +2,7 @@ import random
 
 from src.models.player import Player
 from src.models.deck import DeckManager
+from src.models.effects.ultimate_effect import StoneBreakUltimate
 from src.systems.card_catalog import CARD_POOL, create_starting_deck
 from src.systems.enemy_factory import (
     create_enemy,
@@ -23,6 +24,7 @@ class CombatEngine:
 
         self.player = Player("Herói", 60, energy_max=3)
         self.deck_manager = DeckManager(create_starting_deck())
+        self.ultimate = StoneBreakUltimate()
         self.level = 1
 
         miniboss = is_miniboss_level(self.level)
@@ -67,6 +69,18 @@ class CombatEngine:
     def energy_max(self):
         return self.player.energy_max
 
+    @property
+    def ultimate_charge(self):
+        return self.player.ultimate_charge
+
+    @property
+    def ultimate_threshold(self):
+        return self.player.ultimate_threshold
+
+    @property
+    def ultimate_ready(self):
+        return self.player.is_ultimate_ready()
+
     # ========================================================
     # FLUXO DO COMBATE
     # ========================================================
@@ -94,6 +108,9 @@ class CombatEngine:
             self.show_message("Energia insuficiente!")
             return False
 
+        # Acumula carga da ultimate proporcionalmente à energia gasta
+        self.player.add_ultimate_charge(card.cost)
+
         # Aplica o efeito polimórfico da carta (Open/Closed Principle)
         card.execute(self.player, self.enemy, context=self)
 
@@ -102,21 +119,41 @@ class CombatEngine:
 
         # Verifica condição de vitória imediata
         if not self.enemy.is_alive():
-            # Calcula recompensa de moedas com base no tipo de inimigo
-            if self.enemy.is_miniboss:
-                coin_amount = random.randint(50, 70)
-            else:
-                coin_amount = random.randint(30, 50)
-            self.on_event(
-                "coin_drop",
-                amount=coin_amount,
-                x=ENEMY_X,
-                y=ENEMY_Y,
-            )
-            self.state = "victory"
-            self.generate_rewards()
+            self._on_enemy_defeated()
 
         return True
+
+    def activate_ultimate(self):
+        """Ativa a habilidade ultimate do jogador, se a carga estiver completa."""
+        if self.state != "player_turn":
+            return False
+
+        if not self.player.consume_ultimate():
+            self.show_message("Ultimate ainda não está pronta!")
+            return False
+
+        self.ultimate.activate(self.player, self.enemy, context=self)
+
+        # Verifica condição de vitória imediata
+        if not self.enemy.is_alive():
+            self._on_enemy_defeated()
+
+        return True
+
+    def _on_enemy_defeated(self):
+        """Concede recompensa de moedas e avança para a tela de vitória."""
+        if self.enemy.is_miniboss:
+            coin_amount = random.randint(50, 70)
+        else:
+            coin_amount = random.randint(30, 50)
+        self.on_event(
+            "coin_drop",
+            amount=coin_amount,
+            x=ENEMY_X,
+            y=ENEMY_Y,
+        )
+        self.state = "victory"
+        self.generate_rewards()
 
     def end_turn(self):
         """Encerra a vez do jogador e passa o turno para o inimigo."""

@@ -47,6 +47,7 @@ class BattleScene(BaseScene):
         self.menu_button_rect = pygame.Rect(WIDTH - 120, 20, 100, 40)
         self.end_turn_rect = pygame.Rect(WIDTH - 160, HEIGHT - 200, 130, 50)
         self.skip_reward_rect = pygame.Rect(WIDTH // 2 - 60, HEIGHT - 100, 120, 40)
+        self.ultimate_button_rect = pygame.Rect(20, HEIGHT - 170, 150, 46)
 
     def _handle_combat_event(self, event_name, **kwargs):
         """Reage a eventos emitidos pelo motor de combate."""
@@ -170,6 +171,9 @@ class BattleScene(BaseScene):
             center=True,
         )
 
+        # 6.1 Barra de Carga da Ultimate
+        self._draw_ultimate_bar(surface)
+
         # 7. Informações de Baralho e Andar
         draw_text(
             surface,
@@ -253,6 +257,56 @@ class BattleScene(BaseScene):
         # 14. Tela de Vitória e Escolha de Recompensa
         if self.engine.state == "victory":
             self._draw_victory(surface)
+
+    def _draw_ultimate_bar(self, surface):
+        ready = self.engine.ultimate_ready
+        bar_x, bar_y, bar_w, bar_h = 20, HEIGHT - 210, 150, 18
+
+        draw_health_bar(
+            surface,
+            bar_x,
+            bar_y,
+            bar_w,
+            bar_h,
+            self.engine.ultimate_charge,
+            self.engine.ultimate_threshold,
+            GOLD,
+        )
+        draw_text(
+            surface,
+            f"ULTIMATE {self.engine.ultimate_charge}/{self.engine.ultimate_threshold}",
+            self.asset_manager.small_font,
+            WHITE,
+            bar_x + bar_w // 2,
+            bar_y - 12,
+            center=True,
+        )
+
+        can_click = ready and self.engine.state == "player_turn"
+        hovered = self.ultimate_button_rect.collidepoint(
+            self.window_manager.get_virtual_mouse_pos()
+        )
+
+        if ready:
+            btn_color = BUTTON_HOVER if hovered and can_click else GOLD
+            btn_label = "ULTIMATE!"
+            text_color = BLACK
+        else:
+            btn_color = (60, 60, 60)
+            btn_label = "Ultimate"
+            text_color = GRAY
+
+        pygame.draw.rect(surface, btn_color, self.ultimate_button_rect, border_radius=8)
+        pygame.draw.rect(surface, GOLD, self.ultimate_button_rect, 2, border_radius=8)
+        draw_text(
+            surface,
+            btn_label,
+            self.asset_manager.font,
+            text_color,
+            self.ultimate_button_rect.centerx,
+            self.ultimate_button_rect.centery,
+            center=True,
+        )
 
     def _draw_menu_button(self, surface):
         hovered = self.menu_button_rect.collidepoint(
@@ -351,8 +405,13 @@ class BattleScene(BaseScene):
                 self._open_menu_confirmation()
                 return
 
-            # Turno do Jogador: Jogar Carta ou Encerrar Turno
+            # Turno do Jogador: Jogar Carta, Ativar Ultimate ou Encerrar Turno
             if self.engine.state == "player_turn" and self.entity_view.player_action is None:
+                if self.ultimate_button_rect.collidepoint(virt_pos):
+                    if self.engine.ultimate_ready:
+                        self.engine.activate_ultimate()
+                    return
+
                 hand_rects = CardView.get_hand_rects(len(self.engine.hand))
                 for index, rect in enumerate(hand_rects):
                     if rect.collidepoint(virt_pos):
