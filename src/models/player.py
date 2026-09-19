@@ -4,10 +4,13 @@ from src.models.entity import Combatant
 class Player(Combatant):
     """Representa o herói controlado pelo jogador."""
 
-    def __init__(self, name="Herói", hp=60, energy_max=3, ultimate_threshold=20):
+    INITIAL_ENERGY_MAX = 2
+    MAX_ENERGY_LIMIT = 8
+
+    def __init__(self, name="Herói", hp=60, energy_max=INITIAL_ENERGY_MAX, ultimate_threshold=20):
         super().__init__(name, hp)
-        self.energy_max = energy_max
-        self.energy = energy_max
+        self._energy_max = max(0, min(energy_max, self.MAX_ENERGY_LIMIT))
+        self.energy = self._energy_max
         self.is_player = True
         self.is_miniboss = False
         self.coins = 0
@@ -15,6 +18,24 @@ class Player(Combatant):
         # Carga da habilidade ultimate: acumula com a energia gasta em cartas.
         self.ultimate_charge = 0
         self.ultimate_threshold = ultimate_threshold
+
+    @property
+    def energy_max(self):
+        """Retorna o valor atual da energia máxima (máximo de 8)."""
+        return self._energy_max
+
+    @energy_max.setter
+    def energy_max(self, value):
+        """Define a energia máxima com limite estrito de 8."""
+        self._energy_max = max(0, min(int(value), self.MAX_ENERGY_LIMIT))
+        if self.energy > self._energy_max:
+            self.energy = self._energy_max
+
+    def increase_max_energy(self, amount=1):
+        """Aumenta progressivamente a energia máxima, respeitando o limite de 8."""
+        if amount > 0 and self._energy_max < self.MAX_ENERGY_LIMIT:
+            self.energy_max = self._energy_max + amount
+        return self._energy_max
 
     def add_coins(self, amount):
         """Incrementa o saldo de moedas do jogador."""

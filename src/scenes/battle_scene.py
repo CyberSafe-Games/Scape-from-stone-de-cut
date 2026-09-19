@@ -7,6 +7,7 @@ from src.ui.card_view import CardView
 from src.ui.entity_view import EntityView
 from src.ui.floating_text import FloatingTextManager
 from src.ui.coin_hud import CoinHUD
+from src.ui.energy_hud import EnergyHUD
 from src.ui.helpers import draw_text, draw_health_bar
 from src.config.settings import WIDTH, HEIGHT
 from src.config.colors import (
@@ -42,6 +43,7 @@ class BattleScene(BaseScene):
 
         # Sistema de moedas (instanciado apos o engine para ter acesso ao player)
         self.coin_hud = CoinHUD(self.engine.player)
+        self.energy_hud = EnergyHUD(self.engine.player)
 
         self.enemy_turn_timer = 0
         self.menu_button_rect = pygame.Rect(WIDTH - 120, 20, 100, 40)
@@ -71,6 +73,7 @@ class BattleScene(BaseScene):
         self.entity_view.update(dt)
         self.floating_texts.update(dt)
         self.coin_hud.update(dt)
+        self.energy_hud.update(dt)
 
         # ----------------------------------------------------
         # Turno do Inimigo
@@ -159,16 +162,9 @@ class BattleScene(BaseScene):
         # 5. Jogador: Animação e Sprite
         self.entity_view.draw_player(surface, self.engine.state)
 
-        # 6. Orbe de Energia
-        pygame.draw.circle(surface, GOLD, (60, HEIGHT - 90), 30)
-        draw_text(
-            surface,
-            f"{self.engine.energy}/{self.engine.energy_max}",
-            self.asset_manager.font,
-            BLACK,
-            60,
-            HEIGHT - 90,
-            center=True,
+        # 6. HUD de Energia (atual e máxima, com slots de progressão até 8)
+        self.energy_hud.draw(
+            surface, self.asset_manager.font, self.asset_manager.small_font
         )
 
         # 6.1 Barra de Carga da Ultimate
@@ -439,6 +435,7 @@ class BattleScene(BaseScene):
             if event.key == pygame.K_r and self.engine.state == "game_over":
                 self.engine = CombatEngine(on_event_callback=self._handle_combat_event)
                 self.coin_hud = CoinHUD(self.engine.player)
+                self.energy_hud = EnergyHUD(self.engine.player)
                 self.floating_texts.clear()
                 self.enemy_turn_timer = 0
 

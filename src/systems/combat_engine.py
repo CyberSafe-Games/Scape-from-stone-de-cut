@@ -22,7 +22,7 @@ class CombatEngine:
     def __init__(self, on_event_callback=None):
         self.on_event = on_event_callback or (lambda event, **kwargs: None)
 
-        self.player = Player("Herói", 60, energy_max=3)
+        self.player = Player("Herói", 60, energy_max=Player.INITIAL_ENERGY_MAX)
         self.deck_manager = DeckManager(create_starting_deck())
         self.ultimate = StoneBreakUltimate()
         self.level = 1
@@ -189,6 +189,7 @@ class CombatEngine:
         """Finaliza a resolução da rodada e inicia o novo turno do jogador."""
         choose_enemy_intent(self.enemy)
         self.player.block = 0
+        self.player.increase_max_energy(1)
         self.player.reset_energy()
         self.deck_manager.draw_cards(5)
         self.state = "player_turn"
