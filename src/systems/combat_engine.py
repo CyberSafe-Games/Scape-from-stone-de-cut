@@ -70,6 +70,10 @@ class CombatEngine:
         return self.player.energy_max
 
     @property
+    def cemetery_cost(self):
+        return Player.CEMETERY_ENERGY_COST
+
+    @property
     def ultimate_charge(self):
         return self.player.ultimate_charge
 
@@ -122,6 +126,44 @@ class CombatEngine:
             self._on_enemy_defeated()
 
         return True
+
+    def can_use_cemetery(self):
+        """Verifica se o Cemitério pode ser utilizado pelo jogador."""
+        return (
+            self.state == "player_turn"
+            and self.player.can_use_cemetery(self.cemetery_cost)
+            and len(self.deck_manager.hand) > 0
+        )
+
+    def use_cemetery(self, index):
+        """Descarta uma carta da mão pelo Cemitério consumindo 1 de energia."""
+        if self.state != "player_turn":
+            self.show_message("Cemitério só pode ser usado no seu turno!")
+            return False
+
+        if not self.player.can_use_cemetery(self.cemetery_cost):
+            self.show_message("Energia insuficiente para usar o Cemitério!")
+            return False
+
+        if index < 0 or index >= len(self.deck_manager.hand):
+            self.show_message("Nenhuma carta selecionada para descarte!")
+            return False
+
+        # Consome o custo de 1 energia
+        if not self.player.pay_cemetery_cost(self.cemetery_cost):
+            self.show_message("Energia insuficiente para usar o Cemitério!")
+            return False
+
+        # Remove a carta da mão e transfere para a pilha de descarte
+        discarded_card = self.deck_manager.discard_card(index)
+        if discarded_card:
+            self.spawn_player_text("-1 Energia", (80, 200, 255))
+            self.spawn_player_text(f"Cemitério: {discarded_card.name}", (185, 145, 230))
+            self.show_message(f"Carta '{discarded_card.name}' descartada no Cemitério!", duration=1600)
+            self.on_event("cemetery_discard", card=discarded_card)
+            return True
+
+        return False
 
     def activate_ultimate(self):
         """Ativa a habilidade ultimate do jogador, se a carga estiver completa."""
@@ -223,7 +265,7 @@ class CombatEngine:
 
         if miniboss:
             self.player.hp = self.player.max_hp
-            self.show_message(f"⚠ MINIBOSS: {self.enemy.name}!")
+            self.show_message(f"MINIBOSS: {self.enemy.name}!")
         else:
             self.player.hp = min(self.player.max_hp, self.player.hp + 8)
 

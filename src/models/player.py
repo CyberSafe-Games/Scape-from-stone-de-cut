@@ -6,6 +6,7 @@ class Player(Combatant):
 
     INITIAL_ENERGY_MAX = 2
     MAX_ENERGY_LIMIT = 8
+    CEMETERY_ENERGY_COST = 1
 
     def __init__(self, name="Herói", hp=60, energy_max=INITIAL_ENERGY_MAX, ultimate_threshold=20):
         super().__init__(name, hp)
@@ -46,10 +47,20 @@ class Player(Combatant):
         self.energy = self.energy_max
 
     def use_energy(self, amount):
-        """Consome energia ao jogar uma carta se houver saldo suficiente."""
+        """Consome energia se houver saldo suficiente."""
         if self.energy >= amount:
             self.energy -= amount
             return True
+        return False
+
+    def can_use_cemetery(self, cost=CEMETERY_ENERGY_COST):
+        """Verifica se o jogador possui energia suficiente para utilizar o Cemitério."""
+        return self.energy >= cost
+
+    def pay_cemetery_cost(self, cost=CEMETERY_ENERGY_COST):
+        """Consome a energia requerida para o Cemitério caso possua saldo suficiente."""
+        if self.can_use_cemetery(cost):
+            return self.use_energy(cost)
         return False
 
     def add_ultimate_charge(self, amount):

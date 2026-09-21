@@ -2,6 +2,7 @@ import pygame
 
 from src.scenes.base_scene import BaseScene
 from src.scenes.confirmation_modal import ConfirmationModal
+from src.scenes.cemetery_modal import CemeteryModal
 from src.systems.combat_engine import CombatEngine
 from src.ui.card_view import CardView
 from src.ui.entity_view import EntityView
@@ -48,6 +49,7 @@ class BattleScene(BaseScene):
         self.enemy_turn_timer = 0
         self.menu_button_rect = pygame.Rect(WIDTH - 120, 20, 100, 40)
         self.end_turn_rect = pygame.Rect(WIDTH - 160, HEIGHT - 200, 130, 50)
+        self.cemetery_button_rect = pygame.Rect(WIDTH - 160, HEIGHT - 140, 130, 44)
         self.skip_reward_rect = pygame.Rect(WIDTH // 2 - 60, HEIGHT - 100, 120, 40)
         self.ultimate_button_rect = pygame.Rect(20, HEIGHT - 170, 150, 46)
 
@@ -66,6 +68,15 @@ class BattleScene(BaseScene):
         elif event_name == "coin_drop":
             self.coin_hud.spawn_coins(
                 kwargs["amount"], kwargs["x"], kwargs["y"]
+            )
+        elif event_name == "cemetery_discard":
+            card = kwargs.get("card")
+            card_name = card.name if card else "Carta"
+            self.floating_texts.spawn(
+                PLAYER_X,
+                HEIGHT - 220,
+                f"{card_name} Descartada",
+                (200, 160, 255),
             )
 
     def update(self, dt):
@@ -105,7 +116,7 @@ class BattleScene(BaseScene):
         enemy = self.engine.enemy
         if enemy.is_miniboss:
             draw_text(
-                surface, "⚔ MINIBOSS ⚔", self.asset_manager.small_font, GOLD, ENEMY_X, 38, center=True
+                surface, "MINIBOSS", self.asset_manager.small_font, GOLD, ENEMY_X, 38, center=True
             )
 
         draw_text(
@@ -228,6 +239,9 @@ class BattleScene(BaseScene):
             center=True,
         )
 
+        # 10.1 Botão do Cemitério
+        self._draw_cemetery_button(surface)
+
         # 11. Textos Flutuantes
         self.floating_texts.draw(surface, self.asset_manager.font)
 
@@ -253,6 +267,39 @@ class BattleScene(BaseScene):
         # 14. Tela de Vitória e Escolha de Recompensa
         if self.engine.state == "victory":
             self._draw_victory(surface)
+
+    def _draw_cemetery_button(self, surface):
+        """Desenha o botão de acesso ao Cemitério durante a partida."""
+        mouse_pos = self.window_manager.get_virtual_mouse_pos()
+        hovered = self.cemetery_button_rect.collidepoint(mouse_pos)
+        is_player_turn = self.engine.state == "player_turn"
+        has_energy = self.engine.player.can_use_cemetery()
+
+        if is_player_turn:
+            if has_energy:
+                btn_color = (95, 55, 125) if hovered else (70, 40, 95)
+                border_color = (190, 130, 240) if hovered else (150, 95, 200)
+                text_color = WHITE
+            else:
+                btn_color = (48, 40, 60)
+                border_color = (90, 80, 110)
+                text_color = (160, 150, 170)
+        else:
+            btn_color = (40, 36, 48)
+            border_color = (60, 55, 70)
+            text_color = GRAY
+
+        pygame.draw.rect(surface, btn_color, self.cemetery_button_rect, border_radius=8)
+        pygame.draw.rect(surface, border_color, self.cemetery_button_rect, 2, border_radius=8)
+        draw_text(
+            surface,
+            "Cemitério (1 E.)",
+            self.asset_manager.small_font,
+            text_color,
+            self.cemetery_button_rect.centerx,
+            self.cemetery_button_rect.centery,
+            center=True,
+        )
 
     def _draw_ultimate_bar(self, surface):
         ready = self.engine.ultimate_ready
@@ -401,8 +448,13 @@ class BattleScene(BaseScene):
                 self._open_menu_confirmation()
                 return
 
-            # Turno do Jogador: Jogar Carta, Ativar Ultimate ou Encerrar Turno
+            # Turno do Jogador: Jogar Carta, Ativar Ultimate, Acessar Cemitério ou Encerrar Turno
             if self.engine.state == "player_turn" and self.entity_view.player_action is None:
+                # Botão do Cemitério
+                if self.cemetery_button_rect.collidepoint(virt_pos):
+                    self._open_cemetery_modal()
+                    return
+
                 if self.ultimate_button_rect.collidepoint(virt_pos):
                     if self.engine.ultimate_ready:
                         self.engine.activate_ultimate()
@@ -439,6 +491,10 @@ class BattleScene(BaseScene):
                 self.floating_texts.clear()
                 self.enemy_turn_timer = 0
 
+            # Tecla C para atalho rápido do Cemitério durante o turno do jogador
+            elif event.key == pygame.K_c and self.engine.state == "player_turn":
+                self._open_cemetery_modal()
+
             # ESC para abrir menu de confirmação
             elif event.key == pygame.K_ESCAPE and self.engine.state in (
                 "player_turn",
@@ -446,6 +502,16 @@ class BattleScene(BaseScene):
                 "victory",
             ):
                 self._open_menu_confirmation()
+
+    def _open_cemetery_modal(self):
+        """Abre a interface interativa do Cemitério como modal."""
+        modal = CemeteryModal(
+            self.scene_manager,
+            self.window_manager,
+            self.asset_manager,
+            self.engine,
+        )
+        self.scene_manager.push_modal(modal)
 
     def _open_menu_confirmation(self):
         modal = ConfirmationModal(
