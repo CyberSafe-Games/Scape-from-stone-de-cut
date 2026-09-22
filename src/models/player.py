@@ -1,4 +1,5 @@
 from src.models.entity import Combatant
+from src.config.settings import HAND_SIZE_START, HAND_SIZE_MAX
 
 
 class Player(Combatant):
@@ -15,10 +16,17 @@ class Player(Combatant):
         self.is_player = True
         self.is_miniboss = False
         self.coins = 0
+        self.turn_count = 0
 
         # Carga da habilidade ultimate: acumula com a energia gasta em cartas.
         self.ultimate_charge = 0
         self.ultimate_threshold = ultimate_threshold
+
+    def get_hand_size(self):
+        """Calcula o tamanho da mão baseado na progressão de turnos da partida."""
+        if self.turn_count <= 0:
+            return HAND_SIZE_START
+        return min(2 + self.turn_count, HAND_SIZE_MAX)
 
     @property
     def energy_max(self):

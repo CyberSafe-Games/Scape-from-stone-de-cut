@@ -10,6 +10,10 @@ FPS = 60
 
 TITLE = "Scape From Stone de Cut"
 
+# Regras de mão e cartas
+HAND_SIZE_START = 3
+HAND_SIZE_MAX = 5
+
 # Caminhos do projeto
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(SRC_DIR)

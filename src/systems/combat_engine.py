@@ -92,7 +92,8 @@ class CombatEngine:
     def start_combat(self):
         """Prepara os combatentes e cartas para um novo confronto."""
         self.deck_manager.start_combat()
-        self.deck_manager.draw_cards(5)
+        self.player.turn_count += 1
+        self.deck_manager.draw_cards(self.player.get_hand_size())
         self.player.reset_energy()
         self.player.block = 0
         self.enemy.block = 0
@@ -233,7 +234,8 @@ class CombatEngine:
         self.player.block = 0
         self.player.increase_max_energy(1)
         self.player.reset_energy()
-        self.deck_manager.draw_cards(5)
+        self.player.turn_count += 1
+        self.deck_manager.draw_cards(self.player.get_hand_size())
         self.state = "player_turn"
 
     # ========================================================
