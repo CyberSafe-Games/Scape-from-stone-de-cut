@@ -96,6 +96,7 @@ class CombatEngine:
         self.deck_manager.draw_cards(self.player.get_hand_size())
         self.player.reset_energy()
         self.player.block = 0
+        self.enemy.reset_energy()
         self.enemy.block = 0
         self.state = "player_turn"
 
@@ -209,17 +210,34 @@ class CombatEngine:
 
     def enemy_turn(self):
         """Executa a ação calculada da inteligência artificial do inimigo."""
-        if self.enemy.intent == "attack":
-            damage = self.enemy.intent_value
-            actual_damage = self.player.take_damage(damage)
-
-            self.trigger_attack("enemy")
-            self.trigger_flash("player")
-            self.spawn_player_text(f"-{actual_damage}", RED)
+        action = getattr(self.enemy, "current_action", None)
+        if action is not None:
+            self.enemy.use_energy(action.energy_cost)
+            if hasattr(action, "execute") and callable(action.execute):
+                action.execute(self.enemy, self.player, context=self)
+            elif action.action_type == "attack":
+                actual_damage = self.player.take_damage(action.damage)
+                self.trigger_attack("enemy", action=action.visual_effect or "atk")
+                self.trigger_flash("player")
+                self.spawn_player_text(f"-{actual_damage}", RED)
+            else:
+                block = action.defense
+                self.enemy.add_block(block)
+                self.trigger_enemy_action("def")
+                self.spawn_enemy_text(f"+{block} bloqueio", BLUE)
         else:
-            block = self.enemy.intent_value
-            self.enemy.add_block(block)
-            self.spawn_enemy_text(f"+{block} bloqueio", BLUE)
+            if self.enemy.intent == "attack":
+                damage = self.enemy.intent_value
+                actual_damage = self.player.take_damage(damage)
+
+                self.trigger_attack("enemy", action="atk")
+                self.trigger_flash("player")
+                self.spawn_player_text(f"-{actual_damage}", RED)
+            else:
+                block = self.enemy.intent_value
+                self.enemy.add_block(block)
+                self.trigger_enemy_action("def")
+                self.spawn_enemy_text(f"+{block} bloqueio", BLUE)
 
         if not self.player.is_alive():
             self.state = "game_over"
@@ -230,6 +248,7 @@ class CombatEngine:
 
     def finish_enemy_turn(self):
         """Finaliza a resolução da rodada e inicia o novo turno do jogador."""
+        self.enemy.reset_energy()
         choose_enemy_intent(self.enemy)
         self.player.block = 0
         self.player.increase_max_energy(1)
@@ -286,6 +305,9 @@ class CombatEngine:
 
     def trigger_player_action(self, action):
         self.on_event("player_action", action=action)
+
+    def trigger_enemy_action(self, action):
+        self.on_event("enemy_action", action=action)
 
     def spawn_damage_text(self, target, text, color):
         x = PLAYER_X if target.is_player else ENEMY_X

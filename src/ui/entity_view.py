@@ -32,6 +32,9 @@ class EntityView:
         self.player_action = None
         self.player_action_timer = 0
         self.player_action_duration = 700
+        self.enemy_action = None
+        self.enemy_action_timer = 0
+        self.enemy_action_duration = 600
 
         self.player_flash = 0
         self.enemy_flash = 0
@@ -43,6 +46,13 @@ class EntityView:
         if attacker == "player":
             self.player_action = action
             self.player_action_timer = 0
+        elif attacker == "enemy":
+            self.enemy_action = action
+            self.enemy_action_timer = 0
+
+    def trigger_enemy_action(self, action):
+        self.enemy_action = action
+        self.enemy_action_timer = 0
 
     def trigger_flash(self, target):
         if target == "player":
@@ -61,6 +71,13 @@ class EntityView:
             if self.attack_timer >= ATTACK_DURATION:
                 self.attacker = None
                 self.attack_timer = 0
+                self.enemy_action = None
+
+        if self.enemy_action is not None and self.attacker != "enemy":
+            self.enemy_action_timer += dt
+            if self.enemy_action_timer >= self.enemy_action_duration:
+                self.enemy_action = None
+                self.enemy_action_timer = 0
 
         if self.player_action is not None:
             self.player_action_timer += dt
@@ -184,11 +201,67 @@ class EntityView:
                 3,
             )
 
-    def draw_enemy(self, surface, color):
-        """Calcula pose e renderiza o inimigo com suas articulações e efeito de flash."""
+    def get_enemy_frame(self, enemy):
+        """Retorna o frame animado do inimigo com base em seu estado atual (atk, def, idle)."""
+        now = pygame.time.get_ticks()
+        enemy_name = getattr(enemy, "name", "").lower()
+
+        # 1. Ataque físico
+        if self.attacker == "enemy":
+            sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "atk")
+            if sprites:
+                progress = min(1.0, self.attack_timer / ATTACK_DURATION)
+                index = min(len(sprites) - 1, int(progress * len(sprites)))
+                return sprites[index]
+
+        # 2. Ação de defesa
+        if self.enemy_action in ("def", "defesa"):
+            sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "def")
+            if sprites:
+                progress = min(1.0, self.enemy_action_timer / self.enemy_action_duration)
+                index = min(len(sprites) - 1, int(progress * len(sprites)))
+                return sprites[index]
+
+        # 3. Idle padrão animado (loop suave a cada 220ms)
+        sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "idle")
+        if sprites:
+            index = (now // 220) % len(sprites)
+            return sprites[index]
+
+        return None
+
+    def draw_enemy(self, surface, enemy_or_color, maybe_color=None):
+        """Calcula pose e renderiza o inimigo com sprite real ou fallback procedural."""
+        if hasattr(enemy_or_color, "name"):
+            enemy = enemy_or_color
+            color = maybe_color or WHITE
+        else:
+            enemy = None
+            color = enemy_or_color
+
         enemy_target_x = PLAYER_X + APPROACH_GAP
         enemy_x, enemy_arm = self.get_attack_pose("enemy", ENEMY_X, enemy_target_x)
 
+        # Se houver sprite para o inimigo, renderiza o sprite animado
+        if enemy is not None and self.asset_manager.has_enemy_sprites(enemy.name):
+            frame = self.get_enemy_frame(enemy)
+            if frame is not None:
+                rect = frame.get_rect(midbottom=(int(enemy_x), PLAYER_GROUND_Y))
+                surface.blit(frame, rect)
+
+                # Efeito de flash de dano
+                if self.enemy_flash > 0:
+                    alpha = self.enemy_flash / FLASH_DURATION
+                    pygame.draw.circle(
+                        surface,
+                        WHITE,
+                        (int(enemy_x), ENEMY_Y - 15),
+                        55 + int(8 * alpha),
+                        3,
+                    )
+                return
+
+        # Fallback procedural: boneco palito
         x = int(enemy_x)
         y = int(ENEMY_Y)
         facing = -1

@@ -42,6 +42,7 @@ class AssetManager:
         self._card_images = {}
         self._card_action_sprites = {}
         self._player_sprites = {}
+        self._enemy_sprites = {}
         self._background = None
         self._fallback_sprite = None
         self._coin_icon = None
@@ -49,6 +50,7 @@ class AssetManager:
         self._init_fonts()
         self._load_background()
         self._load_player_sprites()
+        self._load_enemy_sprites()
         self._load_card_action_sprites()
         self._load_coin_icon()
 
@@ -209,3 +211,52 @@ class AssetManager:
                 self._card_images[filename] = None
 
         return self._card_images[filename]
+
+    def _load_enemy_sprites(self):
+        """Carrega conjuntos de sprites para inimigos com suporte a idle, atk e def."""
+        from src.config.settings import ASSETS_DIR
+
+        slime_dir = os.path.join(ASSETS_DIR, "slime")
+        if os.path.isdir(slime_dir):
+            def load_frames(prefix, count):
+                frames = []
+                for i in range(1, count + 1):
+                    path = os.path.join(slime_dir, f"{prefix}{i}.png")
+                    if os.path.exists(path):
+                        try:
+                            img = pygame.image.load(path).convert_alpha()
+                            frame = self.fit_character_sprite(img, target_height=110, max_width=150)
+                            if frame is not None:
+                                frames.append(frame)
+                        except pygame.error:
+                            pass
+                return frames
+
+            self._enemy_sprites["slime"] = {
+                "idle": load_frames("idle", 3),
+                "atk": load_frames("atk", 3),
+                "def": load_frames("def", 3),
+            }
+
+    def has_enemy_sprites(self, enemy_name):
+        """Verifica se existem sprites customizados carregados para o inimigo."""
+        if not enemy_name:
+            return False
+        key = enemy_name.strip().lower()
+        groups = self._enemy_sprites.get(key, {})
+        return any(bool(frames) for frames in groups.values())
+
+    def get_enemy_sprite_group(self, enemy_name, group_name="idle"):
+        """Retorna a lista de frames para a ação solicitada do inimigo."""
+        if not enemy_name:
+            return []
+        key = enemy_name.strip().lower()
+        groups = self._enemy_sprites.get(key, {})
+        return groups.get(group_name, [])
+
+    def get_enemy_sprite(self, enemy_name, group_name="idle", index=0):
+        """Retorna um frame específico para o inimigo."""
+        frames = self.get_enemy_sprite_group(enemy_name, group_name)
+        if not frames:
+            return None
+        return frames[index % len(frames)]

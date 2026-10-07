@@ -61,6 +61,8 @@ class BattleScene(BaseScene):
             self.entity_view.trigger_flash(kwargs.get("target"))
         elif event_name == "player_action":
             self.entity_view.trigger_player_action(kwargs.get("action"))
+        elif event_name == "enemy_action":
+            self.entity_view.trigger_enemy_action(kwargs.get("action"))
         elif event_name == "floating_text":
             self.floating_texts.spawn(
                 kwargs["x"], kwargs["y"], kwargs["text"], kwargs["color"]
@@ -139,11 +141,14 @@ class BattleScene(BaseScene):
             )
 
         if enemy.intent:
+            action_name = enemy.current_action.name if getattr(enemy, "current_action", None) else None
             if enemy.intent == "attack":
-                intent_text = f"Intenção: Atacar ({enemy.intent_value})"
+                label = action_name or "Atacar"
+                intent_text = f"Intenção: {label} ({enemy.intent_value})"
                 enemy_color = (200, 90, 90)
             else:
-                intent_text = f"Intenção: Defender ({enemy.intent_value})"
+                label = action_name or "Defender"
+                intent_text = f"Intenção: {label} ({enemy.intent_value})"
                 enemy_color = (90, 130, 200)
 
             draw_text(surface, intent_text, self.asset_manager.font, GOLD, ENEMY_X, 168, center=True)
@@ -151,7 +156,7 @@ class BattleScene(BaseScene):
             enemy_color = WHITE
 
         # 3. Inimigo: Animação e Sprite
-        self.entity_view.draw_enemy(surface, enemy_color)
+        self.entity_view.draw_enemy(surface, enemy, enemy_color)
 
         # 4. Jogador: HUD e Informações
         player = self.engine.player
