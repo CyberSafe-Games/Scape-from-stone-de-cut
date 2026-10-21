@@ -1,6 +1,7 @@
 import pygame
 from src.config.settings import WIDTH, HEIGHT, TITLE
 from src.config.colors import BLACK, BUTTON_BG, BUTTON_HOVER, GOLD, WHITE
+from src.ui import dark_fantasy_theme as theme
 
 
 class WindowManager:
@@ -110,21 +111,7 @@ class WindowManager:
         return False
 
     def get_fullscreen_button_rect(self):
-        return pygame.Rect(self.width - 232, 20, 100, 40)
+        return pygame.Rect(-1000, -1000, 1, 1)
 
     def draw_fullscreen_button(self, font=None):
-        rect = self.get_fullscreen_button_rect()
-        hovered = rect.collidepoint(self.get_virtual_mouse_pos())
-        color = BUTTON_HOVER if hovered else BUTTON_BG
-
-        pygame.draw.rect(self.screen, color, rect, border_radius=8)
-        pygame.draw.rect(self.screen, GOLD, rect, 2, border_radius=8)
-
-        label = "JANELA" if self.is_fullscreen else "TELA CHEIA"
-
-        if font is None:
-            font = pygame.font.SysFont("arial", 18)
-
-        text_surf = font.render(label, True, WHITE)
-        text_rect = text_surf.get_rect(center=rect.center)
-        self.screen.blit(text_surf, text_rect)
+        return

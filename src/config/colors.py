@@ -1,22 +1,28 @@
-# ============================================================
-# PALETA DE CORES
-# ============================================================
+"""Paleta dark-fantasy centralizada.
 
-BG = (30, 24, 42)
-
-CARD_BG = (60, 50, 80)
-CARD_HOVER = (90, 75, 120)
-
-WHITE = (240, 240, 240)
+As cores funcionais (vida, defesa e energia) permanecem distinguíveis,
+mas os elementos neutros deixam de usar roxo saturado.
+"""
+BG = (9, 14, 15)
 BLACK = (0, 0, 0)
+WHITE = (225, 219, 204)       # marfim envelhecido
+GRAY = (145, 151, 145)        # pedra/cinza de leitura
+DARK_GRAY = (39, 43, 43)
+GOLD = (180, 143, 84)         # bronze envelhecido
+RED = (176, 69, 64)          # carmim queimado
+GREEN = (73, 157, 103)       # status positivo
+BLUE = (89, 141, 186)        # energia/bloqueio
+CARD_BG = (24, 28, 27)
+CARD_HOVER = (44, 50, 43)
+BUTTON_BG = (27, 33, 31)
+BUTTON_HOVER = (49, 54, 45)
 
-RED = (200, 60, 60)
-GREEN = (80, 180, 100)
-BLUE = (80, 140, 220)
-GOLD = (220, 180, 60)
-GRAY = (140, 140, 140)
-
-DARK_GRAY = (50, 50, 50)
-
-BUTTON_BG = (60, 50, 80)
-BUTTON_HOVER = (90, 75, 120)
+# Tons semânticos da identidade (evitar espalhar números nas cenas).
+STONE = (15, 21, 21)
+STONE_RAISED = (24, 31, 29)
+FOREST = (28, 60, 48)
+BRONZE_DARK = (91, 75, 52)
+BRONZE_LIGHT = (197, 164, 107)
+RUST = (139, 64, 54)
+MUTED_GREEN = (75, 118, 92)
+DISABLED = (77, 82, 80)

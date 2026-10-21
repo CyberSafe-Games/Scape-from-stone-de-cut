@@ -3,4 +3,11 @@ from src.models.effects.base_effect import CardEffect
 from src.models.effects.damage_effect import DamageEffect, MultiHitDamageEffect
 from src.models.effects.block_effect import BlockEffect
 from src.models.effects.buff_effect import StrengthBuffEffect
-from src.models.effects.ultimate_effect import UltimateAbility, StoneBreakUltimate
+from src.models.effects.ultimate_effect import (
+    UltimateAbility,
+    ManaAncestralUltimate,
+    ForcasAncestraisUltimate,
+    RugidoDaFlorestaUltimate,
+    create_ultimate,
+    DEFAULT_ULTIMATE_ID,
+)

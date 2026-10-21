@@ -17,9 +17,9 @@ PLAYER_GROUND_Y = PLAYER_Y + 40
 # DIMENSÕES E ESPAÇAMENTO DE CARTAS
 # ============================================================
 
-CARD_WIDTH = 108
-CARD_HEIGHT = 186
-CARD_SPACING = 10
+CARD_WIDTH = 100
+CARD_HEIGHT = 172
+CARD_SPACING = 12
 
 
 # ============================================================

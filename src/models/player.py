@@ -1,5 +1,6 @@
 from src.models.entity import Combatant
 from src.config.settings import HAND_SIZE_START, HAND_SIZE_MAX
+from src.models.effects.ultimate_effect import DEFAULT_ULTIMATE_ID
 
 
 class Player(Combatant):
@@ -9,7 +10,7 @@ class Player(Combatant):
     MAX_ENERGY_LIMIT = 8
     CEMETERY_ENERGY_COST = 1
 
-    def __init__(self, name="Herói", hp=60, energy_max=INITIAL_ENERGY_MAX, ultimate_threshold=20):
+    def __init__(self, name="Jaum Manel", hp=60, energy_max=INITIAL_ENERGY_MAX, ultimate_threshold=20):
         super().__init__(name, hp)
         self._energy_max = max(0, min(energy_max, self.MAX_ENERGY_LIMIT))
         self.energy = self._energy_max
@@ -21,6 +22,8 @@ class Player(Combatant):
         # Carga da habilidade ultimate: acumula com a energia gasta em cartas.
         self.ultimate_charge = 0
         self.ultimate_threshold = ultimate_threshold
+        self.equipped_ultimate_id = DEFAULT_ULTIMATE_ID
+        self.unlocked_ultimates = [DEFAULT_ULTIMATE_ID]
 
     def get_hand_size(self):
         """Calcula o tamanho da mão baseado na progressão de turnos da partida."""
@@ -85,5 +88,17 @@ class Player(Combatant):
         """Zera a carga ao ativar a ultimate, caso ela esteja pronta."""
         if self.is_ultimate_ready():
             self.ultimate_charge = 0
+            return True
+        return False
+
+    def unlock_ultimate(self, ultimate_id):
+        """Desbloqueia uma nova ultimate para uso futuro."""
+        if ultimate_id and ultimate_id not in self.unlocked_ultimates:
+            self.unlocked_ultimates.append(ultimate_id)
+
+    def equip_ultimate(self, ultimate_id):
+        """Equipa uma ultimate já desbloqueada."""
+        if ultimate_id in self.unlocked_ultimates:
+            self.equipped_ultimate_id = ultimate_id
             return True
         return False

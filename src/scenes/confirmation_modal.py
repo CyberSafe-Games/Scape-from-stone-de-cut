@@ -9,6 +9,7 @@ from src.config.colors import (
     BUTTON_HOVER,
 )
 from src.ui.helpers import draw_text
+from src.ui import dark_fantasy_theme as theme
 
 
 class ConfirmationModal(BaseScene):
@@ -21,10 +22,16 @@ class ConfirmationModal(BaseScene):
         asset_manager,
         on_confirm=None,
         on_cancel=None,
+        title="VOLTAR AO MENU?",
+        message="Seu progresso será salvo antes de sair.",
+        confirm_label="SIM, VOLTAR",
     ):
         super().__init__(scene_manager, window_manager, asset_manager)
         self.on_confirm = on_confirm
         self.on_cancel = on_cancel
+        self.title = title
+        self.message = message
+        self.confirm_label = confirm_label
 
         self.confirm_button = pygame.Rect(
             WIDTH // 2 - 130, HEIGHT // 2 + 20, 260, 55
@@ -34,52 +41,28 @@ class ConfirmationModal(BaseScene):
         )
 
     def draw_button(self, surface, rect, text):
-        mouse_pos = self.window_manager.get_virtual_mouse_pos()
-        hovered = rect.collidepoint(mouse_pos)
-        color = BUTTON_HOVER if hovered else BUTTON_BG
-
-        pygame.draw.rect(surface, color, rect, border_radius=10)
-        pygame.draw.rect(surface, GOLD, rect, 2, border_radius=10)
-        draw_text(
-            surface,
-            text,
-            self.asset_manager.menu_font,
-            WHITE,
-            rect.centerx,
-            rect.centery,
-            center=True,
-        )
+        hovered = rect.collidepoint(self.window_manager.get_virtual_mouse_pos())
+        theme.button(surface, rect, text, self.asset_manager.small_font, hover=hovered,
+                     prominent=rect == self.confirm_button,
+                     danger="EXCLUIR" in text)
 
     def update(self, dt):
         pass
 
     def draw(self, surface):
-        overlay = pygame.Surface((WIDTH, HEIGHT))
-        overlay.set_alpha(220)
-        overlay.fill(BLACK)
+        overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        overlay.fill((3, 8, 8, 225))
         surface.blit(overlay, (0, 0))
-
-        draw_text(
-            surface,
-            "VOLTAR AO MENU?",
-            self.asset_manager.big_font,
-            GOLD,
-            WIDTH // 2,
-            HEIGHT // 2 - 65,
-            center=True,
-        )
-
-        draw_text(
-            surface,
-            "Seu progresso desta partida será perdido.",
-            self.asset_manager.font,
-            WHITE,
-            WIDTH // 2,
-            HEIGHT // 2 - 25,
-            center=True,
-        )
-
-        self.draw_button(surface, self.confirm_button, "SIM, VOLTAR")
+        rect = pygame.Rect(WIDTH // 2 - 345, HEIGHT // 2 - 165, 690, 370)
+        theme.panel(surface, rect, highlighted=True)
+        theme.eyebrow(surface, "CONFIRMAÇÃO", self.asset_manager.small_font,
+                      WIDTH // 2, rect.y + 34, center=True)
+        draw_text(surface, self.title, self.asset_manager.big_font,
+                  WHITE, WIDTH // 2, HEIGHT // 2 - 69, center=True)
+        theme.divider(surface, rect.x + 75, rect.right - 75, HEIGHT // 2 - 36)
+        draw_text(surface, self.message, self.asset_manager.font,
+                  (201, 201, 190), WIDTH // 2, HEIGHT // 2 - 9, center=True)
+        self.draw_button(surface, self.confirm_button, self.confirm_label)
         self.draw_button(surface, self.cancel_button, "CANCELAR")
 
     def handle_event(self, event):

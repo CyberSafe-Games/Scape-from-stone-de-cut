@@ -24,3 +24,8 @@ CARD_ASSETS_DIR = os.path.join(ASSETS_DIR, "cards")
 CARD_EFFECTS_DIR = os.path.join(ASSETS_DIR, "card_effects")
 BACKGROUND_PATH = os.path.join(ASSETS_DIR, "background.png")
 COIN_ICON_PATH = os.path.join(ASSETS_DIR, "icons", "moeda.png")
+UI_ASSETS_DIR = os.path.join(ASSETS_DIR, "ui")
+ULTIMATE_ASSETS_DIR = os.path.join(ASSETS_DIR, "ultimates")
+
+# Um arquivo JSON por jornada (até três espaços na seleção).
+SAVES_DIR = os.path.join(BASE_DIR, "saves")

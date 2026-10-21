@@ -10,6 +10,7 @@ class Combatant:
         self.hp = hp
         self.block = 0
         self.strength = 0
+        self.weak_turns = 0
 
     def take_damage(self, damage):
         """Aplica dano considerando o valor atual de bloqueio."""

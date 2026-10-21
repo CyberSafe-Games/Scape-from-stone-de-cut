@@ -41,6 +41,11 @@ def main():
         scene_manager.draw(window_manager.virtual_screen)
         window_manager.present()
 
+    # Persiste o checkpoint também quando a janela é fechada diretamente.
+    active_scene = scene_manager.current_scene
+    if hasattr(active_scene, "save_on_exit"):
+        active_scene.save_on_exit()
+
     pygame.quit()
     sys.exit()
 

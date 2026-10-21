@@ -11,12 +11,17 @@ class CardView:
     @staticmethod
     def draw_card(surface, rect, card, asset_manager, hovered=False):
         """Desenha a arte PNG completa da carta; caso não exista, desenha um fallback com borda colorida."""
-        draw_rect = rect.move(0, -14 if hovered else 0)
-        image = asset_manager.get_card_image(card.name)
+        draw_rect = rect.move(0, -12 if hovered else 0)
+        shadow = pygame.Surface((draw_rect.width + 10, draw_rect.height + 10), pygame.SRCALPHA)
+        pygame.draw.rect(shadow, (0, 0, 0, 110), (5, 5, draw_rect.width, draw_rect.height), border_radius=12)
+        surface.blit(shadow, (draw_rect.x - 5, draw_rect.y - 3))
 
+        image = asset_manager.get_card_image(card.name)
         if image is not None:
             scaled = pygame.transform.smoothscale(image, draw_rect.size)
             surface.blit(scaled, draw_rect)
+            if hovered:
+                pygame.draw.rect(surface, (245, 222, 160), draw_rect, 2, border_radius=10)
             return
 
         pygame.draw.rect(surface, CARD_BG, draw_rect, border_radius=10)
@@ -40,7 +45,7 @@ class CardView:
 
         total_width = count * CARD_WIDTH + (count - 1) * CARD_SPACING
         start_x = WIDTH // 2 - total_width // 2
-        y = HEIGHT - CARD_HEIGHT - 20
+        y = HEIGHT - CARD_HEIGHT - 18
 
         for index in range(count):
             x = start_x + index * (CARD_WIDTH + CARD_SPACING)

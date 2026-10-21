@@ -3,6 +3,7 @@ import pygame
 from src.scenes.base_scene import BaseScene
 from src.ui.card_view import CardView
 from src.ui.helpers import draw_text
+from src.ui import dark_fantasy_theme as theme
 from src.config.settings import WIDTH, HEIGHT
 from src.config.colors import (
     BLACK,
@@ -84,37 +85,20 @@ class CemeteryModal(BaseScene):
                 self.feedback_message = ""
 
     def draw(self, surface):
-        # 1. Overlay escurecido de fundo
-        overlay = pygame.Surface((WIDTH, HEIGHT))
-        overlay.set_alpha(225)
-        overlay.fill((8, 6, 14))
+        # Overlay e placa de ferro/bronze compartilhada com outros modais.
+        overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        overlay.fill((3, 9, 9, 230))
         surface.blit(overlay, (0, 0))
-
-        # 2. Painel central do Cemitério com borda temática
-        panel = pygame.Surface((self.modal_width, self.modal_height), pygame.SRCALPHA)
-        panel.fill((22, 18, 34, 245))
-        pygame.draw.rect(
-            panel,
-            (145, 95, 205),
-            (0, 0, self.modal_width, self.modal_height),
-            3,
-            border_radius=16,
-        )
-        pygame.draw.rect(
-            panel,
-            (70, 45, 105),
-            (6, 6, self.modal_width - 12, self.modal_height - 12),
-            1,
-            border_radius=12,
-        )
-        surface.blit(panel, (self.modal_rect.x, self.modal_rect.y))
+        theme.panel(surface, self.modal_rect, highlighted=True)
+        theme.divider(surface, self.modal_rect.x + 72, self.modal_rect.right - 72,
+                      self.modal_rect.y + 122)
 
         # 3. Cabeçalho estilizado
         draw_text(
             surface,
             "CEMITÉRIO",
             self.asset_manager.big_font,
-            (215, 175, 255),
+            WHITE,
             WIDTH // 2,
             self.modal_rect.top + 35,
             center=True,
@@ -132,7 +116,7 @@ class CemeteryModal(BaseScene):
         # 4. Status de Energia
         player = self.engine.player
         has_energy = player.can_use_cemetery()
-        energy_color = (100, 220, 255) if has_energy else (255, 90, 90)
+        energy_color = (145, 187, 175) if has_energy else (190, 99, 85)
         energy_text = (
             f"Energia Disponível: {player.energy}/{player.energy_max}   |   Custo: 1 Energia"
         )
@@ -187,7 +171,7 @@ class CemeteryModal(BaseScene):
                     )
                     pygame.draw.rect(
                         surface,
-                        (220, 150, 255),
+                        (132, 110, 78),
                         draw_rect.inflate(14, 14),
                         2,
                         border_radius=14,
@@ -232,50 +216,12 @@ class CemeteryModal(BaseScene):
         )
         discard_hover = self.discard_button_rect.collidepoint(mouse_pos) and can_discard
 
-        if can_discard:
-            discard_bg = (130, 60, 165) if discard_hover else (95, 40, 125)
-            discard_border = GOLD
-            discard_text_color = WHITE
-        else:
-            discard_bg = (45, 42, 55)
-            discard_border = (80, 75, 95)
-            discard_text_color = GRAY
-
-        pygame.draw.rect(
-            surface, discard_bg, self.discard_button_rect, border_radius=10
-        )
-        pygame.draw.rect(
-            surface, discard_border, self.discard_button_rect, 2, border_radius=10
-        )
-        draw_text(
-            surface,
-            "DESCARTAR (1 ENERGIA)",
-            self.asset_manager.font,
-            discard_text_color,
-            self.discard_button_rect.centerx,
-            self.discard_button_rect.centery,
-            center=True,
-        )
-
-        # 8. Botão Fechar / Cancelar
+        theme.button(surface, self.discard_button_rect,
+                     "DESCARTAR (1 ENERGIA)", self.asset_manager.small_font,
+                     hover=discard_hover, enabled=can_discard, prominent=True)
         close_hover = self.close_button_rect.collidepoint(mouse_pos)
-        close_bg = BUTTON_HOVER if close_hover else BUTTON_BG
-
-        pygame.draw.rect(
-            surface, close_bg, self.close_button_rect, border_radius=10
-        )
-        pygame.draw.rect(
-            surface, (150, 140, 170), self.close_button_rect, 2, border_radius=10
-        )
-        draw_text(
-            surface,
-            "FECHAR",
-            self.asset_manager.font,
-            WHITE,
-            self.close_button_rect.centerx,
-            self.close_button_rect.centery,
-            center=True,
-        )
+        theme.button(surface, self.close_button_rect, "FECHAR",
+                     self.asset_manager.small_font, hover=close_hover)
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:

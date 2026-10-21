@@ -9,6 +9,8 @@ from src.config.settings import (
     CARD_ASSETS_DIR,
     CARD_EFFECTS_DIR,
     COIN_ICON_PATH,
+    UI_ASSETS_DIR,
+    ULTIMATE_ASSETS_DIR,
 )
 from src.config.colors import WHITE
 
@@ -46,6 +48,8 @@ class AssetManager:
         self._background = None
         self._fallback_sprite = None
         self._coin_icon = None
+        self._ui_images = {}
+        self._ultimate_images = {}
 
         self._init_fonts()
         self._load_background()
@@ -53,14 +57,29 @@ class AssetManager:
         self._load_enemy_sprites()
         self._load_card_action_sprites()
         self._load_coin_icon()
+        self._load_ui_images()
+        self._load_ultimate_images()
+
+    @staticmethod
+    def _pick_font(preferred_names, size, bold=False):
+        """Usa uma família instalada; evita fallback silencioso na primeira opção."""
+        for name in preferred_names:
+            path = pygame.font.match_font(name, bold=bold)
+            if path:
+                font = pygame.font.Font(path, size)
+                font.set_bold(bold)
+                return font
+        return pygame.font.SysFont(None, size, bold=bold)
 
     def _init_fonts(self):
-        """Inicializa as fontes tipográficas do jogo."""
-        self._fonts["default"] = pygame.font.SysFont("arial", 22)
-        self._fonts["big"] = pygame.font.SysFont("arial", 40, bold=True)
-        self._fonts["title"] = pygame.font.SysFont("arial", 66, bold=True)
-        self._fonts["menu"] = pygame.font.SysFont("arial", 28, bold=True)
-        self._fonts["small"] = pygame.font.SysFont("arial", 18)
+        """Serifa só nos títulos, legibilidade neutra em controles e informações."""
+        headings = ["cinzel", "constantia", "georgia", "liberationserif", "dejavuserif"]
+        body = ["segoeui", "trebuchetms", "liberationsans", "dejavusans"]
+        self._fonts["default"] = self._pick_font(body, 20)
+        self._fonts["big"] = self._pick_font(headings, 33, bold=True)
+        self._fonts["title"] = self._pick_font(headings, 56, bold=True)
+        self._fonts["menu"] = self._pick_font(headings, 23, bold=True)
+        self._fonts["small"] = self._pick_font(body, 16)
 
     def get_font(self, name="default"):
         return self._fonts.get(name, self._fonts["default"])
@@ -115,6 +134,40 @@ class AssetManager:
     @property
     def coin_icon(self):
         return self._coin_icon
+
+    def _load_ui_images(self):
+        """Carrega elementos decorativos da interface."""
+        mapping = {
+            "battle_hud_frame": "battle_hud_frame_top.png",
+            "battle_hud_frame_alt": "battle_hud_frame_bottom.png",
+        }
+        for key, filename in mapping.items():
+            path = os.path.join(UI_ASSETS_DIR, filename)
+            try:
+                self._ui_images[key] = pygame.image.load(path).convert_alpha()
+            except (pygame.error, FileNotFoundError):
+                self._ui_images[key] = None
+
+    def _load_ultimate_images(self):
+        """Carrega as ilustrações das cartas de ultimate."""
+        mapping = {
+            "mana_ancestral": "mana_ancestral.png",
+            "forcas_ancestrais": "forcas_ancestrais.png",
+            "rugido_da_floresta": "rugido_da_floresta.png",
+        }
+        for key, filename in mapping.items():
+            path = os.path.join(ULTIMATE_ASSETS_DIR, filename)
+            try:
+                self._ultimate_images[key] = pygame.image.load(path).convert_alpha()
+            except (pygame.error, FileNotFoundError):
+                self._ultimate_images[key] = None
+
+    def get_ui_image(self, key):
+        return self._ui_images.get(key)
+
+    def get_ultimate_image(self, ultimate_id):
+        return self._ultimate_images.get(ultimate_id)
+
 
     @staticmethod
     def fit_character_sprite(image, target_height=130, max_width=105):

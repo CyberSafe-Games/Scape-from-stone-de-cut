@@ -13,6 +13,7 @@ from src.config.colors import (
     BUTTON_HOVER,
 )
 from src.ui.helpers import draw_text
+from src.ui import dark_fantasy_theme as theme
 
 
 class MenuScene(BaseScene):
@@ -21,90 +22,53 @@ class MenuScene(BaseScene):
     def __init__(self, scene_manager, window_manager, asset_manager):
         super().__init__(scene_manager, window_manager, asset_manager)
 
-        self.play_button = pygame.Rect(
-            WIDTH // 2 - 130, HEIGHT // 2 + 45, 260, 60
-        )
-        self.quit_button = pygame.Rect(
-            WIDTH // 2 - 130, HEIGHT // 2 + 125, 260, 60
-        )
+        self.play_button = pygame.Rect(144, 456, 326, 56)
+        self.quit_button = pygame.Rect(144, 526, 326, 53)
 
     def draw_button(self, surface, rect, text):
-        mouse_pos = self.window_manager.get_virtual_mouse_pos()
-        hovered = rect.collidepoint(mouse_pos)
-        color = BUTTON_HOVER if hovered else BUTTON_BG
-
-        pygame.draw.rect(surface, color, rect, border_radius=12)
-        pygame.draw.rect(surface, GOLD, rect, 3, border_radius=12)
-        draw_text(
-            surface,
-            text,
-            self.asset_manager.menu_font,
-            WHITE,
-            rect.centerx,
-            rect.centery,
-            center=True,
-        )
+        hovered = rect.collidepoint(self.window_manager.get_virtual_mouse_pos())
+        theme.button(surface, rect, text, self.asset_manager.menu_font,
+                     hover=hovered, prominent=(rect == self.play_button))
 
     def update(self, dt):
         pass
 
     def draw(self, surface):
-        # 1. Fundo com imagem ou cor sólida
-        if self.asset_manager.background is not None:
-            surface.blit(self.asset_manager.background, (0, 0))
-        else:
-            surface.fill(BG)
+        theme.backdrop(surface, self.asset_manager.background, opacity=186)
+        # Placa vertical e sigilo discreto em vez de botões coloridos genéricos.
+        pygame.draw.line(surface, (118, 91, 52), (116, 132), (116, 583), 2)
+        for y in (132, 583):
+            pygame.draw.polygon(surface, GOLD,
+                                [(116, y-6), (122, y), (116, y+6), (110, y)])
+        theme.eyebrow(surface, "CRÔNICAS DA PEDRA CORTADA", self.asset_manager.small_font, 144, 160)
+        draw_text(surface, "SCAPE FROM", self.asset_manager.title_font, WHITE, 139, 208)
+        draw_text(surface, "STONE DE CUT", self.asset_manager.title_font, GOLD, 139, 280)
+        pygame.draw.line(surface, (117, 94, 57), (146, 375), (530, 375), 1)
+        draw_text(surface, "A FLORESTA NÃO ESQUECE.", self.asset_manager.font,
+                  (200, 199, 179), 145, 393)
+        draw_text(surface, "Um roguelike de cartas entre ruínas, tribos e sombras.",
+                  self.asset_manager.small_font, GRAY, 145, 426)
+        self.draw_button(surface, self.play_button, "INICIAR JORNADA")
+        self.draw_button(surface, self.quit_button, "SAIR DO JOGO")
 
-        # 2. Escurecimento translúcido
-        overlay = pygame.Surface((WIDTH, HEIGHT))
-        overlay.set_alpha(145)
-        overlay.fill(BLACK)
-        surface.blit(overlay, (0, 0))
+        # Marca ornamental sobre o cenário. Não é um botão.
+        cx, cy = 951, 348
+        pygame.draw.circle(surface, (74, 78, 60), (cx, cy), 119, 1)
+        pygame.draw.circle(surface, (90, 78, 54), (cx, cy), 98, 1)
+        for d in range(0, 360, 45):
+            import math
+            a = math.radians(d)
+            px, py = int(cx + 108 * math.cos(a)), int(cy + 108 * math.sin(a))
+            pygame.draw.circle(surface, (126, 102, 64), (px, py), 3)
+        pts = [(cx, cy-68), (cx+55, cy), (cx, cy+68), (cx-55, cy)]
+        pygame.draw.lines(surface, (127, 100, 61), True, pts, 2)
+        pygame.draw.line(surface, (127, 100, 61), (cx, cy-68), (cx, cy+68), 1)
+        pygame.draw.circle(surface, (127, 100, 61), (cx, cy), 13, 2)
+        draw_text(surface, "I", self.asset_manager.small_font, GOLD, cx, cy+139, center=True)
 
-        # 3. Título e subtítulo estilizados
-        draw_text(
-            surface,
-            "SCAPE FROM",
-            self.asset_manager.title_font,
-            WHITE,
-            WIDTH // 2,
-            HEIGHT // 2 - 105,
-            center=True,
-        )
-        draw_text(
-            surface,
-            "STONE DE CUT",
-            self.asset_manager.title_font,
-            GOLD,
-            WIDTH // 2,
-            HEIGHT // 2 - 40,
-            center=True,
-        )
-        draw_text(
-            surface,
-            "Uma aventura de cartas por turnos",
-            self.asset_manager.small_font,
-            WHITE,
-            WIDTH // 2,
-            HEIGHT // 2 + 5,
-            center=True,
-        )
-
-        # 4. Botões de ação
-        self.draw_button(surface, self.play_button, "JOGAR")
-        self.draw_button(surface, self.quit_button, "SAIR")
-
-        # 5. Botão de tela cheia e rodapé
         self.window_manager.draw_fullscreen_button(self.asset_manager.small_font)
-        draw_text(
-            surface,
-            "ENTER / ESPAÇO para jogar   |   F11 para tela cheia",
-            self.asset_manager.small_font,
-            GRAY,
-            WIDTH // 2,
-            HEIGHT - 30,
-            center=True,
-        )
+        theme.footer(surface, "ENTER / ESPAÇO  ·  JOGAR                         F11  ·  TELA CHEIA",
+                     self.asset_manager.small_font)
 
     def handle_event(self, event):
         # Janela / tela cheia
@@ -134,7 +98,7 @@ class MenuScene(BaseScene):
                 sys.exit()
 
     def _start_game(self):
-        from src.scenes.battle_scene import BattleScene
+        from src.scenes.save_selection_scene import SaveSelectionScene
         self.scene_manager.change_scene(
-            BattleScene(self.scene_manager, self.window_manager, self.asset_manager)
+            SaveSelectionScene(self.scene_manager, self.window_manager, self.asset_manager)
         )

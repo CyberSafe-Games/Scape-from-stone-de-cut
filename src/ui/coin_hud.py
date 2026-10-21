@@ -2,14 +2,14 @@ import math
 import random
 import pygame
 
-HUD_COIN_X = 14
-HUD_COIN_Y = 50
+HUD_COIN_X = 54
+HUD_COIN_Y = 82
 
 # Tamanho do icone desenhado na HUD (px) - aumente aqui para deixar maior
 HUD_ICON_SIZE = 42
 # Largura do painel de fundo da HUD
-HUD_PANEL_W = 160
-HUD_PANEL_H = 50
+HUD_PANEL_W = 176
+HUD_PANEL_H = 56
 
 PARTICLE_DURATION = 900
 PARTICLE_STAGGER = 70
@@ -29,11 +29,13 @@ def _ease_in_out_cubic(t):
 class CoinParticle:
     """Uma moeda animada que voa da origem ate o icone da HUD."""
 
-    def __init__(self, origin_x, origin_y, delay_ms, coin_value):
+    def __init__(self, origin_x, origin_y, delay_ms, coin_value, dest_x=None, dest_y=None):
         self.origin_x = float(origin_x)
         self.origin_y = float(origin_y)
-        self.dest_x = float(HUD_COIN_X + HUD_ICON_SIZE // 2)
-        self.dest_y = float(HUD_COIN_Y + HUD_ICON_SIZE // 2)
+        target_x = HUD_COIN_X + HUD_ICON_SIZE // 2 if dest_x is None else dest_x
+        target_y = HUD_COIN_Y + HUD_ICON_SIZE // 2 if dest_y is None else dest_y
+        self.dest_x = float(target_x)
+        self.dest_y = float(target_y)
         self.delay = delay_ms
         self.elapsed = 0.0
         self.coin_value = coin_value
@@ -87,9 +89,15 @@ class CoinParticle:
 class CoinHUD:
     """Gerencia o saldo de moedas e as particulas de animacao de drop."""
 
-    def __init__(self, player):
+    def __init__(self, player, anchor_x=HUD_COIN_X, anchor_y=HUD_COIN_Y):
         self._player = player
         self._particles = []
+        self.anchor_x = anchor_x
+        self.anchor_y = anchor_y
+
+    def set_anchor(self, x, y):
+        self.anchor_x = int(x)
+        self.anchor_y = int(y)
 
     def spawn_coins(self, amount, origin_x, origin_y):
         """Cria particulas de moeda voando de (origin_x, origin_y) ate a HUD."""
@@ -101,7 +109,7 @@ class CoinHUD:
             ox = origin_x + random.randint(-30, 30)
             oy = origin_y + random.randint(-20, 20)
             delay = i * PARTICLE_STAGGER
-            self._particles.append(CoinParticle(ox, oy, delay, value))
+            self._particles.append(CoinParticle(ox, oy, delay, value, self.anchor_x + HUD_ICON_SIZE // 2, self.anchor_y + HUD_ICON_SIZE // 2))
 
     def update(self, dt):
         """Atualiza particulas e credita moedas ao chegar no destino."""
@@ -118,23 +126,44 @@ class CoinHUD:
                 p.credited = True
         self._particles = alive
 
-    def draw(self, surface, font, coin_icon):
-        """Desenha particulas em voo e o HUD de moedas no canto superior esquerdo."""
+    def collect_pending_coins(self):
+        """Credita imediatamente moedas ainda em animação antes de um checkpoint."""
+        for particle in self._particles:
+            if not particle.credited:
+                self._player.add_coins(particle.coin_value)
+                particle.credited = True
+        self._particles.clear()
+
+    def draw_particles(self, surface):
+        """Desenha apenas as partículas em voo."""
         for p in self._particles:
             p.draw(surface)
 
+    def draw(self, surface, font, coin_icon):
+        """Desenha partículas e um painel opcional de moedas."""
+        self.draw_particles(surface)
+
+        x = self.anchor_x
+        y = self.anchor_y
+
         # Painel de fundo semi-transparente
+        shadow = pygame.Surface((HUD_PANEL_W + 10, HUD_PANEL_H + 10), pygame.SRCALPHA)
+        pygame.draw.rect(shadow, (0, 0, 0, 85), (6, 6, HUD_PANEL_W, HUD_PANEL_H), border_radius=12)
+        surface.blit(shadow, (x - 8, y - 6))
         panel = pygame.Surface((HUD_PANEL_W, HUD_PANEL_H), pygame.SRCALPHA)
-        panel.fill((0, 0, 0, 140))
-        pygame.draw.rect(panel, (255, 200, 50, 180), (0, 0, HUD_PANEL_W, HUD_PANEL_H), 2, border_radius=10)
-        surface.blit(panel, (HUD_COIN_X - 4, HUD_COIN_Y - 4))
+        pygame.draw.rect(panel, (15, 16, 26, 228), (0, 0, HUD_PANEL_W, HUD_PANEL_H), border_radius=12)
+        pygame.draw.rect(panel, (228, 191, 88, 210), (0, 0, HUD_PANEL_W, HUD_PANEL_H), 2, border_radius=12)
+        surface.blit(panel, (x - 4, y - 4))
 
         # Icone da moeda
         if coin_icon:
             icon_scaled = pygame.transform.smoothscale(coin_icon, (HUD_ICON_SIZE, HUD_ICON_SIZE))
-            surface.blit(icon_scaled, (HUD_COIN_X, HUD_COIN_Y + (HUD_PANEL_H - HUD_ICON_SIZE) // 2 - 4))
+            surface.blit(icon_scaled, (x, y + (HUD_PANEL_H - HUD_ICON_SIZE) // 2 - 4))
+
+        label = font.render("MOEDAS", True, (194, 179, 133))
+        surface.blit(label, (x + HUD_ICON_SIZE + 8, y + 1))
 
         # Texto do saldo ao lado do icone
-        coins_text = font.render(f": {self._player.coins}", True, (255, 235, 110))
-        text_y = HUD_COIN_Y + (HUD_PANEL_H - coins_text.get_height()) // 2 - 4
-        surface.blit(coins_text, (HUD_COIN_X + HUD_ICON_SIZE + 6, text_y))
+        coins_text = font.render(str(self._player.coins), True, (255, 235, 110))
+        text_y = y + 22
+        surface.blit(coins_text, (x + HUD_ICON_SIZE + 12, text_y))

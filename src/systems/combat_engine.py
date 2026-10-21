@@ -2,14 +2,14 @@ import random
 
 from src.models.player import Player
 from src.models.deck import DeckManager
-from src.models.effects.ultimate_effect import StoneBreakUltimate
+from src.models.effects.ultimate_effect import create_ultimate, ULTIMATE_METADATA, DEFAULT_ULTIMATE_ID
 from src.systems.card_catalog import CARD_POOL, create_starting_deck
 from src.systems.enemy_factory import (
     create_enemy,
     choose_enemy_intent,
     is_miniboss_level,
 )
-from src.config.colors import RED, BLUE
+from src.config.colors import RED, BLUE, GOLD
 from src.config.layout import PLAYER_X, PLAYER_Y, ENEMY_X, ENEMY_Y
 
 
@@ -19,12 +19,13 @@ class CombatEngine:
     Desacoplado de qualquer biblioteca de renderização gráfica (SRP / DIP).
     """
 
-    def __init__(self, on_event_callback=None):
+    def __init__(self, on_event_callback=None, map_mode=False):
         self.on_event = on_event_callback or (lambda event, **kwargs: None)
+        self.map_mode = map_mode
 
-        self.player = Player("Herói", 60, energy_max=Player.INITIAL_ENERGY_MAX)
+        self.player = Player("Jaum Manel", 60, energy_max=Player.INITIAL_ENERGY_MAX)
         self.deck_manager = DeckManager(create_starting_deck())
-        self.ultimate = StoneBreakUltimate()
+        self.ultimate = create_ultimate(self.player.equipped_ultimate_id)
         self.level = 1
 
         miniboss = is_miniboss_level(self.level)
@@ -84,6 +85,36 @@ class CombatEngine:
     @property
     def ultimate_ready(self):
         return self.player.is_ultimate_ready()
+
+    @property
+    def active_ultimate_id(self):
+        return self.player.equipped_ultimate_id
+
+    @property
+    def active_ultimate_name(self):
+        return getattr(self.ultimate, "name", "Ultimate")
+
+    @property
+    def active_ultimate_description(self):
+        return getattr(self.ultimate, "description", "")
+
+    @property
+    def active_ultimate_color(self):
+        return getattr(self.ultimate, "accent_color", GOLD)
+
+    @property
+    def unlocked_ultimates(self):
+        return list(getattr(self.player, "unlocked_ultimates", [DEFAULT_ULTIMATE_ID]))
+
+    def equip_ultimate(self, ultimate_id):
+        if self.player.equip_ultimate(ultimate_id):
+            self.ultimate = create_ultimate(ultimate_id)
+            meta = ULTIMATE_METADATA.get(ultimate_id, {})
+            self.player.ultimate_threshold = meta.get("charge_requirement", 20)
+            self.player.ultimate_charge = min(self.player.ultimate_charge, self.player.ultimate_threshold)
+            return True
+        return False
+
 
     # ========================================================
     # FLUXO DO COMBATE
@@ -211,15 +242,18 @@ class CombatEngine:
     def enemy_turn(self):
         """Executa a ação calculada da inteligência artificial do inimigo."""
         action = getattr(self.enemy, "current_action", None)
+        attacked = False
         if action is not None:
             self.enemy.use_energy(action.energy_cost)
-            if hasattr(action, "execute") and callable(action.execute):
+            if hasattr(action, "execute") and callable(action.execute) and action.action_type != "attack":
                 action.execute(self.enemy, self.player, context=self)
             elif action.action_type == "attack":
-                actual_damage = self.player.take_damage(action.damage)
+                damage = self._apply_weakness_modifier(action.damage)
+                actual_damage = self.player.take_damage(damage)
                 self.trigger_attack("enemy", action=action.visual_effect or "atk")
                 self.trigger_flash("player")
                 self.spawn_player_text(f"-{actual_damage}", RED)
+                attacked = True
             else:
                 block = action.defense
                 self.enemy.add_block(block)
@@ -227,17 +261,20 @@ class CombatEngine:
                 self.spawn_enemy_text(f"+{block} bloqueio", BLUE)
         else:
             if self.enemy.intent == "attack":
-                damage = self.enemy.intent_value
+                damage = self._apply_weakness_modifier(self.enemy.intent_value)
                 actual_damage = self.player.take_damage(damage)
 
                 self.trigger_attack("enemy", action="atk")
                 self.trigger_flash("player")
                 self.spawn_player_text(f"-{actual_damage}", RED)
+                attacked = True
             else:
                 block = self.enemy.intent_value
                 self.enemy.add_block(block)
                 self.trigger_enemy_action("def")
                 self.spawn_enemy_text(f"+{block} bloqueio", BLUE)
+
+        self._advance_status_effects(attacked=attacked)
 
         if not self.player.is_alive():
             self.state = "game_over"
@@ -257,6 +294,21 @@ class CombatEngine:
         self.deck_manager.draw_cards(self.player.get_hand_size())
         self.state = "player_turn"
 
+    def _apply_weakness_modifier(self, damage):
+        """Reduz o dano do inimigo quando ele está sob Fraqueza."""
+        if getattr(self.enemy, "weak_turns", 0) > 0:
+            weakened = max(0, int(round(damage * 0.75)))
+            reduction = max(0, damage - weakened)
+            if reduction > 0:
+                self.spawn_enemy_text(f"Fraqueza -{reduction}", (125, 205, 120))
+            return weakened
+        return damage
+
+    def _advance_status_effects(self, attacked=False):
+        """Consome durações de efeitos temporários ao final da ação do inimigo."""
+        if getattr(self.enemy, "weak_turns", 0) > 0:
+            self.enemy.weak_turns = max(0, self.enemy.weak_turns - 1)
+
     # ========================================================
     # PROGRESSÃO E RECOMPENSAS
     # ========================================================
@@ -268,14 +320,40 @@ class CombatEngine:
         ]
 
     def choose_reward(self, index):
-        """Seleciona uma carta de recompensa e avança para o próximo andar."""
+        """Seleciona recompensa; no modo mapa, retorna ao mapa após a fase."""
+        if self.state != "victory":
+            return
         if 0 <= index < len(self.reward_cards):
             self.deck_manager.add_to_deck(self.reward_cards[index])
-            self.next_level()
+            if self.map_mode:
+                self.finish_map_phase()
+            else:
+                self.next_level()
 
     def skip_reward(self):
-        """Pula a escolha da carta de recompensa e avança de andar."""
-        self.next_level()
+        """Pula recompensa; no modo mapa, retorna ao mapa após a fase."""
+        if self.state != "victory":
+            return
+        if self.map_mode:
+            self.finish_map_phase()
+        else:
+            self.next_level()
+
+    def finish_map_phase(self):
+        """Fecha a fase uma única vez, depois da recompensa.
+
+        A cena responsável pelo mapa valida, grava e confirma o desbloqueio.
+        Não cria automaticamente a batalha do próximo andar.
+        """
+        if not self.map_mode or self.state != "victory":
+            return
+        if self.enemy.is_miniboss:
+            self.player.hp = self.player.max_hp
+        else:
+            self.player.hp = min(self.player.max_hp, self.player.hp + 8)
+        self.player.reset_energy()
+        self.state = "phase_complete"
+        self.on_event("phase_complete", level=self.level)
 
     def next_level(self):
         """Avança de andar com balanceamento e cura."""
@@ -292,6 +370,20 @@ class CombatEngine:
 
         self.start_combat()
         self.state = "player_turn"
+        self.on_event("checkpoint", level=self.level)
+
+    def resume_from_save(self, data, save_manager, level=None):
+        """Restaura o progresso e recomeça o combate no andar salvo.
+
+        A partida é retomada no início do confronto, não no meio do turno.
+        """
+        save_manager.apply_to_game(data, self.player, self.deck_manager)
+        self.player.name = "Jaum Manel"
+        self.equip_ultimate(self.player.equipped_ultimate_id)
+        self.level = data["progresso"]["andar"] if level is None else level
+        self.enemy = create_enemy(self.level, is_miniboss_level(self.level))
+        choose_enemy_intent(self.enemy)
+        self.start_combat()
 
     # ========================================================
     # NOTIFICAÇÕES VISUAIS E CONTEXTO DE EFEITOS

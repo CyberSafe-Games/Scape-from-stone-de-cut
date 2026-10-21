@@ -1,12 +1,13 @@
+import math
 import pygame
 from src.config.settings import HEIGHT
-from src.config.colors import WHITE, BLACK, GOLD, GRAY
-from src.ui.helpers import draw_text
+from src.config.colors import WHITE, GOLD
+from src.ui.helpers import draw_text, draw_panel
 
 HUD_ENERGY_X = 20
-HUD_ENERGY_Y = HEIGHT - 114
-HUD_ENERGY_W = 184
-HUD_ENERGY_H = 94
+HUD_ENERGY_Y = HEIGHT - 126
+HUD_ENERGY_W = 214
+HUD_ENERGY_H = 106
 
 
 class EnergyHUD:
@@ -20,10 +21,10 @@ class EnergyHUD:
 
     def update(self, dt):
         """Atualiza animações internas do HUD de energia."""
-        self.pulse_timer = (self.pulse_timer + dt * 0.003) % (2 * 3.14159)
+        self.pulse_timer = (self.pulse_timer + dt * 0.0036) % (2 * math.pi)
 
     def draw(self, surface, font, small_font=None):
-        """Desenha o painel, orbe de energia, contagem atual/máxima e os 8 slots de progressão."""
+        """Desenha o painel, orbe de energia e os slots de progressão."""
         if small_font is None:
             small_font = font
 
@@ -31,102 +32,58 @@ class EnergyHUD:
         energy_max = self.player.energy_max
         max_limit = getattr(self.player, "MAX_ENERGY_LIMIT", 8)
 
-        # 1. Painel de fundo com borda estilizada e largura segura contra sobreposição
-        panel = pygame.Surface((HUD_ENERGY_W, HUD_ENERGY_H), pygame.SRCALPHA)
-        panel.fill((16, 14, 26, 210))
-        border_color = (60, 160, 240, 190) if energy > 0 else (90, 90, 110, 140)
-        pygame.draw.rect(
-            panel,
-            border_color,
-            (0, 0, HUD_ENERGY_W, HUD_ENERGY_H),
-            2,
-            border_radius=12,
-        )
-        surface.blit(panel, (self.x, self.y))
+        draw_panel(surface, pygame.Rect(self.x, self.y, HUD_ENERGY_W, HUD_ENERGY_H),
+                   fill=(14, 18, 28, 226), border=(58, 150, 210), radius=16)
 
-        # 2. Orbe de Energia (Lado Esquerdo)
-        orb_cx = self.x + 38
-        orb_cy = self.y + HUD_ENERGY_H // 2
-        orb_radius = 26
+        orb_cx = self.x + 42
+        orb_cy = self.y + HUD_ENERGY_H // 2 + 4
+        orb_radius = 28
+        pulse = 2 if energy > 0 else 0
+        if energy > 0:
+            pulse += int((math.sin(self.pulse_timer) + 1) * 1.5)
 
-        # Halo suave do orbe
-        glow_surf = pygame.Surface((orb_radius * 2 + 16, orb_radius * 2 + 16), pygame.SRCALPHA)
-        glow_color = (40, 160, 255, 45) if energy > 0 else (60, 60, 80, 30)
-        pygame.draw.circle(
-            glow_surf,
-            glow_color,
-            (orb_radius + 8, orb_radius + 8),
-            orb_radius + 5,
-        )
-        surface.blit(glow_surf, (orb_cx - orb_radius - 8, orb_cy - orb_radius - 8))
+        glow_size = (orb_radius + 14) * 2
+        glow = pygame.Surface((glow_size, glow_size), pygame.SRCALPHA)
+        glow_color = (50, 175, 255, 42 if energy > 0 else 18)
+        pygame.draw.circle(glow, glow_color, (glow_size // 2, glow_size // 2), orb_radius + 10 + pulse)
+        surface.blit(glow, (orb_cx - glow_size // 2, orb_cy - glow_size // 2))
 
-        # Círculo base e anel cristalino (sem manchas ou artefatos)
-        orb_base_color = (18, 32, 54) if energy > 0 else (30, 30, 40)
-        pygame.draw.circle(surface, orb_base_color, (orb_cx, orb_cy), orb_radius)
-        orb_ring_color = (70, 190, 255) if energy > 0 else (80, 85, 100)
-        pygame.draw.circle(surface, orb_ring_color, (orb_cx, orb_cy), orb_radius, 2)
-        inner_ring_color = (35, 90, 145) if energy > 0 else (50, 55, 65)
-        pygame.draw.circle(surface, inner_ring_color, (orb_cx, orb_cy), orb_radius - 3, 1)
+        orb_base = (18, 40, 66) if energy > 0 else (29, 33, 42)
+        ring = (90, 205, 255) if energy > 0 else (86, 93, 108)
+        inner_ring = (150, 228, 255) if energy > 0 else (65, 70, 80)
+        pygame.draw.circle(surface, orb_base, (orb_cx, orb_cy), orb_radius)
+        pygame.draw.circle(surface, ring, (orb_cx, orb_cy), orb_radius, 3)
+        pygame.draw.circle(surface, inner_ring, (orb_cx, orb_cy), orb_radius - 5, 1)
+        pygame.draw.circle(surface, (255, 255, 255, 40), (orb_cx - 8, orb_cy - 9), 7)
 
-        # Texto numérico limpo e centralizado no orbe (energia_atual / energia_máxima)
         ratio_text = f"{energy}/{energy_max}"
-        tw, th = font.size(ratio_text)
-        text_shadow = font.render(ratio_text, True, (10, 20, 35))
-        surface.blit(text_shadow, (orb_cx - tw // 2 + 1, orb_cy - th // 2 + 1))
-        text_surf = font.render(ratio_text, True, WHITE)
-        surface.blit(text_surf, (orb_cx - tw // 2, orb_cy - th // 2))
+        draw_text(surface, ratio_text, font, WHITE, orb_cx, orb_cy, center=True)
 
-        # 3. Informações de Texto e Título
-        text_start_x = self.x + 74
-        title_y = self.y + 12
-        draw_text(surface, "ENERGIA", small_font, (160, 215, 255), text_start_x, title_y)
+        text_start_x = self.x + 82
+        draw_text(surface, "ENERGIA", small_font, (162, 219, 255), text_start_x, self.y + 14)
+        draw_text(surface, "Canalize poder para jogar cartas", small_font,
+                  (115, 137, 162), text_start_x, self.y + 34)
 
-        # 4. Slots / Pips de Energia (8 slots demonstrando a progressão)
-        pip_start_y = self.y + 36
-        pip_w = 8
-        pip_h = 16
-        pip_spacing = 3
+        pip_start_y = self.y + 60
+        pip_w = 11
+        pip_h = 18
+        pip_spacing = 4
 
         for i in range(max_limit):
             px = text_start_x + i * (pip_w + pip_spacing)
             pip_rect = pygame.Rect(px, pip_start_y, pip_w, pip_h)
-
             if i < energy:
-                # Energia disponível: aceso e vibrante
-                pygame.draw.rect(surface, (45, 195, 255), pip_rect, border_radius=3)
-                pygame.draw.rect(
-                    surface,
-                    (215, 245, 255),
-                    (px + 1, pip_start_y + 1, pip_w - 2, pip_h // 3),
-                    border_radius=2,
-                )
-                pygame.draw.rect(surface, (255, 255, 255), pip_rect, 1, border_radius=3)
+                pygame.draw.rect(surface, (40, 196, 255), pip_rect, border_radius=4)
+                pygame.draw.rect(surface, (215, 248, 255), (px + 1, pip_start_y + 1, pip_w - 2, 5), border_radius=3)
+                pygame.draw.rect(surface, (255, 255, 255), pip_rect, 1, border_radius=4)
             elif i < energy_max:
-                # Energia gasta do turno: espaço desbloqueado, porém vazio
-                pygame.draw.rect(surface, (25, 38, 55), pip_rect, border_radius=3)
-                pygame.draw.rect(surface, (60, 130, 190), pip_rect, 1, border_radius=3)
+                pygame.draw.rect(surface, (21, 40, 59), pip_rect, border_radius=4)
+                pygame.draw.rect(surface, (74, 130, 175), pip_rect, 1, border_radius=4)
             else:
-                # Slot bloqueado: capacidade futura até o limite de 8
-                pygame.draw.rect(surface, (20, 22, 30), pip_rect, border_radius=3)
-                pygame.draw.rect(surface, (55, 60, 75), pip_rect, 1, border_radius=3)
+                pygame.draw.rect(surface, (18, 22, 30), pip_rect, border_radius=4)
+                pygame.draw.rect(surface, (56, 61, 74), pip_rect, 1, border_radius=4)
 
-        # 5. Legenda de limite contida com ampla margem interna de segurança
-        subtext_y = self.y + 60
-        if energy_max >= max_limit:
-            draw_text(
-                surface,
-                f"Máx: {max_limit}",
-                small_font,
-                GOLD,
-                text_start_x,
-                subtext_y,
-            )
-        else:
-            draw_text(
-                surface,
-                f"Limite: {max_limit}",
-                small_font,
-                (140, 160, 185),
-                text_start_x,
-                subtext_y,
-            )
+        limit_text = f"Máximo: {energy_max}/{max_limit}" if energy_max < max_limit else f"Máximo atingido: {max_limit}"
+        draw_text(surface, limit_text, small_font,
+                  GOLD if energy_max >= max_limit else (138, 152, 176),
+                  text_start_x, self.y + 84)
