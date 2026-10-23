@@ -33,6 +33,41 @@ class DeckManager:
             if self.draw_pile:
                 self.hand.append(self.draw_pile.pop())
 
+    def refill_hand(self, target_size):
+        """Completa a mão sem descartar as cartas não utilizadas.
+
+        target_size é o alvo de compra do turno, não uma capacidade rígida:
+        efeitos especiais ainda podem conceder cartas extras.
+        """
+        amount = max(0, int(target_size) - len(self.hand))
+        before = len(self.hand)
+        self.draw_cards(amount)
+        return len(self.hand) - before
+
+    def has_replacement_for(self, index):
+        """Há carta diferente da selecionada disponível para troca imediata?"""
+        return 0 <= index < len(self.hand) and bool(self.draw_pile or self.discard_pile)
+
+    def swap_card(self, index):
+        """Descarta uma carta e compra outra, sem voltar a comprar a própria carta.
+
+        A carta escolhida só entra no descarte *após* a reposição, inclusive
+        quando é necessário reembaralhar o descarte para comprar.
+        """
+        if not self.has_replacement_for(index):
+            return None
+        removed = self.hand.pop(index)
+        before = len(self.hand)
+        self.draw_cards(1)
+        if len(self.hand) == before:
+            # Garantia defensiva para não perder uma carta sem reposição.
+            self.hand.insert(index, removed)
+            return None
+        replacement = self.hand.pop()
+        self.hand.insert(index, replacement)
+        self.discard_pile.append(removed)
+        return removed, replacement
+
     def discard_card(self, index):
         """Move uma carta específica da mão para a pilha de descarte."""
         if 0 <= index < len(self.hand):

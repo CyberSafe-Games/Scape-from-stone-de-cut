@@ -5,7 +5,7 @@ from src.scenes.confirmation_modal import ConfirmationModal
 from src.scenes.cemetery_modal import CemeteryModal
 from src.systems.combat_engine import CombatEngine
 from src.systems.save_manager import SaveError
-from src.systems.campaign_progress import record_victory
+from src.systems.campaign_progress import record_victory, record_road_victory
 from src.ui.card_view import CardView
 from src.ui.entity_view import EntityView
 from src.ui.floating_text import FloatingTextManager
@@ -38,13 +38,15 @@ class BattleScene(BaseScene):
 
     def __init__(self, scene_manager, window_manager, asset_manager,
                  save_manager=None, save_data=None, map_mode=False,
-                 selected_level=None):
+                 selected_level=None, encounter_kind="point"):
+
         super().__init__(scene_manager, window_manager, asset_manager)
 
         self.save_manager = save_manager
         self.save_data = save_data
         self.map_mode = map_mode
         self.selected_level = selected_level
+        self.encounter_kind = encounter_kind
         self.floating_texts = FloatingTextManager()
         self.entity_view = EntityView(asset_manager)
 
@@ -56,6 +58,7 @@ class BattleScene(BaseScene):
             self.engine.resume_from_save(
                 self.save_data, self.save_manager,
                 level=self.selected_level if self.map_mode else None,
+                encounter_kind=self.encounter_kind,
             )
 
         # Sistema de moedas (instanciado apos o engine para ter acesso ao player)
@@ -94,6 +97,11 @@ class BattleScene(BaseScene):
         elif event_name == "phase_complete":
             # Uma fase só é concluída após a escolha (ou pulo) da recompensa.
             self._finalize_map_phase(kwargs["level"])
+        elif event_name == "cemetery_swap":
+            card = kwargs.get("new_card")
+            if card is not None:
+                self.floating_texts.spawn(PLAYER_X, HEIGHT - 220,
+                                          f"Carta trocada: {card.name}", (176, 184, 146))
         elif event_name == "cemetery_discard":
             card = kwargs.get("card")
             card_name = card.name if card else "Carta"
@@ -116,7 +124,14 @@ class BattleScene(BaseScene):
         # ----------------------------------------------------
         if self.engine.state == "enemy_turn":
             self.enemy_turn_timer += dt
-            if self.enemy_turn_timer >= 800:
+            enemy = self.engine.enemy
+            # No combo do Corpo Seco, a segunda ação começa pouco após
+            # a primeira animação terminar, sem outra pausa longa.
+            combo_followup = (enemy.name.lower() == "corpo seco" and
+                              getattr(self.engine, "enemy_actions_remaining", 0) <
+                              getattr(enemy, "actions_per_turn", 1))
+            windup_ms = 270 if combo_followup else 800
+            if self.enemy_turn_timer >= windup_ms:
                 self.engine.enemy_turn()
                 self.entity_view.post_enemy_pause = POST_ENEMY_PAUSE
                 self.enemy_turn_timer = 0
@@ -224,7 +239,10 @@ class BattleScene(BaseScene):
         line_x = inner.centerx
         pygame.draw.line(surface, (92, 76, 52), (line_x, inner.y + 6), (line_x, inner.bottom - 6), 2)
         draw_text(surface, "CEMITÉRIO", self.asset_manager.small_font, WHITE if enabled else GRAY, rect.centerx, rect.bottom - 28, center=True)
-        draw_text(surface, f"Custo {self.engine.cemetery_cost}E", self.asset_manager.small_font, GOLD if enabled else GRAY, rect.centerx, rect.bottom - 12, center=True)
+        draw_text(surface, "DESC 1 E",
+                  self.asset_manager.small_font,
+                  GOLD if not self.engine.cemetery_swap_used else GRAY,
+                  rect.centerx, rect.bottom - 12, center=True)
         badge = pygame.Rect(rect.right - 26, rect.y + 10, 18, 18)
         pygame.draw.rect(surface, (56, 44, 34), badge, border_radius=4)
         pygame.draw.rect(surface, (163, 132, 74), badge, 1, border_radius=4)
@@ -378,6 +396,10 @@ class BattleScene(BaseScene):
         draw_panel(surface, intent_rect, fill=(12, 19, 17, 210), border=(77, 68, 54), radius=12, shadow=False)
         draw_text(surface, intent_text, self.asset_manager.small_font, GOLD,
                   intent_rect.centerx, intent_rect.centery, center=True)
+        if getattr(enemy, "actions_per_turn", 1) > 1:
+            until_spin = enemy.special_interval - (enemy.action_counter % enemy.special_interval)
+            draw_text(surface, f"2 AÇÕES / RODADA   ·   GIRO EM {until_spin} ATOS",
+                      self.asset_manager.small_font, GOLD, 970, 158, center=True)
 
         self.window_manager.draw_fullscreen_button(self.asset_manager.small_font)
         self._draw_menu_button(surface)
@@ -426,8 +448,8 @@ class BattleScene(BaseScene):
     def _draw_cemetery_button(self, surface):
         """Desenha o botão de acesso ao Cemitério durante a partida."""
         is_player_turn = self.engine.state == "player_turn"
-        has_energy = self.engine.player.can_use_cemetery()
-        self._draw_cemetery_book(surface, enabled=is_player_turn and has_energy)
+        can_use = self.engine.can_use_cemetery() or self.engine.can_swap_cemetery()
+        self._draw_cemetery_book(surface, enabled=is_player_turn and can_use)
 
     def _draw_ultimate_bar(self, surface):
         ready = self.engine.ultimate_ready
@@ -595,11 +617,12 @@ class BattleScene(BaseScene):
                         self.engine.resume_from_save(
                             self.save_data, self.save_manager,
                             level=self.selected_level if self.map_mode else None,
+                            encounter_kind=self.encounter_kind,
                         )
                     except (OSError, SaveError) as exc:
                         # Falha explícita em vez de sobrescrever um save danificado.
                         self.engine.show_message(f"Não foi possível carregar: {exc}")
-                self.coin_hud = CoinHUD(self.engine.player)
+                self.coin_hud = CoinHUD(self.engine.player, anchor_x=66, anchor_y=102)
                 self.energy_hud = EnergyHUD(self.engine.player)
                 self.floating_texts.clear()
                 self.enemy_turn_timer = 0
@@ -673,7 +696,8 @@ class BattleScene(BaseScene):
         if not self.map_mode or self.save_manager is None or self.save_data is None:
             return
         try:
-            record_victory(
+            recorder = record_road_victory if self.encounter_kind == "road" else record_victory
+            recorder(
                 self.save_manager, self.save_data, self.engine,
                 self.coin_hud.collect_pending_coins,
             )

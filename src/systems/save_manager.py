@@ -7,8 +7,9 @@ from src.config.settings import SAVES_DIR
 from src.systems.card_catalog import CARD_POOL, create_starting_deck
 from src.systems.territory_map import TERRITORY_IDS, FIRST_TERRITORY_ID
 from src.models.effects.ultimate_effect import DEFAULT_ULTIMATE_ID, known_ultimate_ids
+from src.systems.deck_loadout import INITIAL_SLOTS, normalize_collection_and_slots, expand_slots, SLOT_COUNT, CARD_NAMES
 
-SAVE_VERSION = 4
+SAVE_VERSION = 7
 SLOT_COUNT = 3
 
 # Território disponível em um save novo (ids de território definidos pelo jogo).
@@ -61,8 +62,13 @@ class SaveManager:
                 "territorios_desbloqueados": list(INITIAL_TERRITORIES),
                 "territorios_concluidos": [],
                 "guia_mapa_visto": False,
+                "tutorial_concluido": False,
                 "moedas": INITIAL_COINS,
-                "cartas": [card.name for card in create_starting_deck()],
+                "curas_compradas_run": 0,
+                "cartas": expand_slots(INITIAL_SLOTS),
+                "cartas_colecao": ["Golpe", "Defesa"],
+                "deck_slots": list(INITIAL_SLOTS),
+                "encontros_por_territorio": {},
                 # Checkpoint reiniciado no começo de um combate (não é um snapshot do turno).
                 "andar": 1,
                 "vida": 60,
@@ -147,6 +153,9 @@ class SaveManager:
             raise SaveCorruptedError("Identificação do save inválida.")
         base = self._new_data(data.get("nome", save_id), save_id)
         progress = data["progresso"]
+        # Saves anteriores ao tutorial já têm jornada iniciada: não obrigá-los
+        # a refazer o treinamento. Apenas novos saves recebem False.
+        progress.setdefault("tutorial_concluido", True)
         if "territorios_desbloqueados" not in progress:
             progress["territorios_desbloqueados"] = list(INITIAL_TERRITORIES)
         # Migração dos saves v2: andares avançados significam fases anteriores
@@ -161,6 +170,14 @@ class SaveManager:
                     for tid in TERRITORY_IDS[:previous_floor]:
                         if tid not in unlocked:
                             unlocked.append(tid)
+        normalize_collection_and_slots(progress)
+        # Saves anteriores (sem rota) preservam o acesso aos confrontos que
+        # já estavam disponíveis; novas jornadas começam com 0/3 encontros.
+        if "encontros_por_territorio" not in progress:
+            progress["encontros_por_territorio"] = {
+                tid: 3 for tid in progress.get("territorios_desbloqueados", [])
+                if tid in TERRITORY_IDS
+            }
         for key, default in base["progresso"].items():
             progress.setdefault(key, default)
 
@@ -179,14 +196,25 @@ class SaveManager:
 
         if type(progress["moedas"]) is not int or progress["moedas"] < 0:
             raise SaveCorruptedError("Valor de moedas inválido.")
+        if type(progress["curas_compradas_run"]) is not int or not 0 <= progress["curas_compradas_run"] <= 3:
+            raise SaveCorruptedError("Contador de curas da RUN inválido.")
         if not isinstance(progress["cartas"], list):
             raise SaveCorruptedError("Lista de cartas inválida.")
+        steps = progress.get("encontros_por_territorio", {})
+        if (not isinstance(steps, dict) or any(
+            key not in TERRITORY_IDS or type(value) is not int or not 0 <= value <= 3
+            for key, value in steps.items()
+        )):
+            raise SaveCorruptedError("Contador de encontros inválido.")
+
         if not isinstance(progress["territorios_desbloqueados"], list):
             raise SaveCorruptedError("Lista de territórios inválida.")
         if not isinstance(progress["territorios_concluidos"], list):
             raise SaveCorruptedError("Lista de territórios concluídos inválida.")
         if type(progress["guia_mapa_visto"]) is not bool:
             raise SaveCorruptedError("Indicador do guia inválido.")
+        if type(progress["tutorial_concluido"]) is not bool:
+            raise SaveCorruptedError("Indicador de tutorial inválido.")
 
         for field in ("andar", "vida", "energia_maxima", "carga_ultimate", "turnos"):
             if type(progress[field]) is not int or progress[field] < 0:
@@ -261,14 +289,16 @@ class SaveManager:
 
         # Cartas desconhecidas (ex: removidas do catálogo) são ignoradas.
         player.hp = min(player.max_hp, progress["vida"] or player.max_hp)
-        player.energy_max = progress["energia_maxima"]
+        # Energia máxima e turno são propriedades da LUTA, não da RUN.
+        # Dados antigos ficam aceitos no JSON apenas para compatibilidade.
+        player.energy_max = player.INITIAL_ENERGY_MAX
         player.ultimate_charge = min(player.ultimate_threshold, progress["carga_ultimate"])
         player.unlocked_ultimates = [DEFAULT_ULTIMATE_ID]
         for ultimate_id in progress.get("ultimates_desbloqueadas", [DEFAULT_ULTIMATE_ID]):
             player.unlock_ultimate(ultimate_id)
         player.equip_ultimate(progress.get("ultimate_equipada", DEFAULT_ULTIMATE_ID))
-        # start_combat incrementará o número de turnos em seguida.
-        player.turn_count = max(0, progress["turnos"] - 1)
+        # start_combat inicia a mão/energia do primeiro turno do novo combate.
+        player.turn_count = 0
         deck_manager.deck = [
             self._card_catalog[name].copy()
             for name in progress["cartas"]
@@ -279,13 +309,20 @@ class SaveManager:
         """Copia o estado atual do jogador e do baralho para os dados do save."""
         progress = data["progresso"]
         progress["moedas"] = player.coins
-        progress["cartas"] = [card.name for card in deck_manager.deck]
+        normalize_collection_and_slots(progress)
+        for card in deck_manager.deck:
+            if card.name in CARD_NAMES and card.name not in progress["cartas_colecao"]:
+                progress["cartas_colecao"].append(card.name)
+        # O deck é configurado na mochila. Recompensas entram na coleção, não
+        # entram automaticamente na seleção de três cópias por tipo.
+        progress["cartas"] = expand_slots(progress["deck_slots"])
         if level is not None:
             progress["andar"] = level
         progress["vida"] = player.hp
-        progress["energia_maxima"] = player.energy_max
+        # Cada checkpoint representa o INÍCIO da próxima luta.
+        progress["energia_maxima"] = player.INITIAL_ENERGY_MAX
         progress["carga_ultimate"] = player.ultimate_charge
-        progress["turnos"] = player.turn_count
+        progress["turnos"] = 1
         progress["ultimate_equipada"] = getattr(player, "equipped_ultimate_id", DEFAULT_ULTIMATE_ID)
         unlocked = list(dict.fromkeys(getattr(player, "unlocked_ultimates", [DEFAULT_ULTIMATE_ID])))
         if DEFAULT_ULTIMATE_ID not in unlocked:

@@ -1,5 +1,6 @@
 import os
 import unittest
+from unittest.mock import patch
 
 # Configura driver dummy do SDL para execução de testes em ambiente headless/CLI
 os.environ["SDL_VIDEODRIVER"] = "dummy"
@@ -83,6 +84,20 @@ class TestPlayerEnergySystem(unittest.TestCase):
 class TestCombatEngineEnergyIntegration(unittest.TestCase):
     """Testes de integração entre o fluxo de combate e o sistema de energia."""
 
+    @staticmethod
+    def _complete_enemy_phase(engine):
+        """Resolve todas as ações inimigas sem dano para isolar o teste de energia.
+
+        O fluxo real exige enemy_turn() antes de finish_enemy_turn(); isso
+        também suporta inimigos que executam duas ações por rodada.
+        """
+        with patch.object(engine.player, "take_damage", return_value=0):
+            while engine.state in ("enemy_turn", "enemy_resolving"):
+                if engine.state == "enemy_turn":
+                    engine.enemy_turn()
+                else:
+                    engine.finish_enemy_turn()
+
     def test_combat_engine_initial_energy(self):
         """CombatEngine deve iniciar a partida com o jogador em 2/2 de energia."""
         engine = CombatEngine()
@@ -116,8 +131,8 @@ class TestCombatEngineEnergyIntegration(unittest.TestCase):
             engine.end_turn()
             self.assertEqual(engine.state, "enemy_turn")
 
-            # Inimigo finaliza a ação e chama finish_enemy_turn
-            engine.finish_enemy_turn()
+            # Resolve a ação do inimigo antes de finalizar a fase inimiga.
+            self._complete_enemy_phase(engine)
             self.assertEqual(engine.state, "player_turn")
 
             self.assertEqual(
@@ -141,27 +156,28 @@ class TestCombatEngineEnergyIntegration(unittest.TestCase):
         # 2. Momento Médio (3 turnos passados): energia máxima deve ser 5
         for _ in range(3):
             engine.end_turn()
-            engine.finish_enemy_turn()
+            self._complete_enemy_phase(engine)
         self.assertEqual(engine.energy_max, 5)
         self.assertEqual(engine.energy, 5)
 
-        # 3. Transição para próximo nível/andar: mantém a energia máxima adquirida
+        # 3. Próxima luta: energia máxima e mão reiniciam (regra da versão atual).
         engine.next_level()
         self.assertEqual(engine.level, 2)
-        self.assertEqual(engine.energy_max, 5)
-        self.assertEqual(engine.energy, 5)
+        self.assertEqual(engine.energy_max, 2)
+        self.assertEqual(engine.energy, 2)
+        self.assertEqual(engine.player.turn_count, 1)
 
-        # 4. Momento Avançado: continua progredindo até atingir o limite de 8
-        for _ in range(5):
+        # 4. Na nova luta, o limite evolui novamente até 8.
+        for _ in range(6):
             engine.end_turn()
-            engine.finish_enemy_turn()
+            self._complete_enemy_phase(engine)
         self.assertEqual(engine.energy_max, 8)
         self.assertEqual(engine.energy, 8)
 
         # Mais turnos não ultrapassam 8
         for _ in range(3):
             engine.end_turn()
-            engine.finish_enemy_turn()
+            self._complete_enemy_phase(engine)
         self.assertEqual(engine.energy_max, 8)
 
         # 5. Reinício de partida (Game Over): nova partida reinicia em 2

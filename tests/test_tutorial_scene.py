@@ -168,6 +168,20 @@ class TestTutorialSceneIntegration(unittest.TestCase):
         self.tutorial_scene.overlay.update(130)
         self.assertEqual(self.tutorial_scene.overlay.step_index, 1)
 
+    def test_tutorial_cannot_complete_before_victory(self):
+        self.tutorial_scene._complete_tutorial()
+        self.assertFalse(self.save_manager.load_save("slot_1")["progresso"]["tutorial_concluido"])
+        self.scene_manager.change_scene.assert_not_called()
+
+    def test_tutorial_completion_is_once_only(self):
+        self.tutorial_scene.engine.enemy.take_damage(999)
+        self.tutorial_scene.engine._on_enemy_defeated()
+        self.tutorial_scene._complete_tutorial()
+        self.tutorial_scene._complete_tutorial()
+        self.assertTrue(self.save_manager.load_save("slot_1")["progresso"]["tutorial_concluido"])
+        self.assertEqual(self.save_manager.load_save("slot_1")["progresso"]["moedas"], 30)
+        self.assertEqual(self.scene_manager.change_scene.call_count, 1)
+
     def test_victory_and_completion_flow(self):
         """Derrotar o inimigo conclui a fase, atualiza save e transiciona para o mapa."""
         # Fecha overlay para liberar o combate direto
@@ -221,6 +235,26 @@ class TestSaveSelectionRouting(unittest.TestCase):
         self.scene_manager.change_scene.assert_called()
         target_scene = self.scene_manager.change_scene.call_args[0][0]
         self.assertIsInstance(target_scene, TutorialScene)
+
+    def test_existing_save_without_tutorial_flag_does_not_restart_training(self):
+        data = self.save_manager.create_save("slot_1")
+        del data["progresso"]["tutorial_concluido"]
+        self.save_manager.save(data)
+        self.assertTrue(self.save_manager.load_save("slot_1")["progresso"]["tutorial_concluido"])
+        scene = SaveSelectionScene(self.scene_manager, self.window_manager,
+                                   self.asset_manager, save_manager=self.save_manager)
+        scene._select(0)
+        target = self.scene_manager.change_scene.call_args[0][0]
+        self.assertIsInstance(target, MapScene)
+
+    def test_unfinished_tutorial_routes_back_to_training(self):
+        data = self.save_manager.create_save("slot_1")
+        self.assertFalse(data["progresso"]["tutorial_concluido"])
+        scene = SaveSelectionScene(self.scene_manager, self.window_manager,
+                                   self.asset_manager, save_manager=self.save_manager)
+        scene._select(0)
+        target = self.scene_manager.change_scene.call_args[0][0]
+        self.assertIsInstance(target, TutorialScene)
 
     def test_completed_save_routes_to_map(self):
         data = self.save_manager.create_save("slot_1", display_name="Gabriel")

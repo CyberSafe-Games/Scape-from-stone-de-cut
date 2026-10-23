@@ -149,14 +149,17 @@ class TestTerritoryMap(unittest.TestCase):
                 engine.player.add_coins(47)
                 credited.append(True)
 
+        data['progresso']['encontros_por_territorio'][TERRITORY_IDS[0]] = 3
         record_victory(self.saves, data, engine, finish_animation)
         loaded = self.saves.load_save('slot_1')
         self.assertEqual(status(loaded, TERRITORY_IDS[0]), 'completed')
         self.assertEqual(status(loaded, TERRITORY_IDS[1]), 'available')
         self.assertEqual(loaded['progresso']['andar'], 2)
         self.assertEqual(loaded['progresso']['moedas'], 47)
-        self.assertEqual(len(loaded['progresso']['cartas']), 8)
+        self.assertEqual(len(loaded['progresso']['cartas']), 6)
+        self.assertEqual(sum(c is not None for c in loaded['progresso']['deck_slots']), 2)
         # Um retry de gravação não deve voltar a recompensar a mesma fase.
+        data['progresso']['encontros_por_territorio'][TERRITORY_IDS[0]] = 3
         record_victory(self.saves, data, engine, finish_animation)
         self.assertEqual(self.saves.load_save('slot_1')['progresso']['moedas'], 47)
         self.assertEqual(completed_count(data), 1)
@@ -178,6 +181,7 @@ class TestTerritoryMap(unittest.TestCase):
         engine.resume_from_save(data, self.saves, level=7)
         engine.state = 'victory'
         engine.skip_reward()
+        data['progresso']['encontros_por_territorio'][TERRITORY_IDS[engine.level - 1]] = 3
         record_victory(self.saves, data, engine, lambda: None)
         progress = self.saves.load_save('slot_1')['progresso']
         self.assertEqual(progress['andar'], 7)
@@ -194,6 +198,7 @@ class TestTerritoryMap(unittest.TestCase):
         engine.resume_from_save(data, self.saves, level=2)
         engine.state = 'victory'
         engine.skip_reward()
+        data['progresso']['encontros_por_territorio'][TERRITORY_IDS[engine.level - 1]] = 3
         record_victory(self.saves, data, engine, lambda: None)
         restored = self.saves.load_save('slot_1')
         self.assertEqual(restored['progresso']['andar'], 5)

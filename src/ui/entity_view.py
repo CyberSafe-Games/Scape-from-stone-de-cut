@@ -15,6 +15,7 @@ from src.config.layout import (
     FLASH_DURATION,
 )
 from src.ui.helpers import ease
+from src.systems.animation_timing import animation_duration, frame_index, dash_distance
 
 
 class EntityView:
@@ -29,6 +30,7 @@ class EntityView:
         # Estados de animação
         self.attacker = None
         self.attack_timer = 0
+        self.enemy_attack_duration = ATTACK_DURATION
         self.player_action = None
         self.player_action_timer = 0
         self.player_action_duration = 700
@@ -39,6 +41,7 @@ class EntityView:
         self.player_flash = 0
         self.enemy_flash = 0
         self.post_enemy_pause = 0
+        self.pending_player_hit_at = None
 
     def trigger_attack(self, attacker, action=None):
         self.attacker = attacker
@@ -48,15 +51,21 @@ class EntityView:
             self.player_action_timer = 0
         elif attacker == "enemy":
             self.enemy_action = action
+            self.enemy_attack_duration = animation_duration(action, ATTACK_DURATION)
             self.enemy_action_timer = 0
 
     def trigger_enemy_action(self, action):
         self.enemy_action = action
+        self.enemy_action_duration = animation_duration(action, 600)
         self.enemy_action_timer = 0
 
     def trigger_flash(self, target):
         if target == "player":
-            self.player_flash = FLASH_DURATION
+            if self.attacker == "enemy":
+                # Impacto só aparece quando o golpe realmente chega perto do alvo.
+                self.pending_player_hit_at = self.enemy_attack_duration * 0.49
+            else:
+                self.player_flash = FLASH_DURATION
         elif target == "enemy":
             self.enemy_flash = FLASH_DURATION
 
@@ -68,10 +77,18 @@ class EntityView:
         """Atualiza todos os timers de animação visual."""
         if self.attacker is not None:
             self.attack_timer += dt
-            if self.attack_timer >= ATTACK_DURATION:
+            if (self.attacker == "enemy" and self.pending_player_hit_at is not None
+                    and self.attack_timer >= self.pending_player_hit_at):
+                self.player_flash = FLASH_DURATION
+                self.pending_player_hit_at = None
+            duration = self.enemy_attack_duration if self.attacker == "enemy" else ATTACK_DURATION
+            if self.attack_timer >= duration:
+                was_enemy = self.attacker == "enemy"
                 self.attacker = None
                 self.attack_timer = 0
-                self.enemy_action = None
+                if was_enemy:
+                    self.enemy_action = None
+                    self.enemy_action_timer = 0
 
         if self.enemy_action is not None and self.attacker != "enemy":
             self.enemy_action_timer += dt
@@ -90,14 +107,17 @@ class EntityView:
         self.post_enemy_pause = max(0, self.post_enemy_pause - dt)
 
     def is_enemy_resolving_done(self):
-        return self.attacker is None and self.post_enemy_pause <= 0
+        # O segundo ataque só começa depois de terminar a animação do primeiro.
+        return (self.attacker is None and self.enemy_action is None
+                and self.post_enemy_pause <= 0)
 
     def get_attack_pose(self, attacker, home_x, target_x):
         """Calcula a posição interpolada X e extensão de braço para um ataque corpo-a-corpo."""
         if self.attacker != attacker:
             return home_x, 0.0
 
-        progress = min(1.0, self.attack_timer / ATTACK_DURATION)
+        duration = self.enemy_attack_duration if attacker == "enemy" else ATTACK_DURATION
+        progress = min(1.0, self.attack_timer / max(1, duration))
 
         # 1. Aproximação
         if progress < APPROACH_FRAC:
@@ -208,24 +228,34 @@ class EntityView:
 
         # 1. Ataque físico
         if self.attacker == "enemy":
-            sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "atk")
+            attack_group = self.enemy_action if self.enemy_action in ("atk1", "atk3", "atk4") else "atk"
+            sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, attack_group)
             if sprites:
-                progress = min(1.0, self.attack_timer / ATTACK_DURATION)
-                index = min(len(sprites) - 1, int(progress * len(sprites)))
+                index = frame_index(attack_group, self.attack_timer,
+                                    self.enemy_attack_duration, len(sprites))
                 return sprites[index]
 
         # 2. Ação de defesa
-        if self.enemy_action in ("def", "defesa"):
-            sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "def")
+        if self.enemy_action in ("def", "defesa", "healer2"):
+            group = "healer2" if self.enemy_action == "healer2" else "def"
+            sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, group)
             if sprites:
-                progress = min(1.0, self.enemy_action_timer / self.enemy_action_duration)
-                index = min(len(sprites) - 1, int(progress * len(sprites)))
+                index = frame_index(group, self.enemy_action_timer,
+                                    self.enemy_action_duration, len(sprites))
                 return sprites[index]
 
-        # 3. Idle padrão animado (loop suave a cada 220ms)
+        # 3. Reação de dano exclusiva quando o sprite fornece a animação.
+        if self.enemy_flash > 0:
+            sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "dano")
+            if sprites:
+                progress = max(0.0, min(0.999, 1 - self.enemy_flash / FLASH_DURATION))
+                return sprites[int(progress * len(sprites))]
+
+        # Idle do Corpo Seco: 800 ms/frame, demais inimigos: 220 ms/frame.
         sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "idle")
         if sprites:
-            index = (now // 220) % len(sprites)
+            idle_ms = 800 if enemy_name == "corpo seco" else 220
+            index = (now // idle_ms) % len(sprites)
             return sprites[index]
 
         return None
@@ -240,6 +270,10 @@ class EntityView:
             color = enemy_or_color
 
         enemy_target_x = PLAYER_X + APPROACH_GAP
+        is_corpo = enemy is not None and enemy.name.lower() == "corpo seco"
+        if is_corpo and self.attacker == "enemy":
+            distance = dash_distance(self.enemy_action, True)
+            enemy_target_x = ENEMY_X - distance
         enemy_x, enemy_arm = self.get_attack_pose("enemy", ENEMY_X, enemy_target_x)
 
         # Se houver sprite para o inimigo, renderiza o sprite animado
@@ -247,6 +281,14 @@ class EntityView:
             frame = self.get_enemy_frame(enemy)
             if frame is not None:
                 rect = frame.get_rect(midbottom=(int(enemy_x), PLAYER_GROUND_Y))
+                # Eco visual discreto acompanha o giro, sem piscar frames nem
+                # trocar artificialmente a posição do personagem.
+                if is_corpo and self.attacker == "enemy" and self.enemy_action == "atk4":
+                    trail = frame.copy()
+                    trail.set_alpha(48)
+                    surface.blit(trail, rect.move(18, -3))
+                    trail.set_alpha(28)
+                    surface.blit(trail, rect.move(-17, 3))
                 surface.blit(frame, rect)
 
                 # Efeito de flash de dano

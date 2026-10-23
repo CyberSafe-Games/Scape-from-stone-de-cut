@@ -21,6 +21,7 @@ from src.models.action import Action
 from src.models.enemy import Enemy
 from src.scenes.battle_scene import BattleScene
 from src.scenes.map_scene import MapScene
+from src.systems.save_manager import SaveError
 from src.ui.helpers import draw_text, draw_panel, draw_vignette
 from src.ui import dark_fantasy_theme as theme
 from src.ui.tutorial_overlay import TutorialOverlay, TutorialStep
@@ -46,6 +47,9 @@ class TutorialScene(BattleScene):
         # Garante mão balanceada para a aula prática
         self._setup_tutorial_hand()
 
+        # Evita persistir dano ou consumo do treinamento antes da conclusão.
+        self._tutorial_completion_committed = False
+
         # Botão para reabrir o guia durante a batalha
         self.help_button_rect = pygame.Rect(WIDTH // 2 - 70, 16, 140, 30)
 
@@ -54,6 +58,13 @@ class TutorialScene(BattleScene):
 
         # Inicializa o overlay com todos os passos, balões flutuantes e setas
         self.overlay = TutorialOverlay(self._create_tutorial_steps())
+
+    def _handle_combat_event(self, event_name, **kwargs):
+        # O treinamento concede uma recompensa fixa na conclusão, em vez do
+        # sorteio de moedas do combate comum (que impediria repetir com segurança).
+        if event_name == "coin_drop":
+            return
+        super()._handle_combat_event(event_name, **kwargs)
 
     def _setup_tutorial_enemy(self):
         """Cria um Slime balanceado com ações previsíveis para o aprendizado."""
@@ -130,7 +141,7 @@ class TutorialScene(BattleScene):
                     "No topo esquerdo está sua barra de VIDA (HP).",
                     "No topo direito está a VIDA DO INIMIGO.",
                     "Reduza a vida do Slime a zero para vencer a batalha!",
-                    "Se o seu HP se esgotar, sua jornada é interrompida.",
+                    "Se seu HP acabar, você pode reiniciar o treinamento.",
                 ],
                 target_rect_fn=lambda: pygame.Rect(22, 20, 320, 92),
                 bubble_pos=(362, 20),
@@ -170,7 +181,7 @@ class TutorialScene(BattleScene):
                     "Estas são as cartas disponíveis para você jogar.",
                     "• Ataques (ex: Golpe) drenam o HP do adversário.",
                     "• Defesas protegem seu corpo contra ataques iminentes.",
-                    "Selecione uma carta com custo compatível à sua energia!",
+                    "Cartas não usadas permanecem na mão no próximo turno.",
                 ],
                 target_rect_fn=lambda: pygame.Rect(250, HEIGHT - 180, WIDTH - 500, 160),
                 bubble_pos=((WIDTH - 470) // 2, HEIGHT - 395),
@@ -248,9 +259,9 @@ class TutorialScene(BattleScene):
                 subtitle="Descarte e Reciclagem",
                 lines=[
                     "O CEMITÉRIO permite reciclar runas da sua mão.",
-                    "Descarte uma carta indesejada ao custo de 1 de energia.",
-                    "Clique no livro à esquerda ou aperte a tecla 'C'.",
-                    "Use com sabedoria para filtrar suas compras de cartas!",
+                    "O descarte custa 1 de energia por carta; sem limite fixo.",
+                    "Trocar uma carta por outra é grátis, 1 vez por turno.",
+                    "Aperte C ou clique no livro do Cemitério!",
                 ],
                 target_rect_fn=lambda: pygame.Rect(28, HEIGHT - 154, 92, 124),
                 bubble_pos=(134, HEIGHT - 245),
@@ -386,10 +397,10 @@ class TutorialScene(BattleScene):
             "• A Energia permite ditar o ritmo de suas jogadas.",
             "• O Bloqueio preserva sua vida frente às ameaças.",
             "• A Força eleva seus golpes a novos patamares.",
-            "• O Cemitério recicla as runas em momentos decisivos.",
+            "• Cemitério: descarte por 1 energia; troca grátis por turno.",
             "",
             "A névoa da floresta se dissipa diante de sua coragem.",
-            "Recompensa: +30 Moedas de Ouro concedidas pela vitória!",
+            "Recompensa: +30 Moedas de Ouro pelo treinamento!",
         ]
 
         text_y = card_rect.y + 145
@@ -457,31 +468,60 @@ class TutorialScene(BattleScene):
                 self.overlay.reset()
                 return
 
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_r and self.engine.state == "game_over":
+            self.scene_manager.change_scene(TutorialScene(
+                self.scene_manager, self.window_manager, self.asset_manager,
+                save_manager=self.save_manager, save_data=self.save_data,
+            ))
+            return
+
         # Executa os eventos normais da batalha
         super().handle_event(event)
 
     def _complete_tutorial(self):
-        """Grava a conclusão do tutorial no save e transiciona para o Mapa."""
-        if self.save_data is not None:
-            self.save_data["progresso"]["tutorial_concluido"] = True
-            # Adiciona moedas de recompensa
-            self.engine.player.add_coins(30)
-            if self.save_manager is not None:
-                try:
+        """Marca a conclusão somente após a vitória e um save bem-sucedido.
+
+        Salva apenas uma vez: repetir clique / tecla não concede moedas duplicadas.
+        """
+        if self.engine.state != "victory" or self._tutorial_completion_committed:
+            return
+        if self.save_data is None or self.save_manager is None:
+            # O tutorial também pode ser aberto sem save para depuração.
+            self._tutorial_completion_committed = True
+        else:
+            try:
+                if not self.save_data["progresso"].get("tutorial_concluido", False):
+                    self.engine.player.add_coins(30)
+                    self.save_data["progresso"]["tutorial_concluido"] = True
                     self.save_manager.update_from_game(
-                        self.save_data, self.engine.player, self.engine.deck_manager, level=1
+                        self.save_data, self.engine.player,
+                        self.engine.deck_manager, level=1,
                     )
                     self.save_manager.save(self.save_data)
-                except Exception as exc:
-                    print(f"[AVISO] Falha ao persistir conclusão do tutorial: {exc}")
+                self._tutorial_completion_committed = True
+            except (OSError, ValueError, SaveError) as exc:
+                # Restaura o estado lógico; o jogador pode tentar salvar de novo.
+                self.engine.player.coins = max(0, self.engine.player.coins - 30)
+                self.save_data["progresso"]["tutorial_concluido"] = False
+                self.engine.show_message(f"Falha ao gravar tutorial: {exc}", duration=5000)
+                return
 
-        # Avança para o Mapa da Campanha
-        self.scene_manager.change_scene(
-            MapScene(
-                self.scene_manager,
-                self.window_manager,
-                self.asset_manager,
-                save_manager=self.save_manager,
-                save_data=self.save_data,
-            )
-        )
+        self.scene_manager.change_scene(MapScene(
+            self.scene_manager, self.window_manager, self.asset_manager,
+            save_manager=self.save_manager, save_data=self.save_data,
+        ))
+
+    def _save_progress(self):
+        """Nunca registra um checkpoint parcial de treinamento."""
+        return True
+
+    def save_on_exit(self):
+        """O treinamento incompleto volta a abrir ao selecionar o save."""
+        return True
+
+    def _return_to_main_menu(self):
+        """ESC/MENU antes da vitória não libera o mapa."""
+        from src.scenes.menu_scene import MenuScene
+        self.scene_manager.change_scene(MenuScene(
+            self.scene_manager, self.window_manager, self.asset_manager,
+        ))

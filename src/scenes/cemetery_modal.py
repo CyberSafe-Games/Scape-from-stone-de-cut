@@ -20,8 +20,8 @@ from src.config.layout import CARD_WIDTH, CARD_HEIGHT
 class CemeteryModal(BaseScene):
     """Modal de interface do Cemitério.
 
-    Permite ao jogador inspecionar as cartas da mão e descartar uma carta
-    selecionada ao custo de 1 de energia.
+    Permite descartes repetidos por 1 energia cada e uma troca gratuita por turno.
+    Cartas descartadas ficam fora da mão até nova compra.
     """
 
     def __init__(
@@ -52,31 +52,25 @@ class CemeteryModal(BaseScene):
             self.modal_height,
         )
 
-        # Botões de ação do rodapé
-        button_y = self.modal_rect.bottom - 75
-        self.discard_button_rect = pygame.Rect(
-            WIDTH // 2 - 210, button_y, 190, 50
-        )
-        self.close_button_rect = pygame.Rect(
-            WIDTH // 2 + 20, button_y, 190, 50
-        )
+        # Ações independentes: descarte livre, troca única e fechamento.
+        button_y = self.modal_rect.bottom - 74
+        self.discard_button_rect = pygame.Rect(WIDTH // 2 - 360, button_y, 224, 48)
+        self.swap_button_rect = pygame.Rect(WIDTH // 2 - 112, button_y, 224, 48)
+        self.close_button_rect = pygame.Rect(WIDTH // 2 + 136, button_y, 224, 48)
 
     def _get_card_rects(self, count):
-        """Calcula os retângulos de colisão para as cartas disponíveis dentro do modal."""
-        rects = []
-        if count == 0:
-            return rects
-
-        spacing = 16
-        total_width = count * CARD_WIDTH + (count - 1) * spacing
+        """Centraliza as cartas e reduz seu tamanho em mãos muito grandes."""
+        if count <= 0:
+            return []
+        spacing = 12
+        usable_width = self.modal_rect.width - 80
+        card_width = min(CARD_WIDTH, max(46, (usable_width - (count - 1) * spacing) // count))
+        card_height = int(CARD_HEIGHT * (card_width / CARD_WIDTH))
+        total_width = count * card_width + (count - 1) * spacing
         start_x = WIDTH // 2 - total_width // 2
-        y = self.modal_rect.top + 145
-
-        for index in range(count):
-            x = start_x + index * (CARD_WIDTH + spacing)
-            rects.append(pygame.Rect(x, y, CARD_WIDTH, CARD_HEIGHT))
-
-        return rects
+        y = self.modal_rect.top + 185
+        return [pygame.Rect(start_x + i * (card_width + spacing), y, card_width, card_height)
+                for i in range(count)]
 
     def update(self, dt):
         if self.feedback_timer > 0:
@@ -85,194 +79,110 @@ class CemeteryModal(BaseScene):
                 self.feedback_message = ""
 
     def draw(self, surface):
-        # Overlay e placa de ferro/bronze compartilhada com outros modais.
         overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         overlay.fill((3, 9, 9, 230))
         surface.blit(overlay, (0, 0))
         theme.panel(surface, self.modal_rect, highlighted=True)
         theme.divider(surface, self.modal_rect.x + 72, self.modal_rect.right - 72,
-                      self.modal_rect.y + 122)
+                      self.modal_rect.y + 129)
 
-        # 3. Cabeçalho estilizado
-        draw_text(
-            surface,
-            "CEMITÉRIO",
-            self.asset_manager.big_font,
-            WHITE,
-            WIDTH // 2,
-            self.modal_rect.top + 35,
-            center=True,
-        )
-        draw_text(
-            surface,
-            "Selecione uma carta da sua mão para descartar. Custo: 1 Energia.",
-            self.asset_manager.font,
-            WHITE,
-            WIDTH // 2,
-            self.modal_rect.top + 70,
-            center=True,
-        )
+        draw_text(surface, "CEMITÉRIO", self.asset_manager.big_font, WHITE,
+                  WIDTH // 2, self.modal_rect.top + 33, center=True)
+        draw_text(surface, "Descarte: 1 energia por carta (sem limite fixo de usos por turno).",
+                  self.asset_manager.small_font, WHITE, WIDTH // 2,
+                  self.modal_rect.top + 74, center=True)
 
-        # 4. Status de Energia
-        player = self.engine.player
-        has_energy = player.can_use_cemetery()
-        energy_color = (145, 187, 175) if has_energy else (190, 99, 85)
-        energy_text = (
-            f"Energia Disponível: {player.energy}/{player.energy_max}   |   Custo: 1 Energia"
-        )
-        draw_text(
-            surface,
-            energy_text,
-            self.asset_manager.font,
-            energy_color,
-            WIDTH // 2,
-            self.modal_rect.top + 102,
-            center=True,
-        )
+        swap_available = not self.engine.cemetery_swap_used
+        swap_text = "Troca grátis disponível: 1/1" if swap_available else "Troca grátis já usada: 0/1"
+        draw_text(surface, "Trocar: descarte uma carta e compre outra (1 vez por turno, sem energia).",
+                  self.asset_manager.small_font, (179, 187, 170),
+                  WIDTH // 2, self.modal_rect.top + 100, center=True)
+        draw_text(surface, swap_text, self.asset_manager.small_font,
+                  GOLD if swap_available else GRAY,
+                  WIDTH // 2, self.modal_rect.top + 145, center=True)
 
-        # 5. Lista de cartas na mão disponíveis para descarte
         hand = self.engine.hand
         mouse_pos = self.window_manager.get_virtual_mouse_pos()
         card_rects = self._get_card_rects(len(hand))
-
         if not hand:
-            draw_text(
-                surface,
-                "Sua mão está vazia! Nenhuma carta disponível para descarte.",
-                self.asset_manager.font,
-                GRAY,
-                WIDTH // 2,
-                self.modal_rect.centery,
-                center=True,
-            )
+            draw_text(surface, "A mão está vazia. Volte no próximo turno para comprar novas cartas.",
+                      self.asset_manager.small_font, GRAY, WIDTH // 2,
+                      self.modal_rect.centery, center=True)
         else:
             for index, (rect, card) in enumerate(zip(card_rects, hand)):
-                is_selected = (self.selected_index == index)
+                selected = self.selected_index == index
                 hovered = rect.collidepoint(mouse_pos)
+                CardView.draw_card(surface, rect, card, self.asset_manager,
+                                   hovered=(hovered or selected))
+                if selected:
+                    # Mantém a seleção no mesmo deslocamento do efeito hover.
+                    draw_rect = rect.move(0, -12)
+                    pygame.draw.rect(surface, GOLD, draw_rect.inflate(8, 8), 3, border_radius=12)
+                    draw_text(surface, "SELECIONADA", self.asset_manager.small_font,
+                              GOLD, draw_rect.centerx, draw_rect.top - 17, center=True)
 
-                # Desenha a carta com o renderer oficial
-                CardView.draw_card(
-                    surface,
-                    rect,
-                    card,
-                    self.asset_manager,
-                    hovered=(hovered or is_selected),
-                )
-
-                # Destaque de seleção
-                if is_selected:
-                    draw_rect = rect.move(0, -14)
-                    pygame.draw.rect(
-                        surface,
-                        GOLD,
-                        draw_rect.inflate(8, 8),
-                        4,
-                        border_radius=12,
-                    )
-                    pygame.draw.rect(
-                        surface,
-                        (132, 110, 78),
-                        draw_rect.inflate(14, 14),
-                        2,
-                        border_radius=14,
-                    )
-                    draw_text(
-                        surface,
-                        "SELECIONADA",
-                        self.asset_manager.small_font,
-                        GOLD,
-                        draw_rect.centerx,
-                        draw_rect.top - 16,
-                        center=True,
-                    )
-
-        # 6. Mensagens de feedback / avisos
         if self.feedback_message:
-            draw_text(
-                surface,
-                self.feedback_message,
-                self.asset_manager.font,
-                RED,
-                WIDTH // 2,
-                self.modal_rect.bottom - 110,
-                center=True,
-            )
-        elif not has_energy:
-            draw_text(
-                surface,
-                "Energia insuficiente para realizar o descarte!",
-                self.asset_manager.small_font,
-                (255, 110, 110),
-                WIDTH // 2,
-                self.modal_rect.bottom - 110,
-                center=True,
-            )
+            draw_text(surface, self.feedback_message, self.asset_manager.small_font,
+                      (205, 186, 137), WIDTH // 2,
+                      self.modal_rect.bottom - 100, center=True)
 
-        # 7. Botão Descartar Carta
-        can_discard = (
-            self.selected_index is not None
-            and 0 <= self.selected_index < len(hand)
-            and has_energy
-        )
-        discard_hover = self.discard_button_rect.collidepoint(mouse_pos) and can_discard
-
-        theme.button(surface, self.discard_button_rect,
-                     "DESCARTAR (1 ENERGIA)", self.asset_manager.small_font,
-                     hover=discard_hover, enabled=can_discard, prominent=True)
-        close_hover = self.close_button_rect.collidepoint(mouse_pos)
-        theme.button(surface, self.close_button_rect, "FECHAR",
-                     self.asset_manager.small_font, hover=close_hover)
+        index_valid = self.selected_index is not None and 0 <= self.selected_index < len(hand)
+        can_discard = index_valid and self.engine.can_use_cemetery()
+        can_swap = index_valid and self.engine.can_swap_cemetery(self.selected_index)
+        theme.button(surface, self.discard_button_rect, "DESCARTAR (1 E)",
+                     self.asset_manager.small_font,
+                     hover=self.discard_button_rect.collidepoint(mouse_pos) and can_discard,
+                     enabled=can_discard, prominent=True)
+        theme.button(surface, self.swap_button_rect,
+                     "TROCA USADA" if self.engine.cemetery_swap_used else "TROCAR (1/TURNO)",
+                     self.asset_manager.small_font,
+                     hover=self.swap_button_rect.collidepoint(mouse_pos) and can_swap,
+                     enabled=can_swap)
+        theme.button(surface, self.close_button_rect, "FECHAR", self.asset_manager.small_font,
+                     hover=self.close_button_rect.collidepoint(mouse_pos))
 
     def handle_event(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                self._close()
-                return
-
-        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            virt_pos = self.window_manager.map_to_virtual(event.pos)
-
-            # Clique no botão Fechar
-            if self.close_button_rect.collidepoint(virt_pos):
-                self._close()
-                return
-
-            # Clique em uma carta da mão
-            card_rects = self._get_card_rects(len(self.engine.hand))
-            for idx, rect in enumerate(card_rects):
-                if rect.collidepoint(virt_pos):
-                    if self.selected_index == idx:
-                        self.selected_index = None
-                    else:
-                        self.selected_index = idx
-                    self.feedback_message = ""
-                    return
-
-            # Clique no botão Descartar
-            if self.discard_button_rect.collidepoint(virt_pos):
-                self._attempt_discard()
-
-    def _attempt_discard(self):
-        """Valida e processa o descarte pelo Cemitério."""
-        if self.selected_index is None or self.selected_index >= len(self.engine.hand):
-            self.feedback_message = "Selecione uma carta para descartar!"
-            self.feedback_timer = 2000
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            self._close()
+            return
+        if event.type != pygame.MOUSEBUTTONDOWN or event.button != 1:
+            return
+        point = self.window_manager.map_to_virtual(event.pos)
+        if self.close_button_rect.collidepoint(point):
+            self._close()
             return
 
-        if not self.engine.player.can_use_cemetery():
-            self.feedback_message = "Energia insuficiente para usar o Cemitério!"
-            self.feedback_timer = 2000
-            return
+        card_rects = self._get_card_rects(len(self.engine.hand))
+        for index, rect in enumerate(card_rects):
+            if rect.collidepoint(point):
+                self.selected_index = None if self.selected_index == index else index
+                self.feedback_message = ""
+                return
 
-        # Executa o descarte com consumo de energia e atualização das pilhas
-        success = self.engine.use_cemetery(self.selected_index)
+        if self.discard_button_rect.collidepoint(point):
+            self._attempt_action("discard")
+        elif self.swap_button_rect.collidepoint(point):
+            self._attempt_action("swap")
+
+    def _attempt_action(self, action):
+        if self.selected_index is None or not 0 <= self.selected_index < len(self.engine.hand):
+            self.feedback_message = "Selecione uma carta primeiro."
+            self.feedback_timer = 2200
+            return
+        if action == "swap":
+            success = self.engine.swap_cemetery(self.selected_index)
+        else:
+            success = self.engine.use_cemetery(self.selected_index)
         if success:
+            self.selected_index = None
+            self.feedback_message = self.engine.message
+            self.feedback_timer = 2500
             if self.on_discard_success:
                 self.on_discard_success()
-            self._close()
+            # Mantém o modal aberto para outros descartes ou para a troca.
         else:
-            self.feedback_message = self.engine.message or "Não foi possível descartar a carta."
-            self.feedback_timer = 2000
+            self.feedback_message = self.engine.message or "Não foi possível realizar essa ação."
+            self.feedback_timer = 2200
 
     def _close(self):
         """Fecha o modal e executa callbacks de encerramento."""

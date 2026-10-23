@@ -46,6 +46,7 @@ class AssetManager:
         self._player_sprites = {}
         self._enemy_sprites = {}
         self._background = None
+        self._background_tutorial = None
         self._fallback_sprite = None
         self._coin_icon = None
         self._ui_images = {}
@@ -53,6 +54,7 @@ class AssetManager:
 
         self._init_fonts()
         self._load_background()
+        self._load_tutorial_background()
         self._load_player_sprites()
         self._load_enemy_sprites()
         self._load_card_action_sprites()
@@ -116,6 +118,20 @@ class AssetManager:
     @property
     def background(self):
         return self._background
+
+    def _load_tutorial_background(self):
+        """Carrega o cenário didático opcional, mantendo fallback ao cenário normal."""
+        path = os.path.join(os.path.dirname(BACKGROUND_PATH), "background_tutorial.png")
+        try:
+            self._background_tutorial = pygame.transform.smoothscale(
+                pygame.image.load(path).convert(), (WIDTH, HEIGHT)
+            )
+        except (pygame.error, FileNotFoundError):
+            self._background_tutorial = self._background
+
+    @property
+    def background_tutorial(self):
+        return self._background_tutorial if self._background_tutorial is not None else self._background
 
     def _load_coin_icon(self):
         """Carrega o icone de moeda (48x48). Fallback: circulo dourado procedural."""
@@ -265,6 +281,35 @@ class AssetManager:
 
         return self._card_images[filename]
 
+    @staticmethod
+    def _prepare_corpo_seco_frame(image, group):
+        """Recorta transparência, espelha e coloca o boss no mesmo pivô.
+
+        Todos os frames têm um canvas de tamanho constante e chão alinhado.
+        Não espelhar apenas durante o desenho impede diferenças de orientação
+        entre ataque, dano, cura e idle.
+        """
+        image = image.convert_alpha()
+        bounds = image.get_bounding_rect(min_alpha=36)
+        if bounds.width <= 0 or bounds.height <= 0:
+            return None
+        cropped = image.subsurface(bounds).copy()
+        target_heights = {
+            "idle": 183, "atk1": 176, "atk3": 179,
+            "atk4": 185, "dano": 181, "healer2": 173,
+        }
+        height = target_heights.get(group, 180)
+        scale = min(height / cropped.get_height(), 252 / cropped.get_width())
+        size = (max(1, round(cropped.get_width() * scale)),
+                max(1, round(cropped.get_height() * scale)))
+        # Sprites originais olham para a direita. O herói fica à esquerda.
+        resized = pygame.transform.smoothscale(cropped, size)
+        facing_player = pygame.transform.flip(resized, True, False)
+        # Canvas fixo evita os deslocamentos causados pelos tamanhos distintos.
+        canvas = pygame.Surface((272, 218), pygame.SRCALPHA)
+        canvas.blit(facing_player, ((272-size[0])//2, 211-size[1]))
+        return canvas
+
     def _load_enemy_sprites(self):
         """Carrega conjuntos de sprites para inimigos com suporte a idle, atk e def."""
         from src.config.settings import ASSETS_DIR
@@ -290,6 +335,27 @@ class AssetManager:
                 "atk": load_frames("atk", 3),
                 "def": load_frames("def", 3),
             }
+
+        # Pacote de sprites do Corpo Seco, recebido do artista.
+        boss_dir = os.path.join(ASSETS_DIR, "corpo_seco")
+        if os.path.isdir(boss_dir):
+            groups = {}
+            for group in ("idle", "atk1", "atk3", "atk4", "dano", "healer2"):
+                frames = []
+                for idx in range(1, 5):
+                    path = os.path.join(boss_dir, f"{group}_{idx}.png")
+                    if os.path.isfile(path):
+                        try:
+                            img = pygame.image.load(path).convert_alpha()
+                            frame = self._prepare_corpo_seco_frame(img, group)
+                            if frame is not None:
+                                frames.append(frame)
+                        except pygame.error:
+                            pass
+                groups[group] = frames
+            groups["atk"] = groups["atk1"]
+            groups["def"] = groups["healer2"]
+            self._enemy_sprites["corpo seco"] = groups
 
     def has_enemy_sprites(self, enemy_name):
         """Verifica se existem sprites customizados carregados para o inimigo."""

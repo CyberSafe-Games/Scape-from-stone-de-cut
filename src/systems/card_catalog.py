@@ -54,9 +54,9 @@ CARD_POOL = [
 
 
 def create_starting_deck():
-    """Gera o baralho inicial do jogador: 4 Golpes e 3 Defesas."""
+    """Gera o baralho inicial: 3 Golpes e 3 Defesas (cópias fixas)."""
     deck = []
-    for _ in range(4):
+    for _ in range(3):
         deck.append(CARD_POOL[0].copy())
     for _ in range(3):
         deck.append(CARD_POOL[1].copy())

@@ -21,106 +21,53 @@ from src.config.settings import WIDTH, HEIGHT, TITLE
 
 
 class TestPlayerCemeteryRules(unittest.TestCase):
-    """Testes unitários focados nas regras de energia e Cemitério no modelo Player."""
+    """Regras de descarte livre sem custo e troca por turno."""
 
-    def test_cemetery_energy_cost_constant(self):
-        """O custo de energia do Cemitério deve ser definido como 1."""
+    def test_cemetery_costs_one_energy_each(self):
         self.assertEqual(Player.CEMETERY_ENERGY_COST, 1)
-
-    def test_can_use_cemetery_verification(self):
-        """can_use_cemetery deve retornar True apenas se o jogador tiver pelo menos 1 de energia."""
-        player = Player("Herói", 60, energy_max=2)
-        self.assertTrue(player.can_use_cemetery())
-
-        player.use_energy(1)  # sobra 1
-        self.assertTrue(player.can_use_cemetery())
-
-        player.use_energy(1)  # sobra 0
-        self.assertFalse(player.can_use_cemetery())
-
-    def test_pay_cemetery_cost(self):
-        """pay_cemetery_cost deve consumir exatamente 1 de energia se houver saldo."""
-        player = Player("Herói", 60, energy_max=2)
-        self.assertEqual(player.energy, 2)
-
-        paid = player.pay_cemetery_cost()
-        self.assertTrue(paid)
+        player = Player("Jaum Manel", 60, energy_max=2)
+        self.assertTrue(player.pay_cemetery_cost())
         self.assertEqual(player.energy, 1)
-
-        paid = player.pay_cemetery_cost()
-        self.assertTrue(paid)
+        self.assertTrue(player.pay_cemetery_cost())
         self.assertEqual(player.energy, 0)
-
-        # Tentativa com saldo zero deve falhar
-        paid = player.pay_cemetery_cost()
-        self.assertFalse(paid)
-        self.assertEqual(player.energy, 0)
+        self.assertFalse(player.can_use_cemetery())
+        self.assertFalse(player.pay_cemetery_cost())
 
 
 class TestCombatEngineCemeteryIntegration(unittest.TestCase):
-    """Testes da lógica de descarte e movimentação de cartas do Cemitério no CombatEngine."""
-
-    def test_cemetery_discards_card_and_consumes_one_energy(self):
-        """use_cemetery deve consumir 1 energia, remover carta da mão e mover para o descarte."""
+    def test_discard_repeats_only_while_energy_remains(self):
         events = []
-        engine = CombatEngine(on_event_callback=lambda evt, **kw: events.append((evt, kw)))
-
-        self.assertEqual(engine.energy, 2)
-        initial_hand_count = len(engine.hand)
-        initial_discard_count = len(engine.discard_pile)
-        self.assertGreater(initial_hand_count, 0)
-
-        target_card = engine.hand[0]
-
-        # Executa descarte no Cemitério
-        success = engine.use_cemetery(0)
-        self.assertTrue(success)
-
-        # Energia deve ter sido reduzida em 1
-        self.assertEqual(engine.energy, 1)
-
-        # Mão deve ter diminuído em 1 e descarte aumentado em 1
-        self.assertEqual(len(engine.hand), initial_hand_count - 1)
-        self.assertEqual(len(engine.discard_pile), initial_discard_count + 1)
-        self.assertEqual(engine.discard_pile[-1].name, target_card.name)
-
-        # Evento visual cemetery_discard deve ter sido disparado
-        discard_events = [e for e in events if e[0] == "cemetery_discard"]
-        self.assertEqual(len(discard_events), 1)
-        self.assertEqual(discard_events[0][1]["card"].name, target_card.name)
-
-    def test_cemetery_blocked_when_insufficient_energy(self):
-        """use_cemetery deve ser bloqueado quando o jogador não tiver energia suficiente."""
-        engine = CombatEngine()
-        # Consome toda a energia
-        engine.player.use_energy(engine.energy)
+        engine = CombatEngine(on_event_callback=lambda event, **kw: events.append((event, kw)))
+        start = len(engine.hand)
+        self.assertTrue(engine.use_cemetery(0))
+        self.assertTrue(engine.use_cemetery(0))
+        self.assertFalse(engine.use_cemetery(0))
         self.assertEqual(engine.energy, 0)
+        self.assertEqual(len(engine.hand), start - 2)
+        self.assertEqual(len(engine.discard_pile), 2)
+        self.assertEqual(len([ev for ev, _ in events if ev == 'cemetery_discard']), 2)
 
-        initial_hand_count = len(engine.hand)
-        initial_discard_count = len(engine.discard_pile)
-
-        success = engine.use_cemetery(0)
-        self.assertFalse(success)
-        self.assertIn("Energia insuficiente", engine.message)
-
-        # Nenhuma carta deve ser movida
-        self.assertEqual(len(engine.hand), initial_hand_count)
-        self.assertEqual(len(engine.discard_pile), initial_discard_count)
+    def test_swap_once_per_turn(self):
+        engine = CombatEngine()
+        initial_energy = engine.energy
+        initial_hand = len(engine.hand)
+        self.assertTrue(engine.swap_cemetery(0))
+        self.assertFalse(engine.swap_cemetery(0))
+        self.assertEqual(engine.energy, initial_energy)
+        self.assertEqual(len(engine.hand), initial_hand)
+        self.assertEqual(len(engine.discard_pile), 1)
 
     def test_cemetery_blocked_outside_player_turn(self):
-        """Cemitério só pode ser acionado durante o turno do jogador."""
         engine = CombatEngine()
-        engine.state = "enemy_turn"
-
-        success = engine.use_cemetery(0)
-        self.assertFalse(success)
-        self.assertIn("turno", engine.message.lower())
+        engine.state = 'enemy_turn'
+        self.assertFalse(engine.use_cemetery(0))
+        self.assertFalse(engine.swap_cemetery(0))
 
     def test_cemetery_invalid_card_index(self):
-        """use_cemetery deve retornar False se o índice da carta for inválido."""
         engine = CombatEngine()
         self.assertFalse(engine.use_cemetery(-1))
         self.assertFalse(engine.use_cemetery(999))
+        self.assertFalse(engine.swap_cemetery(-1))
 
 
 class TestCemeteryModalUI(unittest.TestCase):
@@ -167,10 +114,24 @@ class TestCemeteryModalUI(unittest.TestCase):
         )
         self.modal.handle_event(discard_event)
 
-        # O modal deve ter processado o descarte e fechado (pop_modal)
+        # Modal continua aberto para permitir descartes ilimitados.
         self.assertEqual(len(self.engine.hand), initial_hand_len - 1)
         self.assertEqual(len(self.engine.discard_pile), 1)
-        self.assertFalse(self.sm.has_modal)
+        self.assertTrue(self.sm.has_modal)
+        self.assertIsNone(self.modal.selected_index)
+
+    def test_modal_swap_once_and_stays_open(self):
+        self.sm.push_modal(self.modal)
+        first = self.modal._get_card_rects(len(self.engine.hand))[0]
+        self.modal.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN,
+                                                   pos=first.center, button=1))
+        start = len(self.engine.hand)
+        self.modal.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN,
+                                                   pos=self.modal.swap_button_rect.center, button=1))
+        self.assertTrue(self.engine.cemetery_swap_used)
+        self.assertEqual(len(self.engine.hand), start)
+        self.assertTrue(self.sm.has_modal)
+        self.assertIsNone(self.modal.selected_index)
 
     def test_modal_close_via_esc(self):
         """Pressionar ESC dentro do modal deve fechar o modal."""

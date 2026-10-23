@@ -7,7 +7,7 @@ from src.systems.card_catalog import CARD_POOL, create_starting_deck
 from src.systems.enemy_factory import (
     create_enemy,
     choose_enemy_intent,
-    is_miniboss_level,
+    is_miniboss_level, create_corpo_seco, create_road_enemy, choose_next_action,
 )
 from src.config.colors import RED, BLUE, GOLD
 from src.config.layout import PLAYER_X, PLAYER_Y, ENEMY_X, ENEMY_Y
@@ -27,10 +27,13 @@ class CombatEngine:
         self.deck_manager = DeckManager(create_starting_deck())
         self.ultimate = create_ultimate(self.player.equipped_ultimate_id)
         self.level = 1
+        self.encounter_kind = "point"
+        self.enemy_actions_remaining = 0
+        self.cemetery_swap_used = False
 
         miniboss = is_miniboss_level(self.level)
         self.enemy = create_enemy(self.level, miniboss)
-        choose_enemy_intent(self.enemy)
+        choose_next_action(self.enemy)
 
         if self.enemy.is_miniboss:
             self.player.hp = self.player.max_hp
@@ -121,7 +124,14 @@ class CombatEngine:
     # ========================================================
 
     def start_combat(self):
-        """Prepara os combatentes e cartas para um novo confronto."""
+        """Cada luta reinicia o ritmo de energia e tamanho da mão.
+
+        Vida, moedas, baralho e carga da ultimate continuam sendo da RUN.
+        """
+        self.player.energy_max = Player.INITIAL_ENERGY_MAX
+        self.player.turn_count = 0
+        self.player.strength = 0  # Buffs permanentes duram a luta, não a RUN.
+        self.player.weak_turns = 0
         self.deck_manager.start_combat()
         self.player.turn_count += 1
         self.deck_manager.draw_cards(self.player.get_hand_size())
@@ -129,6 +139,8 @@ class CombatEngine:
         self.player.block = 0
         self.enemy.reset_energy()
         self.enemy.block = 0
+        self.enemy_actions_remaining = 0
+        self.cemetery_swap_used = False
         self.state = "player_turn"
 
     def play_card(self, index):
@@ -161,42 +173,66 @@ class CombatEngine:
         return True
 
     def can_use_cemetery(self):
-        """Verifica se o Cemitério pode ser utilizado pelo jogador."""
+        """Descarte repetível no próprio turno, ao custo de 1 energia por carta."""
         return (
             self.state == "player_turn"
+            and bool(self.deck_manager.hand)
             and self.player.can_use_cemetery(self.cemetery_cost)
-            and len(self.deck_manager.hand) > 0
         )
 
     def use_cemetery(self, index):
-        """Descarta uma carta da mão pelo Cemitério consumindo 1 de energia."""
+        """Descarta uma carta pagando energia, sem comprar outra imediatamente."""
         if self.state != "player_turn":
             self.show_message("Cemitério só pode ser usado no seu turno!")
             return False
-
+        if not 0 <= index < len(self.deck_manager.hand):
+            self.show_message("Selecione uma carta válida para descartar!")
+            return False
         if not self.player.can_use_cemetery(self.cemetery_cost):
-            self.show_message("Energia insuficiente para usar o Cemitério!")
+            self.show_message("Energia insuficiente para descartar!")
             return False
-
-        if index < 0 or index >= len(self.deck_manager.hand):
-            self.show_message("Nenhuma carta selecionada para descarte!")
-            return False
-
-        # Consome o custo de 1 energia
+        # Só debita após validar o índice e o saldo.
         if not self.player.pay_cemetery_cost(self.cemetery_cost):
-            self.show_message("Energia insuficiente para usar o Cemitério!")
+            return False
+        discarded = self.deck_manager.discard_card(index)
+        self.show_message(f"{discarded.name} descartada (-{self.cemetery_cost} energia).", duration=1400)
+        self.on_event("cemetery_discard", card=discarded)
+        return True
+
+    def can_swap_cemetery(self, index=None):
+        """Permite no máximo uma troca por turno, sem custo de energia."""
+        if self.state != "player_turn" or self.cemetery_swap_used:
+            return False
+        if index is None:
+            return bool(self.deck_manager.hand) and bool(
+                self.deck_manager.draw_pile or self.deck_manager.discard_pile
+            )
+        return self.deck_manager.has_replacement_for(index)
+
+    def swap_cemetery(self, index):
+        """Substitui uma carta da mão por uma do baralho, uma vez por turno."""
+        if self.state != "player_turn":
+            self.show_message("Trocas só podem ser feitas no seu turno!")
+            return False
+        if self.cemetery_swap_used:
+            self.show_message("Você já usou sua troca neste turno!")
+            return False
+        if not 0 <= index < len(self.deck_manager.hand):
+            self.show_message("Selecione uma carta válida para trocar!")
+            return False
+        if not self.deck_manager.has_replacement_for(index):
+            self.show_message("Não há outra carta disponível para troca!")
             return False
 
-        # Remove a carta da mão e transfere para a pilha de descarte
-        discarded_card = self.deck_manager.discard_card(index)
-        if discarded_card:
-            self.spawn_player_text("-1 Energia", (80, 200, 255))
-            self.spawn_player_text(f"Cemitério: {discarded_card.name}", (185, 145, 230))
-            self.show_message(f"Carta '{discarded_card.name}' descartada no Cemitério!", duration=1600)
-            self.on_event("cemetery_discard", card=discarded_card)
-            return True
-
-        return False
+        swapped = self.deck_manager.swap_card(index)
+        if swapped is None:
+            self.show_message("Não foi possível trocar a carta!")
+            return False
+        discarded, received = swapped
+        self.cemetery_swap_used = True
+        self.show_message(f"Trocou {discarded.name} por {received.name}.", duration=1600)
+        self.on_event("cemetery_swap", old_card=discarded, new_card=received)
+        return True
 
     def activate_ultimate(self):
         """Ativa a habilidade ultimate do jogador, se a carga estiver completa."""
@@ -235,7 +271,8 @@ class CombatEngine:
         if self.state != "player_turn":
             return
 
-        self.deck_manager.discard_hand()
+        # A mão é persistente: só cartas jogadas/descartadas saem dela.
+        self.enemy_actions_remaining = getattr(self.enemy, "actions_per_turn", 1)
         self.state = "enemy_turn"
         self.on_event("turn_ended")
 
@@ -245,7 +282,12 @@ class CombatEngine:
         attacked = False
         if action is not None:
             self.enemy.use_energy(action.energy_cost)
-            if hasattr(action, "execute") and callable(action.execute) and action.action_type != "attack":
+            if action.action_type == "heal":
+                amount = min(action.defense, self.enemy.max_hp - self.enemy.hp)
+                self.enemy.hp += amount
+                self.trigger_enemy_action(action.visual_effect or "healer2")
+                self.spawn_enemy_text(f"+{amount} vida", BLUE)
+            elif hasattr(action, "execute") and callable(action.execute) and action.action_type != "attack":
                 action.execute(self.enemy, self.player, context=self)
             elif action.action_type == "attack":
                 damage = self._apply_weakness_modifier(action.damage)
@@ -275,6 +317,9 @@ class CombatEngine:
                 self.spawn_enemy_text(f"+{block} bloqueio", BLUE)
 
         self._advance_status_effects(attacked=attacked)
+        if getattr(self.enemy, "special_interval", 0):
+            self.enemy.action_counter += 1
+        self.enemy_actions_remaining = max(0, self.enemy_actions_remaining - 1)
 
         if not self.player.is_alive():
             self.state = "game_over"
@@ -284,14 +329,19 @@ class CombatEngine:
         self.state = "enemy_resolving"
 
     def finish_enemy_turn(self):
-        """Finaliza a resolução da rodada e inicia o novo turno do jogador."""
+        """Resolve cada ação em sequência; duas no caso de Corpo Seco."""
+        if self.enemy_actions_remaining > 0:
+            choose_next_action(self.enemy)
+            self.state = "enemy_turn"
+            return
         self.enemy.reset_energy()
-        choose_enemy_intent(self.enemy)
+        choose_next_action(self.enemy)
         self.player.block = 0
         self.player.increase_max_energy(1)
         self.player.reset_energy()
         self.player.turn_count += 1
-        self.deck_manager.draw_cards(self.player.get_hand_size())
+        self.deck_manager.refill_hand(self.player.get_hand_size())
+        self.cemetery_swap_used = False
         self.state = "player_turn"
 
     def _apply_weakness_modifier(self, damage):
@@ -360,7 +410,7 @@ class CombatEngine:
         self.level += 1
         miniboss = is_miniboss_level(self.level)
         self.enemy = create_enemy(self.level, miniboss)
-        choose_enemy_intent(self.enemy)
+        choose_next_action(self.enemy)
 
         if miniboss:
             self.player.hp = self.player.max_hp
@@ -372,7 +422,7 @@ class CombatEngine:
         self.state = "player_turn"
         self.on_event("checkpoint", level=self.level)
 
-    def resume_from_save(self, data, save_manager, level=None):
+    def resume_from_save(self, data, save_manager, level=None, encounter_kind="point"):
         """Restaura o progresso e recomeça o combate no andar salvo.
 
         A partida é retomada no início do confronto, não no meio do turno.
@@ -381,8 +431,14 @@ class CombatEngine:
         self.player.name = "Jaum Manel"
         self.equip_ultimate(self.player.equipped_ultimate_id)
         self.level = data["progresso"]["andar"] if level is None else level
-        self.enemy = create_enemy(self.level, is_miniboss_level(self.level))
-        choose_enemy_intent(self.enemy)
+        self.encounter_kind = encounter_kind
+        if encounter_kind == "road":
+            self.enemy = create_road_enemy(self.level)
+        elif encounter_kind == "point" and self.level == 5:
+            self.enemy = create_corpo_seco(self.level)
+        else:
+            self.enemy = create_enemy(self.level, is_miniboss_level(self.level))
+        choose_next_action(self.enemy)
         self.start_combat()
 
     # ========================================================

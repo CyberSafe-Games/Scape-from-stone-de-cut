@@ -169,11 +169,19 @@ class SaveSelectionScene(BaseScene):
                     self.save_manager.slot_id(index + 1),
                     display_name=f"Jornada {index + 1:02d}",
                 )
-            from src.scenes.map_scene import MapScene
-            self.scene_manager.change_scene(MapScene(
-                self.scene_manager, self.window_manager, self.asset_manager,
-                save_manager=self.save_manager, save_data=data,
-            ))
+            if not data["progresso"].get("tutorial_concluido", True):
+                from src.scenes.tutorial_scene import TutorialScene
+                next_scene = TutorialScene(
+                    self.scene_manager, self.window_manager, self.asset_manager,
+                    save_manager=self.save_manager, save_data=data,
+                )
+            else:
+                from src.scenes.map_scene import MapScene
+                next_scene = MapScene(
+                    self.scene_manager, self.window_manager, self.asset_manager,
+                    save_manager=self.save_manager, save_data=data,
+                )
+            self.scene_manager.change_scene(next_scene)
         except (OSError, ValueError, SaveError) as exc:
             self.error = f"Falha ao acessar save: {exc}"
             self.refresh()

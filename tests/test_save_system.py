@@ -28,7 +28,7 @@ class TestSaveSystem(unittest.TestCase):
         data = self.manager.create_save("Gabriel")
         progress = data["progresso"]
         self.assertEqual(progress["moedas"], 0)
-        self.assertEqual(len(progress["cartas"]), 7)
+        self.assertEqual(len(progress["cartas"]), 6)
         self.assertEqual(len(progress["territorios_desbloqueados"]), 1)
         self.assertTrue(self.manager.exists("Gabriel"))
 
@@ -48,13 +48,14 @@ class TestSaveSystem(unittest.TestCase):
     def test_progress_round_trip(self):
         data = self.manager.create_save("Gabriel")
         data["progresso"]["moedas"] = 120
-        data["progresso"]["cartas"].append("Fúria")
+        data["progresso"]["cartas_colecao"].append("Fúria")
         self.manager.unlock_territory(data, "floresta")
         self.manager.save(data)
 
         loaded = self.manager.load_save("Gabriel")
         self.assertEqual(loaded["progresso"]["moedas"], 120)
-        self.assertIn("Fúria", loaded["progresso"]["cartas"])
+        self.assertIn("Fúria", loaded["progresso"]["cartas_colecao"])
+        self.assertNotIn("Fúria", loaded["progresso"]["cartas"])
         self.assertIn("floresta", loaded["progresso"]["territorios_desbloqueados"])
 
     def test_each_save_keeps_its_own_progress(self):
@@ -90,8 +91,8 @@ class TestSaveSystem(unittest.TestCase):
         self.manager.apply_to_game(self.manager.load_save("Gabriel"), new_player, new_deck)
 
         self.assertEqual(new_player.coins, 75)
-        self.assertEqual(len(new_deck.deck), 8)
-        self.assertEqual([c.name for c in new_deck.deck].count("Fúria"), 1)
+        self.assertEqual(len(new_deck.deck), 6)
+        self.assertIn("Fúria", self.manager.load_save("Gabriel")["progresso"]["cartas_colecao"])
 
     def test_unknown_cards_are_ignored_when_applying(self):
         data = self.manager.create_save("Gabriel")

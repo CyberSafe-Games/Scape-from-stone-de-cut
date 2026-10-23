@@ -137,3 +137,46 @@ def choose_enemy_intent(enemy):
         enemy.intent_value = int(
             random.randint(5, 10) * intent_multiplier
         )
+
+
+# A fortaleza possui seu próprio miniboss, sem sorteio de nome/HP.
+CORPO_SECO_TERRITORY = "fortaleza_caida"
+
+
+def create_corpo_seco(level=5):
+    """Corpo Seco: duas ações por rodada; giro no 8º, 16º... ato."""
+    actions = [
+        Action("Corte rápido", "attack", damage=7 + level//2,
+               energy_cost=1, weight=0.55, visual_effect="atk1"),
+        Action("Lâminas cruzadas", "attack", damage=10 + level//2,
+               energy_cost=1, weight=0.30, visual_effect="atk3"),
+        Action("Postura defensiva", "defend", defense=8 + level//2,
+               energy_cost=1, weight=0.15, visual_effect="def"),
+    ]
+    boss = Enemy("Corpo Seco", hp=125, energy=4, max_energy=4,
+                 actions=actions, is_miniboss=True)
+    boss.actions_per_turn = 2
+    boss.action_counter = 0
+    boss.special_interval = 8
+    boss.special_action = Action("Ataque Giratório", "attack", damage=19,
+                                 energy_cost=1, visual_effect="atk4")
+    return boss
+
+
+def create_road_enemy(level):
+    """Pool expansível dos três encontros anteriores a cada ponto de interesse.
+
+    Por enquanto apenas Slime tem sprites e comportamento preparado para a rota.
+    """
+    enemy = Enemy("Slime", hp=18 + 5*level, energy=3, max_energy=3,
+                  actions=_build_slime_actions(level), is_miniboss=False)
+    return enemy
+
+
+def choose_next_action(enemy):
+    """Prepara o próximo ato; giro forçado a cada oito ações executadas."""
+    if getattr(enemy, 'special_interval', 0) and (enemy.action_counter + 1) % enemy.special_interval == 0:
+        special = enemy.special_action
+        enemy.set_intent(special.action_type, special.value, special)
+    else:
+        choose_enemy_intent(enemy)

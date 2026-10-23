@@ -43,13 +43,19 @@ class CardView:
         if count == 0:
             return rects
 
-        total_width = count * CARD_WIDTH + (count - 1) * CARD_SPACING
+        # Mãos persistentes podem acumular cartas extras (ex.: Mana Ancestral).
+        # Encolhe apenas quando necessário, para não invadir Cemitério/fim do turno.
+        max_width = WIDTH - 290
+        spacing = CARD_SPACING
+        card_width = min(CARD_WIDTH, max(42, (max_width - (count - 1) * spacing) // count))
+        card_height = max(70, round(CARD_HEIGHT * card_width / CARD_WIDTH))
+        total_width = count * card_width + (count - 1) * spacing
         start_x = WIDTH // 2 - total_width // 2
-        y = HEIGHT - CARD_HEIGHT - 18
+        y = HEIGHT - card_height - 18
 
         for index in range(count):
-            x = start_x + index * (CARD_WIDTH + CARD_SPACING)
-            rects.append(pygame.Rect(x, y, CARD_WIDTH, CARD_HEIGHT))
+            x = start_x + index * (card_width + spacing)
+            rects.append(pygame.Rect(x, y, card_width, card_height))
 
         return rects
 

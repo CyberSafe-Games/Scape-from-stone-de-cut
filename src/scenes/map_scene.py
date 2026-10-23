@@ -33,8 +33,9 @@ class MapScene(BaseScene):
         available = [t for t in TERRITORIES if status(save_data, t.id) == "available"]
         self.selected = available[-1].id if available else TERRITORIES[-1].id
         self.back_button = pygame.Rect(38, 20, 155, 45)
-        self.play_button = pygame.Rect(956, 558, 267, 54)
-        self.shop_button = pygame.Rect(956, 622, 267, 43)
+        self.play_button = pygame.Rect(956, 567, 267, 48)
+        self.shop_button = pygame.Rect(956, 627, 267, 39)
+        self.backpack_button = pygame.Rect(954, 20, 264, 44)
         self.guide_button = pygame.Rect(510, 481, 260, 55)
         self.guide_open = not save_data["progresso"].get("guia_mapa_visto", False)
         self.error = ""
@@ -174,15 +175,25 @@ class MapScene(BaseScene):
         draw_text(surface, label, self.asset_manager.small_font, color,
                   pill.centerx, pill.centery, center=True)
         for line_i, line in enumerate(wrap_text(selected_territory.description,
-                                                 self.asset_manager.small_font, 252)[:3]):
+                                                 self.asset_manager.small_font, 252)[:2]):
             draw_text(surface, line, self.asset_manager.small_font, WHITE,
-                      964, 510 + 25 * line_i)
+                      964, 501 + 20 * line_i)
+        count = progress.get("encontros_por_territorio", {}).get(selected_territory.id, 0)
+        count = 3 if state == "completed" else count
+        if state != "locked":
+            draw_text(surface, f"CAMINHO  {count}/3 ENCONTROS", self.asset_manager.small_font,
+                      GOLD, 968, 542)
+            for j in range(3):
+                color = (109, 158, 115) if j < count else (88, 86, 74)
+                pygame.draw.circle(surface, color, (1197 + 9*j, 550), 4)
         if state == "locked":
             draw_text(surface, "Conclua a fase anterior para liberar.",
-                      self.asset_manager.small_font, (188, 135, 122), 964, 588)
-        play_label = "FASE BLOQUEADA" if state == "locked" else "JOGAR NOVAMENTE" if state == "completed" else "INICIAR FASE"
+                      self.asset_manager.small_font, (188, 135, 122), 964, 543)
+        play_label = ("FASE BLOQUEADA" if state == "locked" else
+                      "REPETIR PONTO" if state == "completed" else
+                      f"ENCONTRO {count + 1} / 3" if count < 3 else "CONFRONTO DO TERRITÓRIO")
         self._button(surface, self.play_button, play_label, enabled=state != "locked")
-        self._button(surface, self.shop_button, "LOJA (EM BREVE)")
+        self._button(surface, self.shop_button, "ACESSAR LOJA")
 
     def _guide(self, surface):
         shade = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
@@ -194,8 +205,8 @@ class MapScene(BaseScene):
                   GOLD, WIDTH // 2, 217, center=True)
         steps = (
             "01  Escolha um dos pontos do mapa para ver sua fase.",
-            "02  Inicie apenas territórios disponíveis ou concluídos.",
-            "03  Vença, escolha a recompensa e libere a próxima fase.",
+            "02  Vença três encontros antes do ponto de interesse.",
+            "03  Após o confronto principal, libere o próximo território.",
             "04  Volte ao mapa sempre que sair de um combate.",
         )
         for i, line in enumerate(steps):
@@ -210,6 +221,12 @@ class MapScene(BaseScene):
         self._sidebar(surface)
         draw_text(surface, "TERRITÓRIOS ESQUECIDOS", self.asset_manager.big_font, WHITE, 224, 18)
         self._button(surface, self.back_button, "< MENU")
+        self._button(surface, self.backpack_button, "MOCHILA  /  DECK [B]")
+        # Ícone de mochila/bolsa de couro estilizado, sem assets externos.
+        bag = pygame.Rect(self.backpack_button.x + 10, self.backpack_button.y + 12, 17, 20)
+        pygame.draw.rect(surface, (102, 76, 43), bag, border_radius=3)
+        pygame.draw.rect(surface, (185, 145, 82), bag, 2, border_radius=3)
+        pygame.draw.arc(surface, (185, 145, 82), (bag.x + 4, bag.y - 8, 9, 14), 0, 3.14, 2)
         self.window_manager.draw_fullscreen_button(self.asset_manager.small_font)
         draw_text(surface, "BRONZE · SELECIONADO     VERDE · CONCLUÍDO     CINZA · BLOQUEADO     SETAS / 1–7 · NAVEGAR",
                   self.asset_manager.small_font, GRAY, 62, 694)
@@ -248,6 +265,9 @@ class MapScene(BaseScene):
                 self.selected = TERRITORIES[numeric_keys[event.key]].id
                 self.error = ""
                 return
+            if event.key == pygame.K_b:
+                self._open_backpack()
+                return
             if event.key == pygame.K_ESCAPE:
                 self._back()
                 return
@@ -258,6 +278,9 @@ class MapScene(BaseScene):
             point = self.window_manager.map_to_virtual(event.pos)
             if self.window_manager.get_fullscreen_button_rect().collidepoint(point):
                 self.window_manager.toggle_fullscreen()
+                return
+            if self.backpack_button.collidepoint(point):
+                self._open_backpack()
                 return
             if self.back_button.collidepoint(point):
                 self._back()
@@ -277,6 +300,13 @@ class MapScene(BaseScene):
                     self.selected = territory.id
                     self.error = ""
                     return
+
+    def _open_backpack(self):
+        from src.scenes.backpack_scene import BackpackScene
+        self.scene_manager.change_scene(BackpackScene(
+            self.scene_manager, self.window_manager, self.asset_manager,
+            self.save_manager, self.save_data,
+        ))
 
     def _dismiss_guide(self):
         self.save_data["progresso"]["guia_mapa_visto"] = True
@@ -298,6 +328,9 @@ class MapScene(BaseScene):
             self.scene_manager, self.window_manager, self.asset_manager,
             save_manager=self.save_manager, save_data=self.save_data,
             map_mode=True, selected_level=territory.level,
+            encounter_kind="road" if self.save_data["progresso"].get(
+                "encontros_por_territorio", {}).get(territory.id, 0) < 3
+                and status(self.save_data, territory.id) != "completed" else "point",
         ))
 
     def _back(self):
