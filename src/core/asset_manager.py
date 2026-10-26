@@ -14,6 +14,10 @@ from src.config.settings import (
 )
 from src.config.colors import WHITE
 
+# Escala visual do Corpo Seco: 0.74 * ~170 px de corpo = ~126 px no jogo.
+# Mantém o miniboss proporcional ao Jaum Manel (~130 px) e ao cenário.
+CORPO_SECO_RENDER_SCALE = 0.74
+
 
 class AssetManager:
     """Carrega e armazena em cache todos os recursos visuais (fontes, sprites,
@@ -283,32 +287,21 @@ class AssetManager:
 
     @staticmethod
     def _prepare_corpo_seco_frame(image, group):
-        """Recorta transparência, espelha e coloca o boss no mesmo pivô.
+        """Renderiza todos os frames do chefe com escala e pivô uniformes.
 
-        Todos os frames têm um canvas de tamanho constante e chão alinhado.
-        Não espelhar apenas durante o desenho impede diferenças de orientação
-        entre ataque, dano, cura e idle.
+        Os PNGs novos já estão recortados em um *canvas* transparente comum
+        de 312x256, com os pés na mesma linha e o chefe olhando à esquerda.
+        Recortar/redimensionar o personagem separadamente em cada frame
+        causava saltos de tamanho, deslocamentos de chão e giros distorcidos.
+        A escala única também facilita ajustar a altura no combate.
         """
         image = image.convert_alpha()
-        bounds = image.get_bounding_rect(min_alpha=36)
-        if bounds.width <= 0 or bounds.height <= 0:
+        source_width, source_height = image.get_size()
+        if source_width == 0 or source_height == 0:
             return None
-        cropped = image.subsurface(bounds).copy()
-        target_heights = {
-            "idle": 183, "atk1": 176, "atk3": 179,
-            "atk4": 185, "dano": 181, "healer2": 173,
-        }
-        height = target_heights.get(group, 180)
-        scale = min(height / cropped.get_height(), 252 / cropped.get_width())
-        size = (max(1, round(cropped.get_width() * scale)),
-                max(1, round(cropped.get_height() * scale)))
-        # Sprites originais olham para a direita. O herói fica à esquerda.
-        resized = pygame.transform.smoothscale(cropped, size)
-        facing_player = pygame.transform.flip(resized, True, False)
-        # Canvas fixo evita os deslocamentos causados pelos tamanhos distintos.
-        canvas = pygame.Surface((272, 218), pygame.SRCALPHA)
-        canvas.blit(facing_player, ((272-size[0])//2, 211-size[1]))
-        return canvas
+        render_width = max(1, round(source_width * CORPO_SECO_RENDER_SCALE))
+        render_height = max(1, round(source_height * CORPO_SECO_RENDER_SCALE))
+        return pygame.transform.smoothscale(image, (render_width, render_height))
 
     def _load_enemy_sprites(self):
         """Carrega conjuntos de sprites para inimigos com suporte a idle, atk e def."""
@@ -336,7 +329,7 @@ class AssetManager:
                 "def": load_frames("def", 3),
             }
 
-        # Pacote de sprites do Corpo Seco, recebido do artista.
+        # Sprites do Corpo Seco, alinhados ao mesmo pivô e virados ao herói.
         boss_dir = os.path.join(ASSETS_DIR, "corpo_seco")
         if os.path.isdir(boss_dir):
             groups = {}
