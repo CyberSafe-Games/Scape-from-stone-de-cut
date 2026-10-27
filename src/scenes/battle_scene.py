@@ -11,6 +11,7 @@ from src.ui.entity_view import EntityView
 from src.ui.floating_text import FloatingTextManager
 from src.ui.coin_hud import CoinHUD
 from src.ui.energy_hud import EnergyHUD
+from src.ui.battle_hud import BattleHUD
 from src.ui.helpers import draw_text, draw_health_bar, draw_panel, draw_vignette, wrap_text
 from src.ui import dark_fantasy_theme as theme
 from src.config.settings import WIDTH, HEIGHT
@@ -49,6 +50,7 @@ class BattleScene(BaseScene):
         self.encounter_kind = encounter_kind
         self.floating_texts = FloatingTextManager()
         self.entity_view = EntityView(asset_manager)
+        self.battle_hud = BattleHUD(asset_manager)
 
         # Inicializa o motor puro de combate com callbacks para efeitos visuais
         self.engine = CombatEngine(
@@ -236,6 +238,21 @@ class BattleScene(BaseScene):
 
     def _draw_cemetery_book(self, surface, enabled=True):
         rect = self.cemetery_button_rect
+        if self.asset_manager.get_ui_image("hud_cemetery") is not None:
+            art_rect = pygame.Rect(rect.x - 3, rect.y - 15, rect.width + 6, rect.height - 12)
+            self.battle_hud.art(surface, "hud_cemetery", art_rect)
+            caption = pygame.Rect(rect.x - 7, rect.bottom - 32, rect.width + 14, 40)
+            draw_panel(surface, caption, fill=(10, 14, 13, 235),
+                       border=(107, 83, 46), radius=4, shadow=False)
+            draw_text(surface, "CEMITÉRIO", self.asset_manager.small_font,
+                      WHITE if enabled else GRAY, rect.centerx, rect.bottom - 22, center=True)
+            draw_text(surface, "DESC 1 E", self.asset_manager.small_font,
+                      GOLD if enabled else GRAY, rect.centerx, rect.bottom - 5, center=True)
+            badge = pygame.Rect(rect.right - 23, rect.y + 1, 25, 24)
+            theme.panel(surface, badge, fill=(15, 17, 16, 245))
+            draw_text(surface, str(len(self.engine.discard_pile)), self.asset_manager.small_font,
+                      WHITE, badge.centerx, badge.centery, center=True)
+            return
         draw_panel(surface, rect, fill=(18, 21, 18, 228), border=(113, 92, 62), radius=12)
         inner = pygame.Rect(rect.x + 8, rect.y + 8, rect.width - 16, rect.height - 28)
         pygame.draw.rect(surface, (20, 18, 24), inner, border_radius=8)
@@ -278,6 +295,10 @@ class BattleScene(BaseScene):
 
     def _draw_combatant_panel(self, surface, rect, name, hp, max_hp, bar_color,
                               stats, title_color=WHITE, subtitle=None, align='left'):
+        if self.asset_manager.get_ui_image("hud_portrait") is not None:
+            self.battle_hud.combatant(surface, rect, name, hp, max_hp, stats,
+                                      enemy=align == 'right', boss=bool(subtitle))
+            return
         draw_panel(surface, rect, fill=(10, 17, 17, 228), border=(134, 112, 72), radius=18)
         title_y = rect.y + 10
         title_x = rect.x + 18 if align == 'left' else rect.right - 18
@@ -321,6 +342,8 @@ class BattleScene(BaseScene):
         pass
 
     def _draw_bottom_hud(self, surface):
+        if self.battle_hud.art(surface, "hud_hand_tray", pygame.Rect(8, HEIGHT - 216, WIDTH - 16, 216)):
+            return
         frame = self.asset_manager.get_ui_image("battle_hud_frame") or self.asset_manager.get_ui_image("battle_hud_frame_alt")
         base_y = HEIGHT - 162
         base_rect = pygame.Rect(0, base_y + 24, WIDTH, 138)
@@ -387,8 +410,8 @@ class BattleScene(BaseScene):
         if not enemy_stats:
             enemy_stats.append(("Status", "Pronto", GRAY))
 
-        player_rect = pygame.Rect(22, 20, 320, 92)
-        enemy_rect = pygame.Rect(846, 20, 306, 92)
+        player_rect = pygame.Rect(22, 20, 390, 92)
+        enemy_rect = pygame.Rect(790, 20, 370, 92)
         self._draw_combatant_panel(surface, player_rect, player.name, player.hp, player.max_hp, GREEN, player_stats, align='left')
         self._draw_energy_panel(surface, 36, 116, self.engine.energy, self.engine.energy_max, self.engine.player.MAX_ENERGY_LIMIT, align='left')
         self._draw_coin_badge(surface, 36, 146)

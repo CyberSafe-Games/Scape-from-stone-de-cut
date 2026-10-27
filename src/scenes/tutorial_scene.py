@@ -143,11 +143,11 @@ class TutorialScene(BattleScene):
                     "Reduza a vida do Slime a zero para vencer a batalha!",
                     "Se seu HP acabar, você pode reiniciar o treinamento.",
                 ],
-                target_rect_fn=lambda: pygame.Rect(22, 20, 320, 92),
-                bubble_pos=(362, 20),
+                target_rect_fn=lambda: pygame.Rect(22, 20, 390, 92),
+                bubble_pos=(432, 20),
                 bubble_size=(470, 190),
-                arrow_origin_fn=lambda: (362, 66),
-                arrow_target_fn=lambda: (344, 66),
+                arrow_origin_fn=lambda: (432, 66),
+                arrow_target_fn=lambda: (412, 66),
             )
         )
 
@@ -203,11 +203,11 @@ class TutorialScene(BattleScene):
                     "• FORÇA aumenta o dano dos seus ataques!",
                     "Bloqueie para resistir e fortaleça para causar mais dano.",
                 ],
-                target_rect_fn=lambda: pygame.Rect(22, 78, 226, 36),
-                bubble_pos=(260, 68),
+                target_rect_fn=lambda: pygame.Rect(120, 94, 276, 23),
+                bubble_pos=(416, 78),
                 bubble_size=(480, 192),
-                arrow_origin_fn=lambda: (260, 96),
-                arrow_target_fn=lambda: (248, 96),
+                arrow_origin_fn=lambda: (416, 106),
+                arrow_target_fn=lambda: (396, 106),
             )
         )
 

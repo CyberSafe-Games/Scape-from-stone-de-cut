@@ -180,6 +180,10 @@ class AssetManager:
         mapping = {
             "battle_hud_frame": "battle_hud_frame_top.png",
             "battle_hud_frame_alt": "battle_hud_frame_bottom.png",
+            "hud_hand_tray": "hud_hand_tray.png",
+            "hud_portrait": "hud_portrait.png",
+            "hud_health": "hud_health.png",
+            "hud_cemetery": "hud_cemetery.png",
         }
         for key, filename in mapping.items():
             path = os.path.join(UI_ASSETS_DIR, filename)
