@@ -17,6 +17,7 @@ from src.config.colors import WHITE
 # Escala visual do Corpo Seco: 0.74 * ~170 px de corpo = ~126 px no jogo.
 # Mantém o miniboss proporcional ao Jaum Manel (~130 px) e ao cenário.
 CORPO_SECO_RENDER_SCALE = 0.74
+GOBLIN_NERD_RENDER_SCALE = 0.72
 
 
 class AssetManager:
@@ -49,8 +50,10 @@ class AssetManager:
         self._card_action_sprites = {}
         self._player_sprites = {}
         self._enemy_sprites = {}
+        self._enemy_projectiles = {}
         self._background = None
         self._background_tutorial = None
+        self._territory_backgrounds = {}
         self._fallback_sprite = None
         self._coin_icon = None
         self._ui_images = {}
@@ -59,6 +62,7 @@ class AssetManager:
         self._init_fonts()
         self._load_background()
         self._load_tutorial_background()
+        self._load_territory_backgrounds()
         self._load_player_sprites()
         self._load_enemy_sprites()
         self._load_card_action_sprites()
@@ -136,6 +140,22 @@ class AssetManager:
     @property
     def background_tutorial(self):
         return self._background_tutorial if self._background_tutorial is not None else self._background
+
+    def _load_territory_backgrounds(self):
+        """Carrega fundos opcionais específicos de território."""
+        mapping = {2: "background_mata_sombria.png"}
+        for level, filename in mapping.items():
+            path = os.path.join(os.path.dirname(BACKGROUND_PATH), filename)
+            try:
+                image = pygame.image.load(path).convert()
+                self._territory_backgrounds[level] = pygame.transform.smoothscale(image, (WIDTH, HEIGHT))
+            except (pygame.error, FileNotFoundError):
+                self._territory_backgrounds[level] = self._background
+
+    def get_battle_background(self, level=None):
+        if level in self._territory_backgrounds:
+            return self._territory_backgrounds[level]
+        return self._background
 
     def _load_coin_icon(self):
         """Carrega o icone de moeda (48x48). Fallback: circulo dourado procedural."""
@@ -286,22 +306,25 @@ class AssetManager:
         return self._card_images[filename]
 
     @staticmethod
-    def _prepare_corpo_seco_frame(image, group):
-        """Renderiza todos os frames do chefe com escala e pivô uniformes.
-
-        Os PNGs novos já estão recortados em um *canvas* transparente comum
-        de 312x256, com os pés na mesma linha e o chefe olhando à esquerda.
-        Recortar/redimensionar o personagem separadamente em cada frame
-        causava saltos de tamanho, deslocamentos de chão e giros distorcidos.
-        A escala única também facilita ajustar a altura no combate.
-        """
+    def _prepare_uniform_enemy_frame(image, render_scale):
+        """Escala quadros em canvas padronizado para evitar pulos visuais."""
         image = image.convert_alpha()
         source_width, source_height = image.get_size()
         if source_width == 0 or source_height == 0:
             return None
-        render_width = max(1, round(source_width * CORPO_SECO_RENDER_SCALE))
-        render_height = max(1, round(source_height * CORPO_SECO_RENDER_SCALE))
+        render_width = max(1, round(source_width * render_scale))
+        render_height = max(1, round(source_height * render_scale))
         return pygame.transform.smoothscale(image, (render_width, render_height))
+
+    @staticmethod
+    def _prepare_corpo_seco_frame(image, group):
+        """Renderiza todos os frames do chefe com escala e pivô uniformes."""
+        return AssetManager._prepare_uniform_enemy_frame(image, CORPO_SECO_RENDER_SCALE)
+
+    @staticmethod
+    def _prepare_goblin_nerd_frame(image, group):
+        """Mantém o Goblin Nerd menor e estável, combinando com o cenário."""
+        return AssetManager._prepare_uniform_enemy_frame(image, GOBLIN_NERD_RENDER_SCALE)
 
     def _load_enemy_sprites(self):
         """Carrega conjuntos de sprites para inimigos com suporte a idle, atk e def."""
@@ -349,6 +372,46 @@ class AssetManager:
             groups["atk"] = groups["atk1"]
             groups["def"] = groups["healer2"]
             self._enemy_sprites["corpo seco"] = groups
+
+        goblin_dir = os.path.join(ASSETS_DIR, "goblin_nerd")
+        if os.path.isdir(goblin_dir):
+            groups = {}
+            for group in ("idle", "atk1", "atk2", "atk3", "dano", "healer2"):
+                frames = []
+                for idx in range(1, 5):
+                    path = os.path.join(goblin_dir, f"{group}_{idx}.png")
+                    if os.path.isfile(path):
+                        try:
+                            img = pygame.image.load(path).convert_alpha()
+                            frame = self._prepare_goblin_nerd_frame(img, group)
+                            if frame is not None:
+                                frames.append(frame)
+                        except pygame.error:
+                            pass
+                groups[group] = frames
+            groups["atk"] = groups["atk1"]
+            groups["def"] = groups["healer2"]
+            groups["atk4"] = groups["atk2"]
+            self._enemy_sprites["goblin nerd"] = groups
+
+        monge_dir = os.path.join(ASSETS_DIR, "goblin_monge")
+        if os.path.isdir(monge_dir):
+            groups = {}
+            for group in ("idle", "dano", "atk1", "atk2"):
+                frames = []
+                for idx in range(1, 5):
+                    path = os.path.join(monge_dir, f"{group}_{idx}.png")
+                    if os.path.isfile(path):
+                        frames.append(pygame.image.load(path).convert_alpha())
+                groups[group] = frames
+            groups["atk"] = groups["atk1"]
+            self._enemy_sprites["vinimuth"] = groups
+            path = os.path.join(monge_dir, "onda.png")
+            if os.path.isfile(path):
+                self._enemy_projectiles[("vinimuth", "atk2")] = pygame.image.load(path).convert_alpha()
+
+    def get_enemy_projectile(self, enemy_name, action):
+        return self._enemy_projectiles.get((enemy_name.strip().lower(), action))
 
     def has_enemy_sprites(self, enemy_name):
         """Verifica se existem sprites customizados carregados para o inimigo."""

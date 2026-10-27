@@ -24,6 +24,13 @@ class EntityView:
     e renderizar o Jogador e o Inimigo na tela.
     """
 
+    # duração, lançamento e impacto como frações da animação completa.
+    GOBLIN_RANGED_ATTACKS = {"atk1": (1100, 0.30, 0.74), "atk2": (900, 0.30, 0.58)}
+    RANGED_ATTACKS = {
+        "goblin nerd": GOBLIN_RANGED_ATTACKS,
+        "vinimuth": {"atk2": (1200, 0.54, 0.87)},
+    }
+
     def __init__(self, asset_manager):
         self.asset_manager = asset_manager
 
@@ -42,16 +49,25 @@ class EntityView:
         self.enemy_flash = 0
         self.post_enemy_pause = 0
         self.pending_player_hit_at = None
+        self.enemy_ranged_attack = None
+        self._screwdriver_sprite = None
+        self.enemy_attack_name = ""
 
-    def trigger_attack(self, attacker, action=None):
+    def trigger_attack(self, attacker, action=None, enemy_name=None):
         self.attacker = attacker
         self.attack_timer = 0
+        self.pending_player_hit_at = None
+        self.enemy_ranged_attack = None
+        self.enemy_attack_name = (enemy_name or "").strip().lower()
         if attacker == "player":
             self.player_action = action
             self.player_action_timer = 0
         elif attacker == "enemy":
             self.enemy_action = action
             self.enemy_attack_duration = animation_duration(action, ATTACK_DURATION)
+            self.enemy_ranged_attack = self.RANGED_ATTACKS.get(self.enemy_attack_name, {}).get(action)
+            if self.enemy_ranged_attack:
+                self.enemy_attack_duration = self.enemy_ranged_attack[0]
             self.enemy_action_timer = 0
 
     def trigger_enemy_action(self, action):
@@ -62,8 +78,8 @@ class EntityView:
     def trigger_flash(self, target):
         if target == "player":
             if self.attacker == "enemy":
-                # Impacto só aparece quando o golpe realmente chega perto do alvo.
-                self.pending_player_hit_at = self.enemy_attack_duration * 0.49
+                impact = self.enemy_ranged_attack[2] if self.enemy_ranged_attack else 0.49
+                self.pending_player_hit_at = self.enemy_attack_duration * impact
             else:
                 self.player_flash = FLASH_DURATION
         elif target == "enemy":
@@ -75,11 +91,13 @@ class EntityView:
 
     def update(self, dt):
         """Atualiza todos os timers de animação visual."""
+        self.player_flash = max(0, self.player_flash - dt)
         if self.attacker is not None:
             self.attack_timer += dt
             if (self.attacker == "enemy" and self.pending_player_hit_at is not None
                     and self.attack_timer >= self.pending_player_hit_at):
-                self.player_flash = FLASH_DURATION
+                self.player_flash = max(0, FLASH_DURATION - (
+                    self.attack_timer - self.pending_player_hit_at))
                 self.pending_player_hit_at = None
             duration = self.enemy_attack_duration if self.attacker == "enemy" else ATTACK_DURATION
             if self.attack_timer >= duration:
@@ -89,6 +107,8 @@ class EntityView:
                 if was_enemy:
                     self.enemy_action = None
                     self.enemy_action_timer = 0
+                    self.enemy_ranged_attack = None
+                    self.pending_player_hit_at = None
 
         if self.enemy_action is not None and self.attacker != "enemy":
             self.enemy_action_timer += dt
@@ -102,7 +122,6 @@ class EntityView:
                 self.player_action = None
                 self.player_action_timer = 0
 
-        self.player_flash = max(0, self.player_flash - dt)
         self.enemy_flash = max(0, self.enemy_flash - dt)
         self.post_enemy_pause = max(0, self.post_enemy_pause - dt)
 
@@ -114,6 +133,8 @@ class EntityView:
     def get_attack_pose(self, attacker, home_x, target_x):
         """Calcula a posição interpolada X e extensão de braço para um ataque corpo-a-corpo."""
         if self.attacker != attacker:
+            return home_x, 0.0
+        if attacker == "enemy" and self.enemy_ranged_attack:
             return home_x, 0.0
 
         duration = self.enemy_attack_duration if attacker == "enemy" else ATTACK_DURATION
@@ -138,6 +159,59 @@ class EntityView:
         local = ease(local)
         x = target_x + (home_x - target_x) * local
         return x, 0.0
+
+    def get_enemy_projectile_pose(self):
+        """Trajeto da mão do goblin ao tronco do jogador, apenas durante o voo."""
+        if self.attacker != "enemy" or not self.enemy_ranged_attack:
+            return None
+        duration, launch, impact = self.enemy_ranged_attack
+        progress = self.attack_timer / duration
+        if not launch <= progress < impact:
+            return None
+        flight = (progress - launch) / (impact - launch)
+        start_x, end_x = ENEMY_X - 66, PLAYER_X + 12
+        start_y = PLAYER_GROUND_Y - (78 if self.enemy_attack_name == "vinimuth" else 58)
+        end_y = PLAYER_GROUND_Y - 65
+        x = start_x + (end_x - start_x) * flight
+        y = start_y + (end_y - start_y) * flight
+        if self.enemy_action == "atk1":
+            y -= 65 * math.sin(math.pi * flight)
+        return x, y, flight
+
+    def draw_enemy_projectile(self, surface):
+        pose = self.get_enemy_projectile_pose()
+        if pose is None:
+            return
+        x, y, flight = pose
+        if self.enemy_attack_name == "vinimuth":
+            wave = self.asset_manager.get_enemy_projectile(self.enemy_attack_name, self.enemy_action)
+            if wave is not None:
+                surface.blit(wave, wave.get_rect(center=(round(x), round(y))))
+                return
+        if self.enemy_action == "atk1":
+            if self._screwdriver_sprite is None:
+                # Sprite vetorial em resolução nativa: cabo, haste e ponta chata.
+                tool = pygame.Surface((44, 14), pygame.SRCALPHA)
+                pygame.draw.polygon(tool, (35, 28, 24), [(0, 7), (7, 3), (25, 4), (25, 10), (7, 11)])
+                pygame.draw.polygon(tool, (177, 193, 193), [(1, 7), (8, 5), (26, 5), (26, 8), (8, 8)])
+                pygame.draw.rect(tool, (49, 28, 18), (24, 1, 19, 12), border_radius=3)
+                pygame.draw.rect(tool, (173, 100, 38), (26, 3, 15, 8), border_radius=2)
+                pygame.draw.line(tool, (239, 179, 72), (29, 4), (38, 4), 2)
+                pygame.draw.line(tool, (85, 48, 24), (29, 9), (38, 9), 2)
+                self._screwdriver_sprite = tool
+            tool = pygame.transform.rotate(self._screwdriver_sprite, flight * 720)
+            surface.blit(tool, tool.get_rect(center=(round(x), round(y))))
+        else:
+            # Descarga azul, na mesma paleta da arma nos frames de atk2.
+            glow = pygame.Surface((90, 40), pygame.SRCALPHA)
+            pygame.draw.ellipse(glow, (35, 133, 255, 45), (0, 4, 87, 32))
+            pygame.draw.ellipse(glow, (55, 170, 255, 95), (2, 10, 66, 20))
+            pygame.draw.lines(glow, (63, 182, 255), False,
+                              [(80, 20), (55, 14), (45, 23), (28, 13), (5, 20)], 5)
+            pygame.draw.lines(glow, (215, 249, 255), False,
+                              [(70, 20), (50, 18), (39, 23), (26, 17), (5, 20)], 2)
+            pygame.draw.circle(glow, (235, 253, 255), (8, 20), 4)
+            surface.blit(glow, (round(x) - 8, round(y) - 20))
 
     def get_player_frame(self, game_state):
         """Determina o sprite e a posição X exata do jogador com base no estado e nos timers."""
@@ -228,9 +302,24 @@ class EntityView:
 
         # 1. Ataque físico
         if self.attacker == "enemy":
-            attack_group = self.enemy_action if self.enemy_action in ("atk1", "atk3", "atk4") else "atk"
-            sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, attack_group)
+            preferred_group = self.enemy_action if self.enemy_action else "atk"
+            sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, preferred_group)
+            attack_group = preferred_group
+            if not sprites:
+                attack_group = self.enemy_action if self.enemy_action in ("atk1", "atk2", "atk3", "atk4") else "atk"
+                sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, attack_group)
             if sprites:
+                if enemy_name == "vinimuth":
+                    progress = self.attack_timer / max(1, self.enemy_attack_duration)
+                    if attack_group == "atk2":
+                        # Carrega em três poses, lança e sustenta as mãos durante o voo.
+                        if progress >= 0.87:
+                            idle = self.asset_manager.get_enemy_sprite_group(enemy_name, "idle")
+                            return idle[0] if idle else sprites[-1]
+                        index = min(3, int(progress / 0.18))
+                    else:
+                        index = 0 if progress < 0.4 else 1 if progress < 0.49 else 2 if progress < 0.65 else 3
+                    return sprites[min(index, len(sprites) - 1)]
                 index = frame_index(attack_group, self.attack_timer,
                                     self.enemy_attack_duration, len(sprites))
                 return sprites[index]
@@ -251,10 +340,16 @@ class EntityView:
                 progress = max(0.0, min(0.999, 1 - self.enemy_flash / FLASH_DURATION))
                 return sprites[int(progress * len(sprites))]
 
-        # Idle do Corpo Seco: 800 ms/frame, demais inimigos: 220 ms/frame.
         sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "idle")
         if sprites:
-            idle_ms = 800 if enemy_name == "corpo seco" else 220
+            if enemy_name == "vinimuth":
+                # Respiração lenta sobre uma pose estável: evita alternar
+                # bruscamente braços e cabeça a cada 220 ms. Os pés mantêm o pivô.
+                frame = sprites[0]
+                breath = (1 - math.cos(now * math.tau / 2800)) / 2
+                width, height = frame.get_size()
+                return pygame.transform.smoothscale(frame, (width, height + round(2 * breath)))
+            idle_ms = {"corpo seco": 800, "goblin nerd": 320}.get(enemy_name, 220)
             index = (now // idle_ms) % len(sprites)
             return sprites[index]
 

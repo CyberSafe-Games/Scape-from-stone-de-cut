@@ -76,7 +76,10 @@ class BattleScene(BaseScene):
     def _handle_combat_event(self, event_name, **kwargs):
         """Reage a eventos emitidos pelo motor de combate."""
         if event_name == "attack":
-            self.entity_view.trigger_attack(kwargs.get("attacker"), kwargs.get("action"))
+            self.entity_view.trigger_attack(
+                kwargs.get("attacker"), kwargs.get("action"),
+                enemy_name=getattr(self.engine.enemy, "name", None),
+            )
         elif event_name == "flash":
             self.entity_view.trigger_flash(kwargs.get("target"))
         elif event_name == "player_action":
@@ -127,7 +130,7 @@ class BattleScene(BaseScene):
             enemy = self.engine.enemy
             # No combo do Corpo Seco, a segunda ação começa pouco após
             # a primeira animação terminar, sem outra pausa longa.
-            combo_followup = (enemy.name.lower() == "corpo seco" and
+            combo_followup = (getattr(enemy, "actions_per_turn", 1) > 1 and
                               getattr(self.engine, "enemy_actions_remaining", 0) <
                               getattr(enemy, "actions_per_turn", 1))
             windup_ms = 270 if combo_followup else 800
@@ -146,8 +149,9 @@ class BattleScene(BaseScene):
                 self.engine.finish_enemy_turn()
 
     def _draw_background(self, surface):
-        if self.asset_manager.background is not None:
-            surface.blit(self.asset_manager.background, (0, 0))
+        bg = self.asset_manager.get_battle_background(self.selected_level or self.engine.level)
+        if bg is not None:
+            surface.blit(bg, (0, 0))
         else:
             surface.fill(BG)
 
@@ -406,6 +410,7 @@ class BattleScene(BaseScene):
 
         self.entity_view.draw_enemy(surface, enemy, enemy_color)
         self.entity_view.draw_player(surface, self.engine.state)
+        self.entity_view.draw_enemy_projectile(surface)
 
         self._draw_bottom_hud(surface)
         self._draw_cemetery_button(surface)

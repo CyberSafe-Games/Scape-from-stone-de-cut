@@ -25,7 +25,7 @@ class RouteBossDeckTests(unittest.TestCase):
     def _road_victory(self, level=1):
         engine = CombatEngine(map_mode=True)
         engine.resume_from_save(self.data, self.saves, level=level, encounter_kind='road')
-        self.assertEqual(engine.enemy.name, 'Slime')
+        self.assertIn(engine.enemy.name, ('Slime', 'Vinimuth'))
         engine.state = 'victory'
         engine.skip_reward()
         self.assertEqual(engine.state, 'phase_complete')
@@ -70,14 +70,14 @@ class RouteBossDeckTests(unittest.TestCase):
 
     def test_fortress_boss_and_other_road_enemies(self):
         self.assertEqual(create_corpo_seco(5).name, 'Corpo Seco')
-        self.assertEqual(create_road_enemy(5).name, 'Slime')
+        self.assertIn(create_road_enemy(5).name, ('Slime', 'Vinimuth'))
         self.data['progresso']['andar'] = 5
         e = CombatEngine(map_mode=True)
         e.resume_from_save(self.data, self.saves, level=5, encounter_kind='point')
         self.assertEqual(e.enemy.name, 'Corpo Seco')
         self.assertEqual(e.enemy.actions_per_turn, 2)
         e.resume_from_save(self.data, self.saves, level=5, encounter_kind='road')
-        self.assertEqual(e.enemy.name, 'Slime')
+        self.assertIn(e.enemy.name, ('Slime', 'Vinimuth'))
 
     def test_boss_gets_two_actions_and_spins_every_eight_actions(self):
         e = CombatEngine(map_mode=True)

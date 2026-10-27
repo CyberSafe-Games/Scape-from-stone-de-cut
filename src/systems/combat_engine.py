@@ -7,7 +7,7 @@ from src.systems.card_catalog import CARD_POOL, create_starting_deck
 from src.systems.enemy_factory import (
     create_enemy,
     choose_enemy_intent,
-    is_miniboss_level, create_corpo_seco, create_road_enemy, choose_next_action,
+    is_miniboss_level, create_road_enemy, choose_next_action, create_point_enemy,
 )
 from src.config.colors import RED, BLUE, GOLD
 from src.config.layout import PLAYER_X, PLAYER_Y, ENEMY_X, ENEMY_Y
@@ -434,8 +434,8 @@ class CombatEngine:
         self.encounter_kind = encounter_kind
         if encounter_kind == "road":
             self.enemy = create_road_enemy(self.level)
-        elif encounter_kind == "point" and self.level == 5:
-            self.enemy = create_corpo_seco(self.level)
+        elif encounter_kind == "point":
+            self.enemy = create_point_enemy(self.level)
         else:
             self.enemy = create_enemy(self.level, is_miniboss_level(self.level))
         choose_next_action(self.enemy)
