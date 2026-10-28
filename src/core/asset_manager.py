@@ -1,6 +1,6 @@
 import os
 import pygame
-from src.ui.sprite_cleanup import remove_white_fringe
+from src.ui.sprite_cleanup import remove_white_fringe, recolor_green_aura_red
 
 from src.config.settings import (
     WIDTH,
@@ -151,7 +151,7 @@ class AssetManager:
     def _load_territory_backgrounds(self):
         """Carrega fundos opcionais específicos de território."""
         mapping = {1: 'background_pedra_do_corte.png', 2: "background_mata_sombria.png",
-                   5: 'background_fortaleza_caida.png'}
+                   5: 'background_fortaleza_caida.png', 6: 'background_pico_da_vigilia.png'}
         for level, filename in mapping.items():
             path = os.path.join(os.path.dirname(BACKGROUND_PATH), filename)
             try:
@@ -438,6 +438,22 @@ class AssetManager:
             path = os.path.join(guardian_dir, 'urso_espiritual.png')
             if os.path.isfile(path):
                 self._enemy_projectiles[('guardião da pedra', 'atk2')] = remove_white_fringe(pygame.image.load(path).convert_alpha())
+
+        carrasco_dir = os.path.join(ASSETS_DIR, 'carrasco_da_vigilia')
+        if os.path.isdir(carrasco_dir):
+            groups = {}
+            for group in ('idle', 'atk1', 'atk2', 'atk3', 'healer2', 'dano'):
+                frames = []
+                for idx in range(1, 5):
+                    path = os.path.join(carrasco_dir, f'{group}_{idx}.png')
+                    if os.path.isfile(path):
+                        frame = pygame.image.load(path).convert_alpha()
+                        if group == 'healer2':
+                            frame = recolor_green_aura_red(frame)
+                        frames.append(frame)
+                groups[group] = frames
+            groups['atk'] = groups['atk1']
+            self._enemy_sprites['carrasco da vigília'] = groups
 
     def get_enemy_projectile(self, enemy_name, action):
         return self._enemy_projectiles.get((enemy_name.strip().lower(), action))

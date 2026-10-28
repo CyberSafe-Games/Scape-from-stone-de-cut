@@ -69,7 +69,8 @@ class BattleHUD:
                              (filled.right - 1, filled.top), 2)
             pygame.draw.line(surface, (72, 16, 20), filled.bottomleft,
                              (filled.right - 1, filled.bottom), 2)
-        draw_text(surface, f'{hp}/{maximum}', self.assets.small_font, WHITE,
+        health_label = '∞' if getattr(combatant, 'invulnerable', False) else f'{hp}/{maximum}'
+        draw_text(surface, health_label, self.assets.small_font, WHITE,
                   track.centerx, track.centery, center=True)
         if combatant is not None:
             draw_status_badges(surface, combatant, track.x + 10, rect.top + 76,

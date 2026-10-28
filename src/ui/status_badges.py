@@ -6,7 +6,7 @@ INFO = {
  'poison': ('Veneno', 'Dano direto à vida no fim do turno; ignora Escudo e Totem. Reaplicar renova a duração.'),
  'bleed': ('Sangramento', '4 de dano direto à vida no primeiro ataque de cada turno. Não repete em ações adicionais do chefe.'),
  'vulnerable': ('Fragilidade', 'Recebe 25% a mais de dano de ataques; não amplifica efeitos de dano contínuo.'),
- 'aura': ('Aura Rubra', '+8 de dano por ataque. Reaplicar renova a duração, sem acumular bônus.'),
+ 'aura': ('Aura Rubra', 'Dano adicional por ataque. Reaplicar renova a duração, sem acumular bônus.'),
  'totem': ('Totem Protetor', 'Anula o próximo ataque completo. Dano de efeitos não consome o Totem.'),
  'shield': ('Escudo', 'Absorve dano. Cada aplicação dura 2 turnos do dono; receber mais não renova o Escudo antigo.'),
  'weakness': ('Fraqueza', 'Causa 25% a menos de dano. Mantém a duração original da ultimate.'),
@@ -38,6 +38,7 @@ def draw_status_badges(surface, combatant, x, y, width, assets, mouse):
                 text += f" Restam {combatant.statuses[name]['turns']} turnos." if name != 'totem' else ''
                 if name == 'fire': text += f' Intensidade: {potency}.'
                 if name == 'poison': text += f' Dano por turno: {potency}.'
+                if name == 'aura': text += f' Bônus de dano: +{potency}.'
             elif name == 'shield': text += f' Duração máxima restante: {potency} turnos.'
             lines = wrap_text(text, assets.small_font, 310)
             box = pygame.Rect(min(930, max(12, x)), 213, 338, 48 + len(lines) * 19)

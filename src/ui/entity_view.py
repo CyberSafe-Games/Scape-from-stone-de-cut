@@ -18,6 +18,7 @@ from src.ui.helpers import ease
 from src.systems.animation_timing import animation_duration, frame_index, dash_distance
 from src.systems.card_definitions import SPECS_BY_NAME
 from src.ui.guardian_spirit_fx import draw_guardian_spirit
+from src.ui.crimson_cast_fx import draw_crimson_cast
 
 
 class EntityView:
@@ -74,14 +75,20 @@ class EntityView:
         elif attacker == "enemy":
             self.enemy_action = action
             self.enemy_attack_duration = animation_duration(action, ATTACK_DURATION)
+            if self.enemy_attack_name == 'carrasco da vigília':
+                self.enemy_attack_duration = {'atk1': 1050, 'atk2': 1150, 'atk3': 1500}.get(action, ATTACK_DURATION)
             self.enemy_ranged_attack = self.RANGED_ATTACKS.get(self.enemy_attack_name, {}).get(action)
             if self.enemy_ranged_attack:
                 self.enemy_attack_duration = self.enemy_ranged_attack[0]
             self.enemy_action_timer = 0
 
-    def trigger_enemy_action(self, action):
+    def trigger_enemy_action(self, action, enemy_name=None):
+        if enemy_name is not None:
+            self.enemy_attack_name = enemy_name.strip().lower()
         self.enemy_action = action
         self.enemy_action_duration = animation_duration(action, 600)
+        if self.enemy_attack_name == 'carrasco da vigília' and action == 'healer2':
+            self.enemy_action_duration = 1500
         self.enemy_action_timer = 0
 
     def trigger_flash(self, target):
@@ -202,6 +209,9 @@ class EntityView:
         return x, y, flight
 
     def draw_enemy_projectile(self, surface):
+        if self.enemy_attack_name == 'carrasco da vigília' and self.enemy_action == 'healer2':
+            draw_crimson_cast(surface, self)
+            return
         if self.enemy_attack_name == 'guardião da pedra' and self.enemy_action == 'atk2':
             draw_guardian_spirit(surface, self)
             return
@@ -342,6 +352,10 @@ class EntityView:
                 attack_group = self.enemy_action if self.enemy_action in ("atk1", "atk2", "atk3", "atk4") else "atk"
                 sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, attack_group)
             if sprites:
+                if enemy_name == 'carrasco da vigília':
+                    progress = self.attack_timer / max(1, self.enemy_attack_duration)
+                    index = 0 if progress < 0.35 else 1 if progress < 0.49 else 2 if progress < 0.68 else 3
+                    return sprites[min(index, len(sprites) - 1)]
                 if enemy_name == 'guardião da pedra':
                     progress = self.attack_timer / max(1, self.enemy_attack_duration)
                     if attack_group == 'atk2':
@@ -385,7 +399,7 @@ class EntityView:
 
         sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "idle")
         if sprites:
-            if enemy_name == "vinimuth":
+            if enemy_name in ('vinimuth', 'carrasco da vigília'):
                 # Respiração lenta sobre uma pose estável: evita alternar
                 # bruscamente braços e cabeça a cada 220 ms. Os pés mantêm o pivô.
                 frame = sprites[0]

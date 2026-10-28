@@ -90,7 +90,8 @@ class BattleScene(BaseScene):
         elif event_name == "player_action":
             self.entity_view.trigger_player_action(kwargs.get("action"))
         elif event_name == "enemy_action":
-            self.entity_view.trigger_enemy_action(kwargs.get("action"))
+            self.entity_view.trigger_enemy_action(kwargs.get("action"),
+                                                  enemy_name=getattr(self.engine.enemy, 'name', None))
         elif event_name == "floating_text":
             self.floating_texts.spawn(
                 kwargs["x"], kwargs["y"], kwargs["text"], kwargs["color"]
@@ -384,6 +385,9 @@ class BattleScene(BaseScene):
 
         player = self.engine.player
         enemy = self.engine.enemy
+        if getattr(player, 'invulnerable', False) and not self.engine.message:
+            draw_text(surface, 'LABORATÓRIO · VIDA INFINITA', self.asset_manager.small_font,
+                      GOLD, WIDTH // 2, 29, center=True)
         enemy_color = WHITE
         intent_text = "Sem intenção"
 

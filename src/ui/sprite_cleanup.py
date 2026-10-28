@@ -36,3 +36,13 @@ def remove_white_fringe(image):
                 depth[neighbor] = next_depth
                 queue.append(neighbor)
     return pygame.image.frombytes(bytes(pixels), (width, height), 'RGBA').convert_alpha()
+
+
+def recolor_green_aura_red(image):
+    """Troca apenas os verdes saturados do efeito; preserva pele, metal e capa."""
+    pixels = bytearray(pygame.image.tobytes(image, 'RGBA'))
+    for i in range(0, len(pixels), 4):
+        r, g, b, alpha = pixels[i:i + 4]
+        if alpha and g > 0 and g > r * .90 and g > b * 1.17:
+            pixels[i:i + 3] = bytes((g, round(r * .35), round(max(r, b) * .5)))
+    return pygame.image.frombytes(bytes(pixels), image.get_size(), 'RGBA').convert_alpha()

@@ -38,6 +38,8 @@ class Combatant:
                 damage -= absorbed
             self._block_layers = [layer for layer in self._block_layers if layer[0] > 0]
         actual = min(self.hp, damage)
+        if getattr(self, 'invulnerable', False):
+            return 0
         self.hp = max(0, self.hp - damage)
         return actual
 

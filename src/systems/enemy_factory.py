@@ -3,6 +3,7 @@ import random
 from src.models.action import Action
 from src.models.enemy import Enemy
 from src.config.layout import MINIBOSS_INTERVAL
+from src.models.effects.crimson_vigor_effect import CrimsonVigorEffect
 
 # Configuração de inimigos comuns: (Nome, HP Base, HP por Andar)
 ENEMY_TYPES = [
@@ -152,6 +153,21 @@ def create_corpo_seco(level=5):
     return _configure_boss(boss, "Ataque Giratório", 19, "atk4")
 
 
+def create_carrasco_da_vigilia(level=6):
+    """Guardião do Pico: machado pesado e recuperação com aura escarlate."""
+    actions = [
+        Action('Corte do Carrasco', 'attack', damage=10 + level // 2,
+               energy_cost=1, weight=0.45, visual_effect='atk1'),
+        Action('Varredura Escarlate', 'attack', damage=14 + level // 2,
+               energy_cost=2, weight=0.35, visual_effect='atk2'),
+        Action('Vigor Escarlate', 'buff', defense=14, energy_cost=1,
+               weight=0.20, visual_effect='healer2', effect=CrimsonVigorEffect()),
+    ]
+    boss = Enemy('Carrasco da Vigília', hp=134 + 2 * level, energy=4,
+                 max_energy=4, actions=actions, is_miniboss=True)
+    return _configure_boss(boss, 'Execução Escarlate', 18 + level, 'atk3')
+
+
 def create_point_enemy(level):
     """Resolve chefes territoriais específicos antes do fallback genérico."""
     if level == 1:
@@ -160,6 +176,8 @@ def create_point_enemy(level):
         return create_goblin_nerd(level)
     if level == 5:
         return create_corpo_seco(level)
+    if level == 6:
+        return create_carrasco_da_vigilia(level)
     return create_enemy(level, is_miniboss_level(level))
 
 

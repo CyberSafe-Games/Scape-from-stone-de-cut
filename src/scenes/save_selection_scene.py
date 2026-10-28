@@ -25,6 +25,7 @@ class SaveSelectionScene(BaseScene):
         super().__init__(scene_manager, window_manager, asset_manager)
         self.save_manager = save_manager or SaveManager()
         self.back_button = pygame.Rect(38, 32, 160, 44)
+        self.test_button = pygame.Rect(WIDTH // 2 - 210, 590, 420, 44)
         self.card_rects = [pygame.Rect(135 + index * 338, 208, 320, 352) for index in range(3)]
         self.delete_rects = [pygame.Rect(r.centerx - 65, r.bottom - 52, 130, 32)
                              for r in self.card_rects]
@@ -116,9 +117,13 @@ class SaveSelectionScene(BaseScene):
                           rect.centerx, rect.y + 239, center=True)
                 self._button(surface, self.delete_rects[index], "EXCLUIR", danger=True)
 
+        self._button(surface, self.test_button, 'LABORATÓRIO DE TESTES [T]')
+        if not self.error:
+            draw_text(surface, 'Vida infinita · Todas as fases e cartas liberadas',
+                      self.asset_manager.small_font, GOLD, WIDTH // 2, 650, center=True)
         if self.error:
             draw_text(surface, self.error[:100], self.asset_manager.small_font,
-                      (210, 116, 103), WIDTH // 2, HEIGHT - 91, center=True)
+                      (210, 116, 103), WIDTH // 2, 650, center=True)
         theme.footer(surface, "ESC  ·  VOLTAR                       1–3  ·  SELECIONAR                       F11  ·  TELA CHEIA",
                      self.asset_manager.small_font)
 
@@ -126,6 +131,9 @@ class SaveSelectionScene(BaseScene):
         if self.window_manager.handle_window_event(event):
             return
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_t:
+                self._open_test_save()
+                return
             if event.key == pygame.K_ESCAPE:
                 self._back()
                 return
@@ -144,6 +152,9 @@ class SaveSelectionScene(BaseScene):
             if self.back_button.collidepoint(point):
                 self._back()
                 return
+            if self.test_button.collidepoint(point):
+                self._open_test_save()
+                return
             for index, rect in enumerate(self.card_rects):
                 if self.delete_rects[index].collidepoint(point) and self.slots[index][0] != "empty":
                     self._request_delete(index)
@@ -151,6 +162,17 @@ class SaveSelectionScene(BaseScene):
                 if rect.collidepoint(point):
                     self._select(index)
                     return
+
+    def _open_test_save(self):
+        try:
+            data = self.save_manager.load_or_create_test_save()
+            from src.scenes.map_scene import MapScene
+            self.scene_manager.change_scene(MapScene(
+                self.scene_manager, self.window_manager, self.asset_manager,
+                save_manager=self.save_manager, save_data=data,
+            ))
+        except (OSError, ValueError, SaveError) as exc:
+            self.error = f'Não foi possível abrir o laboratório: {exc}'
 
     def _back(self):
         from src.scenes.menu_scene import MenuScene

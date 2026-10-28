@@ -16,6 +16,11 @@ SLOT_COUNT = 3
 # Território disponível em um save novo (ids de território definidos pelo jogo).
 INITIAL_TERRITORIES = [FIRST_TERRITORY_ID]
 INITIAL_COINS = 0
+TEST_SAVE_ID = 'modo_teste'
+
+
+def is_test_save(data):
+    return data.get('id') == TEST_SAVE_ID and data.get('modo_teste') is True
 
 
 class SaveError(Exception):
@@ -230,6 +235,10 @@ class SaveManager:
             raise SaveCorruptedError("Lista de territórios concluídos inválida.")
         data['versao'] = SAVE_VERSION
         data["id"] = save_id  # O nome real do arquivo prevalece sobre o conteúdo.
+        if 'modo_teste' in data and type(data['modo_teste']) is not bool:
+            raise SaveCorruptedError('Indicador de modo de teste inválido.')
+        if is_test_save(data):
+            self._unlock_test_progress(progress)
         data.setdefault("nome", save_id)
         data.setdefault("criado_em", base["criado_em"])
         data.setdefault("atualizado_em", base["atualizado_em"])
@@ -254,6 +263,36 @@ class SaveManager:
         if not os.path.exists(path):
             raise SaveNotFoundError(f"Save '{name}' não encontrado.")
         return self._read(path)
+
+    @staticmethod
+    def _unlock_test_progress(progress):
+        progress['territorios_desbloqueados'] = list(TERRITORY_IDS)
+        progress['territorios_concluidos'] = list(TERRITORY_IDS)
+        progress['encontros_por_territorio'] = {tid: 3 for tid in TERRITORY_IDS}
+        progress['cartas_colecao'] = [card.name for card in CARD_POOL]
+        progress['ultimates_desbloqueadas'] = known_ultimate_ids()
+        progress['tutorial_concluido'] = True
+        progress['guia_mapa_visto'] = True
+        progress['vida'] = 60
+
+    def load_or_create_test_save(self):
+        """Save extra identificado explicitamente; não ocupa nem substitui slots."""
+        if self.exists(TEST_SAVE_ID):
+            data = self.load_save(TEST_SAVE_ID)
+            if not is_test_save(data):
+                raise SaveError('O arquivo modo_teste já existe e não é um save de testes.')
+            return data
+        data = self._new_data('Laboratório de Testes', TEST_SAVE_ID)
+        data['modo_teste'] = True
+        progress = data['progresso']
+        self._unlock_test_progress(progress)
+        progress['andar'] = 7
+        progress['moedas'] = 9999
+        progress['deck_slots'] = ['Soco Simples', 'Esfera Protetora', 'Disparo de Arco',
+                                  'Bola de Fogo', 'Adaga Sangrenta', 'Surto de Energia']
+        progress['cartas'] = expand_slots(progress['deck_slots'])
+        self.save(data)
+        return data
 
     def save(self, data):
         """Grava os dados no arquivo do próprio save (e só nele)."""
@@ -286,10 +325,13 @@ class SaveManager:
     def apply_to_game(self, data, player, deck_manager):
         """Aplica o progresso salvo ao jogador e ao baralho."""
         progress = data["progresso"]
+        player.invulnerable = is_test_save(data)
         player.coins = progress["moedas"]
 
         # Cartas desconhecidas (ex: removidas do catálogo) são ignoradas.
         player.hp = min(player.max_hp, progress["vida"] or player.max_hp)
+        if player.invulnerable:
+            player.hp = player.max_hp
         # Energia máxima e turno são propriedades da LUTA, não da RUN.
         # Dados antigos ficam aceitos no JSON apenas para compatibilidade.
         player.energy_max = player.INITIAL_ENERGY_MAX

@@ -15,6 +15,7 @@ class Player(Combatant):
         self._energy_max = max(0, min(energy_max, self.MAX_ENERGY_LIMIT))
         self.energy = self._energy_max
         self.is_player = True
+        self.invulnerable = False
         self.is_miniboss = False
         self.coins = 0
         self.turn_count = 0

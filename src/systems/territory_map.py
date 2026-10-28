@@ -22,7 +22,7 @@ TERRITORIES = (
     Territory("ruinas_ancestrais", "Ruínas Ancestrais", "Ecos do passado", "Marcas de uma civilização esquecida acompanham o caminho.", 3, (166, 317)),
     Territory("pantano_abissal", "Pântano Abissal", "Águas escuras", "Águas silenciosas escondem novas ameaças.", 4, (356, 235)),
     Territory("fortaleza_caida", "Fortaleza Caída", "O cerco", "Antigos muros guardam histórias e novos confrontos.", 5, (503, 397)),
-    Territory("pico_da_vigilia", "Pico da Vigília", "Última subida", "O caminho sobe entre rochas frias e vigias esquecidos.", 6, (641, 281)),
+    Territory("pico_da_vigilia", "Pico da Vigília", "Última subida", "O Carrasco da Vigília guarda a passagem entre os picos.", 6, (641, 281)),
     Territory("santuario_de_pedra", "Santuário de Pedra", "O destino", "O último portal da campanha aguarda sua chegada.", 7, (788, 164)),
 )
 
