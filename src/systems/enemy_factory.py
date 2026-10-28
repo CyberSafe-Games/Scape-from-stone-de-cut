@@ -126,6 +126,21 @@ def create_goblin_nerd(level=2):
     return _configure_boss(boss, "Descarga Sobrecarregada", 17 + level, "atk2")
 
 
+def create_guardiao_da_pedra(level=1):
+    """Primeiro miniboss: garras, defesa e recuperação, com rugido espiritual."""
+    actions = [
+        Action('Golpe de Garras', 'attack', damage=6 + level, energy_cost=1,
+               weight=0.55, visual_effect='atk1'),
+        Action('Pele Rochosa', 'defend', defense=7 + level, energy_cost=1,
+               weight=0.30, visual_effect='def'),
+        Action('Vigor Selvagem', 'heal', defense=8, energy_cost=1,
+               weight=0.15, visual_effect='healer2'),
+    ]
+    boss = Enemy('Guardião da Pedra', hp=74 + level * 4, energy=4,
+                 max_energy=4, actions=actions, is_miniboss=True)
+    return _configure_boss(boss, 'Rugido Espiritual', 13 + level, 'atk2')
+
+
 def create_corpo_seco(level=5):
     """Corpo Seco: duas ações por rodada; giro no 8º, 16º... ato."""
     actions = [
@@ -139,6 +154,8 @@ def create_corpo_seco(level=5):
 
 def create_point_enemy(level):
     """Resolve chefes territoriais específicos antes do fallback genérico."""
+    if level == 1:
+        return create_guardiao_da_pedra(level)
     if level == 2:
         return create_goblin_nerd(level)
     if level == 5:

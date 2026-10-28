@@ -1,5 +1,6 @@
 import os
 import pygame
+from src.ui.sprite_cleanup import remove_white_fringe
 
 from src.config.settings import (
     WIDTH,
@@ -149,7 +150,8 @@ class AssetManager:
 
     def _load_territory_backgrounds(self):
         """Carrega fundos opcionais específicos de território."""
-        mapping = {2: "background_mata_sombria.png"}
+        mapping = {1: 'background_pedra_do_corte.png', 2: "background_mata_sombria.png",
+                   5: 'background_fortaleza_caida.png'}
         for level, filename in mapping.items():
             path = os.path.join(os.path.dirname(BACKGROUND_PATH), filename)
             try:
@@ -413,13 +415,29 @@ class AssetManager:
                 for idx in range(1, 5):
                     path = os.path.join(monge_dir, f"{group}_{idx}.png")
                     if os.path.isfile(path):
-                        frames.append(pygame.image.load(path).convert_alpha())
+                        frames.append(remove_white_fringe(pygame.image.load(path).convert_alpha()))
                 groups[group] = frames
             groups["atk"] = groups["atk1"]
             self._enemy_sprites["vinimuth"] = groups
             path = os.path.join(monge_dir, "onda.png")
             if os.path.isfile(path):
-                self._enemy_projectiles[("vinimuth", "atk2")] = pygame.image.load(path).convert_alpha()
+                self._enemy_projectiles[("vinimuth", "atk2")] = remove_white_fringe(pygame.image.load(path).convert_alpha())
+
+        guardian_dir = os.path.join(ASSETS_DIR, 'guardiao_da_pedra')
+        if os.path.isdir(guardian_dir):
+            groups = {}
+            for group in ('idle', 'atk1', 'atk2', 'def', 'healer2', 'dano'):
+                frames = []
+                for idx in range(1, 5):
+                    path = os.path.join(guardian_dir, f'{group}_{idx}.png')
+                    if os.path.isfile(path):
+                        frames.append(remove_white_fringe(pygame.image.load(path).convert_alpha()))
+                groups[group] = frames
+            groups['atk'] = groups['atk1']
+            self._enemy_sprites['guardião da pedra'] = groups
+            path = os.path.join(guardian_dir, 'urso_espiritual.png')
+            if os.path.isfile(path):
+                self._enemy_projectiles[('guardião da pedra', 'atk2')] = remove_white_fringe(pygame.image.load(path).convert_alpha())
 
     def get_enemy_projectile(self, enemy_name, action):
         return self._enemy_projectiles.get((enemy_name.strip().lower(), action))

@@ -430,7 +430,7 @@ class BattleScene(BaseScene):
                   intent_rect.centerx, intent_rect.centery, center=True)
         if getattr(enemy, "actions_per_turn", 1) > 1:
             until_spin = enemy.special_interval - (enemy.action_counter % enemy.special_interval)
-            draw_text(surface, f"2 AÇÕES / RODADA   ·   GIRO EM {until_spin} ATOS",
+            draw_text(surface, f"2 AÇÕES / RODADA   ·   ESPECIAL EM {until_spin} ATOS",
                       self.asset_manager.small_font, GOLD, 970, 198, center=True)
 
         self.window_manager.draw_fullscreen_button(self.asset_manager.small_font)

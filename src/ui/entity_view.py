@@ -17,6 +17,7 @@ from src.config.layout import (
 from src.ui.helpers import ease
 from src.systems.animation_timing import animation_duration, frame_index, dash_distance
 from src.systems.card_definitions import SPECS_BY_NAME
+from src.ui.guardian_spirit_fx import draw_guardian_spirit
 
 
 class EntityView:
@@ -30,6 +31,7 @@ class EntityView:
     RANGED_ATTACKS = {
         "goblin nerd": GOBLIN_RANGED_ATTACKS,
         "vinimuth": {"atk2": (1200, 0.54, 0.87)},
+        'guardião da pedra': {'atk2': (1400, 0.50, 0.84)},
     }
 
     def __init__(self, asset_manager):
@@ -189,6 +191,9 @@ class EntityView:
         flight = (progress - launch) / (impact - launch)
         start_x, end_x = ENEMY_X - 66, PLAYER_X + 12
         start_y = PLAYER_GROUND_Y - (78 if self.enemy_attack_name == "vinimuth" else 58)
+        if self.enemy_attack_name == 'guardião da pedra':
+            start_x = ENEMY_X - 135
+            start_y = PLAYER_GROUND_Y - 95
         end_y = PLAYER_GROUND_Y - 65
         x = start_x + (end_x - start_x) * flight
         y = start_y + (end_y - start_y) * flight
@@ -197,11 +202,14 @@ class EntityView:
         return x, y, flight
 
     def draw_enemy_projectile(self, surface):
+        if self.enemy_attack_name == 'guardião da pedra' and self.enemy_action == 'atk2':
+            draw_guardian_spirit(surface, self)
+            return
         pose = self.get_enemy_projectile_pose()
         if pose is None:
             return
         x, y, flight = pose
-        if self.enemy_attack_name == "vinimuth":
+        if self.enemy_attack_name in ('vinimuth', 'guardião da pedra'):
             wave = self.asset_manager.get_enemy_projectile(self.enemy_attack_name, self.enemy_action)
             if wave is not None:
                 surface.blit(wave, wave.get_rect(center=(round(x), round(y))))
@@ -334,6 +342,16 @@ class EntityView:
                 attack_group = self.enemy_action if self.enemy_action in ("atk1", "atk2", "atk3", "atk4") else "atk"
                 sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, attack_group)
             if sprites:
+                if enemy_name == 'guardião da pedra':
+                    progress = self.attack_timer / max(1, self.enemy_attack_duration)
+                    if attack_group == 'atk2':
+                        if progress >= 0.92:
+                            idle = self.asset_manager.get_enemy_sprite_group(enemy_name, 'idle')
+                            return idle[0] if idle else sprites[-1]
+                        index = 0 if progress < 0.20 else 1 if progress < 0.35 else 2 if progress < 0.50 else 3
+                    else:
+                        index = 0 if progress < 0.4 else 1 if progress < 0.49 else 2 if progress < 0.65 else 3
+                    return sprites[min(index, len(sprites) - 1)]
                 if enemy_name == "vinimuth":
                     progress = self.attack_timer / max(1, self.enemy_attack_duration)
                     if attack_group == "atk2":
@@ -374,8 +392,10 @@ class EntityView:
                 breath = (1 - math.cos(now * math.tau / 2800)) / 2
                 width, height = frame.get_size()
                 return pygame.transform.smoothscale(frame, (width, height + round(2 * breath)))
-            idle_ms = {"corpo seco": 800, "goblin nerd": 320}.get(enemy_name, 220)
+            idle_ms = {"corpo seco": 800, "goblin nerd": 320, 'guardião da pedra': 400}.get(enemy_name, 220)
             index = (now // idle_ms) % len(sprites)
+            if enemy_name == 'guardião da pedra' and len(sprites) == 4:
+                index = (0, 1, 2, 3, 2, 1)[(now // idle_ms) % 6]
             return sprites[index]
 
         return None
