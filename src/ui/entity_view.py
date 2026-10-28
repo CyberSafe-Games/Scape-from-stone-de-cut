@@ -20,6 +20,7 @@ from src.systems.card_definitions import SPECS_BY_NAME
 from src.ui.guardian_spirit_fx import draw_guardian_spirit
 from src.ui.crimson_cast_fx import draw_crimson_cast
 from src.systems.normal_enemy_catalog import NORMAL_RANGED, NORMAL_SPRITES
+from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS, cast_frame
 
 NORMAL_IDLE_NAMES = frozenset(name.lower() for name in NORMAL_SPRITES) - {'morcego sombrio'}
 
@@ -103,7 +104,9 @@ class EntityView:
             else:
                 self.player_flash = FLASH_DURATION
         elif target == "enemy":
-            if self.attacker == 'player' and self.player_action in SPECS_BY_NAME:
+            if self.player_action in ULTIMATE_ANIMATIONS:
+                self.pending_enemy_hit_at = self.player_action_duration * ULTIMATE_ANIMATIONS[self.player_action].impact
+            elif self.attacker == 'player' and self.player_action in SPECS_BY_NAME:
                 fraction = 0.90 if SPECS_BY_NAME[self.player_action][6] == 'ranged' else 0.52
                 self.pending_enemy_hit_at = self.player_attack_duration * fraction
             else:
@@ -112,7 +115,12 @@ class EntityView:
     def trigger_player_action(self, action):
         self.player_action = action
         self.player_action_timer = 0
-        self.player_action_duration = 1100 if action in SPECS_BY_NAME else 700
+        ultimate = ULTIMATE_ANIMATIONS.get(action)
+        self.player_action_duration = ultimate.duration if ultimate else 1100 if action in SPECS_BY_NAME else 700
+        if ultimate:
+            self.pending_enemy_hit_at = None
+            self.attacker = None
+            self.attack_timer = 0
 
     def update(self, dt):
         """Atualiza todos os timers de animação visual."""
@@ -148,6 +156,9 @@ class EntityView:
 
         if self.player_action is not None:
             self.player_action_timer += dt
+            if self.player_action in ULTIMATE_ANIMATIONS and self.pending_enemy_hit_at is not None and self.player_action_timer >= self.pending_enemy_hit_at:
+                self.enemy_flash = max(0, FLASH_DURATION-(self.player_action_timer-self.pending_enemy_hit_at))
+                self.pending_enemy_hit_at = None
             if self.player_action_timer >= self.player_action_duration:
                 self.player_action = None
                 self.player_action_timer = 0
@@ -278,7 +289,9 @@ class EntityView:
                     1.0, self.player_action_timer / self.player_action_duration
                 )
                 spec = SPECS_BY_NAME.get(self.player_action)
-                if spec and spec[6] == 'melee':
+                if self.player_action in ULTIMATE_ANIMATIONS:
+                    index = cast_frame(progress)
+                elif spec and spec[6] == 'melee':
                     index = 0 if progress < 0.4 else 1 if progress < 0.5 else 2 if progress < 0.68 else 3
                 elif spec and spec[6] == 'ranged':
                     index = 0 if progress < 0.2 else 1 if progress < 0.4 else 2 if progress < 0.64 else 3

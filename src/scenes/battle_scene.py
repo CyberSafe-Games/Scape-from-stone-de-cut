@@ -1,4 +1,5 @@
 import pygame
+from copy import deepcopy
 
 from src.scenes.base_scene import BaseScene
 from src.scenes.confirmation_modal import ConfirmationModal
@@ -13,6 +14,8 @@ from src.ui.coin_hud import CoinHUD
 from src.ui.energy_hud import EnergyHUD
 from src.ui.battle_hud import BattleHUD
 from src.ui.card_fx import draw_player_projectile
+from src.ui.ultimate_fx import draw_ultimate_fx
+from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS
 from src.ui.helpers import draw_text, draw_health_bar, draw_panel, draw_vignette, wrap_text
 from src.ui import dark_fantasy_theme as theme
 from src.config.settings import WIDTH, HEIGHT
@@ -53,6 +56,9 @@ class BattleScene(BaseScene):
         self.floating_texts = FloatingTextManager()
         self.entity_view = EntityView(asset_manager)
         self.battle_hud = BattleHUD(asset_manager)
+        self._ultimate_events = []
+        self._ultimate_clock = 0
+        self._ultimate_enemy_snapshot = None
 
         # Inicializa o motor puro de combate com callbacks para efeitos visuais
         self.engine = CombatEngine(
@@ -80,6 +86,10 @@ class BattleScene(BaseScene):
 
     def _handle_combat_event(self, event_name, **kwargs):
         """Reage a eventos emitidos pelo motor de combate."""
+        ultimate = ULTIMATE_ANIMATIONS.get(self.entity_view.player_action)
+        if ultimate and event_name in ('floating_text', 'coin_drop'):
+            self._ultimate_events.append((ultimate.duration*ultimate.impact, event_name, kwargs))
+            return
         if event_name == "attack":
             self.entity_view.trigger_attack(
                 kwargs.get("attacker"), kwargs.get("action"),
@@ -89,6 +99,9 @@ class BattleScene(BaseScene):
             self.entity_view.trigger_flash(kwargs.get("target"))
         elif event_name == "player_action":
             self.entity_view.trigger_player_action(kwargs.get("action"))
+            self._ultimate_clock = 0
+            self._ultimate_enemy_snapshot = (deepcopy(self.engine.enemy)
+                                             if kwargs.get('action') == 'Rugido da Floresta' else None)
         elif event_name == "enemy_action":
             self.entity_view.trigger_enemy_action(kwargs.get("action"),
                                                   enemy_name=getattr(self.engine.enemy, 'name', None))
@@ -127,6 +140,23 @@ class BattleScene(BaseScene):
         self.floating_texts.update(dt)
         self.coin_hud.update(dt)
         self.energy_hud.update(dt)
+        self._ultimate_clock += dt
+        pending = []
+        text_offsets = {}
+        for when, event_name, kwargs in self._ultimate_events:
+            if self._ultimate_clock < when:
+                pending.append((when, event_name, kwargs))
+            elif event_name == 'floating_text':
+                key = (kwargs['x'], kwargs['y'])
+                offset = text_offsets.get(key, 0)
+                self.floating_texts.spawn(kwargs['x'], kwargs['y']-offset, kwargs['text'], kwargs['color'])
+                text_offsets[key] = offset+23
+            else:
+                self.coin_hud.spawn_coins(kwargs['amount'], kwargs['x'], kwargs['y'])
+        self._ultimate_events = pending
+        spec = ULTIMATE_ANIMATIONS.get(self.entity_view.player_action)
+        if spec is None or self._ultimate_clock >= spec.duration*spec.impact:
+            self._ultimate_enemy_snapshot = None
 
         # ----------------------------------------------------
         # Turno do Inimigo
@@ -296,12 +326,16 @@ class BattleScene(BaseScene):
         draw_text(surface, f"{label}: {value}", self.asset_manager.small_font, color,
                   rect.centerx, rect.centery, center=True)
 
+    def _visible_enemy(self):
+        """Mantém vida/escudo visuais anteriores até a onda atingir o alvo."""
+        return self._ultimate_enemy_snapshot or self.engine.enemy
+
     def _draw_combatant_panel(self, surface, rect, name, hp, max_hp, bar_color,
                               stats, title_color=WHITE, subtitle=None, align='left'):
         if self.asset_manager.get_ui_image("hud_portrait") is not None:
             self.battle_hud.combatant(surface, rect, name, hp, max_hp, stats,
                                       enemy=align == 'right', boss=bool(subtitle),
-                                      combatant=self.engine.enemy if align == 'right' else self.engine.player,
+                                      combatant=self._visible_enemy() if align == 'right' else self.engine.player,
                                       mouse=self.window_manager.get_virtual_mouse_pos())
             return
         draw_panel(surface, rect, fill=(10, 17, 17, 228), border=(134, 112, 72), radius=18)
@@ -383,7 +417,7 @@ class BattleScene(BaseScene):
         self._draw_background(surface)
 
         player = self.engine.player
-        enemy = self.engine.enemy
+        enemy = self._visible_enemy()
         if getattr(player, 'invulnerable', False) and not self.engine.message:
             draw_text(surface, 'LABORATÓRIO · VIDA INFINITA', self.asset_manager.small_font,
                       GOLD, WIDTH // 2, 29, center=True)
@@ -439,10 +473,12 @@ class BattleScene(BaseScene):
         self.window_manager.draw_fullscreen_button(self.asset_manager.small_font)
         self._draw_menu_button(surface)
 
+        draw_ultimate_fx(surface, self.entity_view, behind=True)
         self.entity_view.draw_enemy(surface, enemy, enemy_color)
         self.entity_view.draw_player(surface, self.engine.state)
         self.entity_view.draw_enemy_projectile(surface)
         draw_player_projectile(surface, self.entity_view)
+        draw_ultimate_fx(surface, self.entity_view)
 
         self._draw_bottom_hud(surface)
         self._draw_cemetery_button(surface)
@@ -463,7 +499,7 @@ class BattleScene(BaseScene):
                 self._draw_ultimate_hand_card(surface, self.ultimate_hand_rect, hovered)
             self._draw_ultimate_counter(surface, hand_rects)
 
-        can_end = self.engine.state == "player_turn"
+        can_end = self.engine.state == "player_turn" and self.entity_view.player_action is None
         self._draw_end_turn_button(surface, enabled=can_end)
 
         self.floating_texts.draw(surface, self.asset_manager.font)

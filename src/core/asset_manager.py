@@ -48,6 +48,7 @@ class AssetManager:
         self._status_icons = {}
         self._projectile_images = {}
         self._ultimate_images = {}
+        self._ultimate_effect_sprites = {}
 
         self._init_fonts()
         self._load_background()
@@ -298,6 +299,21 @@ class AssetManager:
                 except (pygame.error, FileNotFoundError):
                     pass
             self._card_action_sprites[name] = frames
+        from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS
+        for name, spec in ULTIMATE_ANIMATIONS.items():
+            folder = os.path.join(os.path.dirname(ULTIMATE_ASSETS_DIR), 'ultimate_effects', spec.ultimate_id)
+            for prefix, destination in (('cast', self._card_action_sprites), ('effect', self._ultimate_effect_sprites)):
+                frames = []
+                for i in range(1, 5):
+                    path = os.path.join(folder, f'{prefix}_{i}.png')
+                    try:
+                        frames.append(pygame.image.load(path).convert_alpha())
+                    except (pygame.error, FileNotFoundError):
+                        pass
+                destination[name] = frames
+
+    def get_ultimate_effect_sprites(self, action_name):
+        return self._ultimate_effect_sprites.get(action_name, [])
 
     def get_card_action_sprites(self, action_name):
         return self._card_action_sprites.get(action_name, [])
