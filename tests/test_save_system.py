@@ -54,8 +54,8 @@ class TestSaveSystem(unittest.TestCase):
 
         loaded = self.manager.load_save("Gabriel")
         self.assertEqual(loaded["progresso"]["moedas"], 120)
-        self.assertIn("Fúria", loaded["progresso"]["cartas_colecao"])
-        self.assertNotIn("Fúria", loaded["progresso"]["cartas"])
+        self.assertIn("Aura Rubra", loaded["progresso"]["cartas_colecao"])
+        self.assertNotIn("Aura Rubra", loaded["progresso"]["cartas"])
         self.assertIn("floresta", loaded["progresso"]["territorios_desbloqueados"])
 
     def test_each_save_keeps_its_own_progress(self):
@@ -82,7 +82,7 @@ class TestSaveSystem(unittest.TestCase):
         deck = DeckManager(create_starting_deck())
 
         player.add_coins(75)
-        deck.add_to_deck(CARD_POOL[4])  # Fúria
+        deck.add_to_deck(next(c for c in CARD_POOL if c.name == "Aura Rubra"))  # Fúria
         self.manager.update_from_game(data, player, deck)
         self.manager.save(data)
 
@@ -92,14 +92,14 @@ class TestSaveSystem(unittest.TestCase):
 
         self.assertEqual(new_player.coins, 75)
         self.assertEqual(len(new_deck.deck), 6)
-        self.assertIn("Fúria", self.manager.load_save("Gabriel")["progresso"]["cartas_colecao"])
+        self.assertIn("Aura Rubra", self.manager.load_save("Gabriel")["progresso"]["cartas_colecao"])
 
     def test_unknown_cards_are_ignored_when_applying(self):
         data = self.manager.create_save("Gabriel")
         data["progresso"]["cartas"] = ["Golpe", "CartaQueNaoExiste"]
         new_deck = DeckManager()
         self.manager.apply_to_game(data, Player("Herói", 60), new_deck)
-        self.assertEqual([c.name for c in new_deck.deck], ["Golpe"])
+        self.assertEqual([c.name for c in new_deck.deck], ["Soco Simples"])
 
     def test_list_saves(self):
         self.manager.create_save("A")

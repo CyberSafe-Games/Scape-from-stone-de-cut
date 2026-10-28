@@ -16,6 +16,7 @@ from src.config.layout import (
 )
 from src.ui.helpers import ease
 from src.systems.animation_timing import animation_duration, frame_index, dash_distance
+from src.systems.card_definitions import SPECS_BY_NAME
 
 
 class EntityView:
@@ -41,6 +42,8 @@ class EntityView:
         self.player_action = None
         self.player_action_timer = 0
         self.player_action_duration = 700
+        self.player_attack_duration = ATTACK_DURATION
+        self.pending_enemy_hit_at = None
         self.enemy_action = None
         self.enemy_action_timer = 0
         self.enemy_action_duration = 600
@@ -62,6 +65,10 @@ class EntityView:
         if attacker == "player":
             self.player_action = action
             self.player_action_timer = 0
+            spec = SPECS_BY_NAME.get(action)
+            self.player_attack_duration = 1200 if spec and spec[6] == 'ranged' else 900 if spec else ATTACK_DURATION
+            self.player_action_duration = self.player_attack_duration
+            self.pending_enemy_hit_at = None
         elif attacker == "enemy":
             self.enemy_action = action
             self.enemy_attack_duration = animation_duration(action, ATTACK_DURATION)
@@ -83,15 +90,21 @@ class EntityView:
             else:
                 self.player_flash = FLASH_DURATION
         elif target == "enemy":
-            self.enemy_flash = FLASH_DURATION
+            if self.attacker == 'player' and self.player_action in SPECS_BY_NAME:
+                fraction = 0.90 if SPECS_BY_NAME[self.player_action][6] == 'ranged' else 0.52
+                self.pending_enemy_hit_at = self.player_attack_duration * fraction
+            else:
+                self.enemy_flash = FLASH_DURATION
 
     def trigger_player_action(self, action):
         self.player_action = action
         self.player_action_timer = 0
+        self.player_action_duration = 1100 if action in SPECS_BY_NAME else 700
 
     def update(self, dt):
         """Atualiza todos os timers de animação visual."""
         self.player_flash = max(0, self.player_flash - dt)
+        self.enemy_flash = max(0, self.enemy_flash - dt)
         if self.attacker is not None:
             self.attack_timer += dt
             if (self.attacker == "enemy" and self.pending_player_hit_at is not None
@@ -99,7 +112,11 @@ class EntityView:
                 self.player_flash = max(0, FLASH_DURATION - (
                     self.attack_timer - self.pending_player_hit_at))
                 self.pending_player_hit_at = None
-            duration = self.enemy_attack_duration if self.attacker == "enemy" else ATTACK_DURATION
+            if (self.attacker == 'player' and self.pending_enemy_hit_at is not None
+                    and self.attack_timer >= self.pending_enemy_hit_at):
+                self.enemy_flash = max(0, FLASH_DURATION - (self.attack_timer - self.pending_enemy_hit_at))
+                self.pending_enemy_hit_at = None
+            duration = self.enemy_attack_duration if self.attacker == "enemy" else self.player_attack_duration
             if self.attack_timer >= duration:
                 was_enemy = self.attacker == "enemy"
                 self.attacker = None
@@ -122,7 +139,6 @@ class EntityView:
                 self.player_action = None
                 self.player_action_timer = 0
 
-        self.enemy_flash = max(0, self.enemy_flash - dt)
         self.post_enemy_pause = max(0, self.post_enemy_pause - dt)
 
     def is_enemy_resolving_done(self):
@@ -136,8 +152,10 @@ class EntityView:
             return home_x, 0.0
         if attacker == "enemy" and self.enemy_ranged_attack:
             return home_x, 0.0
+        if attacker == 'player' and self.player_action in SPECS_BY_NAME and SPECS_BY_NAME[self.player_action][6] != 'melee':
+            return home_x, 0.0
 
-        duration = self.enemy_attack_duration if attacker == "enemy" else ATTACK_DURATION
+        duration = self.enemy_attack_duration if attacker == "enemy" else self.player_attack_duration
         progress = min(1.0, self.attack_timer / max(1, duration))
 
         # 1. Aproximação
@@ -218,7 +236,7 @@ class EntityView:
         now = pygame.time.get_ticks()
 
         # Vitória
-        if game_state == "victory":
+        if game_state == "victory" and self.player_action is None and self.attacker != 'player':
             sprites = self.asset_manager.get_player_sprite_group("vitoria")
             if sprites:
                 frame = sprites[(now // 300) % len(sprites)]
@@ -231,7 +249,14 @@ class EntityView:
                 progress = min(
                     1.0, self.player_action_timer / self.player_action_duration
                 )
-                frame = sprites[min(len(sprites) - 1, int(progress * len(sprites)))]
+                spec = SPECS_BY_NAME.get(self.player_action)
+                if spec and spec[6] == 'melee':
+                    index = 0 if progress < 0.4 else 1 if progress < 0.5 else 2 if progress < 0.68 else 3
+                elif spec and spec[6] == 'ranged':
+                    index = 0 if progress < 0.2 else 1 if progress < 0.4 else 2 if progress < 0.64 else 3
+                else:
+                    index = min(len(sprites) - 1, int(progress * len(sprites)))
+                frame = sprites[min(len(sprites) - 1, index)]
             else:
                 frame = self.asset_manager.get_player_sprite("idle", now // 120)
 

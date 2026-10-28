@@ -6,22 +6,26 @@ O desbloqueio pertence à RUN. A ultimate é independente do deck.
 
 from collections import Counter
 from src.systems.card_catalog import CARD_POOL
+from src.systems.card_definitions import migrate_card_name
 
 CARD_NAMES = frozenset(card.name for card in CARD_POOL)
 SLOT_COUNT = 6
 COPIES_PER_SLOT = 3
-INITIAL_SLOTS = ["Golpe", "Defesa", None, None, None, None]
+INITIAL_SLOTS = ["Soco Simples", "Esfera Protetora", None, None, None, None]
 
 
 def normalize_collection_and_slots(progress):
     """Migra saves antigos conservando os tipos conhecidos, sem duplicar slots."""
+    for field in ('cartas', 'cartas_colecao', 'deck_slots'):
+        if isinstance(progress.get(field), list):
+            progress[field] = [migrate_card_name(name) for name in progress[field]]
     legacy = [name for name in progress.get('cartas', []) if name in CARD_NAMES]
     owned = progress.get('cartas_colecao')
     if not isinstance(owned, list):
         owned = list(dict.fromkeys(legacy))
     owned = list(dict.fromkeys(name for name in owned if isinstance(name, str) and name in CARD_NAMES))
     if not owned:
-        owned = ['Golpe', 'Defesa']
+        owned = ['Soco Simples', 'Esfera Protetora']
     slots = progress.get('deck_slots')
     if not isinstance(slots, list):
         slots = list(dict.fromkeys(legacy))[:SLOT_COUNT]

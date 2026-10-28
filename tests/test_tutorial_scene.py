@@ -136,7 +136,7 @@ class TestTutorialSceneIntegration(unittest.TestCase):
 
         self.assertIn("energia", all_text)
         self.assertIn("jogar cartas", all_text)
-        self.assertIn("bloqueio reduz o dano", all_text)
+        self.assertIn("escudo absorve dano", all_text)
         self.assertIn("força aumenta o dano", all_text)
         self.assertIn("cemitério", all_text)
         self.assertIn("descarte", all_text)
@@ -154,8 +154,8 @@ class TestTutorialSceneIntegration(unittest.TestCase):
     def test_tutorial_hand_setup(self):
         """A mão inicial do jogador possui cartas fundamentais de ataque e defesa."""
         hand_names = [c.name for c in self.tutorial_scene.engine.hand]
-        self.assertIn("Golpe", hand_names)
-        self.assertIn("Defesa", hand_names)
+        self.assertIn("Soco Simples", hand_names)
+        self.assertIn("Esfera Protetora", hand_names)
 
     def test_overlay_navigation_via_screen_click(self):
         """Qualquer clique na tela faz o tutorial avançar."""

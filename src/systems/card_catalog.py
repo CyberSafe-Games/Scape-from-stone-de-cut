@@ -1,63 +1,13 @@
 from src.models.card import Card
+from src.models.effects.tactical_card_effect import TacticalCardEffect
+from src.systems.card_definitions import CARD_SPECS
 from src.config.colors import RED, BLUE, GOLD
 
-CARD_POOL = [
-    Card(
-        name="Golpe",
-        cost=1,
-        card_type="attack",
-        value=6,
-        description="Cause 6 de dano",
-        color=RED,
-    ),
-    Card(
-        name="Defesa",
-        cost=1,
-        card_type="skill",
-        value=5,
-        description="Ganhe 5 de bloqueio",
-        color=BLUE,
-    ),
-    Card(
-        name="Investida",
-        cost=2,
-        card_type="attack",
-        value=10,
-        description="Cause 10 de dano",
-        color=RED,
-    ),
-    Card(
-        name="Fortalecer",
-        cost=2,
-        card_type="skill",
-        value=8,
-        description="Ganhe 8 de bloqueio",
-        color=BLUE,
-    ),
-    Card(
-        name="Fúria",
-        cost=1,
-        card_type="power",
-        value=3,
-        description="Ganhe 3 de força permanente",
-        color=GOLD,
-    ),
-    Card(
-        name="Golpe Duplo",
-        cost=2,
-        card_type="attack",
-        value=5,
-        description="Cause 5 de dano duas vezes",
-        color=RED,
-    ),
-]
+CARD_POOL = [Card(s[1], s[2], s[3], s[4], s[7],
+                  {'attack': RED, 'skill': BLUE, 'power': GOLD}[s[3]],
+                  effect=TacticalCardEffect(s)) for s in CARD_SPECS]
+CARD_BY_NAME = {card.name: card for card in CARD_POOL}
 
 
 def create_starting_deck():
-    """Gera o baralho inicial: 3 Golpes e 3 Defesas (cópias fixas)."""
-    deck = []
-    for _ in range(3):
-        deck.append(CARD_POOL[0].copy())
-    for _ in range(3):
-        deck.append(CARD_POOL[1].copy())
-    return deck
+    return [CARD_BY_NAME[name].copy() for name in ('Soco Simples', 'Esfera Protetora') for _ in range(3)]

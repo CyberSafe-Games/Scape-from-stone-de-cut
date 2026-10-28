@@ -112,9 +112,9 @@ class RouteBossDeckTests(unittest.TestCase):
 
     def test_initial_deck_three_copies_per_type(self):
         p = self.data['progresso']
-        self.assertEqual(p['deck_slots'], ['Golpe', 'Defesa', None, None, None, None])
-        self.assertEqual(p['cartas'].count('Golpe'), 3)
-        self.assertEqual(p['cartas'].count('Defesa'), 3)
+        self.assertEqual(p['deck_slots'], ['Soco Simples', 'Esfera Protetora', None, None, None, None])
+        self.assertEqual(p['cartas'].count('Soco Simples'), 3)
+        self.assertEqual(p['cartas'].count('Esfera Protetora'), 3)
         self.assertEqual(len(p['deck_slots']), SLOT_COUNT)
 
     def test_purchase_collect_then_equip_three(self):
@@ -133,7 +133,7 @@ class RouteBossDeckTests(unittest.TestCase):
     def test_equip_must_leave_one_type(self):
         self.assertTrue(equip_card_type(self.saves, self.data, 1, None)[0])
         self.assertFalse(equip_card_type(self.saves, self.data, 0, None)[0])
-        self.assertEqual(self.data['progresso']['cartas'], ['Golpe']*3)
+        self.assertEqual(self.data['progresso']['cartas'], ['Soco Simples']*3)
 
     def test_bad_encounter_counter_rejected(self):
         for value in (4, -1, True, '3'):

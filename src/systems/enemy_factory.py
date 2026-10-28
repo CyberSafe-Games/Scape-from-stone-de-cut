@@ -32,7 +32,9 @@ def _build_slime_actions(level):
     attack_damage = 6 + level
     defense_amount = 5 + level // 2
     return [
-        Action("Ataque", "attack", damage=attack_damage, energy_cost=1, weight=0.70, visual_effect="atk"),
+        Action("Ataque", "attack", damage=attack_damage, energy_cost=1, weight=0.50, visual_effect="atk"),
+        Action("Salpico ácido", "attack", damage=max(1, attack_damage - 3), energy_cost=1,
+               weight=0.20, visual_effect="atk", status_effect=('poison', 2, 3)),
         Action("Defesa", "defend", defense=defense_amount, energy_cost=1, weight=0.30, visual_effect="def"),
     ]
 
@@ -117,7 +119,7 @@ def create_goblin_nerd(level=2):
     actions = [
         Action("Chave arremessada", "attack", damage=8 + level, energy_cost=1, weight=0.35, visual_effect="atk1"),
         Action("Descarga improvisada", "attack", damage=10 + level, energy_cost=1, weight=0.30, visual_effect="atk2"),
-        Action("Baforada tóxica", "attack", damage=9 + level, energy_cost=1, weight=0.20, visual_effect="atk3"),
+        Action("Baforada tóxica", "attack", damage=9 + level, energy_cost=1, weight=0.20, visual_effect="atk3", status_effect=('poison', 2, 5)),
         Action("Escudo rúnico", "defend", defense=8 + level, energy_cost=1, weight=0.15, visual_effect="healer2"),
     ]
     boss = Enemy("Goblin Nerd", hp=92 + level * 4, energy=4, max_energy=4, actions=actions, is_miniboss=True)

@@ -3,6 +3,7 @@ import pygame
 
 from src.config.colors import WHITE, GOLD
 from src.ui.helpers import draw_text
+from src.ui.status_badges import draw_status_badges
 
 
 class BattleHUD:
@@ -42,7 +43,8 @@ class BattleHUD:
         if not self.art(surface, 'hud_portrait', rect):
             pygame.draw.rect(surface, (153, 119, 65), rect, 3)
 
-    def combatant(self, surface, rect, name, hp, maximum, stats, enemy=False, boss=False):
+    def combatant(self, surface, rect, name, hp, maximum, stats, enemy=False, boss=False,
+                  combatant=None, mouse=(0, 0)):
         portrait = pygame.Rect(rect.right - 88 if enemy else rect.left, rect.top, 88, 96)
         self.portrait(surface, portrait, name, player=not enemy)
         track = pygame.Rect(rect.left if enemy else portrait.right + 4, rect.top + 30,
@@ -69,6 +71,10 @@ class BattleHUD:
                              (filled.right - 1, filled.bottom), 2)
         draw_text(surface, f'{hp}/{maximum}', self.assets.small_font, WHITE,
                   track.centerx, track.centery, center=True)
+        if combatant is not None:
+            draw_status_badges(surface, combatant, track.x + 10, rect.top + 76,
+                               track.width, self.assets, mouse)
+            return
         for i, (label, value, color) in enumerate(stats[:2]):
             draw_text(surface, f'{label}: {value}', self.assets.small_font, color,
                       track.x + 13 + i * 112, rect.top + 76)

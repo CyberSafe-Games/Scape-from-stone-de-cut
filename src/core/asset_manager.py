@@ -26,23 +26,9 @@ class AssetManager:
     texturas de cartas e animações).
     """
 
-    CARD_IMAGE_FILES = {
-        "Golpe": "card_golpe.png",
-        "Defesa": "card_defesa.png",
-        "Investida": "card_investida.png",
-        "Fortalecer": "card_fortalecer.png",
-        "Fúria": "card_furia.png",
-        "Golpe Duplo": "card_golpe_duplo.png",
-    }
-
-    CARD_ACTION_FILES = {
-        "Golpe": "golpe",
-        "Defesa": "defesa",
-        "Investida": "investida",
-        "Fortalecer": "fortalecer",
-        "Fúria": "furia",
-        "Golpe Duplo": "golpe_duplo",
-    }
+    from src.systems.card_definitions import CARD_SPECS
+    CARD_IMAGE_FILES = {s[1]: s[0] + '.png' for s in CARD_SPECS}
+    CARD_ACTION_FILES = {s[1]: s[0] for s in CARD_SPECS}
 
     def __init__(self):
         self._fonts = {}
@@ -57,6 +43,8 @@ class AssetManager:
         self._fallback_sprite = None
         self._coin_icon = None
         self._ui_images = {}
+        self._status_icons = {}
+        self._projectile_images = {}
         self._ultimate_images = {}
 
         self._init_fonts()
@@ -93,6 +81,24 @@ class AssetManager:
 
     def get_font(self, name="default"):
         return self._fonts.get(name, self._fonts["default"])
+
+    def get_status_icon(self, name):
+        if name not in self._status_icons:
+            path = os.path.join(os.path.dirname(BACKGROUND_PATH), 'status', name + '.png')
+            try:
+                self._status_icons[name] = pygame.image.load(path).convert_alpha()
+            except (pygame.error, FileNotFoundError):
+                self._status_icons[name] = None
+        return self._status_icons[name]
+
+    def get_projectile_image(self, name):
+        if name not in self._projectile_images:
+            path = os.path.join(os.path.dirname(BACKGROUND_PATH), 'projectiles', name + '.png')
+            try:
+                self._projectile_images[name] = pygame.image.load(path).convert_alpha()
+            except (pygame.error, FileNotFoundError):
+                self._projectile_images[name] = None
+        return self._projectile_images[name]
 
     @property
     def font(self):
@@ -184,6 +190,7 @@ class AssetManager:
             "hud_portrait": "hud_portrait.png",
             "hud_health": "hud_health.png",
             "hud_cemetery": "hud_cemetery.png",
+            "world_map": "world_map.png",
         }
         for key, filename in mapping.items():
             path = os.path.join(UI_ASSETS_DIR, filename)
@@ -280,11 +287,11 @@ class AssetManager:
         """Carrega os frames de animação acionados ao jogar cada tipo de carta."""
         for name, prefix in self.CARD_ACTION_FILES.items():
             frames = []
-            for i in range(1, 4):
+            for i in range(1, 5):
                 path = os.path.join(CARD_EFFECTS_DIR, f"{prefix}_{i}.png")
                 try:
                     img = pygame.image.load(path).convert_alpha()
-                    frame = self.fit_character_sprite(img, 130, 105)
+                    frame = img.convert_alpha()
                     if frame is not None:
                         frames.append(frame)
                 except (pygame.error, FileNotFoundError):

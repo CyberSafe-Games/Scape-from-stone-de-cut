@@ -2,11 +2,24 @@ import pygame
 from src.config.settings import WIDTH, HEIGHT
 from src.config.colors import CARD_BG, WHITE
 from src.config.layout import CARD_WIDTH, CARD_HEIGHT, CARD_SPACING
-from src.ui.helpers import draw_text
+from src.ui.helpers import draw_text, draw_panel, wrap_text
 
 
 class CardView:
     """Responsável por calcular posições e renderizar as cartas na tela."""
+
+    @staticmethod
+    def draw_tooltip(surface, card, assets, point):
+        lines = wrap_text(card.description, assets.font, 350)
+        height = 56 + len(lines) * 23
+        rect = pygame.Rect(min(WIDTH - 390, max(10, int(point[0]) - 190)),
+                           max(12, min(HEIGHT - height - 12, int(point[1]) - height - 20)), 380, height)
+        draw_panel(surface, rect, fill=(8, 16, 16, 250), border=(169, 127, 66), radius=7)
+        title_font = assets.font if assets.font.size(card.name)[0] < 300 else assets.small_font
+        draw_text(surface, card.name, title_font, WHITE, rect.x + 15, rect.y + 12)
+        draw_text(surface, f'{card.cost} E', assets.small_font, (239, 199, 111), rect.right - 48, rect.y + 15)
+        for i, line in enumerate(lines):
+            draw_text(surface, line, assets.font, (218, 220, 202), rect.x + 15, rect.y + 42 + i * 23)
 
     @staticmethod
     def draw_card(surface, rect, card, asset_manager, hovered=False):

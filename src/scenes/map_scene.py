@@ -11,7 +11,7 @@ from src.config.colors import BG, BLACK, WHITE, GOLD, GRAY, BUTTON_BG, BUTTON_HO
 from src.scenes.base_scene import BaseScene
 from src.systems.save_manager import SaveError
 from src.systems.territory_map import (
-    TERRITORIES, status, completed_count,
+    TERRITORIES, status, completed_count, encounter_status, encounter_positions,
 )
 from src.models.effects.ultimate_effect import ULTIMATE_METADATA, DEFAULT_ULTIMATE_ID
 from src.ui.helpers import draw_text, wrap_text
@@ -32,6 +32,9 @@ class MapScene(BaseScene):
         self.save_data = save_data
         available = [t for t in TERRITORIES if status(save_data, t.id) == "available"]
         self.selected = available[-1].id if available else TERRITORIES[-1].id
+        count = save_data['progresso'].get('encontros_por_territorio', {}).get(self.selected, 0)
+        self.selected_encounter = count if available and count < 3 else None
+        self._map_art = None
         self.back_button = pygame.Rect(38, 20, 155, 45)
         self.play_button = pygame.Rect(956, 567, 267, 48)
         self.shop_button = pygame.Rect(956, 627, 267, 39)
@@ -52,6 +55,13 @@ class MapScene(BaseScene):
     def _background(self, surface):
         theme.backdrop(surface, self.asset_manager.background, opacity=226)
         theme.panel(surface, MAP_AREA, fill=(12, 21, 20, 243))
+        art = self.asset_manager.get_ui_image('world_map')
+        if isinstance(art, pygame.Surface):
+            inner = MAP_AREA.inflate(-20, -20)
+            if self._map_art is None:
+                self._map_art = pygame.transform.smoothscale(art, inner.size)
+            surface.blit(self._map_art, inner)
+            return
         # Mapa topográfico abstrato. Evita massas brilhantes e ícones infantis.
         land = pygame.Surface(MAP_AREA.size, pygame.SRCALPHA)
         pygame.draw.polygon(land, (29, 54, 43, 173), [
@@ -85,25 +95,41 @@ class MapScene(BaseScene):
             pygame.draw.line(surface, (91, 74, 54), (cx,cy+7), (cx,cy+19), 2)
 
     def _routes(self, surface):
-        for first, second in zip(TERRITORIES, TERRITORIES[1:]):
-            accessible = status(self.save_data, second.id) != "locked"
-            route_color = (177, 142, 70) if accessible else (79, 75, 79)
-            distance = math.dist(first.position, second.position)
-            steps = max(1, int(distance / 14))
-            for step in range(steps):
-                t = step / steps
-                px = int(first.position[0] + (second.position[0] - first.position[0]) * t)
-                py = int(first.position[1] + (second.position[1] - first.position[1]) * t)
-                pygame.draw.circle(surface, (11, 12, 17), (px, py), 5)
-                pygame.draw.circle(surface, route_color, (px, py), 2 if accessible else 1)
+        previous = (45, 660)
+        for territory in TERRITORIES:
+            positions = (*encounter_positions(territory.id), territory.position)
+            for index, position in enumerate(positions):
+                state = encounter_status(self.save_data, territory.id, index if index < 3 else None)
+                color = (133, 156, 112) if state == 'completed' else (207, 163, 85) if state == 'available' else (74, 83, 79)
+                pygame.draw.line(surface, (9, 18, 18), previous, position, 6)
+                pygame.draw.line(surface, color, previous, position, 2)
+                previous = position
+
+    def _encounters(self, surface):
+        cursor = self.window_manager.get_virtual_mouse_pos()
+        for territory in TERRITORIES:
+            for index, (x, y) in enumerate(encounter_positions(territory.id)):
+                state = encounter_status(self.save_data, territory.id, index)
+                selected = self.selected == territory.id and self.selected_encounter == index
+                hovered = math.dist(cursor, (x, y)) <= 14
+                fill = (42, 91, 68) if state == 'completed' else (106, 77, 35) if state == 'available' else (26, 38, 38)
+                edge = (220, 178, 99) if selected or hovered else (127, 164, 122) if state == 'completed' else (100, 114, 104)
+                if selected:
+                    radius = 17 + round(math.sin(self.elapsed * .004))
+                    pygame.draw.circle(surface, (234, 191, 112), (x, y), radius, 1)
+                pygame.draw.circle(surface, (5, 12, 12), (x + 1, y + 2), 13)
+                pygame.draw.circle(surface, fill, (x, y), 11)
+                pygame.draw.circle(surface, edge, (x, y), 11, 2)
+                draw_text(surface, str(index + 1), self.asset_manager.small_font,
+                          WHITE if state != 'locked' else GRAY, x, y, center=True)
 
     def _territories(self, surface):
         cursor = self.window_manager.get_virtual_mouse_pos()
         pulse = 1.0 + 0.06 * math.sin(self.elapsed * 0.004)
         for territory in TERRITORIES:
             x, y = territory.position
-            state = status(self.save_data, territory.id)
-            chosen = territory.id == self.selected
+            state = encounter_status(self.save_data, territory.id)
+            chosen = territory.id == self.selected and self.selected_encounter is None
             hovered = math.dist(cursor, (x, y)) <= 32
             radius = 27 if chosen else 24
             if chosen:
@@ -123,17 +149,19 @@ class MapScene(BaseScene):
             font = self.asset_manager.small_font
             label_width = min(192, font.size(territory.title)[0] + 26)
             label_rect = pygame.Rect(0, 0, label_width, 30)
-            label_rect.center = (x, y+49)
+            offsets = ((110, 4), (110, 5), (-8, -58), (0, -42), (12, 44), (110, 20), (-30, -42))
+            dx, dy = offsets[territory.level - 1]
+            label_rect.center = (x + dx, y + dy)
             pygame.draw.rect(surface, (12, 20, 19), label_rect, border_radius=2)
             pygame.draw.rect(surface, (89, 77, 58) if state != "locked" else (48, 56, 53), label_rect, 1, border_radius=2)
             draw_text(surface, territory.title, font,
-                      WHITE if state != "locked" else GRAY, x, label_rect.centery, center=True)
+                      WHITE if state != "locked" else GRAY, label_rect.centerx, label_rect.centery, center=True)
 
     def _sidebar(self, surface):
         theme.panel(surface, PANEL, fill=(11, 18, 18, 244))
         center = PANEL.centerx
         selected_territory = next(t for t in TERRITORIES if t.id == self.selected)
-        state = status(self.save_data, selected_territory.id)
+        state = encounter_status(self.save_data, selected_territory.id, self.selected_encounter)
         progress = self.save_data["progresso"]
         draw_text(surface, "SUA EXPEDIÇÃO", self.asset_manager.menu_font, GOLD,
                   center, 127, center=True)
@@ -162,7 +190,9 @@ class MapScene(BaseScene):
                   GOLD, center, 372, center=True)
         draw_text(surface, selected_territory.title, self.asset_manager.font, WHITE,
                   center, 406, center=True)
-        draw_text(surface, selected_territory.subtitle.upper(), self.asset_manager.small_font,
+        subtitle = (f'ENCONTRO {self.selected_encounter + 1} / 3 · SLIME OU VINIMUTH'
+                    if self.selected_encounter is not None else selected_territory.subtitle.upper())
+        draw_text(surface, subtitle, self.asset_manager.small_font,
                   GRAY, center, 438, center=True)
         label, color = {
             "locked": ("BLOQUEADA", (159, 101, 96)),
@@ -174,24 +204,31 @@ class MapScene(BaseScene):
         pygame.draw.rect(surface, color, pill, 2, border_radius=16)
         draw_text(surface, label, self.asset_manager.small_font, color,
                   pill.centerx, pill.centery, center=True)
-        for line_i, line in enumerate(wrap_text(selected_territory.description,
+        description = ('Conclua os três encontros para liberar este território.' if state == 'locked' and self.selected_encounter is None
+                       else 'Conclua o ponto anterior para liberar este encontro.' if state == 'locked'
+                       else 'Você pode repetir este encontro sem avançar o caminho.' if state == 'completed' and self.selected_encounter is not None
+                       else 'Vitória libera o próximo ponto do caminho.' if self.selected_encounter is not None
+                       else selected_territory.description)
+        for line_i, line in enumerate(wrap_text(description,
                                                  self.asset_manager.small_font, 252)[:2]):
             draw_text(surface, line, self.asset_manager.small_font, WHITE,
                       964, 501 + 20 * line_i)
         count = progress.get("encontros_por_territorio", {}).get(selected_territory.id, 0)
-        count = 3 if state == "completed" else count
-        if state != "locked":
+        count = 3 if status(self.save_data, selected_territory.id) == 'completed' else count
+        if status(self.save_data, selected_territory.id) != 'locked':
             draw_text(surface, f"CAMINHO  {count}/3 ENCONTROS", self.asset_manager.small_font,
                       GOLD, 968, 542)
             for j in range(3):
                 color = (109, 158, 115) if j < count else (88, 86, 74)
                 pygame.draw.circle(surface, color, (1197 + 9*j, 550), 4)
-        if state == "locked":
+        if status(self.save_data, selected_territory.id) == 'locked':
             draw_text(surface, "Conclua a fase anterior para liberar.",
                       self.asset_manager.small_font, (188, 135, 122), 964, 543)
-        play_label = ("FASE BLOQUEADA" if state == "locked" else
-                      "REPETIR PONTO" if state == "completed" else
-                      f"ENCONTRO {count + 1} / 3" if count < 3 else "CONFRONTO DO TERRITÓRIO")
+        play_label = ('PONTO BLOQUEADO' if state == 'locked' else
+                      'REPETIR ENCONTRO' if state == 'completed' and self.selected_encounter is not None else
+                      'REPETIR TERRITÓRIO' if state == 'completed' else
+                      f'JOGAR ENCONTRO {self.selected_encounter + 1}' if self.selected_encounter is not None else
+                      'CONFRONTO DO TERRITÓRIO')
         self._button(surface, self.play_button, play_label, enabled=state != "locked")
         self._button(surface, self.shop_button, "ACESSAR LOJA")
 
@@ -204,10 +241,10 @@ class MapScene(BaseScene):
         draw_text(surface, "CARTOGRAFIA DA JORNADA", self.asset_manager.big_font,
                   GOLD, WIDTH // 2, 217, center=True)
         steps = (
-            "01  Escolha um dos pontos do mapa para ver sua fase.",
-            "02  Vença três encontros antes do ponto de interesse.",
-            "03  Após o confronto principal, libere o próximo território.",
-            "04  Volte ao mapa sempre que sair de um combate.",
+            "01  Círculos são encontros; losangos são territórios.",
+            "02  Vença os encontros 1, 2 e 3 para liberar o losango.",
+            "03  Após o confronto principal, abra o próximo caminho.",
+            "04  Volte e repita qualquer ponto verde já concluído.",
         )
         for i, line in enumerate(steps):
             draw_text(surface, line, self.asset_manager.small_font, WHITE,
@@ -217,6 +254,7 @@ class MapScene(BaseScene):
     def draw(self, surface):
         self._background(surface)
         self._routes(surface)
+        self._encounters(surface)
         self._territories(surface)
         self._sidebar(surface)
         draw_text(surface, "TERRITÓRIOS ESQUECIDOS", self.asset_manager.big_font, WHITE, 224, 18)
@@ -228,7 +266,7 @@ class MapScene(BaseScene):
         pygame.draw.rect(surface, (185, 145, 82), bag, 2, border_radius=3)
         pygame.draw.arc(surface, (185, 145, 82), (bag.x + 4, bag.y - 8, 9, 14), 0, 3.14, 2)
         self.window_manager.draw_fullscreen_button(self.asset_manager.small_font)
-        draw_text(surface, "BRONZE · SELECIONADO     VERDE · CONCLUÍDO     CINZA · BLOQUEADO     SETAS / 1–7 · NAVEGAR",
+        draw_text(surface, "CÍRCULOS · ENCONTROS     LOSANGOS · TERRITÓRIOS     VERDE · CONCLUÍDO     SETAS · NAVEGAR",
                   self.asset_manager.small_font, GRAY, 62, 694)
         if self.error:
             draw_text(surface, self.error[:100], self.asset_manager.small_font,
@@ -250,11 +288,11 @@ class MapScene(BaseScene):
                     self._dismiss_guide()
             return
         if event.type == pygame.KEYDOWN:
-            if event.key in (pygame.K_LEFT, pygame.K_RIGHT):
-                current = next(i for i, territory in enumerate(TERRITORIES)
-                               if territory.id == self.selected)
-                delta = -1 if event.key == pygame.K_LEFT else 1
-                self.selected = TERRITORIES[(current + delta) % len(TERRITORIES)].id
+            if event.key in (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN):
+                points = [(t.id, index) for t in TERRITORIES for index in (0, 1, 2, None)]
+                current = points.index((self.selected, self.selected_encounter))
+                delta = -1 if event.key in (pygame.K_LEFT, pygame.K_UP) else 1
+                self.selected, self.selected_encounter = points[(current + delta) % len(points)]
                 self.error = ""
                 return
             numeric_keys = {
@@ -263,6 +301,8 @@ class MapScene(BaseScene):
             }
             if event.key in numeric_keys:
                 self.selected = TERRITORIES[numeric_keys[event.key]].id
+                count = self.save_data['progresso'].get('encontros_por_territorio', {}).get(self.selected, 0)
+                self.selected_encounter = count if count < 3 and status(self.save_data, self.selected) != 'completed' else None
                 self.error = ""
                 return
             if event.key == pygame.K_b:
@@ -296,8 +336,16 @@ class MapScene(BaseScene):
                 self._start_selected()
                 return
             for territory in TERRITORIES:
+                for index, position in enumerate(encounter_positions(territory.id)):
+                    if math.dist(point, position) <= 14:
+                        self.selected = territory.id
+                        self.selected_encounter = index
+                        self.error = ''
+                        return
+            for territory in TERRITORIES:
                 if math.dist(point, territory.position) <= 34:
                     self.selected = territory.id
+                    self.selected_encounter = None
                     self.error = ""
                     return
 
@@ -320,17 +368,16 @@ class MapScene(BaseScene):
 
     def _start_selected(self):
         territory = next(t for t in TERRITORIES if t.id == self.selected)
-        if status(self.save_data, territory.id) == "locked":
-            self.error = "Território bloqueado! Conclua a fase anterior."
+        if encounter_status(self.save_data, territory.id, self.selected_encounter) == 'locked':
+            self.error = "Ponto bloqueado! Conclua os encontros anteriores do caminho."
             return
         from src.scenes.battle_scene import BattleScene
         self.scene_manager.change_scene(BattleScene(
             self.scene_manager, self.window_manager, self.asset_manager,
             save_manager=self.save_manager, save_data=self.save_data,
             map_mode=True, selected_level=territory.level,
-            encounter_kind="road" if self.save_data["progresso"].get(
-                "encontros_por_territorio", {}).get(territory.id, 0) < 3
-                and status(self.save_data, territory.id) != "completed" else "point",
+            encounter_kind='road' if self.selected_encounter is not None else 'point',
+            encounter_index=self.selected_encounter,
         ))
 
     def _back(self):

@@ -9,6 +9,7 @@ from src.systems.deck_loadout import (
 from src.systems.card_catalog import CARD_POOL
 from src.ui import dark_fantasy_theme as theme
 from src.ui.helpers import draw_text, wrap_text
+from src.ui.card_view import CardView
 
 
 class BackpackScene(BaseScene):
@@ -22,14 +23,23 @@ class BackpackScene(BaseScene):
         self.clear_rect = pygame.Rect(730, 649, 197, 43)
         self.slots = []
         self.cards = {}
+        self.page = 0
+        self.previous_page_rect = pygame.Rect(705, 610, 100, 30)
+        self.next_page_rect = pygame.Rect(1110, 610, 100, 30)
         for i in range(SLOT_COUNT):
             col, row = i % 2, i // 2
             self.slots.append(pygame.Rect(56 + col*310, 197 + row*137, 290, 124))
-        for index, card in enumerate(CARD_POOL):
-            col, row = index % 2, index // 2
-            self.cards[card.name] = pygame.Rect(703 + col*248, 197 + row*137, 232, 124)
+        self._set_page(0)
         self.notice = "Selecione um espaço à esquerda e um tipo adquirido à direita."
         self.notice_color = GRAY
+
+    def _set_page(self, page):
+        self.page_count = (len(CARD_POOL) + 5) // 6
+        self.page = max(0, min(page, self.page_count - 1))
+        self.cards = {}
+        for index, card in enumerate(CARD_POOL[self.page * 6:(self.page + 1) * 6]):
+            col, row = index % 2, index // 2
+            self.cards[card.name] = pygame.Rect(703 + col*248, 197 + row*137, 232, 124)
 
     def update(self, dt):
         pass
@@ -60,6 +70,8 @@ class BackpackScene(BaseScene):
                 draw_text(surface, "VAZIO · ESCOLHA UMA CARTA", self.asset_manager.small_font,
                           GRAY, rect.x+16, rect.y+68)
         for card in CARD_POOL:
+            if card.name not in self.cards:
+                continue
             rect = self.cards[card.name]
             owned = card.name in progress['cartas_colecao']
             is_equipped = card.name in progress['deck_slots']
@@ -73,13 +85,25 @@ class BackpackScene(BaseScene):
             draw_text(surface, "EQUIPADA" if is_equipped else "DISPONÍVEL" if owned else "NÃO ADQUIRIDA",
                       self.asset_manager.small_font,
                       GOLD if owned else GRAY, rect.x+85, rect.y+99)
-        draw_text(surface, self.notice[:102], self.asset_manager.small_font,
+        draw_text(surface, self.notice[:70], self.asset_manager.small_font,
                   self.notice_color, 57, 617)
+        mouse = self.window_manager.get_virtual_mouse_pos()
+        theme.button(surface, self.previous_page_rect, 'ANTERIOR', self.asset_manager.small_font,
+                     hover=self.previous_page_rect.collidepoint(mouse), enabled=self.page > 0)
+        theme.button(surface, self.next_page_rect, 'PRÓXIMA', self.asset_manager.small_font,
+                     hover=self.next_page_rect.collidepoint(mouse), enabled=self.page + 1 < self.page_count)
+        draw_text(surface, f'{self.page + 1} / {self.page_count}', self.asset_manager.small_font,
+                  GOLD, 958, 625, center=True)
         hovered = self.clear_rect.collidepoint(self.window_manager.get_virtual_mouse_pos())
         theme.button(surface, self.clear_rect, "ESVAZIAR ESPAÇO", self.asset_manager.small_font, hover=hovered)
         hovered = self.back_rect.collidepoint(self.window_manager.get_virtual_mouse_pos())
         theme.button(surface, self.back_rect, "VOLTAR AO MAPA", self.asset_manager.small_font, hover=hovered)
-        theme.footer(surface, "1–6 · ESCOLHER ESPAÇO     |     3 CÓPIAS FIXAS POR TIPO     |     ESC · VOLTAR", self.asset_manager.small_font)
+        draw_text(surface, "1–6 · ESCOLHER ESPAÇO     |     3 CÓPIAS FIXAS POR TIPO     |     ESC · VOLTAR",
+                  self.asset_manager.small_font, GRAY, WIDTH // 2, HEIGHT - 10, center=True)
+        for card in CARD_POOL:
+            if card.name in self.cards and self.cards[card.name].collidepoint(mouse):
+                CardView.draw_tooltip(surface, card, self.asset_manager, mouse)
+                break
 
     def _thumb(self, surface, name, x, y, width, height):
         image = self.asset_manager.get_card_image(name)
@@ -100,7 +124,11 @@ class BackpackScene(BaseScene):
         if event.type != pygame.MOUSEBUTTONDOWN or event.button != 1:
             return
         point = self.window_manager.map_to_virtual(event.pos)
-        if self.back_rect.collidepoint(point):
+        if self.previous_page_rect.collidepoint(point):
+            self._set_page(self.page - 1)
+        elif self.next_page_rect.collidepoint(point):
+            self._set_page(self.page + 1)
+        elif self.back_rect.collidepoint(point):
             self._back()
         elif self.clear_rect.collidepoint(point):
             self._equip(None)

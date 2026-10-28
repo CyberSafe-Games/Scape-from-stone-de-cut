@@ -76,3 +76,26 @@ def complete(data, territory_id):
 
 def completed_count(data):
     return sum(id_ in data["progresso"]["territorios_concluidos"] for id_ in TERRITORY_IDS)
+
+
+def encounter_status(data, territory_id, index=None):
+    """Estado do ponto principal (None) ou de um dos três encontros (0–2)."""
+    territory_state = status(data, territory_id)
+    if index is not None and (type(index) is not int or not 0 <= index < 3):
+        raise ValueError('Encontro fora do caminho.')
+    if territory_state == 'locked':
+        return 'locked'
+    if territory_state == 'completed':
+        return 'completed'
+    count = data['progresso'].get('encontros_por_territorio', {}).get(territory_id, 0)
+    if index is None:
+        return 'available' if count >= 3 else 'locked'
+    return 'completed' if index < count else 'available' if index == count else 'locked'
+
+
+def encounter_positions(territory_id):
+    territory = by_id(territory_id)
+    start = by_level(territory.level - 1).position if territory.level > 1 else (45, 660)
+    end = territory.position
+    return tuple((round(start[0] + (end[0] - start[0]) * t),
+                  round(start[1] + (end[1] - start[1]) * t)) for t in (.25, .5, .75))

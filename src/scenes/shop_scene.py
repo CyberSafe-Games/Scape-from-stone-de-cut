@@ -10,6 +10,7 @@ from src.systems.shop_system import (
 )
 from src.ui.helpers import draw_text, wrap_text
 from src.ui import dark_fantasy_theme as theme
+from src.ui.card_view import CardView
 
 
 TYPE_NAMES = {"attack": "ATAQUE", "skill": "HABILIDADE", "power": "PODER"}
@@ -29,13 +30,22 @@ class ShopScene(BaseScene):
         self.heal_button = pygame.Rect(932, 176, 256, 45)
         self.back_button = pygame.Rect(945, 656, 275, 43)
         self.offer_rects = {}
-        names = list(CARD_OFFERS)
-        for i, name in enumerate(names):
-            x, y = COLUMNS[i % 3], ROWS[i // 3]
-            self.offer_rects[name] = pygame.Rect(x + 224, y + 98, 137, 31)
+        self.page = 0
+        self.previous_page_rect = pygame.Rect(420, 650, 90, 30)
+        self.next_page_rect = pygame.Rect(710, 650, 90, 30)
+        self._set_page(0)
         self.message = ""
         self.message_timer = 0
         self.message_positive = True
+
+    def _set_page(self, page):
+        self.page_count = (len(CARD_OFFERS) + 5) // 6
+        self.page = max(0, min(page, self.page_count - 1))
+        names = list(CARD_OFFERS)[self.page * 6:(self.page + 1) * 6]
+        self.offer_rects = {}
+        for i, name in enumerate(names):
+            x, y = COLUMNS[i % 3], ROWS[i // 3]
+            self.offer_rects[name] = pygame.Rect(x + 224, y + 98, 137, 31)
 
     def update(self, dt):
         if self.message_timer > 0:
@@ -93,7 +103,7 @@ class ShopScene(BaseScene):
             surface.blit(thumb, (x + 12 + (84 - thumb.get_width()) // 2, y + 10))
         title_x = x + 110
         draw_text(surface, name.upper(), self.asset_manager.small_font, WHITE, title_x, y + 13)
-        draw_text(surface, TYPE_NAMES.get(card.card_type, card.card_type.upper()),
+        draw_text(surface, f'{TYPE_NAMES.get(card.card_type, card.card_type.upper())} · {card.cost} ENERGIA',
                   self.asset_manager.small_font, GOLD, title_x, y + 39)
         for idx, line in enumerate(wrap_text(card.description, self.asset_manager.small_font, 248)[:2]):
             draw_text(surface, line, self.asset_manager.small_font,
@@ -120,16 +130,28 @@ class ShopScene(BaseScene):
                   WHITE, 58, 280)
         draw_text(surface, "Novos tipos vão para a coleção; equipe três cópias na mochila.",
                   self.asset_manager.small_font, GRAY, 467, 286)
-        for index, name in enumerate(CARD_OFFERS):
+        for index, name in enumerate(self.offer_rects):
             self._draw_offer(surface, name, index)
         if self.message and self.message_timer > 0:
             color = (132, 205, 143) if self.message_positive else (228, 145, 129)
             draw_text(surface, self.message, self.asset_manager.small_font,
-                      color, 60, 662)
+                      color, 60, 632)
+        mouse = self.window_manager.get_virtual_mouse_pos()
+        theme.button(surface, self.previous_page_rect, 'ANTERIOR', self.asset_manager.small_font,
+                     hover=self.previous_page_rect.collidepoint(mouse), enabled=self.page > 0)
+        theme.button(surface, self.next_page_rect, 'PRÓXIMA', self.asset_manager.small_font,
+                     hover=self.next_page_rect.collidepoint(mouse), enabled=self.page + 1 < self.page_count)
+        draw_text(surface, f'{self.page + 1} / {self.page_count}', self.asset_manager.small_font,
+                  GOLD, 610, 665, center=True)
         hovered = self.back_button.collidepoint(self.window_manager.get_virtual_mouse_pos())
         theme.button(surface, self.back_button, "RETORNAR AO MAPA",
                      self.asset_manager.small_font, hover=hovered)
-        theme.footer(surface, "ESC  ·  VOLTAR    |    F11  ·  TELA CHEIA", self.asset_manager.small_font)
+        draw_text(surface, "ESC  ·  VOLTAR    |    F11  ·  TELA CHEIA", self.asset_manager.small_font,
+                  GRAY, WIDTH // 2, HEIGHT - 10, center=True)
+        for i, name in enumerate(self.offer_rects):
+            if pygame.Rect(COLUMNS[i % 3], ROWS[i // 3], TILE_W, TILE_H).collidepoint(mouse):
+                CardView.draw_tooltip(surface, CARD_OFFERS[name], self.asset_manager, mouse)
+                break
 
     def handle_event(self, event):
         if self.window_manager.handle_window_event(event):
@@ -140,7 +162,11 @@ class ShopScene(BaseScene):
         if event.type != pygame.MOUSEBUTTONDOWN or event.button != 1:
             return
         pos = self.window_manager.map_to_virtual(event.pos)
-        if self.back_button.collidepoint(pos):
+        if self.previous_page_rect.collidepoint(pos):
+            self._set_page(self.page - 1)
+        elif self.next_page_rect.collidepoint(pos):
+            self._set_page(self.page + 1)
+        elif self.back_button.collidepoint(pos):
             self._back()
         elif self.heal_button.collidepoint(pos):
             self._notify(purchase_healing(self.save_manager, self.save_data))

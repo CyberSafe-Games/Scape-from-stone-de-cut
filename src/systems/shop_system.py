@@ -15,14 +15,7 @@ HEAL_PURCHASE_LIMIT = 3  # Por RUN/save, NÃO por território.
 MAX_PLAYER_HP = 60
 
 # Preços iniciais, editáveis; não criam novas cartas nem dependem de novas artes.
-CARD_PRICES = {
-    "Golpe": 35,
-    "Defesa": 35,
-    "Investida": 60,
-    "Fortalecer": 55,
-    "Fúria": 70,
-    "Golpe Duplo": 65,
-}
+CARD_PRICES = {card.name: 25 + card.cost * 15 for card in CARD_POOL}
 
 @dataclass(frozen=True)
 class ShopResult:

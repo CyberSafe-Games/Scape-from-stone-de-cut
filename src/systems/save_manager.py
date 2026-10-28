@@ -5,11 +5,12 @@ from datetime import datetime
 
 from src.config.settings import SAVES_DIR
 from src.systems.card_catalog import CARD_POOL, create_starting_deck
+from src.systems.card_definitions import migrate_card_name
 from src.systems.territory_map import TERRITORY_IDS, FIRST_TERRITORY_ID
 from src.models.effects.ultimate_effect import DEFAULT_ULTIMATE_ID, known_ultimate_ids
 from src.systems.deck_loadout import INITIAL_SLOTS, normalize_collection_and_slots, expand_slots, SLOT_COUNT, CARD_NAMES
 
-SAVE_VERSION = 7
+SAVE_VERSION = 8
 SLOT_COUNT = 3
 
 # Território disponível em um save novo (ids de território definidos pelo jogo).
@@ -66,7 +67,7 @@ class SaveManager:
                 "moedas": INITIAL_COINS,
                 "curas_compradas_run": 0,
                 "cartas": expand_slots(INITIAL_SLOTS),
-                "cartas_colecao": ["Golpe", "Defesa"],
+                "cartas_colecao": ["Soco Simples", "Esfera Protetora"],
                 "deck_slots": list(INITIAL_SLOTS),
                 "encontros_por_territorio": {},
                 # Checkpoint reiniciado no começo de um combate (não é um snapshot do turno).
@@ -227,7 +228,7 @@ class SaveManager:
             raise SaveCorruptedError("Lista de territórios inválida.")
         if any(not isinstance(territory, str) for territory in progress["territorios_concluidos"]):
             raise SaveCorruptedError("Lista de territórios concluídos inválida.")
-        data.setdefault("versao", SAVE_VERSION)
+        data['versao'] = SAVE_VERSION
         data["id"] = save_id  # O nome real do arquivo prevalece sobre o conteúdo.
         data.setdefault("nome", save_id)
         data.setdefault("criado_em", base["criado_em"])
@@ -300,9 +301,9 @@ class SaveManager:
         # start_combat inicia a mão/energia do primeiro turno do novo combate.
         player.turn_count = 0
         deck_manager.deck = [
-            self._card_catalog[name].copy()
+            self._card_catalog[migrate_card_name(name)].copy()
             for name in progress["cartas"]
-            if name in self._card_catalog
+            if migrate_card_name(name) in self._card_catalog
         ]
 
     def update_from_game(self, data, player, deck_manager, level=None):

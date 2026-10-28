@@ -100,12 +100,12 @@ class TutorialScene(BattleScene):
     def _setup_tutorial_hand(self):
         """Assegura cartas fundamentais na mão inicial (Golpe, Defesa)."""
         hand_names = [c.name for c in self.engine.hand]
-        if "Defesa" not in hand_names or "Golpe" not in hand_names:
+        if "Esfera Protetora" not in hand_names or "Soco Simples" not in hand_names:
             from src.systems.card_catalog import CARD_POOL
             catalog = {c.name: c for c in CARD_POOL}
             if len(self.engine.hand) >= 2:
-                self.engine.hand[0] = catalog["Golpe"].copy()
-                self.engine.hand[1] = catalog["Defesa"].copy()
+                self.engine.hand[0] = catalog["Soco Simples"].copy()
+                self.engine.hand[1] = catalog["Esfera Protetora"].copy()
 
     def _create_tutorial_steps(self) -> list[TutorialStep]:
         """Constrói os balões flutuantes posicionados perto de cada elemento ensinado."""
@@ -163,11 +163,11 @@ class TutorialScene(BattleScene):
                     "Toda carta possui seu custo gravado no canto superior.",
                     "Sua energia é totalmente restaurada a cada novo turno.",
                 ],
-                target_rect_fn=lambda: pygame.Rect(36, 116, 170, 26),
-                bubble_pos=(222, 92),
+                target_rect_fn=lambda: pygame.Rect(36, 156, 170, 26),
+                bubble_pos=(222, 132),
                 bubble_size=(470, 190),
-                arrow_origin_fn=lambda: (222, 129),
-                arrow_target_fn=lambda: (206, 129),
+                arrow_origin_fn=lambda: (222, 169),
+                arrow_target_fn=lambda: (206, 169),
             )
         )
 
@@ -179,7 +179,7 @@ class TutorialScene(BattleScene):
                 subtitle="Seu Arsenal em Mão",
                 lines=[
                     "Estas são as cartas disponíveis para você jogar.",
-                    "• Ataques (ex: Golpe) drenam o HP do adversário.",
+                    "• Ataques (ex: Soco Simples) drenam o HP do adversário.",
                     "• Defesas protegem seu corpo contra ataques iminentes.",
                     "Cartas não usadas permanecem na mão no próximo turno.",
                 ],
@@ -199,11 +199,12 @@ class TutorialScene(BattleScene):
                 subtitle="Mitigação e Amplificação",
                 lines=[
                     "Abaixo da vida ficam seus STATUS especiais:",
-                    "• BLOQUEIO reduz o dano sofrido! O escudo absorve antes.",
-                    "• FORÇA aumenta o dano dos seus ataques!",
-                    "Bloqueie para resistir e fortaleça para causar mais dano.",
+                    "• ESCUDO absorve dano e dura 2 turnos completos.",
+                    "• FORÇA aumenta o dano; Aura Rubra dura 3 turnos.",
+                    "• Fogo acumula; Veneno ignora Escudo.",
+                    "Sangramento pune o primeiro ataque de cada turno.",
                 ],
-                target_rect_fn=lambda: pygame.Rect(120, 94, 276, 23),
+                target_rect_fn=lambda: pygame.Rect(120, 94, 276, 48),
                 bubble_pos=(416, 78),
                 bubble_size=(480, 192),
                 arrow_origin_fn=lambda: (416, 106),
@@ -221,13 +222,13 @@ class TutorialScene(BattleScene):
                     "Esta caixa revela com antecedência o plano do monstro:",
                     "• Ícone de Espada: ele atacará e exibirá o dano (ex: 5).",
                     "• Ícone de Escudo: ele erguerá bloqueio.",
-                    "Antecipe seus passos: use Defesa se ele for atacar!",
+                    "Antecipe seus passos: use Esfera Protetora se ele for atacar!",
                 ],
-                target_rect_fn=lambda: pygame.Rect(936, 116, 234, 28),
-                bubble_pos=(454, 86),
+                target_rect_fn=lambda: pygame.Rect(900, 156, 270, 28),
+                bubble_pos=(418, 126),
                 bubble_size=(470, 190),
-                arrow_origin_fn=lambda: (924, 130),
-                arrow_target_fn=lambda: (936, 130),
+                arrow_origin_fn=lambda: (888, 170),
+                arrow_target_fn=lambda: (900, 170),
             )
         )
 
@@ -279,8 +280,8 @@ class TutorialScene(BattleScene):
                 subtitle="A Batalha Começa Agora",
                 lines=[
                     "Tudo pronto! Agora vença o Slime de treino:",
-                    "1. Jogue 'Defesa' para bloquear os 5 de dano previstos.",
-                    "2. Jogue 'Golpe' para causar dano ao inimigo.",
+                    "1. Jogue 'Esfera Protetora' para bloquear os 5 de dano previstos.",
+                    "2. Jogue 'Soco Simples' para causar dano ao inimigo.",
                     "3. Encerre sua vez clicando no botão FIM DO TURNO.",
                     "Clique em qualquer lugar da tela para lutar!",
                 ],
@@ -361,7 +362,7 @@ class TutorialScene(BattleScene):
             )
 
         # Sobrescreve a tela de vitória quando o tutorial for concluído
-        if self.engine.state == "victory":
+        if self.engine.state == "victory" and self.entity_view.player_action is None and self.entity_view.attacker is None:
             self._draw_tutorial_victory(surface, cursor)
 
     def _draw_tutorial_victory(self, surface, cursor):

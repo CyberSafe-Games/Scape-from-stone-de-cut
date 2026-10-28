@@ -12,6 +12,7 @@ from src.ui.floating_text import FloatingTextManager
 from src.ui.coin_hud import CoinHUD
 from src.ui.energy_hud import EnergyHUD
 from src.ui.battle_hud import BattleHUD
+from src.ui.card_fx import draw_player_projectile
 from src.ui.helpers import draw_text, draw_health_bar, draw_panel, draw_vignette, wrap_text
 from src.ui import dark_fantasy_theme as theme
 from src.config.settings import WIDTH, HEIGHT
@@ -39,7 +40,7 @@ class BattleScene(BaseScene):
 
     def __init__(self, scene_manager, window_manager, asset_manager,
                  save_manager=None, save_data=None, map_mode=False,
-                 selected_level=None, encounter_kind="point"):
+                 selected_level=None, encounter_kind="point", encounter_index=None):
 
         super().__init__(scene_manager, window_manager, asset_manager)
 
@@ -48,6 +49,7 @@ class BattleScene(BaseScene):
         self.map_mode = map_mode
         self.selected_level = selected_level
         self.encounter_kind = encounter_kind
+        self.encounter_index = encounter_index
         self.floating_texts = FloatingTextManager()
         self.entity_view = EntityView(asset_manager)
         self.battle_hud = BattleHUD(asset_manager)
@@ -61,6 +63,7 @@ class BattleScene(BaseScene):
                 self.save_data, self.save_manager,
                 level=self.selected_level if self.map_mode else None,
                 encounter_kind=self.encounter_kind,
+                encounter_index=self.encounter_index,
             )
 
         # Sistema de moedas (instanciado apos o engine para ter acesso ao player)
@@ -297,7 +300,9 @@ class BattleScene(BaseScene):
                               stats, title_color=WHITE, subtitle=None, align='left'):
         if self.asset_manager.get_ui_image("hud_portrait") is not None:
             self.battle_hud.combatant(surface, rect, name, hp, max_hp, stats,
-                                      enemy=align == 'right', boss=bool(subtitle))
+                                      enemy=align == 'right', boss=bool(subtitle),
+                                      combatant=self.engine.enemy if align == 'right' else self.engine.player,
+                                      mouse=self.window_manager.get_virtual_mouse_pos())
             return
         draw_panel(surface, rect, fill=(10, 17, 17, 228), border=(134, 112, 72), radius=18)
         title_y = rect.y + 10
@@ -413,20 +418,20 @@ class BattleScene(BaseScene):
         player_rect = pygame.Rect(22, 20, 390, 92)
         enemy_rect = pygame.Rect(790, 20, 370, 92)
         self._draw_combatant_panel(surface, player_rect, player.name, player.hp, player.max_hp, GREEN, player_stats, align='left')
-        self._draw_energy_panel(surface, 36, 116, self.engine.energy, self.engine.energy_max, self.engine.player.MAX_ENERGY_LIMIT, align='left')
-        self._draw_coin_badge(surface, 36, 146)
+        self._draw_energy_panel(surface, 36, 156, self.engine.energy, self.engine.energy_max, self.engine.player.MAX_ENERGY_LIMIT, align='left')
+        self._draw_coin_badge(surface, 36, 186)
 
         self._draw_combatant_panel(surface, enemy_rect, enemy.name, enemy.hp, enemy.max_hp, RED, enemy_stats,
                                    title_color=GOLD if enemy.is_miniboss else WHITE,
                                    subtitle="MINIBOSS" if enemy.is_miniboss else None, align='right')
-        intent_rect = pygame.Rect(936, 116, 234, 28)
+        intent_rect = pygame.Rect(900, 156, 270, 28)
         draw_panel(surface, intent_rect, fill=(12, 19, 17, 210), border=(77, 68, 54), radius=12, shadow=False)
         draw_text(surface, intent_text, self.asset_manager.small_font, GOLD,
                   intent_rect.centerx, intent_rect.centery, center=True)
         if getattr(enemy, "actions_per_turn", 1) > 1:
             until_spin = enemy.special_interval - (enemy.action_counter % enemy.special_interval)
             draw_text(surface, f"2 AÇÕES / RODADA   ·   GIRO EM {until_spin} ATOS",
-                      self.asset_manager.small_font, GOLD, 970, 158, center=True)
+                      self.asset_manager.small_font, GOLD, 970, 198, center=True)
 
         self.window_manager.draw_fullscreen_button(self.asset_manager.small_font)
         self._draw_menu_button(surface)
@@ -434,6 +439,7 @@ class BattleScene(BaseScene):
         self.entity_view.draw_enemy(surface, enemy, enemy_color)
         self.entity_view.draw_player(surface, self.engine.state)
         self.entity_view.draw_enemy_projectile(surface)
+        draw_player_projectile(surface, self.entity_view)
 
         self._draw_bottom_hud(surface)
         self._draw_cemetery_button(surface)
@@ -460,6 +466,12 @@ class BattleScene(BaseScene):
         self.floating_texts.draw(surface, self.asset_manager.font)
         self.coin_hud.draw_particles(surface)
 
+        mouse = self.window_manager.get_virtual_mouse_pos()
+        for rect, card in zip(hand_rects, self.engine.hand):
+            if rect.collidepoint(mouse):
+                CardView.draw_tooltip(surface, card, self.asset_manager, mouse)
+                break
+
         if self.engine.message:
             msg_rect = pygame.Rect(WIDTH // 2 - 230, 26, 460, 40)
             draw_panel(surface, msg_rect, fill=(36, 14, 18, 235), border=(168, 86, 86), radius=12)
@@ -468,7 +480,7 @@ class BattleScene(BaseScene):
 
         if self.engine.state == "game_over":
             self._draw_game_over(surface)
-        if self.engine.state == "victory":
+        if self.engine.state == "victory" and self.entity_view.player_action is None and self.entity_view.attacker is None:
             self._draw_victory(surface)
         if self.engine.state == "phase_complete":
             self._draw_pending_save(surface)
@@ -558,6 +570,10 @@ class BattleScene(BaseScene):
         for rect, card in zip(reward_rects, self.engine.reward_cards):
             hovered = rect.collidepoint(mouse_pos)
             CardView.draw_card(surface, rect, card, self.asset_manager, hovered)
+        for rect, card in zip(reward_rects, self.engine.reward_cards):
+            if rect.collidepoint(mouse_pos):
+                CardView.draw_tooltip(surface, card, self.asset_manager, mouse_pos)
+                break
         self._draw_action_button(surface, self.skip_reward_rect, "Pular",
                                  (55, 57, 63), (148, 148, 148), text_color=WHITE)
 
@@ -619,7 +635,7 @@ class BattleScene(BaseScene):
                     return
 
             # Recompensa de Vitória: Escolher Carta ou Pular
-            elif self.engine.state == "victory":
+            elif self.engine.state == "victory" and self.entity_view.player_action is None and self.entity_view.attacker is None:
                 reward_rects = CardView.get_reward_rects(len(self.engine.reward_cards))
                 for index, rect in enumerate(reward_rects):
                     if rect.collidepoint(virt_pos):
@@ -646,12 +662,14 @@ class BattleScene(BaseScene):
                             self.save_data, self.save_manager,
                             level=self.selected_level if self.map_mode else None,
                             encounter_kind=self.encounter_kind,
+                            encounter_index=self.encounter_index,
                         )
                     except (OSError, SaveError) as exc:
                         # Falha explícita em vez de sobrescrever um save danificado.
                         self.engine.show_message(f"Não foi possível carregar: {exc}")
                 self.coin_hud = CoinHUD(self.engine.player, anchor_x=66, anchor_y=102)
                 self.energy_hud = EnergyHUD(self.engine.player)
+                self.entity_view = EntityView(self.asset_manager)
                 self.floating_texts.clear()
                 self.enemy_turn_timer = 0
 

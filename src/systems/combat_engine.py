@@ -28,6 +28,7 @@ class CombatEngine:
         self.ultimate = create_ultimate(self.player.equipped_ultimate_id)
         self.level = 1
         self.encounter_kind = "point"
+        self.encounter_index = None
         self.enemy_actions_remaining = 0
         self.cemetery_swap_used = False
 
@@ -132,6 +133,8 @@ class CombatEngine:
         self.player.turn_count = 0
         self.player.strength = 0  # Buffs permanentes duram a luta, não a RUN.
         self.player.weak_turns = 0
+        self.player.reset_combat_effects()
+        self.enemy.reset_combat_effects()
         self.deck_manager.start_combat()
         self.player.turn_count += 1
         self.deck_manager.draw_cards(self.player.get_hand_size())
@@ -159,6 +162,14 @@ class CombatEngine:
 
         # Acumula carga da ultimate proporcionalmente à energia gasta
         self.player.add_ultimate_charge(card.cost)
+
+        if card.card_type == 'attack':
+            self._bleed_on_attack(self.player)
+            if not self.player.is_alive():
+                self.deck_manager.discard_card(index)
+                self.state = 'game_over'
+                self.on_event('game_over')
+                return True
 
         # Aplica o efeito polimórfico da carta (Open/Closed Principle)
         card.execute(self.player, self.enemy, context=self)
@@ -271,6 +282,13 @@ class CombatEngine:
         if self.state != "player_turn":
             return
 
+        self._tick_statuses(self.player)
+        if not self.player.is_alive():
+            self.state = 'game_over'
+            self.on_event('game_over')
+            return
+        self.enemy.begin_turn()
+
         # A mão é persistente: só cartas jogadas/descartadas saem dela.
         self.enemy_actions_remaining = getattr(self.enemy, "actions_per_turn", 1)
         self.state = "enemy_turn"
@@ -278,7 +296,14 @@ class CombatEngine:
 
     def enemy_turn(self):
         """Executa a ação calculada da inteligência artificial do inimigo."""
+        if self.state != 'enemy_turn':
+            return
         action = getattr(self.enemy, "current_action", None)
+        if (action is not None and action.action_type == 'attack') or (action is None and self.enemy.intent == 'attack'):
+            self._bleed_on_attack(self.enemy)
+            if not self.enemy.is_alive():
+                self._on_enemy_defeated()
+                return
         attacked = False
         if action is not None:
             self.enemy.use_energy(action.energy_cost)
@@ -291,7 +316,10 @@ class CombatEngine:
                 action.execute(self.enemy, self.player, context=self)
             elif action.action_type == "attack":
                 damage = self._apply_weakness_modifier(action.damage)
-                actual_damage = self.player.take_damage(damage)
+                protected = 'totem' in self.player.statuses
+                actual_damage = self.player.receive_attack(damage + self.enemy.attack_bonus)
+                if getattr(action, 'status_effect', None) and not protected and self.player.is_alive():
+                    self.player.apply_status(*action.status_effect)
                 self.trigger_attack("enemy", action=action.visual_effect or "atk")
                 self.trigger_flash("player")
                 self.spawn_player_text(f"-{actual_damage}", RED)
@@ -304,7 +332,7 @@ class CombatEngine:
         else:
             if self.enemy.intent == "attack":
                 damage = self._apply_weakness_modifier(self.enemy.intent_value)
-                actual_damage = self.player.take_damage(damage)
+                actual_damage = self.player.receive_attack(damage + self.enemy.attack_bonus)
 
                 self.trigger_attack("enemy", action="atk")
                 self.trigger_flash("player")
@@ -330,15 +358,23 @@ class CombatEngine:
 
     def finish_enemy_turn(self):
         """Resolve cada ação em sequência; duas no caso de Corpo Seco."""
+        if self.state != 'enemy_resolving':
+            return
         if self.enemy_actions_remaining > 0:
             choose_next_action(self.enemy)
             self.state = "enemy_turn"
             return
+        self._tick_statuses(self.enemy)
+        if not self.enemy.is_alive():
+            self._on_enemy_defeated()
+            return
         self.enemy.reset_energy()
         choose_next_action(self.enemy)
-        self.player.block = 0
+        self.player.begin_turn()
         self.player.increase_max_energy(1)
         self.player.reset_energy()
+        self.player.energy = min(self.player.MAX_ENERGY_LIMIT, self.player.energy + self.player.next_turn_energy)
+        self.player.next_turn_energy = 0
         self.player.turn_count += 1
         self.deck_manager.refill_hand(self.player.get_hand_size())
         self.cemetery_swap_used = False
@@ -358,6 +394,15 @@ class CombatEngine:
         """Consome durações de efeitos temporários ao final da ação do inimigo."""
         if getattr(self.enemy, "weak_turns", 0) > 0:
             self.enemy.weak_turns = max(0, self.enemy.weak_turns - 1)
+
+    def _bleed_on_attack(self, combatant):
+        damage = combatant.on_attack()
+        if damage:
+            self.spawn_damage_text(combatant, f'Sangramento -{damage}', RED)
+
+    def _tick_statuses(self, combatant):
+        for name, damage in combatant.end_turn_statuses():
+            self.spawn_damage_text(combatant, f'{"Fogo" if name == "fire" else "Veneno"} -{damage}', RED)
 
     # ========================================================
     # PROGRESSÃO E RECOMPENSAS
@@ -422,7 +467,7 @@ class CombatEngine:
         self.state = "player_turn"
         self.on_event("checkpoint", level=self.level)
 
-    def resume_from_save(self, data, save_manager, level=None, encounter_kind="point"):
+    def resume_from_save(self, data, save_manager, level=None, encounter_kind="point", encounter_index=None):
         """Restaura o progresso e recomeça o combate no andar salvo.
 
         A partida é retomada no início do confronto, não no meio do turno.
@@ -432,6 +477,7 @@ class CombatEngine:
         self.equip_ultimate(self.player.equipped_ultimate_id)
         self.level = data["progresso"]["andar"] if level is None else level
         self.encounter_kind = encounter_kind
+        self.encounter_index = encounter_index
         if encounter_kind == "road":
             self.enemy = create_road_enemy(self.level)
         elif encounter_kind == "point":

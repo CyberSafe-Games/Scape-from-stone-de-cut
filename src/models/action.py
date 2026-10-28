@@ -15,6 +15,7 @@ class Action:
         weight: float = 1.0,
         visual_effect: str | None = None,
         effect=None,
+        status_effect=None,
     ):
         self.name = name
         self.action_type = action_type  # "attack", "defend", etc.
@@ -24,6 +25,7 @@ class Action:
         self.weight = weight
         self.visual_effect = visual_effect
         self.effect = effect
+        self.status_effect = status_effect
 
     @property
     def value(self) -> int:
@@ -44,6 +46,7 @@ class Action:
             return actual_damage
         elif self.action_type in ("defend", "defense"):
             user.add_block(self.defense)
+            context.trigger_enemy_action(self.visual_effect or 'def')
             from src.config.colors import BLUE
             context.spawn_enemy_text(f"+{self.defense} bloqueio", BLUE)
             return self.defense
