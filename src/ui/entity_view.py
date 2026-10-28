@@ -21,6 +21,7 @@ from src.ui.guardian_spirit_fx import draw_guardian_spirit
 from src.ui.crimson_cast_fx import draw_crimson_cast
 from src.systems.normal_enemy_catalog import NORMAL_RANGED, NORMAL_SPRITES
 from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS, cast_frame
+from src.systems.boss_ultimate_animations import BOSS_ULTIMATE_ANIMATIONS, boss_cast_frame, boss_ultimate_pose
 
 NORMAL_IDLE_NAMES = frozenset(name.lower() for name in NORMAL_SPRITES) - {'morcego sombrio'}
 
@@ -63,13 +64,15 @@ class EntityView:
         self.enemy_ranged_attack = None
         self._screwdriver_sprite = None
         self.enemy_attack_name = ""
+        self.enemy_ultimate = None
 
-    def trigger_attack(self, attacker, action=None, enemy_name=None):
+    def trigger_attack(self, attacker, action=None, enemy_name=None, ultimate=False):
         self.attacker = attacker
         self.attack_timer = 0
         self.pending_player_hit_at = None
         self.enemy_ranged_attack = None
         self.enemy_attack_name = (enemy_name or "").strip().lower()
+        self.enemy_ultimate = BOSS_ULTIMATE_ANIMATIONS.get(self.enemy_attack_name) if ultimate and attacker == 'enemy' else None
         if attacker == "player":
             self.player_action = action
             self.player_action_timer = 0
@@ -85,6 +88,11 @@ class EntityView:
             self.enemy_ranged_attack = self.RANGED_ATTACKS.get(self.enemy_attack_name, {}).get(action)
             if self.enemy_ranged_attack:
                 self.enemy_attack_duration = self.enemy_ranged_attack[0]
+            if self.enemy_ultimate:
+                spec = self.enemy_ultimate
+                self.enemy_attack_duration = spec.duration
+                self.enemy_ranged_attack = ((spec.duration, spec.release, spec.impact)
+                                           if spec.mode in ('bear', 'plasma') else None)
             self.enemy_action_timer = 0
 
     def trigger_enemy_action(self, action, enemy_name=None):
@@ -99,7 +107,7 @@ class EntityView:
     def trigger_flash(self, target):
         if target == "player":
             if self.attacker == "enemy":
-                impact = self.enemy_ranged_attack[2] if self.enemy_ranged_attack else 0.49
+                impact = self.enemy_ultimate.impact if self.enemy_ultimate else self.enemy_ranged_attack[2] if self.enemy_ranged_attack else 0.49
                 self.pending_player_hit_at = self.enemy_attack_duration * impact
             else:
                 self.player_flash = FLASH_DURATION
@@ -147,6 +155,7 @@ class EntityView:
                     self.enemy_action_timer = 0
                     self.enemy_ranged_attack = None
                     self.pending_player_hit_at = None
+                    self.enemy_ultimate = None
 
         if self.enemy_action is not None and self.attacker != "enemy":
             self.enemy_action_timer += dt
@@ -174,6 +183,10 @@ class EntityView:
         """Calcula a posição interpolada X e extensão de braço para um ataque corpo-a-corpo."""
         if self.attacker != attacker:
             return home_x, 0.0
+        if attacker == 'enemy' and self.enemy_ultimate:
+            progress = self.attack_timer/max(1, self.enemy_attack_duration)
+            x, _ = boss_ultimate_pose(self.enemy_ultimate, progress, home_x, PLAYER_X+105)
+            return x, 0
         if attacker == "enemy" and self.enemy_ranged_attack:
             return home_x, 0.0
         if attacker == 'player' and self.player_action in SPECS_BY_NAME and SPECS_BY_NAME[self.player_action][6] != 'melee':
@@ -230,6 +243,8 @@ class EntityView:
         return x, y, flight
 
     def draw_enemy_projectile(self, surface):
+        if self.enemy_ultimate:
+            return
         if self.enemy_attack_name == 'carrasco da vigília' and self.enemy_action == 'healer2':
             draw_crimson_cast(surface, self)
             return
@@ -368,6 +383,11 @@ class EntityView:
 
         # 1. Ataque físico
         if self.attacker == "enemy":
+            if self.enemy_ultimate:
+                sprites = self.asset_manager.get_boss_ultimate_sprites(enemy_name)
+                if sprites:
+                    index = boss_cast_frame(self.attack_timer/max(1, self.enemy_attack_duration), self.enemy_ultimate)
+                    return sprites[min(index, len(sprites)-1)]
             preferred_group = self.enemy_action if self.enemy_action else "atk"
             sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, preferred_group)
             attack_group = preferred_group
@@ -462,6 +482,8 @@ class EntityView:
             frame = self.get_enemy_frame(enemy)
             if frame is not None:
                 hover = 28 + round(3 * math.sin(pygame.time.get_ticks() / 300)) if enemy.name == 'Morcego Sombrio' else 0
+                if self.enemy_ultimate:
+                    _, hover = boss_ultimate_pose(self.enemy_ultimate, self.attack_timer/max(1, self.enemy_attack_duration), ENEMY_X, PLAYER_X+105)
                 rect = frame.get_rect(midbottom=(int(enemy_x), PLAYER_GROUND_Y-hover))
                 # Eco visual discreto acompanha o giro, sem piscar frames nem
                 # trocar artificialmente a posição do personagem.

@@ -49,6 +49,8 @@ class AssetManager:
         self._projectile_images = {}
         self._ultimate_images = {}
         self._ultimate_effect_sprites = {}
+        self._boss_ultimate_sprites = {}
+        self._boss_ultimate_effects = {}
 
         self._init_fonts()
         self._load_background()
@@ -57,6 +59,7 @@ class AssetManager:
         self._load_player_sprites()
         self._load_enemy_sprites()
         self._load_card_action_sprites()
+        self._load_boss_ultimate_sprites()
         self._load_coin_icon()
         self._load_ui_images()
         self._load_ultimate_images()
@@ -152,7 +155,7 @@ class AssetManager:
 
     def _load_territory_backgrounds(self):
         """Carrega fundos opcionais específicos de território."""
-        mapping = {1: 'background_pedra_do_corte.png', 2: "background_mata_sombria.png",
+        mapping = {1: 'background_pedra_do_corte.png', 2: "background_mata_sombria.png", 3: 'background_ruinas_ancestrais.png',
                    5: 'background_fortaleza_caida.png', 6: 'background_pico_da_vigilia.png'}
         for level, filename in mapping.items():
             path = os.path.join(os.path.dirname(BACKGROUND_PATH), filename)
@@ -314,6 +317,55 @@ class AssetManager:
 
     def get_ultimate_effect_sprites(self, action_name):
         return self._ultimate_effect_sprites.get(action_name, [])
+
+    def _load_boss_ultimate_sprites(self):
+        from src.systems.boss_ultimate_animations import BOSS_ULTIMATE_ANIMATIONS, BOSS_ORIGINAL_CASTS
+        for name, spec in BOSS_ULTIMATE_ANIMATIONS.items():
+            folder = os.path.join(os.path.dirname(ULTIMATE_ASSETS_DIR), 'boss_ultimate_effects', spec.asset_id)
+            casts = []
+            for group, index in BOSS_ORIGINAL_CASTS[name]:
+                originals = self.get_enemy_sprite_group(name, group)
+                if originals:
+                    source = originals[min(index, len(originals)-1)]
+                    if name == 'goblin nerd':
+                        # Os recortes antigos trazem pequenos fragmentos de
+                        # células vizinhas; preserva a silhueta principal inteira.
+                        parts = pygame.mask.from_surface(source, 12).connected_components()
+                        if parts:
+                            main = max(parts, key=lambda part: part.count())
+                            source = source.copy()
+                            source.blit(main.to_surface(setcolor=(255, 255, 255, 255),
+                                                        unsetcolor=(0, 0, 0, 0)), (0, 0),
+                                        special_flags=pygame.BLEND_RGBA_MULT)
+                        # O disparo antigo foi desenhado em escala menor que
+                        # o idle. Normaliza a altura com pixels originais, sem
+                        # inventar outro rosto ou trocar a arma por um canhão.
+                        if group == 'atk2':
+                            idle = self.get_enemy_sprite_group(name, 'idle')[0]
+                            ratio = idle.get_bounding_rect(min_alpha=50).height/source.get_bounding_rect(min_alpha=50).height
+                            source = pygame.transform.scale(source, (round(source.get_width()*ratio), round(source.get_height()*ratio)))
+                    frame = pygame.Surface((448, 320), pygame.SRCALPHA)
+                    rect = source.get_rect(midbottom=(224, 318))
+                    # As folhas antigas têm margens inferiores diferentes;
+                    # alinha os pés, sem mudar a escala ou desenhar outro corpo.
+                    rect.y += source.get_height()-source.get_bounding_rect(min_alpha=50).bottom
+                    if name == 'goblin nerd':
+                        floor = source.get_bounding_rect(min_alpha=50).bottom
+                        feet = source.subsurface((0, floor-6, source.get_width(), 6)).get_bounding_rect(min_alpha=50)
+                        rect.x += source.get_width()//2-feet.centerx
+                    frame.blit(source, rect)
+                    casts.append(frame)
+            self._boss_ultimate_sprites[name] = casts
+            effects = []
+            for i in range(1, 5):
+                try:
+                    effects.append(pygame.image.load(os.path.join(folder, f'effect_{i}.png')).convert_alpha())
+                except (pygame.error, FileNotFoundError):
+                    pass
+            self._boss_ultimate_effects[name] = effects
+
+    def get_boss_ultimate_sprites(self, name, effects=False):
+        return (self._boss_ultimate_effects if effects else self._boss_ultimate_sprites).get(name.lower(), [])
 
     def get_card_action_sprites(self, action_name):
         return self._card_action_sprites.get(action_name, [])

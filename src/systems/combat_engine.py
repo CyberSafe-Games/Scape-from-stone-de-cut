@@ -315,12 +315,16 @@ class CombatEngine:
             elif hasattr(action, "execute") and callable(action.execute) and action.action_type != "attack":
                 action.execute(self.enemy, self.player, context=self)
             elif action.action_type == "attack":
+                ultimate = action is getattr(self.enemy, 'special_action', None)
+                if ultimate:
+                    self.trigger_attack('enemy', action=action.visual_effect or 'atk', ultimate=True)
                 damage = self._apply_weakness_modifier(action.damage)
                 protected = 'totem' in self.player.statuses
                 actual_damage = self.player.receive_attack(damage + self.enemy.attack_bonus)
                 if getattr(action, 'status_effect', None) and not protected and self.player.is_alive():
                     self.player.apply_status(*action.status_effect)
-                self.trigger_attack("enemy", action=action.visual_effect or "atk")
+                if not ultimate:
+                    self.trigger_attack("enemy", action=action.visual_effect or "atk")
                 self.trigger_flash("player")
                 self.spawn_player_text(f"-{actual_damage}", RED)
                 attacked = True
@@ -491,8 +495,11 @@ class CombatEngine:
     # NOTIFICAÇÕES VISUAIS E CONTEXTO DE EFEITOS
     # ========================================================
 
-    def trigger_attack(self, attacker, action=None):
-        self.on_event("attack", attacker=attacker, action=action)
+    def trigger_attack(self, attacker, action=None, ultimate=False):
+        if ultimate:
+            self.on_event('attack', attacker=attacker, action=action, ultimate=True)
+        else:
+            self.on_event("attack", attacker=attacker, action=action)
 
     def trigger_flash(self, target):
         self.on_event("flash", target=target)

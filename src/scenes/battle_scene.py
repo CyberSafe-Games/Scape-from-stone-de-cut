@@ -15,6 +15,7 @@ from src.ui.energy_hud import EnergyHUD
 from src.ui.battle_hud import BattleHUD
 from src.ui.card_fx import draw_player_projectile
 from src.ui.ultimate_fx import draw_ultimate_fx
+from src.ui.boss_ultimate_fx import draw_boss_ultimate_fx
 from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS
 from src.ui.helpers import draw_text, draw_health_bar, draw_panel, draw_vignette, wrap_text
 from src.ui import dark_fantasy_theme as theme
@@ -59,6 +60,9 @@ class BattleScene(BaseScene):
         self._ultimate_events = []
         self._ultimate_clock = 0
         self._ultimate_enemy_snapshot = None
+        self._boss_events = []
+        self._boss_clock = 0
+        self._boss_player_snapshot = None
 
         # Inicializa o motor puro de combate com callbacks para efeitos visuais
         self.engine = CombatEngine(
@@ -90,10 +94,18 @@ class BattleScene(BaseScene):
         if ultimate and event_name in ('floating_text', 'coin_drop'):
             self._ultimate_events.append((ultimate.duration*ultimate.impact, event_name, kwargs))
             return
+        boss_ultimate = self.entity_view.enemy_ultimate
+        if boss_ultimate and event_name == 'floating_text':
+            self._boss_events.append((boss_ultimate.duration*boss_ultimate.impact, kwargs))
+            return
         if event_name == "attack":
+            if kwargs.get('ultimate'):
+                self._boss_clock = 0
+                self._boss_player_snapshot = deepcopy(self.engine.player)
             self.entity_view.trigger_attack(
                 kwargs.get("attacker"), kwargs.get("action"),
                 enemy_name=getattr(self.engine.enemy, "name", None),
+                ultimate=kwargs.get('ultimate', False),
             )
         elif event_name == "flash":
             self.entity_view.trigger_flash(kwargs.get("target"))
@@ -141,6 +153,17 @@ class BattleScene(BaseScene):
         self.coin_hud.update(dt)
         self.energy_hud.update(dt)
         self._ultimate_clock += dt
+        self._boss_clock += dt
+        pending_boss = []
+        for when, kwargs in self._boss_events:
+            if self._boss_clock < when:
+                pending_boss.append((when, kwargs))
+            else:
+                self.floating_texts.spawn(kwargs['x'], kwargs['y'], kwargs['text'], kwargs['color'])
+        self._boss_events = pending_boss
+        boss_spec = self.entity_view.enemy_ultimate
+        if boss_spec is None or self._boss_clock >= boss_spec.duration*boss_spec.impact:
+            self._boss_player_snapshot = None
         pending = []
         text_offsets = {}
         for when, event_name, kwargs in self._ultimate_events:
@@ -330,12 +353,15 @@ class BattleScene(BaseScene):
         """Mantém vida/escudo visuais anteriores até a onda atingir o alvo."""
         return self._ultimate_enemy_snapshot or self.engine.enemy
 
+    def _visible_player(self):
+        return self._boss_player_snapshot or self.engine.player
+
     def _draw_combatant_panel(self, surface, rect, name, hp, max_hp, bar_color,
                               stats, title_color=WHITE, subtitle=None, align='left'):
         if self.asset_manager.get_ui_image("hud_portrait") is not None:
             self.battle_hud.combatant(surface, rect, name, hp, max_hp, stats,
                                       enemy=align == 'right', boss=bool(subtitle),
-                                      combatant=self._visible_enemy() if align == 'right' else self.engine.player,
+                                      combatant=self._visible_enemy() if align == 'right' else self._visible_player(),
                                       mouse=self.window_manager.get_virtual_mouse_pos())
             return
         draw_panel(surface, rect, fill=(10, 17, 17, 228), border=(134, 112, 72), radius=18)
@@ -416,7 +442,7 @@ class BattleScene(BaseScene):
     def draw(self, surface):
         self._draw_background(surface)
 
-        player = self.engine.player
+        player = self._visible_player()
         enemy = self._visible_enemy()
         if getattr(player, 'invulnerable', False) and not self.engine.message:
             draw_text(surface, 'LABORATÓRIO · VIDA INFINITA', self.asset_manager.small_font,
@@ -474,11 +500,13 @@ class BattleScene(BaseScene):
         self._draw_menu_button(surface)
 
         draw_ultimate_fx(surface, self.entity_view, behind=True)
+        draw_boss_ultimate_fx(surface, self.entity_view, behind=True)
         self.entity_view.draw_enemy(surface, enemy, enemy_color)
         self.entity_view.draw_player(surface, self.engine.state)
         self.entity_view.draw_enemy_projectile(surface)
         draw_player_projectile(surface, self.entity_view)
         draw_ultimate_fx(surface, self.entity_view)
+        draw_boss_ultimate_fx(surface, self.entity_view)
 
         self._draw_bottom_hud(surface)
         self._draw_cemetery_button(surface)
@@ -513,13 +541,19 @@ class BattleScene(BaseScene):
         if self.ultimate_hand_rect and self.ultimate_hand_rect.collidepoint(mouse):
             CardView.draw_tooltip(surface, self.engine.ultimate, self.asset_manager, mouse, cost_label='ULT')
 
-        if self.engine.message:
+        if self.entity_view.enemy_ultimate:
+            special = self.entity_view.enemy_ultimate
+            msg_rect = pygame.Rect(WIDTH//2-230, 26, 460, 40)
+            draw_panel(surface, msg_rect, fill=(12, 14, 20, 235), border=special.color, radius=10)
+            draw_text(surface, special.title.upper(), self.asset_manager.font, special.color,
+                      msg_rect.centerx, msg_rect.centery, center=True)
+        elif self.engine.message:
             msg_rect = pygame.Rect(WIDTH // 2 - 230, 26, 460, 40)
             draw_panel(surface, msg_rect, fill=(36, 14, 18, 235), border=(168, 86, 86), radius=12)
             draw_text(surface, self.engine.message, self.asset_manager.font, WHITE,
                       msg_rect.centerx, msg_rect.centery, center=True)
 
-        if self.engine.state == "game_over":
+        if self.engine.state == "game_over" and self.entity_view.enemy_ultimate is None:
             self._draw_game_over(surface)
         if self.engine.state == "victory" and self.entity_view.player_action is None and self.entity_view.attacker is None:
             self._draw_victory(surface)
@@ -692,7 +726,7 @@ class BattleScene(BaseScene):
             if event.key == pygame.K_r and self.engine.state == "phase_complete":
                 self._finalize_map_phase(self.engine.level)
                 return
-            if event.key == pygame.K_r and self.engine.state == "game_over":
+            if event.key == pygame.K_r and self.engine.state == "game_over" and self.entity_view.enemy_ultimate is None:
                 self.engine = CombatEngine(
                     on_event_callback=self._handle_combat_event, map_mode=self.map_mode,
                 )
