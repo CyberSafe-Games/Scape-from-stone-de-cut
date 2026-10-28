@@ -4,6 +4,7 @@ import unittest
 from unittest.mock import patch
 
 from src.models.player import Player
+from src.systems.normal_enemy_catalog import biome_enemy_names
 from src.systems.save_manager import SaveManager, SaveCorruptedError
 from src.systems.combat_engine import CombatEngine
 from src.systems.enemy_factory import create_corpo_seco, create_road_enemy
@@ -25,7 +26,7 @@ class RouteBossDeckTests(unittest.TestCase):
     def _road_victory(self, level=1):
         engine = CombatEngine(map_mode=True)
         engine.resume_from_save(self.data, self.saves, level=level, encounter_kind='road')
-        self.assertIn(engine.enemy.name, ('Slime', 'Vinimuth'))
+        self.assertIn(engine.enemy.name, biome_enemy_names(level))
         engine.state = 'victory'
         engine.skip_reward()
         self.assertEqual(engine.state, 'phase_complete')
@@ -70,14 +71,14 @@ class RouteBossDeckTests(unittest.TestCase):
 
     def test_fortress_boss_and_other_road_enemies(self):
         self.assertEqual(create_corpo_seco(5).name, 'Corpo Seco')
-        self.assertIn(create_road_enemy(5).name, ('Slime', 'Vinimuth'))
+        self.assertIn(create_road_enemy(5).name, biome_enemy_names(5))
         self.data['progresso']['andar'] = 5
         e = CombatEngine(map_mode=True)
         e.resume_from_save(self.data, self.saves, level=5, encounter_kind='point')
         self.assertEqual(e.enemy.name, 'Corpo Seco')
         self.assertEqual(e.enemy.actions_per_turn, 2)
         e.resume_from_save(self.data, self.saves, level=5, encounter_kind='road')
-        self.assertIn(e.enemy.name, ('Slime', 'Vinimuth'))
+        self.assertIn(e.enemy.name, biome_enemy_names(5))
 
     def test_boss_gets_two_actions_and_spins_every_eight_actions(self):
         e = CombatEngine(map_mode=True)

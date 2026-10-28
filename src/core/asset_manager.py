@@ -1,6 +1,7 @@
 import os
 import pygame
 from src.ui.sprite_cleanup import remove_white_fringe, recolor_green_aura_red
+from src.systems.normal_enemy_catalog import NORMAL_SPRITES, NORMAL_RANGED
 
 from src.config.settings import (
     WIDTH,
@@ -454,6 +455,18 @@ class AssetManager:
                 groups[group] = frames
             groups['atk'] = groups['atk1']
             self._enemy_sprites['carrasco da vigília'] = groups
+
+        for name, (slug, action_groups, _, _) in NORMAL_SPRITES.items():
+            folder = os.path.join(ASSETS_DIR, 'enemies', slug)
+            groups = {}
+            for group in action_groups:
+                groups[group] = [pygame.image.load(os.path.join(folder, f'{group}_{i}.png')).convert_alpha()
+                                 for i in range(1, 5)]
+            groups['atk'] = groups['atk1']
+            self._enemy_sprites[name.lower()] = groups
+            for action in NORMAL_RANGED.get(name.lower(), {}):
+                path = os.path.join(folder, f'projectile_{action}.png')
+                self._enemy_projectiles[(name.lower(), action)] = pygame.image.load(path).convert_alpha()
 
     def get_enemy_projectile(self, enemy_name, action):
         return self._enemy_projectiles.get((enemy_name.strip().lower(), action))

@@ -25,10 +25,10 @@ class GuardiaoDaPedraTests(unittest.TestCase):
         self.assertEqual(boss.special_interval, 8)
         self.assertEqual({a.visual_effect for a in boss.actions}, {'atk1', 'def', 'healer2'})
         self.assertEqual(boss.special_action.visual_effect, 'atk2')
-        for name in ('Slime', 'Vinimuth'):
+        for name in ('Slime',):
             with patch('src.systems.enemy_factory.random.choice', return_value=name):
                 self.assertEqual(create_road_enemy(1).name, name)
-        self.assertEqual(create_point_enemy(2).name, 'Goblin Nerd')
+        self.assertEqual(create_point_enemy(3).name, 'Goblin Nerd')
         self.assertEqual(create_point_enemy(5).name, 'Corpo Seco')
 
     def test_special_occurs_on_eighth_and_sixteenth_actions(self):

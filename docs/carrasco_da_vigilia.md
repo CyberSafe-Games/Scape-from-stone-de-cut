@@ -1,6 +1,6 @@
 # Carrasco da Vigília
 
-O ponto principal do nível 6 (Pico da Vigília) usa o Carrasco da Vigília. Os encontros normais continuam com Slime e Vinimuth. O novo chefe aparece também ao repetir a fase, sem alterar os desbloqueios dos saves existentes.
+O ponto principal do nível 6 (Pico da Vigília) usa o Carrasco da Vigília. Os encontros normais usam Centauro Vigia e Lutador Mascarado, conforme o bestiário por bioma. O novo chefe aparece também ao repetir a fase, sem alterar os desbloqueios dos saves existentes.
 
 ## Regras
 

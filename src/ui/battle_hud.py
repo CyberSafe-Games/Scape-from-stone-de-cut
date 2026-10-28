@@ -4,6 +4,7 @@ import pygame
 from src.config.colors import WHITE, GOLD
 from src.ui.helpers import draw_text
 from src.ui.status_badges import draw_status_badges
+from src.systems.normal_enemy_catalog import NORMAL_PORTRAITS
 
 
 class BattleHUD:
@@ -36,6 +37,10 @@ class BattleHUD:
             if bounds.width and bounds.height:
                 side = max(1, round(bounds.height * 0.48))
                 head = pygame.Rect(bounds.centerx - side // 2, bounds.top, side, side)
+                if not player and name.lower() in NORMAL_PORTRAITS:
+                    x, y, w, h = NORMAL_PORTRAITS[name.lower()]
+                    head = pygame.Rect(bounds.x+round(x*bounds.width), bounds.y+round(y*bounds.height),
+                                       round(w*bounds.width), round(h*bounds.height))
                 head = head.clip(source.get_rect())
                 self._portraits[key] = pygame.transform.smoothscale(source.subsurface(head), inner.size)
         if key in self._portraits:

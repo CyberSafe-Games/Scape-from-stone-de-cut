@@ -9,14 +9,15 @@ import pygame
 
 from src.core.asset_manager import AssetManager
 from src.systems.enemy_factory import create_road_enemy, create_enemy
+from src.systems.normal_enemy_catalog import biome_enemy_names
 from src.ui.entity_view import EntityView
 from src.config.layout import ENEMY_X, PLAYER_X, APPROACH_GAP
 
 
 class GoblinMongeTests(unittest.TestCase):
-    def test_both_normal_encounters_can_be_selected_at_every_level(self):
+    def test_biome_encounters_can_be_selected_at_every_level(self):
         for level in (1, 2, 5, 7):
-            for name in ('Slime', 'Vinimuth'):
+            for name in biome_enemy_names(level):
                 with self.subTest(level=level, name=name):
                     with patch('src.systems.enemy_factory.random.choice', return_value=name):
                         enemy = create_road_enemy(level)
@@ -77,7 +78,7 @@ class GoblinMongeTests(unittest.TestCase):
                 self.assertGreaterEqual(bounds.bottom, 170)
             self.assertEqual(len(list(root.glob(f'{group}_*.png'))), 4)
         with patch('src.systems.enemy_factory.random.choice', return_value='Vinimuth'):
-            enemy = create_road_enemy(1)
+            enemy = create_road_enemy(7)
         view = EntityView(assets)
         view.trigger_attack('enemy', 'atk2', enemy.name)
         view.update(1200 * 0.7)

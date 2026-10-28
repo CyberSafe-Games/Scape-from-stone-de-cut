@@ -19,6 +19,9 @@ from src.systems.animation_timing import animation_duration, frame_index, dash_d
 from src.systems.card_definitions import SPECS_BY_NAME
 from src.ui.guardian_spirit_fx import draw_guardian_spirit
 from src.ui.crimson_cast_fx import draw_crimson_cast
+from src.systems.normal_enemy_catalog import NORMAL_RANGED, NORMAL_SPRITES
+
+NORMAL_IDLE_NAMES = frozenset(name.lower() for name in NORMAL_SPRITES) - {'morcego sombrio'}
 
 
 class EntityView:
@@ -33,6 +36,7 @@ class EntityView:
         "goblin nerd": GOBLIN_RANGED_ATTACKS,
         "vinimuth": {"atk2": (1200, 0.54, 0.87)},
         'guardião da pedra': {'atk2': (1400, 0.50, 0.84)},
+        **NORMAL_RANGED,
     }
 
     def __init__(self, asset_manager):
@@ -197,14 +201,20 @@ class EntityView:
             return None
         flight = (progress - launch) / (impact - launch)
         start_x, end_x = ENEMY_X - 66, PLAYER_X + 12
-        start_y = PLAYER_GROUND_Y - (78 if self.enemy_attack_name == "vinimuth" else 58)
+        start_y = PLAYER_GROUND_Y - (95 if self.enemy_attack_name == 'morcego sombrio'
+                                     else 78 if self.enemy_attack_name in ('vinimuth', 'centauro vigia') else 58)
         if self.enemy_attack_name == 'guardião da pedra':
             start_x = ENEMY_X - 135
             start_y = PLAYER_GROUND_Y - 95
+        origins = {'golem das ruínas': (165, 115), 'centauro vigia': (66, 84),
+                   'putrefato do pântano': (95, 70), 'morcego sombrio': (76, 120)}
+        if self.enemy_attack_name in origins:
+            offset_x, offset_y = origins[self.enemy_attack_name]
+            start_x, start_y = ENEMY_X-offset_x, PLAYER_GROUND_Y-offset_y
         end_y = PLAYER_GROUND_Y - 65
         x = start_x + (end_x - start_x) * flight
         y = start_y + (end_y - start_y) * flight
-        if self.enemy_action == "atk1":
+        if self.enemy_attack_name == 'goblin nerd' and self.enemy_action == "atk1":
             y -= 65 * math.sin(math.pi * flight)
         return x, y, flight
 
@@ -219,7 +229,7 @@ class EntityView:
         if pose is None:
             return
         x, y, flight = pose
-        if self.enemy_attack_name in ('vinimuth', 'guardião da pedra'):
+        if self.enemy_attack_name != 'goblin nerd':
             wave = self.asset_manager.get_enemy_projectile(self.enemy_attack_name, self.enemy_action)
             if wave is not None:
                 surface.blit(wave, wave.get_rect(center=(round(x), round(y))))
@@ -352,6 +362,10 @@ class EntityView:
                 attack_group = self.enemy_action if self.enemy_action in ("atk1", "atk2", "atk3", "atk4") else "atk"
                 sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, attack_group)
             if sprites:
+                if enemy_name in NORMAL_RANGED and attack_group in NORMAL_RANGED[enemy_name]:
+                    progress = self.attack_timer / max(1, self.enemy_attack_duration)
+                    index = 0 if progress < .22 else 1 if progress < .44 else 2 if progress < .80 else 3
+                    return sprites[min(index, len(sprites) - 1)]
                 if enemy_name == 'carrasco da vigília':
                     progress = self.attack_timer / max(1, self.enemy_attack_duration)
                     index = 0 if progress < 0.35 else 1 if progress < 0.49 else 2 if progress < 0.68 else 3
@@ -399,14 +413,14 @@ class EntityView:
 
         sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "idle")
         if sprites:
-            if enemy_name in ('vinimuth', 'carrasco da vigília'):
+            if enemy_name in ('vinimuth', 'carrasco da vigília') or enemy_name in NORMAL_IDLE_NAMES:
                 # Respiração lenta sobre uma pose estável: evita alternar
                 # bruscamente braços e cabeça a cada 220 ms. Os pés mantêm o pivô.
                 frame = sprites[0]
                 breath = (1 - math.cos(now * math.tau / 2800)) / 2
                 width, height = frame.get_size()
                 return pygame.transform.smoothscale(frame, (width, height + round(2 * breath)))
-            idle_ms = {"corpo seco": 800, "goblin nerd": 320, 'guardião da pedra': 400}.get(enemy_name, 220)
+            idle_ms = {"corpo seco": 800, "goblin nerd": 320, 'guardião da pedra': 400}.get(enemy_name, 360)
             index = (now // idle_ms) % len(sprites)
             if enemy_name == 'guardião da pedra' and len(sprites) == 4:
                 index = (0, 1, 2, 3, 2, 1)[(now // idle_ms) % 6]
@@ -434,7 +448,8 @@ class EntityView:
         if enemy is not None and self.asset_manager.has_enemy_sprites(enemy.name):
             frame = self.get_enemy_frame(enemy)
             if frame is not None:
-                rect = frame.get_rect(midbottom=(int(enemy_x), PLAYER_GROUND_Y))
+                hover = 28 + round(3 * math.sin(pygame.time.get_ticks() / 300)) if enemy.name == 'Morcego Sombrio' else 0
+                rect = frame.get_rect(midbottom=(int(enemy_x), PLAYER_GROUND_Y-hover))
                 # Eco visual discreto acompanha o giro, sem piscar frames nem
                 # trocar artificialmente a posição do personagem.
                 if is_corpo and self.attacker == "enemy" and self.enemy_action == "atk4":

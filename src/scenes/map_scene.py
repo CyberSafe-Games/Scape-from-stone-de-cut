@@ -16,6 +16,7 @@ from src.systems.territory_map import (
 from src.models.effects.ultimate_effect import ULTIMATE_METADATA, DEFAULT_ULTIMATE_ID
 from src.ui.helpers import draw_text, wrap_text
 from src.ui import dark_fantasy_theme as theme
+from src.systems.normal_enemy_catalog import biome_enemy_names
 
 
 MAP_AREA = pygame.Rect(30, 92, 879, 587)
@@ -190,7 +191,7 @@ class MapScene(BaseScene):
                   GOLD, center, 372, center=True)
         draw_text(surface, selected_territory.title, self.asset_manager.font, WHITE,
                   center, 406, center=True)
-        subtitle = (f'ENCONTRO {self.selected_encounter + 1} / 3 · SLIME OU VINIMUTH'
+        subtitle = (f'ENCONTRO {self.selected_encounter + 1} / 3 · CAMINHO'
                     if self.selected_encounter is not None else selected_territory.subtitle.upper())
         draw_text(surface, subtitle, self.asset_manager.small_font,
                   GRAY, center, 438, center=True)
@@ -209,6 +210,8 @@ class MapScene(BaseScene):
                        else 'Você pode repetir este encontro sem avançar o caminho.' if state == 'completed' and self.selected_encounter is not None
                        else 'Vitória libera o próximo ponto do caminho.' if self.selected_encounter is not None
                        else selected_territory.description)
+        if self.selected_encounter is not None:
+            description = 'Habitantes: ' + ' ou '.join(biome_enemy_names(selected_territory.level)) + '.'
         for line_i, line in enumerate(wrap_text(description,
                                                  self.asset_manager.small_font, 252)[:2]):
             draw_text(surface, line, self.asset_manager.small_font, WHITE,

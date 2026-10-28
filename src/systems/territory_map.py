@@ -19,7 +19,7 @@ class Territory:
 TERRITORIES = (
     Territory("stone_the_cut", "Pedra do Corte", "O despertar", "O Guardião da Pedra protege os monólitos da clareira ancestral.", 1, (131, 548)),
     Territory("mata_sombria", "Mata Sombria", "O chamado", "Uma passagem na floresta onde nem toda sombra está imóvel.", 2, (263, 452)),
-    Territory("ruinas_ancestrais", "Ruínas Ancestrais", "Ecos do passado", "Marcas de uma civilização esquecida acompanham o caminho.", 3, (166, 317)),
+    Territory("ruinas_ancestrais", "Ruínas Ancestrais", "Ecos do passado", "O Goblin Nerd reaproveita artefatos esquecidos para construir suas engenhocas.", 3, (166, 317)),
     Territory("pantano_abissal", "Pântano Abissal", "Águas escuras", "Águas silenciosas escondem novas ameaças.", 4, (356, 235)),
     Territory("fortaleza_caida", "Fortaleza Caída", "O cerco", "Antigos muros guardam histórias e novos confrontos.", 5, (503, 397)),
     Territory("pico_da_vigilia", "Pico da Vigília", "Última subida", "O Carrasco da Vigília guarda a passagem entre os picos.", 6, (641, 281)),

@@ -4,6 +4,7 @@ from src.models.action import Action
 from src.models.enemy import Enemy
 from src.config.layout import MINIBOSS_INTERVAL
 from src.models.effects.crimson_vigor_effect import CrimsonVigorEffect
+from src.systems.normal_enemy_catalog import biome_enemy_names, NORMAL_SPRITES, NORMAL_ACTIONS
 
 # Configuração de inimigos comuns: (Nome, HP Base, HP por Andar)
 ENEMY_TYPES = [
@@ -20,7 +21,7 @@ MINIBOSS_TYPES = [
     ("Behemoth de Pedra", 95, 12),
 ]
 
-MATA_SOMBRIA_TERRITORY = "mata_sombria"
+RUINAS_ANCESTRAIS_TERRITORY = "ruinas_ancestrais"
 CORPO_SECO_TERRITORY = "fortaleza_caida"
 
 
@@ -115,8 +116,8 @@ def _configure_boss(enemy, special_name, special_damage, special_visual):
     return enemy
 
 
-def create_goblin_nerd(level=2):
-    """Miniboss da Mata Sombria: usa engenhocas e duas ações por rodada."""
+def create_goblin_nerd(level=3):
+    """Miniboss das Ruínas Ancestrais: engenhocas e duas ações por rodada."""
     actions = [
         Action("Chave arremessada", "attack", damage=8 + level, energy_cost=1, weight=0.35, visual_effect="atk1"),
         Action("Descarga improvisada", "attack", damage=10 + level, energy_cost=1, weight=0.30, visual_effect="atk2"),
@@ -172,7 +173,7 @@ def create_point_enemy(level):
     """Resolve chefes territoriais específicos antes do fallback genérico."""
     if level == 1:
         return create_guardiao_da_pedra(level)
-    if level == 2:
+    if level == 3:
         return create_goblin_nerd(level)
     if level == 5:
         return create_corpo_seco(level)
@@ -182,11 +183,23 @@ def create_point_enemy(level):
 
 
 def create_road_enemy(level):
-    """Pool expansível dos três encontros anteriores a cada ponto de interesse."""
-    if random.choice(("Slime", "Vinimuth")) == "Vinimuth":
+    """Escolhe somente os habitantes do bioma, preservando os chefes."""
+    name = random.choice(biome_enemy_names(level))
+    if name == "Vinimuth":
         return Enemy("Vinimuth", hp=22 + 5 * level, energy=3, max_energy=3,
                      actions=_build_vinimuth_actions(level), is_miniboss=False)
-    return Enemy("Slime", hp=18 + 5 * level, energy=3, max_energy=3, actions=_build_slime_actions(level), is_miniboss=False)
+    if name == 'Slime':
+        return Enemy("Slime", hp=18 + 5 * level, energy=3, max_energy=3, actions=_build_slime_actions(level), is_miniboss=False)
+    _, _, base_hp, scaling = NORMAL_SPRITES[name]
+    actions = []
+    for title, kind, base, weight, visual, status in NORMAL_ACTIONS[name]:
+        value = base + level if kind != 'heal' else base
+        actions.append(Action(title, kind, damage=value if kind == 'attack' else 0,
+                              defense=value if kind != 'attack' else 0,
+                              energy_cost=1, weight=weight, visual_effect=visual,
+                              status_effect=status))
+    return Enemy(name, hp=base_hp + scaling * level, energy=3, max_energy=3,
+                 actions=actions, is_miniboss=False)
 
 
 def choose_next_action(enemy):
