@@ -222,7 +222,6 @@ class BattleScene(BaseScene):
         glow = pygame.Surface((draw_rect.width + 18, draw_rect.height + 18), pygame.SRCALPHA)
         pygame.draw.rect(glow, (*self.engine.active_ultimate_color, 70), (9, 9, draw_rect.width, draw_rect.height), border_radius=16, width=4)
         surface.blit(glow, (draw_rect.x - 9, draw_rect.y - 9))
-        draw_text(surface, "ULT", self.asset_manager.small_font, GOLD, draw_rect.x + 10, draw_rect.y + 10)
 
     def _draw_end_turn_button(self, surface, enabled=True):
         cx, cy = self.end_turn_rect.center
@@ -475,6 +474,8 @@ class BattleScene(BaseScene):
             if rect.collidepoint(mouse):
                 CardView.draw_tooltip(surface, card, self.asset_manager, mouse)
                 break
+        if self.ultimate_hand_rect and self.ultimate_hand_rect.collidepoint(mouse):
+            CardView.draw_tooltip(surface, self.engine.ultimate, self.asset_manager, mouse, cost_label='ULT')
 
         if self.engine.message:
             msg_rect = pygame.Rect(WIDTH // 2 - 230, 26, 460, 40)

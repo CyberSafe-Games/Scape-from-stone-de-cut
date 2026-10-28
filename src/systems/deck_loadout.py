@@ -77,3 +77,21 @@ def equip_card_type(save_manager, data, slot_index, name):
         data['progresso'] = before
         return False, "Falha ao gravar a alteração; deck preservado."
     return True, "Deck atualizado. Cada tipo equipado possui 3 cartas."
+
+
+def equip_ultimate(save_manager, data, ultimate_id):
+    """Troca a habilidade da preparação sem consumir carga nem ocupar o deck."""
+    from copy import deepcopy
+    from src.models.effects.ultimate_effect import ULTIMATE_METADATA
+    from src.systems.save_manager import SaveError
+    progress = data['progresso']
+    if ultimate_id not in ULTIMATE_METADATA or ultimate_id not in progress.get('ultimates_desbloqueadas', []):
+        return False, 'Ultimate indisponível.'
+    before = deepcopy(progress)
+    progress['ultimate_equipada'] = ultimate_id
+    try:
+        save_manager.save(data)
+    except (OSError, ValueError, TypeError, SaveError):
+        data['progresso'] = before
+        return False, 'Não foi possível salvar. Sua ultimate anterior foi mantida.'
+    return True, ULTIMATE_METADATA[ultimate_id]['name'] + ' equipada para os próximos combates.'

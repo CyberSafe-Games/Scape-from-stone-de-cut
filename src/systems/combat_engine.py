@@ -344,7 +344,6 @@ class CombatEngine:
                 self.trigger_enemy_action("def")
                 self.spawn_enemy_text(f"+{block} bloqueio", BLUE)
 
-        self._advance_status_effects(attacked=attacked)
         if getattr(self.enemy, "special_interval", 0):
             self.enemy.action_counter += 1
         self.enemy_actions_remaining = max(0, self.enemy_actions_remaining - 1)
@@ -364,6 +363,7 @@ class CombatEngine:
             choose_next_action(self.enemy)
             self.state = "enemy_turn"
             return
+        self._advance_status_effects()
         self._tick_statuses(self.enemy)
         if not self.enemy.is_alive():
             self._on_enemy_defeated()
@@ -390,8 +390,8 @@ class CombatEngine:
             return weakened
         return damage
 
-    def _advance_status_effects(self, attacked=False):
-        """Consome durações de efeitos temporários ao final da ação do inimigo."""
+    def _advance_status_effects(self):
+        """Fraqueza dura rodadas completas, incluindo todos os atos de chefes."""
         if getattr(self.enemy, "weak_turns", 0) > 0:
             self.enemy.weak_turns = max(0, self.enemy.weak_turns - 1)
 

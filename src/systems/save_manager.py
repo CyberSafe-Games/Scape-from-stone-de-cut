@@ -82,7 +82,7 @@ class SaveManager:
                 "carga_ultimate": 0,
                 "turnos": 1,
                 "ultimate_equipada": DEFAULT_ULTIMATE_ID,
-                "ultimates_desbloqueadas": [DEFAULT_ULTIMATE_ID],
+                "ultimates_desbloqueadas": known_ultimate_ids(),
             },
         }
 
@@ -196,6 +196,11 @@ class SaveManager:
                 unlocked.append(ultimate_id)
         if DEFAULT_ULTIMATE_ID not in unlocked:
             unlocked.insert(0, DEFAULT_ULTIMATE_ID)
+        # As três habilidades são alternativas de preparação, sem bloqueio
+        # de campanha. Migra também runs criadas antes da seleção na mochila.
+        for ultimate_id in known_ultimate_ids():
+            if ultimate_id not in unlocked:
+                unlocked.append(ultimate_id)
         progress["ultimates_desbloqueadas"] = unlocked
         if not isinstance(progress.get("ultimate_equipada"), str) or progress["ultimate_equipada"] not in unlocked:
             progress["ultimate_equipada"] = DEFAULT_ULTIMATE_ID

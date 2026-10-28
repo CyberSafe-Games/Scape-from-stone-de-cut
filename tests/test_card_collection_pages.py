@@ -49,5 +49,7 @@ class CardCollectionPageTests(unittest.TestCase):
         self.assertEqual(found, set(CARD_BY_NAME))
         scene.selected_slot = 2
         self.click(scene, scene.cards['Poção Venenosa'])
+        self.assertIsNone(self.data['progresso']['deck_slots'][2])
+        self.click(scene, scene.equip_rect)
         self.assertEqual(self.data['progresso']['deck_slots'][2], 'Poção Venenosa')
         self.assertEqual(self.data['progresso']['cartas'].count('Poção Venenosa'), 3)

@@ -28,35 +28,38 @@ class ManaAncestralUltimate(UltimateAbility):
     ultimate_id = DEFAULT_ULTIMATE_ID
     name = "Mana Ancestral"
     action_name = "Mana Ancestral"
-    description = "Restaura a energia ao máximo e compra 3 cartas"
+    description = "Restaure sua energia até 8, compre 5 cartas e remova todos os seus efeitos negativos."
     accent_color = (110, 190, 255)
 
-    def __init__(self, draw_count=3):
+    def __init__(self, draw_count=5):
         self.draw_count = draw_count
 
     def activate(self, user, target, context):
         previous_energy = user.energy
-        user.energy = user.energy_max
+        user.energy = user.MAX_ENERGY_LIMIT
+        user.cleanse()
+        previous_hand = len(context.deck_manager.hand)
         context.deck_manager.draw_cards(self.draw_count)
+        drawn = len(context.deck_manager.hand) - previous_hand
         context.trigger_player_action(self.action_name)
-        restored = max(0, user.energy_max - previous_energy)
+        restored = max(0, user.energy - previous_energy)
         if restored:
             context.spawn_player_text(f"+{restored} energia", self.accent_color)
-        context.spawn_player_text(f"+{self.draw_count} cartas", WHITE)
+        context.spawn_player_text(f"+{drawn} cartas", WHITE)
         context.show_message("Mana Ancestral ativada!", duration=1800)
-        return {"energy_restored": restored, "cards_drawn": self.draw_count}
+        return {"energy_restored": restored, "cards_drawn": drawn}
 
 
 class ForcasAncestraisUltimate(UltimateAbility):
-    """Concede poder ofensivo e defesa permanente no combate atual."""
+    """Força permanente na luta e escudo que segue as duas rodadas normais."""
 
     ultimate_id = "forcas_ancestrais"
     name = "Forças Ancestrais"
     action_name = "Forças Ancestrais"
-    description = "Ganha 4 de força e 15 de bloqueio"
+    description = "Ganhe 12 de Força até o fim do combate e 40 de Escudo por 2 turnos."
     accent_color = GOLD
 
-    def __init__(self, strength_gain=4, block_gain=15):
+    def __init__(self, strength_gain=12, block_gain=40):
         self.strength_gain = strength_gain
         self.block_gain = block_gain
 
@@ -80,10 +83,10 @@ class RugidoDaFlorestaUltimate(UltimateAbility):
     ultimate_id = "rugido_da_floresta"
     name = "Rugido da Floresta"
     action_name = "Rugido da Floresta"
-    description = "Causa dano em todos os inimigos e aplica Fraqueza (2)"
+    description = "Destrua o Escudo dos inimigos, cause 60 de dano a cada um e aplique Fraqueza por 3 turnos."
     accent_color = GREEN
 
-    def __init__(self, damage=12, weak_turns=2):
+    def __init__(self, damage=60, weak_turns=3):
         self.damage = damage
         self.weak_turns = weak_turns
 
@@ -97,11 +100,16 @@ class RugidoDaFlorestaUltimate(UltimateAbility):
         targets = self._targets(target, context)
         total_damage = 0
         hits = 0
+        weakened_targets = 0
         context.trigger_player_action(self.action_name)
         for enemy in targets:
-            damage = self.damage + getattr(user, "strength", 0)
-            actual = enemy.take_damage(damage)
-            enemy.weak_turns = getattr(enemy, "weak_turns", 0) + self.weak_turns
+            damage = self.damage + user.attack_bonus
+            enemy.block = 0
+            protected = 'totem' in enemy.statuses
+            actual = enemy.receive_attack(damage)
+            if not protected:
+                enemy.weak_turns = max(getattr(enemy, "weak_turns", 0), self.weak_turns)
+                weakened_targets += 1
             total_damage += actual
             hits += 1
         if targets:
@@ -109,10 +117,10 @@ class RugidoDaFlorestaUltimate(UltimateAbility):
         if total_damage:
             text = f"-{total_damage}" if hits == 1 else f"-{total_damage} área"
             context.spawn_damage_text(targets[0], text, RED)
-        if targets:
+        if weakened_targets:
             context.spawn_enemy_text(f"Fraqueza {self.weak_turns}", self.accent_color)
         context.show_message("Rugido da Floresta ecoa pelo campo!", duration=1800)
-        return {"damage": total_damage, "weakness": self.weak_turns, "targets": hits}
+        return {"damage": total_damage, "weakness": self.weak_turns if weakened_targets else 0, "targets": hits}
 
 
 ULTIMATE_REGISTRY = {

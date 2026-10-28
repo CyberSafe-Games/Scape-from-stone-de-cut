@@ -1,6 +1,6 @@
 from src.models.entity import Combatant
 from src.config.settings import HAND_SIZE_START, HAND_SIZE_MAX
-from src.models.effects.ultimate_effect import DEFAULT_ULTIMATE_ID
+from src.models.effects.ultimate_effect import DEFAULT_ULTIMATE_ID, known_ultimate_ids
 
 
 class Player(Combatant):
@@ -24,7 +24,7 @@ class Player(Combatant):
         self.ultimate_charge = 0
         self.ultimate_threshold = ultimate_threshold
         self.equipped_ultimate_id = DEFAULT_ULTIMATE_ID
-        self.unlocked_ultimates = [DEFAULT_ULTIMATE_ID]
+        self.unlocked_ultimates = known_ultimate_ids()
 
     def get_hand_size(self):
         """Calcula o tamanho da mão baseado na progressão de turnos da partida."""

@@ -203,18 +203,16 @@ class AssetManager:
                 self._ui_images[key] = None
 
     def _load_ultimate_images(self):
-        """Carrega as ilustrações das cartas de ultimate."""
-        mapping = {
-            "mana_ancestral": "mana_ancestral.png",
-            "forcas_ancestrais": "forcas_ancestrais.png",
-            "rugido_da_floresta": "rugido_da_floresta.png",
-        }
-        for key, filename in mapping.items():
-            path = os.path.join(ULTIMATE_ASSETS_DIR, filename)
+        """Compõe cartas lendárias com regras sempre atualizadas."""
+        from src.models.effects.ultimate_effect import ULTIMATE_METADATA
+        from src.ui.ultimate_card_art import build_ultimate_card
+        for key, meta in ULTIMATE_METADATA.items():
+            path = os.path.join(ULTIMATE_ASSETS_DIR, key + '_art_v2.png')
             try:
-                self._ultimate_images[key] = pygame.image.load(path).convert_alpha()
+                art = pygame.image.load(path).convert_alpha()
             except (pygame.error, FileNotFoundError):
-                self._ultimate_images[key] = None
+                art = None
+            self._ultimate_images[key] = build_ultimate_card(art, meta, self)
 
     def get_ui_image(self, key):
         return self._ui_images.get(key)
