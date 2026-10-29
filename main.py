@@ -5,6 +5,7 @@ from src.config.settings import TITLE, WIDTH, HEIGHT, FPS
 from src.core.window import WindowManager
 from src.core.asset_manager import AssetManager
 from src.core.scene_manager import SceneManager
+from src.core.audio_manager import AudioManager
 from src.scenes.menu_scene import MenuScene
 
 
@@ -17,7 +18,8 @@ def main():
 
     window_manager = WindowManager(WIDTH, HEIGHT, TITLE)
     asset_manager = AssetManager()
-    scene_manager = SceneManager()
+    audio_manager = AudioManager()
+    scene_manager = SceneManager(audio_manager=audio_manager)
     clock = pygame.time.Clock()
 
     # Inicializa a aplicação com a cena do Menu Principal
@@ -46,6 +48,7 @@ def main():
     if hasattr(active_scene, "save_on_exit"):
         active_scene.save_on_exit()
 
+    audio_manager.shutdown()
     pygame.quit()
     sys.exit()
 

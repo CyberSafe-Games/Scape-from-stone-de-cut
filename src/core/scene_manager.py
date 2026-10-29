@@ -1,9 +1,11 @@
 class SceneManager:
     """Gerencia a máquina de estados de cenas do jogo e sobreposição de modais."""
 
-    def __init__(self):
+    def __init__(self, audio_manager=None):
         self.current_scene = None
         self.modal_stack = []
+        # Serviço opcional compartilhado pelas cenas, sem acoplá-las ao mixer.
+        self.audio_manager = audio_manager
 
     def change_scene(self, scene):
         """Muda a cena ativa e limpa eventuais modais sobrepostos."""
