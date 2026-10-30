@@ -21,6 +21,13 @@ from src.config.colors import WHITE
 CORPO_SECO_RENDER_SCALE = 0.74
 GOBLIN_NERD_RENDER_SCALE = 0.72
 
+# Enquadramento do cenário do tutorial (frações da arte original, 4:3).
+# Recorte 16:9 sem distorção que aproxima o corredor: o chão de pedra fica na
+# linha dos pés dos combatentes (PLAYER_GROUND_Y) em vez de sob a bandeja de cartas.
+TUTORIAL_BG_FOCUS_X = 0.325
+TUTORIAL_BG_FOCUS_Y = 0.554
+TUTORIAL_BG_FOCUS_W = 0.594
+
 
 class AssetManager:
     """Carrega e armazena em cache todos os recursos visuais (fontes, sprites,
@@ -143,11 +150,23 @@ class AssetManager:
         """Carrega o cenário didático opcional, mantendo fallback ao cenário normal."""
         path = os.path.join(os.path.dirname(BACKGROUND_PATH), "background_tutorial.png")
         try:
+            image = pygame.image.load(path).convert()
             self._background_tutorial = pygame.transform.smoothscale(
-                pygame.image.load(path).convert(), (WIDTH, HEIGHT)
+                image.subsurface(self._tutorial_background_focus(image.get_size())), (WIDTH, HEIGHT)
             )
         except (pygame.error, FileNotFoundError):
             self._background_tutorial = self._background
+
+    @staticmethod
+    def _tutorial_background_focus(size):
+        """Região da arte do tutorial exibida na tela, na proporção da janela."""
+        src_w, src_h = size
+        w = min(src_w, round(src_w * TUTORIAL_BG_FOCUS_W))
+        h = min(src_h, round(w * HEIGHT / WIDTH))
+        w = round(h * WIDTH / HEIGHT)
+        x = max(0, min(round(src_w * TUTORIAL_BG_FOCUS_X), src_w - w))
+        y = max(0, min(round(src_h * TUTORIAL_BG_FOCUS_Y), src_h - h))
+        return pygame.Rect(x, y, w, h)
 
     @property
     def background_tutorial(self):
