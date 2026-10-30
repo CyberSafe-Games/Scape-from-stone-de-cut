@@ -541,17 +541,7 @@ class BattleScene(BaseScene):
         if self.ultimate_hand_rect and self.ultimate_hand_rect.collidepoint(mouse):
             CardView.draw_tooltip(surface, self.engine.ultimate, self.asset_manager, mouse, cost_label='ULT')
 
-        if self.entity_view.enemy_ultimate:
-            special = self.entity_view.enemy_ultimate
-            msg_rect = pygame.Rect(WIDTH//2-230, 26, 460, 40)
-            draw_panel(surface, msg_rect, fill=(12, 14, 20, 235), border=special.color, radius=10)
-            draw_text(surface, special.title.upper(), self.asset_manager.font, special.color,
-                      msg_rect.centerx, msg_rect.centery, center=True)
-        elif self.engine.message:
-            msg_rect = pygame.Rect(WIDTH // 2 - 230, 26, 460, 40)
-            draw_panel(surface, msg_rect, fill=(36, 14, 18, 235), border=(168, 86, 86), radius=12)
-            draw_text(surface, self.engine.message, self.asset_manager.font, WHITE,
-                      msg_rect.centerx, msg_rect.centery, center=True)
+        self._draw_top_message(surface)
 
         if self.engine.state == "game_over" and self.entity_view.enemy_ultimate is None:
             self._draw_game_over(surface)
@@ -559,6 +549,29 @@ class BattleScene(BaseScene):
             self._draw_victory(surface)
         if self.engine.state == "phase_complete":
             self._draw_pending_save(surface)
+
+    def _draw_top_message(self, surface):
+        """Aviso transitório do topo: ultimate do inimigo ou mensagem do combate."""
+        if self.entity_view.enemy_ultimate:
+            special = self.entity_view.enemy_ultimate
+            self._draw_message_box(surface, special.title.upper(), special.color,
+                                   fill=(12, 14, 20, 235), border=special.color, radius=10)
+        elif self.engine.message:
+            self._draw_message_box(surface, self.engine.message, WHITE,
+                                   fill=(36, 14, 18, 235), border=(168, 86, 86), radius=12)
+
+    def _draw_message_box(self, surface, text, color, fill, border, radius):
+        """Caixa de aviso no topo: quebra o texto na largura útil e cresce para baixo."""
+        font = self.asset_manager.font
+        width, min_height, pad_x, pad_y = 460, 40, 18, 6
+        lines = wrap_text(text, font, width - pad_x * 2) or [""]
+        line_h = font.get_linesize()
+        height = max(min_height, len(lines) * line_h + pad_y * 2)
+        msg_rect = pygame.Rect(WIDTH // 2 - width // 2, 26, width, height)
+        draw_panel(surface, msg_rect, fill=fill, border=border, radius=radius)
+        first_center = msg_rect.centery - (len(lines) - 1) * line_h / 2
+        for i, line in enumerate(lines):
+            draw_text(surface, line, font, color, msg_rect.centerx, first_center + i * line_h, center=True)
 
     def _draw_cemetery_button(self, surface):
         """Desenha o botão de acesso ao Cemitério durante a partida."""

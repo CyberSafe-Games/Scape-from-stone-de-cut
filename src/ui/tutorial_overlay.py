@@ -5,6 +5,7 @@ aos elementos ensinados, setas direcionais animadas, destaques (spotlights)
 e transições fluidas de aparecimento/desaparecimento baseadas em cliques na tela.
 """
 import math
+import re
 from dataclasses import dataclass
 from typing import Callable, Optional, Sequence
 
@@ -21,8 +22,11 @@ from src.config.colors import (
     GREEN,
 )
 from src.config.settings import WIDTH, HEIGHT
-from src.ui.helpers import draw_text, draw_panel
+from src.ui.helpers import draw_text, draw_panel, wrap_text, truncate_text
 from src.ui import dark_fantasy_theme as theme
+
+# Marcadores de lista ("• ", "1. ") recebem recuo deslocado nas linhas quebradas.
+_LIST_MARKER = re.compile(r"^(•\s+|\d+\.\s+)")
 
 
 def draw_tutorial_arrow(
@@ -152,11 +156,36 @@ class TutorialStep:
     arrow_target_fn: Optional[Callable[[], Optional[tuple[int, int]]]] = None
 
 
+@dataclass
+class BubbleLayout:
+    """Geometria calculada de um balão: posição final e linhas já quebradas."""
+    rect: pygame.Rect
+    eyebrow: str
+    title_lines: list[tuple[str, int]]           # (texto, y)
+    divider_y: int
+    body_lines: list[tuple[str, int, int]]       # (texto, x, y)
+    footer_y: int
+    anchor_shift: int                            # deslocamento vertical aplicado à origem da seta
+
+
 class TutorialOverlay:
     """Gerencia a navegação e a renderização fluida do guia flutuante por cliques na tela."""
 
     TRANSITION_IN_TIME = 0.20   # Segundos para fade-in e slide
     TRANSITION_OUT_TIME = 0.10  # Segundos para fade-out ao avançar
+
+    # Métricas internas do balão
+    PADDING_X = 22          # Margem lateral entre a borda e o texto
+    EYEBROW_Y = 13          # Topo da linha "PASSO xx/yy"; o título vem logo abaixo dela
+    DIVIDER_GAP = 6         # Espaço entre o título e o divisor rúnico
+    BODY_GAP = 9            # Espaço entre o divisor e o corpo do texto
+    PARAGRAPH_GAP = 3       # Respiro extra entre frases distintas
+    FOOTER_OFFSET = 22      # Centro do rodapé, medido a partir da base
+    FOOTER_GAP = 10         # Espaço mínimo entre o corpo e o rodapé
+    INNER_BORDER = 4        # Área reservada para borda e cantoneiras
+    SCREEN_MARGIN = 8       # Distância mínima do balão até a borda da tela
+
+    CLICK_PROMPT = "CLIQUE EM QUALQUER LUGAR PARA AVANÇAR  ▸"
 
     def __init__(self, steps: list[TutorialStep], on_complete: Optional[Callable[[], None]] = None):
         self.steps = steps
@@ -175,9 +204,89 @@ class TutorialOverlay:
         # Botão sutil para pular tutorial no topo direito
         self.skip_button_rect = pygame.Rect(WIDTH - 150, 16, 134, 30)
 
+        # Layouts calculados por passo (fontes e textos não mudam durante o guia)
+        self._layout_cache: dict[int, BubbleLayout] = {}
+
     @property
     def current_step(self) -> TutorialStep:
         return self.steps[self.step_index]
+
+    def layout_step(self, step_index: int, asset_manager) -> BubbleLayout:
+        """Quebra os textos do passo na largura útil do balão e ajusta sua altura.
+
+        A largura configurada é preservada; a altura só cresce quando o conteúdo
+        exige. Balões cuja seta parte da borda inferior crescem para cima, para
+        não cobrir o elemento apontado, e o resultado é mantido dentro da tela.
+        """
+        cached = self._layout_cache.get(step_index)
+        if cached is not None:
+            return cached
+
+        step = self.steps[step_index]
+        body_font = asset_manager.font
+        title_font = asset_manager.menu_font
+        small_font = asset_manager.small_font
+
+        bx, by = step.bubble_pos
+        bw, bh = step.bubble_size
+        content_w = bw - self.PADDING_X * 2
+
+        eyebrow = truncate_text(
+            f"PASSO {step_index + 1:02d}/{len(self.steps):02d}  ·  {step.subtitle.upper()}",
+            small_font,
+            content_w,
+        )
+
+        title_lines = []
+        title_y = self.EYEBROW_Y + small_font.get_height()
+        y = title_y
+        title_step = title_font.get_linesize()
+        for text in wrap_text(step.title, title_font, content_w):
+            title_lines.append((text, y))
+            y += title_step
+        title_bottom = (title_lines[-1][1] if title_lines else title_y) + title_font.get_height()
+        divider_y = title_bottom + self.DIVIDER_GAP
+
+        body_lines = []
+        line_step = body_font.get_linesize()
+        y = divider_y + self.BODY_GAP
+        for paragraph in step.lines:
+            marker = _LIST_MARKER.match(paragraph)
+            indent = body_font.size(marker.group(1))[0] if marker else 0
+            rest = paragraph[marker.end():] if marker else paragraph
+            wrapped = wrap_text(rest, body_font, content_w - indent) or [""]
+            for i, text in enumerate(wrapped):
+                if i == 0 and marker:
+                    body_lines.append((marker.group(1) + text, self.PADDING_X, y))
+                else:
+                    body_lines.append((text, self.PADDING_X + indent, y))
+                y += line_step
+            y += self.PARAGRAPH_GAP
+        body_bottom = (body_lines[-1][2] + body_font.get_height()) if body_lines else divider_y
+
+        footer_half = small_font.get_height() // 2
+        required_h = body_bottom + self.FOOTER_GAP + footer_half + self.FOOTER_OFFSET
+        height = max(bh, required_h)
+        extra = height - bh
+
+        # Seta saindo da base do balão: cresce para cima e mantém a base no lugar.
+        origin = step.arrow_origin_fn() if step.arrow_origin_fn else None
+        grows_up = origin is not None and origin[1] >= by + bh - 1
+        preferred_y = by - extra if grows_up else by
+        final_y = max(self.SCREEN_MARGIN, min(preferred_y, HEIGHT - self.SCREEN_MARGIN - height))
+        final_x = max(self.SCREEN_MARGIN, min(bx, WIDTH - self.SCREEN_MARGIN - bw))
+
+        layout = BubbleLayout(
+            rect=pygame.Rect(final_x, final_y, bw, height),
+            eyebrow=eyebrow,
+            title_lines=title_lines,
+            divider_y=divider_y,
+            body_lines=body_lines,
+            footer_y=height - self.FOOTER_OFFSET,
+            anchor_shift=final_y - by if not grows_up else final_y - preferred_y,
+        )
+        self._layout_cache[step_index] = layout
+        return layout
 
     def update(self, dt: int):
         if not self.is_active:
@@ -300,19 +409,18 @@ class TutorialOverlay:
             draw_tutorial_spotlight(surface, target_rect, pulse=self.elapsed, alpha=alpha, color=GOLD)
 
         # 3. Flutuação suave contínua do balão
+        layout = self.layout_step(self.step_index, asset_manager)
         float_hover = math.sin(self.elapsed * 2.8) * 3.5
-        bx, by = step.bubble_pos
-        bw, bh = step.bubble_size
+        bx, by = layout.rect.topleft
+        bw, bh = layout.rect.size
         actual_y = by + self.offset_y + float_hover
-
-        bubble_rect = pygame.Rect(bx, int(actual_y), bw, bh)
 
         # 4. Seta direcional apontando do balão para o elemento alvo
         if step.arrow_origin_fn and step.arrow_target_fn:
             orig = step.arrow_origin_fn()
             target = step.arrow_target_fn()
             if orig and target:
-                dyn_orig = (orig[0], int(orig[1] + self.offset_y + float_hover))
+                dyn_orig = (orig[0], int(orig[1] + layout.anchor_shift + self.offset_y + float_hover))
                 draw_tutorial_arrow(surface, dyn_orig, target, color=GOLD, pulse=self.elapsed, alpha=alpha)
 
         # 5. Superfície transparente do balão flutuante
@@ -347,31 +455,35 @@ class TutorialOverlay:
             pygame.draw.line(bubble_surf, (255, 245, 195, border_alpha), (cx, cy), (cx + sx * c_len, cy), 2)
             pygame.draw.line(bubble_surf, (255, 245, 195, border_alpha), (cx, cy), (cx, cy + sy * c_len), 2)
 
+        # Todo o conteúdo fica restrito à área interna, sem invadir borda e cantoneiras
+        inset = self.INNER_BORDER
+        bubble_surf.set_clip(pygame.Rect(inset, inset, bw - inset * 2, bh - inset * 2))
+
         # Cabeçalho do balão
-        step_indicator = f"PASSO {self.step_index + 1:02d}/{len(self.steps):02d}  ·  {step.subtitle.upper()}"
-        theme.eyebrow(bubble_surf, step_indicator, asset_manager.small_font, 20, 15)
-        draw_text(bubble_surf, step.title, asset_manager.menu_font, GOLD, 20, 31)
+        pad = self.PADDING_X
+        theme.eyebrow(bubble_surf, layout.eyebrow, asset_manager.small_font, pad, self.EYEBROW_Y)
+        for text, y in layout.title_lines:
+            draw_text(bubble_surf, text, asset_manager.menu_font, GOLD, pad, y)
 
         # Divisor rúnico
-        pygame.draw.line(bubble_surf, (80, 68, 48, border_alpha), (20, 60), (bw - 20, 60), 1)
+        pygame.draw.line(bubble_surf, (80, 68, 48, border_alpha),
+                         (pad, layout.divider_y), (bw - pad, layout.divider_y), 1)
 
-        # Linhas de texto explicativas
-        text_y = 69
-        for line in step.lines:
-            draw_text(bubble_surf, line, asset_manager.font, WHITE, 20, text_y)
-            text_y += 22
+        # Linhas de texto explicativas, já quebradas na largura útil
+        for text, x, y in layout.body_lines:
+            draw_text(bubble_surf, text, asset_manager.font, WHITE, x, y)
 
         # Rodapé com instrução de clique pulsante
-        click_prompt = "CLIQUE EM QUALQUER LUGAR PARA AVANÇAR  ▸"
         draw_text(
             bubble_surf,
-            click_prompt,
+            truncate_text(self.CLICK_PROMPT, asset_manager.small_font, bw - pad * 2),
             asset_manager.small_font,
             GOLD,
             bw // 2,
-            bh - 22,
+            layout.footer_y,
             center=True,
         )
+        bubble_surf.set_clip(None)
 
         # Blita o balão flutuante na tela
         bubble_surf.set_alpha(alpha)

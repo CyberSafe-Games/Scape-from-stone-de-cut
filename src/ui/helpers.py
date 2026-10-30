@@ -98,25 +98,64 @@ def draw_vignette(surface, width, height, alpha=110):
 
 
 
-def wrap_text(text, font, max_width):
-    """Quebra textos longos em múltiplas linhas respeitando a largura máxima."""
-    words = text.split()
-    lines = []
-    current_line = ""
-
-    for word in words:
-        test_line = f"{current_line}{word} "
-        if font.size(test_line)[0] > max_width:
-            if current_line:
-                lines.append(current_line.strip())
-            current_line = f"{word} "
+def _split_long_word(word, font, max_width):
+    """Fatia uma palavra maior que a largura disponível em pedaços que cabem nela."""
+    pieces = []
+    current = ""
+    for char in word:
+        if current and font.size(current + char)[0] > max_width:
+            pieces.append(current)
+            current = char
         else:
-            current_line = test_line
+            current += char
+    if current:
+        pieces.append(current)
+    return pieces
 
-    if current_line:
-        lines.append(current_line.strip())
+
+def wrap_text(text, font, max_width):
+    """Quebra textos longos em múltiplas linhas respeitando a largura máxima.
+
+    Quebras explícitas (\\n) são preservadas e palavras isoladas mais largas
+    que a área disponível são fatiadas, garantindo que nenhuma linha ultrapasse
+    ``max_width``.
+    """
+    lines = []
+
+    for paragraph in str(text).split("\n"):
+        current_line = ""
+        for word in paragraph.split():
+            if font.size(word)[0] > max_width:
+                pieces = _split_long_word(word, font, max_width)
+                word = pieces.pop()
+                for piece in pieces:
+                    if current_line:
+                        lines.append(current_line.strip())
+                        current_line = ""
+                    lines.append(piece)
+
+            test_line = f"{current_line}{word} "
+            if font.size(test_line)[0] > max_width:
+                if current_line:
+                    lines.append(current_line.strip())
+                current_line = f"{word} "
+            else:
+                current_line = test_line
+
+        if current_line:
+            lines.append(current_line.strip())
 
     return lines
+
+
+def truncate_text(text, font, max_width, ellipsis="…"):
+    """Encurta uma linha única com reticências para que caiba em ``max_width``."""
+    text = str(text)
+    if font.size(text)[0] <= max_width:
+        return text
+    while text and font.size(text + ellipsis)[0] > max_width:
+        text = text[:-1]
+    return text.rstrip() + ellipsis
 
 
 

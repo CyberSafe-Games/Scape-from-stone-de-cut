@@ -362,6 +362,9 @@ class TutorialScene(BattleScene):
                 center=True,
             )
 
+            # Avisos do combate ficam acima do botão e da faixa de dicas para não serem cortados
+            self._draw_top_message(surface)
+
         # Sobrescreve a tela de vitória quando o tutorial for concluído
         if self.engine.state == "victory" and self.entity_view.player_action is None and self.entity_view.attacker is None:
             self._draw_tutorial_victory(surface, cursor)

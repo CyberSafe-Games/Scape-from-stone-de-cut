@@ -123,6 +123,42 @@ class TestTutorialSceneIntegration(unittest.TestCase):
         self.assertGreater(cem_step.bubble_pos[1], 400)
         self.assertLess(cem_step.bubble_pos[0], 250)
 
+    def test_bubble_text_stays_inside_bubble(self):
+        """Todo texto do balão cabe na largura útil, sem sobreposição nem invadir o rodapé."""
+        overlay = self.tutorial_scene.overlay
+        font = self.asset_manager.font
+        for index, step in enumerate(overlay.steps):
+            layout = overlay.layout_step(index, self.asset_manager)
+            rect = layout.rect
+            self.assertEqual(rect.width, step.bubble_size[0], step.id)
+            self.assertGreaterEqual(rect.height, step.bubble_size[1], step.id)
+            self.assertTrue(pygame.Rect(0, 0, WIDTH, HEIGHT).contains(rect), step.id)
+
+            right_limit = rect.width - overlay.PADDING_X
+            for text, x, _ in layout.body_lines:
+                self.assertLessEqual(x + font.size(text)[0], right_limit, f"{step.id}: {text}")
+            for text, _ in layout.title_lines:
+                self.assertLessEqual(overlay.PADDING_X + self.asset_manager.menu_font.size(text)[0], right_limit)
+
+            ys = [y for _, _, y in layout.body_lines]
+            for previous, current in zip(ys, ys[1:]):
+                self.assertGreaterEqual(current - previous, font.get_linesize(), step.id)
+            footer_top = layout.footer_y - self.asset_manager.small_font.get_height() // 2
+            self.assertLessEqual(ys[-1] + font.get_height(), footer_top, step.id)
+
+            # Nenhuma palavra do texto original é perdida na quebra
+            original = " ".join(step.lines).split()
+            wrapped = " ".join(text for text, _, _ in layout.body_lines).split()
+            self.assertEqual(original, wrapped, step.id)
+
+    def test_bubble_with_bottom_arrow_grows_upwards(self):
+        """Balões cuja seta sai da base mantêm a base ancorada ao crescer."""
+        overlay = self.tutorial_scene.overlay
+        index = next(i for i, s in enumerate(overlay.steps) if s.id == "ultimate")
+        step = overlay.steps[index]
+        layout = overlay.layout_step(index, self.asset_manager)
+        self.assertEqual(layout.rect.bottom, step.bubble_pos[1] + step.bubble_size[1])
+
     def test_tutorial_required_elements_covered_in_steps(self):
         """Verifica se todos os tópicos exigidos pelo usuário estão presentes nos passos."""
         step_ids = [step.id for step in self.tutorial_scene.overlay.steps]
