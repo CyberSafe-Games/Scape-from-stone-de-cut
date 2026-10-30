@@ -19,6 +19,11 @@ def main():
     window_manager = WindowManager(WIDTH, HEIGHT, TITLE)
     asset_manager = AssetManager()
     audio_manager = AudioManager()
+    audio_manager.register_sounds({
+        "ui.click": "ui/click.wav",
+        "ui.confirm": "ui/confirm.wav",
+        "ui.navigate": "ui/navigate.wav",
+    })
     scene_manager = SceneManager(audio_manager=audio_manager)
     clock = pygame.time.Clock()
 
