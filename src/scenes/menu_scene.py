@@ -79,19 +79,23 @@ class MenuScene(BaseScene):
             virt_pos = self.window_manager.map_to_virtual(event.pos)
 
             if self.window_manager.get_fullscreen_button_rect().collidepoint(virt_pos):
+                self.play_ui_sound("ui.click")
                 self.window_manager.toggle_fullscreen()
                 return
 
             if self.play_button.collidepoint(virt_pos):
+                self.play_ui_sound("ui.confirm")
                 self._start_game()
                 return
 
             if self.quit_button.collidepoint(virt_pos):
+                self.play_ui_sound("ui.click")
                 pygame.quit()
                 sys.exit()
 
         elif event.type == pygame.KEYDOWN:
             if event.key in (pygame.K_RETURN, pygame.K_SPACE):
+                self.play_ui_sound("ui.confirm")
                 self._start_game()
             elif event.key == pygame.K_ESCAPE:
                 pygame.quit()
