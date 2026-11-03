@@ -4,6 +4,7 @@ from src.models.player import Player
 from src.models.deck import DeckManager
 from src.models.effects.ultimate_effect import create_ultimate, ULTIMATE_METADATA, DEFAULT_ULTIMATE_ID
 from src.systems.card_catalog import CARD_POOL, create_starting_deck
+from src.systems.boss_animation_kits import KITS
 from src.systems.enemy_factory import (
     create_enemy,
     choose_enemy_intent,
@@ -339,14 +340,15 @@ class CombatEngine:
                 action.execute(self.enemy, self.player, context=self)
             elif action.action_type == "attack":
                 ultimate = action is getattr(self.enemy, 'special_action', None)
-                if ultimate:
-                    self.trigger_attack('enemy', action=action.visual_effect or 'atk', ultimate=True)
+                animated_boss = self.enemy.name.lower() in KITS
+                if ultimate or animated_boss:
+                    self.trigger_attack('enemy', action=action.visual_effect or 'atk', ultimate=ultimate)
                 damage = self._apply_weakness_modifier(action.damage)
                 protected = 'totem' in self.player.statuses
                 actual_damage = self.player.receive_attack(damage + self.enemy.attack_bonus)
                 if getattr(action, 'status_effect', None) and not protected and self.player.is_alive():
                     self.player.apply_status(*action.status_effect)
-                if not ultimate:
+                if not ultimate and not animated_boss:
                     self.trigger_attack("enemy", action=action.visual_effect or "atk")
                 self.trigger_flash("player")
                 self.spawn_player_text(f"-{actual_damage}", RED)

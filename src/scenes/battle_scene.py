@@ -18,6 +18,7 @@ from src.ui.ultimate_fx import draw_ultimate_fx
 from src.ui.boss_ultimate_fx import draw_boss_ultimate_fx
 from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS
 from src.systems.alvaro_tex_animations import TRANSITION_MS
+from src.systems.boss_animation_kits import KITS
 from src.ui.helpers import draw_text, draw_health_bar, draw_panel, draw_vignette, wrap_text
 from src.ui import dark_fantasy_theme as theme
 from src.config.settings import WIDTH, HEIGHT
@@ -96,9 +97,10 @@ class BattleScene(BaseScene):
         if ultimate and event_name in ('floating_text', 'coin_drop'):
             self._ultimate_events.append((ultimate.duration*ultimate.impact, event_name, kwargs))
             return
-        boss_ultimate = self.entity_view.enemy_ultimate
-        if boss_ultimate and event_name == 'floating_text':
-            self._boss_events.append((boss_ultimate.duration*boss_ultimate.impact, kwargs))
+        boss_attack = (self.entity_view.attacker=='enemy' and self.entity_view.enemy_attack_name in KITS)
+        if boss_attack and event_name == 'floating_text':
+            impact=self.entity_view.enemy_attack_duration*self.entity_view.enemy_impact_fraction
+            self._boss_events.append((impact, kwargs))
             return
         if event_name == 'boss_phase_transition':
             self._phase_transition_pending = True
@@ -108,7 +110,7 @@ class BattleScene(BaseScene):
             self.entity_view.pending_enemy_hit_at = None
             self._ultimate_enemy_snapshot = None
         elif event_name == "attack":
-            if kwargs.get('ultimate'):
+            if kwargs.get('attacker')=='enemy' and self.engine.enemy.name.lower() in KITS:
                 self._boss_clock = 0
                 self._boss_player_snapshot = deepcopy(self.engine.player)
             self.entity_view.trigger_attack(
@@ -170,8 +172,8 @@ class BattleScene(BaseScene):
             else:
                 self.floating_texts.spawn(kwargs['x'], kwargs['y'], kwargs['text'], kwargs['color'])
         self._boss_events = pending_boss
-        boss_spec = self.entity_view.enemy_ultimate
-        if boss_spec is None or self._boss_clock >= boss_spec.duration*boss_spec.impact:
+        impact=self.entity_view.enemy_attack_duration*self.entity_view.enemy_impact_fraction
+        if self.entity_view.attacker!='enemy' or self._boss_clock>=impact:
             self._boss_player_snapshot = None
         pending = []
         text_offsets = {}
@@ -564,7 +566,7 @@ class BattleScene(BaseScene):
 
         self._draw_top_message(surface)
 
-        if self.engine.state == "game_over" and self.entity_view.enemy_ultimate is None:
+        if self.engine.state == "game_over" and self.entity_view.attacker!='enemy':
             self._draw_game_over(surface)
         if self.engine.state == "victory" and self.entity_view.player_action is None and self.entity_view.attacker is None:
             self._draw_victory(surface)
@@ -767,7 +769,7 @@ class BattleScene(BaseScene):
             if event.key == pygame.K_r and self.engine.state == "phase_complete":
                 self._finalize_map_phase(self.engine.level)
                 return
-            if event.key == pygame.K_r and self.engine.state == "game_over" and self.entity_view.enemy_ultimate is None:
+            if event.key == pygame.K_r and self.engine.state == "game_over" and self.entity_view.attacker!='enemy':
                 self.engine = CombatEngine(
                     on_event_callback=self._handle_combat_event, map_mode=self.map_mode,
                 )

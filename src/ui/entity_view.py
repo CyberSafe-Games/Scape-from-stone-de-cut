@@ -24,6 +24,7 @@ from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS, cast_frame
 from src.systems.boss_ultimate_animations import BOSS_ULTIMATE_ANIMATIONS, boss_cast_frame, boss_ultimate_pose
 from src.systems.alvaro_tex_animations import NAMES as DUO_NAMES, ATTACK_MS as DUO_ATTACK_MS, RANGED as DUO_RANGED, TRANSITION_MS, attack_frame
 from src.ui.alvaro_tex_fx import draw_alvaro_tex_fx
+from src.systems.boss_animation_kits import KITS, kit_frame
 
 NORMAL_IDLE_NAMES = frozenset(name.lower() for name in NORMAL_SPRITES) - {'morcego sombrio'}
 
@@ -69,6 +70,7 @@ class EntityView:
         self.enemy_attack_name = ""
         self.enemy_ultimate = None
         self.phase_transition_timer = None
+        self.enemy_idle_timer = 0
 
     def trigger_attack(self, attacker, action=None, enemy_name=None, ultimate=False):
         self.attacker = attacker
@@ -85,6 +87,7 @@ class EntityView:
             self.player_action_duration = self.player_attack_duration
             self.pending_enemy_hit_at = None
         elif attacker == "enemy":
+            self.enemy_idle_timer = 0
             self.enemy_action = action
             self.enemy_attack_duration = animation_duration(action, ATTACK_DURATION)
             if self.enemy_attack_name == 'carrasco da vigília':
@@ -102,6 +105,7 @@ class EntityView:
             self.enemy_action_timer = 0
 
     def trigger_enemy_action(self, action, enemy_name=None):
+        self.enemy_idle_timer = 0
         if enemy_name is not None:
             self.enemy_attack_name = enemy_name.strip().lower()
         self.enemy_action = action
@@ -112,13 +116,20 @@ class EntityView:
             self.enemy_action_duration = DUO_ATTACK_MS[self.enemy_attack_name].get(action, 1800)
         self.enemy_action_timer = 0
 
+    @property
+    def enemy_impact_fraction(self):
+        if self.enemy_ultimate:
+            return self.enemy_ultimate.impact
+        if self.enemy_ranged_attack:
+            return self.enemy_ranged_attack[2]
+        if self.enemy_attack_name in DUO_NAMES:
+            return .58 if self.enemy_attack_name==DUO_NAMES[0] else .60
+        return .52 if self.enemy_attack_name in KITS else .49
+
     def trigger_flash(self, target):
         if target == "player":
             if self.attacker == "enemy":
-                impact = self.enemy_ultimate.impact if self.enemy_ultimate else self.enemy_ranged_attack[2] if self.enemy_ranged_attack else 0.49
-                if self.enemy_attack_name in DUO_NAMES and not self.enemy_ranged_attack:
-                    impact = .58 if self.enemy_attack_name == DUO_NAMES[0] else .60
-                self.pending_player_hit_at = self.enemy_attack_duration * impact
+                self.pending_player_hit_at = self.enemy_attack_duration * self.enemy_impact_fraction
             else:
                 self.player_flash = FLASH_DURATION
         elif target == "enemy":
@@ -142,6 +153,8 @@ class EntityView:
 
     def update(self, dt):
         """Atualiza todos os timers de animação visual."""
+        enemy_was_busy = (self.attacker == 'enemy' or self.enemy_action is not None
+                          or self.enemy_flash > 0 or self.phase_transition_timer is not None)
         if self.phase_transition_timer is not None:
             self.phase_transition_timer += dt
         self.player_flash = max(0, self.player_flash - dt)
@@ -185,6 +198,11 @@ class EntityView:
                 self.player_action_timer = 0
 
         self.post_enemy_pause = max(0, self.post_enemy_pause - dt)
+        if (enemy_was_busy or self.attacker == 'enemy' or self.enemy_action is not None
+                or self.enemy_flash > 0 or self.phase_transition_timer is not None):
+            self.enemy_idle_timer = 0
+        else:
+            self.enemy_idle_timer += dt
 
     def is_enemy_resolving_done(self):
         # O segundo ataque só começa depois de terminar a animação do primeiro.
@@ -411,7 +429,11 @@ class EntityView:
             if self.enemy_ultimate:
                 sprites = self.asset_manager.get_boss_ultimate_sprites(enemy_name)
                 if sprites:
-                    index = boss_cast_frame(self.attack_timer/max(1, self.enemy_attack_duration), self.enemy_ultimate)
+                    p = self.attack_timer/max(1, self.enemy_attack_duration)
+                    release = (self.enemy_ultimate.release if self.enemy_ultimate.mode in ('bear','plasma')
+                               else self.enemy_ultimate.impact)
+                    index = (kit_frame(p,len(sprites),release) if len(sprites)==8
+                             else boss_cast_frame(p,self.enemy_ultimate))
                     return sprites[min(index, len(sprites)-1)]
             preferred_group = self.enemy_action if self.enemy_action else "atk"
             sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, preferred_group)
@@ -422,6 +444,10 @@ class EntityView:
             if sprites:
                 if enemy_name in DUO_NAMES:
                     return sprites[attack_frame(self.attack_timer/max(1, self.enemy_attack_duration), len(sprites))]
+                if enemy_name in KITS and len(sprites)==8:
+                    p = self.attack_timer/max(1,self.enemy_attack_duration)
+                    release = self.enemy_ranged_attack[1] if self.enemy_ranged_attack else None
+                    return sprites[kit_frame(p,len(sprites),release)]
                 if enemy_name in NORMAL_RANGED and attack_group in NORMAL_RANGED[enemy_name]:
                     progress = self.attack_timer / max(1, self.enemy_attack_duration)
                     index = 0 if progress < .22 else 1 if progress < .44 else 2 if progress < .80 else 3
@@ -473,6 +499,8 @@ class EntityView:
 
         sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "idle")
         if sprites:
+            if enemy_name in KITS and len(sprites)==8:
+                return sprites[int(self.enemy_idle_timer//180) % len(sprites)]
             if enemy_name in DUO_NAMES:
                 sequence = (0, 1, 2, 3, 2, 1)
                 return sprites[sequence[(now//260) % len(sequence)] % len(sprites)]

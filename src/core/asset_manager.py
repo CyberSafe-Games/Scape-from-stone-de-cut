@@ -67,6 +67,7 @@ class AssetManager:
         self._load_enemy_sprites()
         self._load_card_action_sprites()
         self._load_boss_ultimate_sprites()
+        self._load_boss_eight_frame_sprites()
         self._load_coin_icon()
         self._load_ui_images()
         self._load_ultimate_images()
@@ -385,6 +386,39 @@ class AssetManager:
 
     def get_boss_ultimate_sprites(self, name, effects=False):
         return (self._boss_ultimate_effects if effects else self._boss_ultimate_sprites).get(name.lower(), [])
+
+    def _load_boss_eight_frame_sprites(self):
+        import json
+        from src.systems.boss_animation_kits import KITS
+        from src.config.settings import ASSETS_DIR
+        root = os.path.join(ASSETS_DIR,'bosses','eight_frames')
+        # Original sources remain available for reproducible extraction and identity checks.
+        self._boss_original_groups = {name: dict(self._enemy_sprites.get(name,{})) for name in KITS}
+        self._boss_original_ultimates = dict(self._boss_ultimate_sprites)
+        if not os.path.isfile(os.path.join(root,'manifest.json')):
+            return
+        with open(os.path.join(root,'manifest.json'),encoding='utf8') as stream:
+            prepared = json.load(stream)
+        for name,(slug,groups) in KITS.items():
+            if slug not in prepared:
+                continue
+            for group in prepared[slug]:
+                frames = [pygame.image.load(os.path.join(root,slug,f'{group}_{i}.png')).convert_alpha()
+                          for i in range(1,9)]
+                if name == 'carrasco da vigília' and group == 'healer2':
+                    frames = [recolor_green_aura_red(frame) for frame in frames]
+                if group == 'ultimate':
+                    self._boss_ultimate_sprites[name] = frames
+                else:
+                    self._enemy_sprites[name][group] = frames
+            current = self._enemy_sprites[name]
+            current['atk'] = current['atk1']
+            if name in ('goblin nerd','corpo seco'):
+                current['def'] = current['healer2']
+            if name == 'goblin nerd':
+                current['atk4'] = current['atk2']
+            if name == 'álvaro e tex':
+                current['healer2'] = current['atk3']
 
     def get_card_action_sprites(self, action_name):
         return self._card_action_sprites.get(action_name, [])
