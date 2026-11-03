@@ -541,6 +541,21 @@ class AssetManager:
             groups['atk'] = groups['atk1']
             self._enemy_sprites['carrasco da vigília'] = groups
 
+        from src.systems.alvaro_tex_animations import NAMES
+        for phase, name in enumerate(NAMES, 1):
+            folder = os.path.join(ASSETS_DIR, 'bosses', 'alvaro_tex', f'phase{phase}')
+            groups = {}
+            for group in ('idle', 'dano', 'atk1', 'atk2', 'atk3', 'atk4', 'transition'):
+                paths = [os.path.join(folder, f'{group}_{i}.png') for i in range(1, 9)]
+                groups[group] = [pygame.image.load(p).convert_alpha() for p in paths if os.path.isfile(p)]
+            groups['atk'] = groups['atk1']
+            self._enemy_sprites[name] = groups
+            if phase == 1:
+                groups['healer2'] = groups['atk3']
+            star = os.path.join(ASSETS_DIR, 'bosses', 'alvaro_tex', 'shuriken.png')
+            if os.path.isfile(star):
+                self._enemy_projectiles[(name, 'atk2' if phase == 1 else 'atk4')] = pygame.image.load(star).convert_alpha()
+
         for name, (slug, action_groups, _, _) in NORMAL_SPRITES.items():
             folder = os.path.join(ASSETS_DIR, 'enemies', slug)
             groups = {}

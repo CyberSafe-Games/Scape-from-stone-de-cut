@@ -22,6 +22,8 @@ from src.ui.crimson_cast_fx import draw_crimson_cast
 from src.systems.normal_enemy_catalog import NORMAL_RANGED, NORMAL_SPRITES
 from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS, cast_frame
 from src.systems.boss_ultimate_animations import BOSS_ULTIMATE_ANIMATIONS, boss_cast_frame, boss_ultimate_pose
+from src.systems.alvaro_tex_animations import NAMES as DUO_NAMES, ATTACK_MS as DUO_ATTACK_MS, RANGED as DUO_RANGED, TRANSITION_MS, attack_frame
+from src.ui.alvaro_tex_fx import draw_alvaro_tex_fx
 
 NORMAL_IDLE_NAMES = frozenset(name.lower() for name in NORMAL_SPRITES) - {'morcego sombrio'}
 
@@ -39,6 +41,7 @@ class EntityView:
         "vinimuth": {"atk2": (1200, 0.54, 0.87)},
         'guardião da pedra': {'atk2': (1400, 0.50, 0.84)},
         **NORMAL_RANGED,
+        **DUO_RANGED,
     }
 
     def __init__(self, asset_manager):
@@ -65,6 +68,7 @@ class EntityView:
         self._screwdriver_sprite = None
         self.enemy_attack_name = ""
         self.enemy_ultimate = None
+        self.phase_transition_timer = None
 
     def trigger_attack(self, attacker, action=None, enemy_name=None, ultimate=False):
         self.attacker = attacker
@@ -85,6 +89,8 @@ class EntityView:
             self.enemy_attack_duration = animation_duration(action, ATTACK_DURATION)
             if self.enemy_attack_name == 'carrasco da vigília':
                 self.enemy_attack_duration = {'atk1': 1050, 'atk2': 1150, 'atk3': 1500}.get(action, ATTACK_DURATION)
+            if self.enemy_attack_name in DUO_ATTACK_MS:
+                self.enemy_attack_duration = DUO_ATTACK_MS[self.enemy_attack_name].get(action, 1300)
             self.enemy_ranged_attack = self.RANGED_ATTACKS.get(self.enemy_attack_name, {}).get(action)
             if self.enemy_ranged_attack:
                 self.enemy_attack_duration = self.enemy_ranged_attack[0]
@@ -102,12 +108,16 @@ class EntityView:
         self.enemy_action_duration = animation_duration(action, 600)
         if self.enemy_attack_name == 'carrasco da vigília' and action == 'healer2':
             self.enemy_action_duration = 1500
+        if self.enemy_attack_name in DUO_NAMES and action == 'healer2':
+            self.enemy_action_duration = DUO_ATTACK_MS[self.enemy_attack_name].get(action, 1800)
         self.enemy_action_timer = 0
 
     def trigger_flash(self, target):
         if target == "player":
             if self.attacker == "enemy":
                 impact = self.enemy_ultimate.impact if self.enemy_ultimate else self.enemy_ranged_attack[2] if self.enemy_ranged_attack else 0.49
+                if self.enemy_attack_name in DUO_NAMES and not self.enemy_ranged_attack:
+                    impact = .58 if self.enemy_attack_name == DUO_NAMES[0] else .60
                 self.pending_player_hit_at = self.enemy_attack_duration * impact
             else:
                 self.player_flash = FLASH_DURATION
@@ -132,6 +142,8 @@ class EntityView:
 
     def update(self, dt):
         """Atualiza todos os timers de animação visual."""
+        if self.phase_transition_timer is not None:
+            self.phase_transition_timer += dt
         self.player_flash = max(0, self.player_flash - dt)
         self.enemy_flash = max(0, self.enemy_flash - dt)
         if self.attacker is not None:
@@ -236,6 +248,8 @@ class EntityView:
             offset_x, offset_y = origins[self.enemy_attack_name]
             start_x, start_y = ENEMY_X-offset_x, PLAYER_GROUND_Y-offset_y
         end_y = PLAYER_GROUND_Y - 65
+        if self.enemy_attack_name in DUO_NAMES:
+            start_y = PLAYER_GROUND_Y - (160 if self.enemy_attack_name == DUO_NAMES[0] else 65)
         x = start_x + (end_x - start_x) * flight
         y = start_y + (end_y - start_y) * flight
         if self.enemy_attack_name == 'goblin nerd' and self.enemy_action == "atk1":
@@ -243,6 +257,12 @@ class EntityView:
         return x, y, flight
 
     def draw_enemy_projectile(self, surface):
+        if self.enemy_attack_name == DUO_NAMES[0] and self.enemy_action == 'healer2':
+            draw_alvaro_tex_fx(surface, self)
+            return
+        if self.enemy_attack_name in DUO_NAMES and self.attacker == 'enemy':
+            draw_alvaro_tex_fx(surface, self)
+            return
         if self.enemy_ultimate:
             return
         if self.enemy_attack_name == 'carrasco da vigília' and self.enemy_action == 'healer2':
@@ -381,6 +401,11 @@ class EntityView:
         now = pygame.time.get_ticks()
         enemy_name = getattr(enemy, "name", "").lower()
 
+        if self.phase_transition_timer is not None and enemy_name == DUO_NAMES[0]:
+            frames = self.asset_manager.get_enemy_sprite_group(enemy_name, 'transition')
+            if frames:
+                return frames[attack_frame(self.phase_transition_timer/TRANSITION_MS, len(frames))]
+
         # 1. Ataque físico
         if self.attacker == "enemy":
             if self.enemy_ultimate:
@@ -395,6 +420,8 @@ class EntityView:
                 attack_group = self.enemy_action if self.enemy_action in ("atk1", "atk2", "atk3", "atk4") else "atk"
                 sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, attack_group)
             if sprites:
+                if enemy_name in DUO_NAMES:
+                    return sprites[attack_frame(self.attack_timer/max(1, self.enemy_attack_duration), len(sprites))]
                 if enemy_name in NORMAL_RANGED and attack_group in NORMAL_RANGED[enemy_name]:
                     progress = self.attack_timer / max(1, self.enemy_attack_duration)
                     index = 0 if progress < .22 else 1 if progress < .44 else 2 if progress < .80 else 3
@@ -446,6 +473,9 @@ class EntityView:
 
         sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "idle")
         if sprites:
+            if enemy_name in DUO_NAMES:
+                sequence = (0, 1, 2, 3, 2, 1)
+                return sprites[sequence[(now//260) % len(sequence)] % len(sprites)]
             if enemy_name in ('vinimuth', 'carrasco da vigília') or enemy_name in NORMAL_IDLE_NAMES:
                 # Respiração lenta sobre uma pose estável: evita alternar
                 # bruscamente braços e cabeça a cada 220 ms. Os pés mantêm o pivô.

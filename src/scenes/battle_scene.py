@@ -17,6 +17,7 @@ from src.ui.card_fx import draw_player_projectile
 from src.ui.ultimate_fx import draw_ultimate_fx
 from src.ui.boss_ultimate_fx import draw_boss_ultimate_fx
 from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS
+from src.systems.alvaro_tex_animations import TRANSITION_MS
 from src.ui.helpers import draw_text, draw_health_bar, draw_panel, draw_vignette, wrap_text
 from src.ui import dark_fantasy_theme as theme
 from src.config.settings import WIDTH, HEIGHT
@@ -63,6 +64,7 @@ class BattleScene(BaseScene):
         self._boss_events = []
         self._boss_clock = 0
         self._boss_player_snapshot = None
+        self._phase_transition_pending = False
 
         # Inicializa o motor puro de combate com callbacks para efeitos visuais
         self.engine = CombatEngine(
@@ -98,7 +100,14 @@ class BattleScene(BaseScene):
         if boss_ultimate and event_name == 'floating_text':
             self._boss_events.append((boss_ultimate.duration*boss_ultimate.impact, kwargs))
             return
-        if event_name == "attack":
+        if event_name == 'boss_phase_transition':
+            self._phase_transition_pending = True
+        elif event_name == 'boss_phase_started':
+            self.entity_view.phase_transition_timer = None
+            self.entity_view.enemy_flash = 0
+            self.entity_view.pending_enemy_hit_at = None
+            self._ultimate_enemy_snapshot = None
+        elif event_name == "attack":
             if kwargs.get('ultimate'):
                 self._boss_clock = 0
                 self._boss_player_snapshot = deepcopy(self.engine.player)
@@ -180,6 +189,18 @@ class BattleScene(BaseScene):
         spec = ULTIMATE_ANIMATIONS.get(self.entity_view.player_action)
         if spec is None or self._ultimate_clock >= spec.duration*spec.impact:
             self._ultimate_enemy_snapshot = None
+
+        # The finishing card/ultimate completes before the supplied eight-frame fall.
+        if self.engine.state == 'boss_transition':
+            if self._phase_transition_pending and self.entity_view.player_action is None and self.entity_view.attacker is None:
+                self._phase_transition_pending = False
+                self.entity_view.enemy_action = None
+                self.entity_view.enemy_flash = 0
+                self.entity_view.pending_enemy_hit_at = None
+                self.entity_view.phase_transition_timer = 0
+            if (self.entity_view.phase_transition_timer is not None
+                    and self.entity_view.phase_transition_timer >= TRANSITION_MS):
+                self.engine.finish_boss_transition()
 
         # ----------------------------------------------------
         # Turno do Inimigo
@@ -513,7 +534,7 @@ class BattleScene(BaseScene):
 
         hand_rects = []
         self.ultimate_hand_rect = None
-        if self.engine.state in ("player_turn", "enemy_turn", "enemy_resolving"):
+        if self.engine.state in ("player_turn", "enemy_turn", "enemy_resolving", "boss_transition"):
             mouse_pos = self.window_manager.get_virtual_mouse_pos()
             hand_rects = self._get_battle_hand_rects()
             normal_count = len(self.engine.hand)
@@ -552,22 +573,29 @@ class BattleScene(BaseScene):
 
     def _draw_top_message(self, surface):
         """Aviso transitório do topo: ultimate do inimigo ou mensagem do combate."""
-        if self.entity_view.enemy_ultimate:
+        enemy = self.engine.enemy
+        if (getattr(enemy, 'boss_id', None) == 'alvaro_tex'
+                and self.entity_view.attacker == 'enemy'
+                and self.entity_view.enemy_action == enemy.special_action.visual_effect):
+            self._draw_message_box(surface, enemy.special_action.name.upper(), GOLD,
+                                   fill=(18, 29, 15, 235), border=(154, 172, 66), radius=10, top=118)
+        elif self.entity_view.enemy_ultimate:
             special = self.entity_view.enemy_ultimate
             self._draw_message_box(surface, special.title.upper(), special.color,
                                    fill=(12, 14, 20, 235), border=special.color, radius=10)
         elif self.engine.message:
             self._draw_message_box(surface, self.engine.message, WHITE,
-                                   fill=(36, 14, 18, 235), border=(168, 86, 86), radius=12)
+                                   fill=(36, 14, 18, 235), border=(168, 86, 86), radius=12,
+                                   top=118 if getattr(enemy, 'boss_id', None) == 'alvaro_tex' else 26)
 
-    def _draw_message_box(self, surface, text, color, fill, border, radius):
+    def _draw_message_box(self, surface, text, color, fill, border, radius, top=26):
         """Caixa de aviso no topo: quebra o texto na largura útil e cresce para baixo."""
         font = self.asset_manager.font
         width, min_height, pad_x, pad_y = 460, 40, 18, 6
         lines = wrap_text(text, font, width - pad_x * 2) or [""]
         line_h = font.get_linesize()
         height = max(min_height, len(lines) * line_h + pad_y * 2)
-        msg_rect = pygame.Rect(WIDTH // 2 - width // 2, 26, width, height)
+        msg_rect = pygame.Rect(WIDTH // 2 - width // 2, top, width, height)
         draw_panel(surface, msg_rect, fill=fill, border=border, radius=radius)
         first_center = msg_rect.centery - (len(lines) - 1) * line_h / 2
         for i, line in enumerate(lines):
@@ -770,6 +798,7 @@ class BattleScene(BaseScene):
                 "player_turn",
                 "enemy_turn",
                 "enemy_resolving",
+                "boss_transition",
                 "game_over",
                 "victory",
             ):

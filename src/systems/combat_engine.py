@@ -7,7 +7,7 @@ from src.systems.card_catalog import CARD_POOL, create_starting_deck
 from src.systems.enemy_factory import (
     create_enemy,
     choose_enemy_intent,
-    is_miniboss_level, create_road_enemy, choose_next_action, create_point_enemy,
+    is_miniboss_level, create_road_enemy, choose_next_action, create_point_enemy, create_alvaro_tex,
 )
 from src.config.colors import RED, BLUE, GOLD
 from src.config.layout import PLAYER_X, PLAYER_Y, ENEMY_X, ENEMY_Y
@@ -264,6 +264,15 @@ class CombatEngine:
 
     def _on_enemy_defeated(self):
         """Concede recompensa de moedas e avança para a tela de vitória."""
+        if self.state in ('boss_transition', 'victory'):
+            return
+        if getattr(self.enemy, 'boss_id', None) == 'alvaro_tex' and self.enemy.phase == 1:
+            self._phase_ended_enemy_turn = self.state in ('enemy_turn', 'enemy_resolving')
+            self.enemy_actions_remaining = 0
+            self.state = 'boss_transition'
+            self.on_event('boss_phase_transition')
+            self.show_message('A dupla caiu... mas o pequeno ainda quer lutar!', duration=4000)
+            return
         if self.enemy.is_miniboss:
             coin_amount = random.randint(50, 70)
         else:
@@ -276,6 +285,20 @@ class CombatEngine:
         )
         self.state = "victory"
         self.generate_rewards()
+
+    def finish_boss_transition(self):
+        """Troca somente o inimigo; não reinicia a luta ou concede recompensa."""
+        if self.state != 'boss_transition':
+            return False
+        self.enemy = create_alvaro_tex(self.level, phase=2)
+        choose_next_action(self.enemy)
+        if self._phase_ended_enemy_turn:
+            self._begin_player_turn()
+        else:
+            self.state = 'player_turn'
+        self.show_message('FASE 2/2 · O pequeno luta sozinho!', duration=3000)
+        self.on_event('boss_phase_started', phase=2)
+        return True
 
     def end_turn(self):
         """Encerra a vez do jogador e passa o turno para o inimigo."""
@@ -374,6 +397,10 @@ class CombatEngine:
             return
         self.enemy.reset_energy()
         choose_next_action(self.enemy)
+        self._begin_player_turn()
+
+    def _begin_player_turn(self):
+        """Abre uma rodada do jogador, inclusive após uma transição por veneno."""
         self.player.begin_turn()
         self.player.increase_max_energy(1)
         self.player.reset_energy()

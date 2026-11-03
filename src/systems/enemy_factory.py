@@ -4,6 +4,7 @@ from src.models.action import Action
 from src.models.enemy import Enemy
 from src.config.layout import MINIBOSS_INTERVAL
 from src.models.effects.crimson_vigor_effect import CrimsonVigorEffect
+from src.models.effects.forest_smoke_effect import ForestSmokeEffect
 from src.systems.normal_enemy_catalog import biome_enemy_names, NORMAL_SPRITES, NORMAL_ACTIONS
 
 # Configuração de inimigos comuns: (Nome, HP Base, HP por Andar)
@@ -173,6 +174,8 @@ def create_point_enemy(level):
     """Resolve chefes territoriais específicos antes do fallback genérico."""
     if level == 1:
         return create_guardiao_da_pedra(level)
+    if level == 2:
+        return create_alvaro_tex(level)
     if level == 3:
         return create_goblin_nerd(level)
     if level == 5:
@@ -180,6 +183,40 @@ def create_point_enemy(level):
     if level == 6:
         return create_carrasco_da_vigilia(level)
     return create_enemy(level, is_miniboss_level(level))
+
+
+def create_alvaro_tex(level=2, phase=1):
+    """Dupla da Mata Sombria; o pequeno continua após a queda do parceiro."""
+    if phase not in (1, 2):
+        raise ValueError('Fase inválida para Álvaro e Tex.')
+    if phase == 1:
+        actions = [
+            Action('Estocada da Dupla', 'attack', damage=9, energy_cost=1,
+                   weight=.45, visual_effect='atk1'),
+            Action('Estrela Traiçoeira', 'attack', damage=7, energy_cost=1,
+                   weight=.35, visual_effect='atk2'),
+            Action('Fumaça Restauradora', 'buff', defense=10, energy_cost=1,
+                   weight=.20, visual_effect='healer2', effect=ForestSmokeEffect()),
+        ]
+        boss = Enemy('Álvaro e Tex', hp=76, energy=4, max_energy=4,
+                     actions=actions, is_miniboss=True)
+        _configure_boss(boss, 'Vendaval da Dupla', 15, 'atk4')
+    else:
+        actions = [
+            Action('Chute Ardiloso', 'attack', damage=7, energy_cost=1,
+                   weight=.40, visual_effect='atk1'),
+            Action('Pancada de Porrete', 'attack', damage=9, energy_cost=1,
+                   weight=.35, visual_effect='atk2'),
+            Action('Shuriken Furtiva', 'attack', damage=6, energy_cost=1,
+                   weight=.25, visual_effect='atk4'),
+        ]
+        boss = Enemy('Álvaro e Tex · Pequeno', hp=44, energy=4, max_energy=4,
+                     actions=actions, is_miniboss=True)
+        _configure_boss(boss, 'Fúria do Pequeno', 13, 'atk3')
+    boss.boss_id = 'alvaro_tex'
+    boss.phase = phase
+    boss.total_phases = 2
+    return boss
 
 
 def create_road_enemy(level):
