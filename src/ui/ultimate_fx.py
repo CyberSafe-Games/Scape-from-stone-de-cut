@@ -66,6 +66,8 @@ def _draw_back(surface, view, spec, p, frames, fade):
     surface.blit(seal, (PLAYER_X-120, PLAYER_GROUND_Y-38))
     if spec.ultimate_id == 'forcas_ancestrais':
         index = 0 if p < .24 else 1 if p < .43 else 2 if p < .81 else 3
+        if len(frames) == 8:
+            index = min(7, int(p*8))
         scale = .55+p*1.2 if p < .43 else 1 if p < .81 else 1+(p-.81)*.6
         _sprite(surface, frames[min(index, len(frames)-1)], (PLAYER_X, PLAYER_GROUND_Y-129), scale, 235*fade)
         _particles(surface, (PLAYER_X, PLAYER_GROUND_Y-95), (245, 216, 139), p, 103, 24)
@@ -74,6 +76,8 @@ def _draw_back(surface, view, spec, p, frames, fade):
 def _draw_front(surface, view, spec, p, frames, fade):
     if spec.ultimate_id == 'mana_ancestral':
         index = 0 if p < .24 else 1 if p < .45 else 2 if p < .79 else 3
+        if len(frames) == 8:
+            index = min(7, int(p*8))
         rise = min(1, p/.38)
         y = PLAYER_GROUND_Y-100-110*rise
         scale = .85 if p < .45 else 1+math.sin(p*math.tau*3)*.035 if p < .79 else 1+(p-.79)*1.5
@@ -92,11 +96,14 @@ def _draw_front(surface, view, spec, p, frames, fade):
         if pose is not None:
             x, y, flight = pose
             index = 1 if flight < .40 else 2
+            if len(frames) == 8:
+                index = min(6, 2+int(flight*5))
             _sprite(surface, frames[min(index, len(frames)-1)], (x, y), 1+.10*math.sin(flight*math.pi), 255)
             _particles(surface, (x-65, y), (190, 238, 126), flight, 55, 12)
         elif p < spec.release:
             charge = p/spec.release
-            _sprite(surface, frames[0], (PLAYER_X+85, PLAYER_GROUND_Y-91), .35+.50*charge, 210*charge)
+            index = min(1, int(charge*2)) if len(frames) == 8 else 0
+            _sprite(surface, frames[index], (PLAYER_X+85, PLAYER_GROUND_Y-91), .35+.50*charge, 210*charge)
         else:
             impact = (p-spec.impact)/(1-spec.impact)
             _sprite(surface, frames[-1], (ENEMY_X-10, PLAYER_GROUND_Y-85), 1+impact*.35, 255*(1-impact))

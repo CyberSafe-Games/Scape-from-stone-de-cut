@@ -25,6 +25,7 @@ from src.systems.boss_ultimate_animations import BOSS_ULTIMATE_ANIMATIONS, boss_
 from src.systems.alvaro_tex_animations import NAMES as DUO_NAMES, ATTACK_MS as DUO_ATTACK_MS, RANGED as DUO_RANGED, TRANSITION_MS, attack_frame
 from src.ui.alvaro_tex_fx import draw_alvaro_tex_fx
 from src.systems.boss_animation_kits import KITS, kit_frame
+from src.systems.player_animation_kits import player_frame
 
 NORMAL_IDLE_NAMES = frozenset(name.lower() for name in NORMAL_SPRITES) - {'morcego sombrio'}
 
@@ -71,6 +72,9 @@ class EntityView:
         self.enemy_ultimate = None
         self.phase_transition_timer = None
         self.enemy_idle_timer = 0
+        self.player_idle_timer = 0
+        self.player_victory_timer = 0
+        self._player_victory_active = False
 
     def trigger_attack(self, attacker, action=None, enemy_name=None, ultimate=False):
         self.attacker = attacker
@@ -80,6 +84,7 @@ class EntityView:
         self.enemy_attack_name = (enemy_name or "").strip().lower()
         self.enemy_ultimate = BOSS_ULTIMATE_ANIMATIONS.get(self.enemy_attack_name) if ultimate and attacker == 'enemy' else None
         if attacker == "player":
+            self.player_idle_timer = 0
             self.player_action = action
             self.player_action_timer = 0
             spec = SPECS_BY_NAME.get(action)
@@ -142,6 +147,7 @@ class EntityView:
                 self.enemy_flash = FLASH_DURATION
 
     def trigger_player_action(self, action):
+        self.player_idle_timer = 0
         self.player_action = action
         self.player_action_timer = 0
         ultimate = ULTIMATE_ANIMATIONS.get(action)
@@ -153,6 +159,9 @@ class EntityView:
 
     def update(self, dt):
         """Atualiza todos os timers de animação visual."""
+        player_was_busy = (self.attacker == 'player' or self.player_action is not None
+                           or self.player_flash > 0)
+        self.player_victory_timer += dt
         enemy_was_busy = (self.attacker == 'enemy' or self.enemy_action is not None
                           or self.enemy_flash > 0 or self.phase_transition_timer is not None)
         if self.phase_transition_timer is not None:
@@ -203,6 +212,11 @@ class EntityView:
             self.enemy_idle_timer = 0
         else:
             self.enemy_idle_timer += dt
+        if (player_was_busy or self.attacker == 'player' or self.player_action is not None
+                or self.player_flash > 0):
+            self.player_idle_timer = 0
+        else:
+            self.player_idle_timer += dt
 
     def is_enemy_resolving_done(self):
         # O segundo ataque só começa depois de terminar a animação do primeiro.
@@ -325,13 +339,16 @@ class EntityView:
 
     def get_player_frame(self, game_state):
         """Determina o sprite e a posição X exata do jogador com base no estado e nos timers."""
-        now = pygame.time.get_ticks()
+        victory = game_state == 'victory'
+        if victory and not self._player_victory_active:
+            self.player_victory_timer = 0
+        self._player_victory_active = victory
 
         # Vitória
         if game_state == "victory" and self.player_action is None and self.attacker != 'player':
             sprites = self.asset_manager.get_player_sprite_group("vitoria")
             if sprites:
-                frame = sprites[(now // 300) % len(sprites)]
+                frame = sprites[(int(self.player_victory_timer) // 140) % len(sprites)]
                 return PLAYER_X, frame
 
         # Ação específica da carta
@@ -343,7 +360,9 @@ class EntityView:
                 )
                 spec = SPECS_BY_NAME.get(self.player_action)
                 if self.player_action in ULTIMATE_ANIMATIONS:
-                    index = cast_frame(progress)
+                    index = cast_frame(progress, ULTIMATE_ANIMATIONS[self.player_action].release)
+                elif len(sprites) == 8:
+                    index = player_frame(progress, spec[6] if spec else 'self')
                 elif spec and spec[6] == 'melee':
                     index = 0 if progress < 0.4 else 1 if progress < 0.5 else 2 if progress < 0.68 else 3
                 elif spec and spec[6] == 'ranged':
@@ -352,7 +371,7 @@ class EntityView:
                     index = min(len(sprites) - 1, int(progress * len(sprites)))
                 frame = sprites[min(len(sprites) - 1, index)]
             else:
-                frame = self.asset_manager.get_player_sprite("idle", now // 120)
+                frame = self.asset_manager.get_player_sprite("idle", int(self.player_idle_timer) // 150)
 
             if self.attacker == "player":
                 x, _ = self.get_attack_pose("player", PLAYER_X, ENEMY_X - APPROACH_GAP)
@@ -367,7 +386,7 @@ class EntityView:
 
             if progress < APPROACH_FRAC:
                 sprites = self.asset_manager.get_player_sprite_group("idle")
-                frame = sprites[(now // 120) % len(sprites)] if sprites else self.asset_manager.get_fallback_sprite()
+                frame = sprites[(int(self.player_idle_timer) // 150) % len(sprites)] if sprites else self.asset_manager.get_fallback_sprite()
             elif progress < (APPROACH_FRAC + STRIKE_FRAC):
                 sprites = self.asset_manager.get_player_sprite_group("soco")
                 if sprites:
@@ -393,7 +412,7 @@ class EntityView:
         # Idle normal
         sprites = self.asset_manager.get_player_sprite_group("idle")
         if sprites:
-            frame = sprites[(now // 400) % len(sprites)]
+            frame = sprites[(int(self.player_idle_timer) // 150) % len(sprites)]
             return PLAYER_X, frame
 
         return PLAYER_X, self.asset_manager.get_fallback_sprite()

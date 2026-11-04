@@ -18,9 +18,10 @@ ULTIMATE_ANIMATIONS = {
 }
 
 
-def cast_frame(progress):
-    """Preparação, canalização, auge e retorno; a última pose não se repete."""
-    return 0 if progress < .20 else 1 if progress < .38 else 2 if progress < .82 else 3
+def cast_frame(progress, release=.38):
+    """Oito poses, da preparação até o retorno à postura de repouso."""
+    from src.systems.player_animation_kits import player_frame
+    return player_frame(progress, release=release)
 
 
 def roar_projectile_pose(progress, start_x, end_x, y):

@@ -69,8 +69,7 @@ class BossEightFramesTests(unittest.TestCase):
         view.update(view.enemy_attack_duration*.02)
         self.assertGreater(view.player_flash,0)
 
-    def test_hero_and_approved_magic_layers_are_outside_this_migration(self):
-        self.assertEqual(len(self.assets.get_player_sprite_group('idle')),2)
+    def test_approved_boss_magic_layers_remain_independent(self):
         for name in BOSS_ULTIMATE_ANIMATIONS:
             self.assertEqual(len(self.assets.get_boss_ultimate_sprites(name,effects=True)),4)
 

@@ -66,6 +66,7 @@ class AssetManager:
         self._load_player_sprites()
         self._load_enemy_sprites()
         self._load_card_action_sprites()
+        self._load_player_eight_frames()
         self._load_boss_ultimate_sprites()
         self._load_boss_eight_frame_sprites()
         self._load_coin_icon()
@@ -337,6 +338,33 @@ class AssetManager:
 
     def get_ultimate_effect_sprites(self, action_name):
         return self._ultimate_effect_sprites.get(action_name, [])
+
+    def _load_player_eight_frames(self):
+        """Usa sequências completas com o mesmo desenho e a mesma paleta."""
+        from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS
+        folder = os.path.join(PLAYER_ASSETS_DIR, 'eight_frames')
+
+        def load(group):
+            paths = [os.path.join(folder, f'{group}_{i}.png') for i in range(1, 9)]
+            if not all(os.path.isfile(path) for path in paths):
+                return None
+            return [pygame.image.load(path).convert_alpha() for path in paths]
+
+        for group in ('idle', 'dano', 'soco', 'vitoria'):
+            frames = load(group)
+            if frames:
+                self._player_sprites[group] = frames
+        for name, group in self.CARD_ACTION_FILES.items():
+            frames = load(group)
+            if frames:
+                self._card_action_sprites[name] = frames
+        for name, spec in ULTIMATE_ANIMATIONS.items():
+            frames = load(spec.ultimate_id)
+            if frames:
+                self._card_action_sprites[name] = frames
+            effects = load(f'{spec.ultimate_id}_effect')
+            if effects:
+                self._ultimate_effect_sprites[name] = effects
 
     def _load_boss_ultimate_sprites(self):
         from src.systems.boss_ultimate_animations import BOSS_ULTIMATE_ANIMATIONS, BOSS_ORIGINAL_CASTS
