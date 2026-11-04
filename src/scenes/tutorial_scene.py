@@ -455,9 +455,28 @@ class TutorialScene(BattleScene):
         if self.overlay.is_active:
             if self.window_manager.handle_window_event(event):
                 return
-            if self.overlay.handle_event(event, virt_pos):
-                return
 
+            if self.overlay.handle_event(event, virt_pos):
+                if (
+                    (
+                        event.type == pygame.MOUSEBUTTONDOWN
+                        and event.button == 1
+                    )
+                    or (
+                        event.type == pygame.KEYDOWN
+                        and event.key in (
+                            pygame.K_SPACE,
+                            pygame.K_RETURN,
+                            pygame.K_RIGHT,
+                            pygame.K_LEFT,
+                            pygame.K_BACKSPACE,
+                            pygame.K_ESCAPE,
+                        )
+                    )
+                ):
+                    self.play_ui_sound("ui.click")
+
+                return
         # Clique no botão de rever guia
         if not self.overlay.is_active and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.help_button_rect.collidepoint(virt_pos):
@@ -524,6 +543,7 @@ class TutorialScene(BattleScene):
     def _return_to_main_menu(self):
         """ESC/MENU antes da vitória não libera o mapa."""
         from src.scenes.menu_scene import MenuScene
+        self.play_ui_sound("ui.confirm")
         self.scene_manager.change_scene(MenuScene(
             self.scene_manager, self.window_manager, self.asset_manager,
         ))

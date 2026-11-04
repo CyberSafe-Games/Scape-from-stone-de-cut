@@ -847,6 +847,7 @@ class BattleScene(BaseScene):
         if self.map_mode:
             self._return_to_map()
         else:
+            self.play_ui_sound("ui.confirm")
             from src.scenes.menu_scene import MenuScene
             self.scene_manager.change_scene(
                 MenuScene(self.scene_manager, self.window_manager, self.asset_manager)

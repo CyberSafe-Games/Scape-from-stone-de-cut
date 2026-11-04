@@ -89,7 +89,6 @@ class MenuScene(BaseScene):
                 return
 
             if self.quit_button.collidepoint(virt_pos):
-                self.play_ui_sound("ui.click")
                 pygame.quit()
                 sys.exit()
 
