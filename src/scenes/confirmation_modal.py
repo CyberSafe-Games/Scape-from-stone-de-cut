@@ -90,6 +90,7 @@ class ConfirmationModal(BaseScene):
             )
 
     def _cancel(self):
+        self.play_ui_sound("ui.click")
         self.scene_manager.pop_modal()
         if self.on_cancel:
             self.on_cancel()
