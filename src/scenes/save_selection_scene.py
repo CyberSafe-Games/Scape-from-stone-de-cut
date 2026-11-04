@@ -181,6 +181,7 @@ class SaveSelectionScene(BaseScene):
         )
 
     def _select(self, index):
+        self.play_ui_sound("ui.click")
         status, data = self.slots[index]
         if status == "corrupted":
             self.error = "Save danificado. Exclua o arquivo para poder criar um novo."
@@ -220,6 +221,7 @@ class SaveSelectionScene(BaseScene):
     def _delete(self, index):
         try:
             self.save_manager.delete_save(self.save_manager.slot_id(index + 1))
+            self.play_ui_sound("ui.confirm")
             self.error = ""
         except OSError as exc:
             self.error = f"Não foi possível excluir: {exc}"
