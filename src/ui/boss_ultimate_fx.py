@@ -1,8 +1,8 @@
-"""Camadas próprias dos quatro especiais: carga, deslocamento e impacto."""
+"""Efeitos em oito etapas: carga, ataque, impacto e dissipação."""
 import math
 import pygame
 from src.config.layout import ENEMY_X, PLAYER_X, PLAYER_GROUND_Y
-from src.systems.boss_ultimate_animations import boss_ultimate_pose
+from src.systems.boss_ultimate_animations import boss_ultimate_pose, boss_effect_frame
 from src.ui.ultimate_fx import _sprite, _particles
 
 
@@ -44,22 +44,26 @@ def _back(surface, view, frames, p):
     surface.blit(seal, (round(x)-135, PLAYER_GROUND_Y-34))
     if spec.mode == 'blades' and .25 <= p < .82:
         progress = (p-.25)/.57
-        vortex = pygame.transform.rotate(frames[2], -progress*360)
-        _sprite(surface, vortex, (x, PLAYER_GROUND_Y-80), .8+.2*math.sin(p*math.pi), 175*fade)
+        if len(frames) != 8 or p < spec.impact:
+            index = boss_effect_frame(p, spec) if len(frames) == 8 else 2
+            vortex = pygame.transform.rotate(frames[index], -progress*360)
+            _sprite(surface, vortex, (x, PLAYER_GROUND_Y-80), .8+.2*math.sin(p*math.pi), 175*fade)
     elif p < spec.release:
         charge = p/spec.release
         center = (ENEMY_X, PLAYER_GROUND_Y-(205 if spec.mode == 'execution' else 90))
-        _sprite(surface, frames[0], center, .25+.45*charge, 200*charge)
+        index = boss_effect_frame(p, spec) if len(frames) == 8 else 0
+        _sprite(surface, frames[index], center, .25+.45*charge, 200*charge)
         _particles(surface, center, spec.color, charge, 35+55*charge, 16)
 
 
 def _front(surface, view, frames, p):
     spec = view.enemy_ultimate
+    effect_index = boss_effect_frame(p, spec) if len(frames) == 8 else None
     if spec.mode in ('bear', 'plasma', 'sovereign'):
         pose = view.get_enemy_projectile_pose()
         if pose is not None:
             x, y, flight = pose
-            frame = frames[1 if flight < .35 else 2]
+            frame = frames[effect_index if effect_index is not None else 1 if flight < .35 else 2]
             # Vapor/lâminas de luz permanecem à direita do projétil que voa à esquerda.
             for distance, alpha in ((75, 22), (42, 45)):
                 _sprite(surface, frame, (x+distance, y), .9, alpha)
@@ -77,15 +81,17 @@ def _front(surface, view, frames, p):
     else:
         x, lift = boss_ultimate_pose(spec, p, ENEMY_X, PLAYER_X+105)
         if spec.mode == 'blades' and spec.release <= p < spec.impact:
-            blade = pygame.transform.rotate(frames[1], (p-spec.release)*650)
+            blade = pygame.transform.rotate(frames[effect_index if effect_index is not None else 1], (p-spec.release)*650)
             _sprite(surface, blade, (x-45, PLAYER_GROUND_Y-75-lift), .85, 190)
         elif spec.mode == 'execution' and .45 <= p < spec.impact:
-            _sprite(surface, frames[1], (x-65, PLAYER_GROUND_Y-100-lift), .75, 235)
+            _sprite(surface, frames[effect_index if effect_index is not None else 1], (x-65, PLAYER_GROUND_Y-100-lift), .75, 235)
         elif spec.mode == 'tremor' and .43 <= p < spec.impact:
-            _sprite(surface, frames[1], (x-45, PLAYER_GROUND_Y-38-lift), .68, 210)
+            _sprite(surface, frames[effect_index if effect_index is not None else 1], (x-45, PLAYER_GROUND_Y-38-lift), .68, 210)
     if p >= spec.impact:
         fade = (p-spec.impact)/(1-spec.impact)
         index = 2 if spec.mode in ('execution', 'tremor') and fade < .42 else 3
+        if effect_index is not None:
+            index = effect_index
         impact_y = PLAYER_GROUND_Y-45 if spec.mode == 'tremor' else PLAYER_GROUND_Y-82
         _sprite(surface, frames[index], (PLAYER_X+12, impact_y), 1+fade*.3, 255*(1-fade))
         _particles(surface, (PLAYER_X, PLAYER_GROUND_Y-75), spec.color, fade, 30+fade*100, 20)

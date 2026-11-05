@@ -71,7 +71,7 @@ class BossEightFramesTests(unittest.TestCase):
 
     def test_approved_boss_magic_layers_remain_independent(self):
         for name in BOSS_ULTIMATE_ANIMATIONS:
-            self.assertEqual(len(self.assets.get_boss_ultimate_sprites(name,effects=True)),4)
+            self.assertEqual(len(self.assets.get_boss_ultimate_sprites(name,effects=True)),8)
 
     def test_frame_boundaries_are_clamped(self):
         self.assertEqual(kit_frame(-1),0)

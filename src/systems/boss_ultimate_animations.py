@@ -44,6 +44,21 @@ def boss_cast_frame(progress, spec=None):
     return 0 if progress < .22 else 1 if progress < release else 2 if progress < .80 else 3
 
 
+def boss_effect_frame(progress, spec):
+    """Oito desenhos sem antecipar o impacto: carga, ataque e dissipação."""
+    p = max(0, min(1, progress))
+    if p < spec.release:
+        return min(1, int(p/spec.release*2))
+    ground_impact = spec.mode in ('execution', 'tremor')
+    if p < spec.impact:
+        phase = (p-spec.release)/(spec.impact-spec.release)
+        count = 2 if ground_impact else 4
+        return 2+min(count-1, int(phase*count))
+    phase = (p-spec.impact)/(1-spec.impact)
+    start = 4 if ground_impact else 6
+    return start+min(7-start, int(phase*(8-start)))
+
+
 def boss_ultimate_pose(spec, progress, home_x, target_x):
     if spec.mode in ('bear', 'plasma', 'sovereign') or progress < .25:
         return home_x, 0

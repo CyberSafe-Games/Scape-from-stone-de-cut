@@ -406,7 +406,11 @@ class AssetManager:
                     casts.append(frame)
             self._boss_ultimate_sprites[name] = casts
             effects = []
-            for i in range(1, 5):
+            expanded = os.path.join(os.path.dirname(ULTIMATE_ASSETS_DIR), 'boss_ultimate_effects', 'eight_frames', spec.asset_id)
+            count = 8 if all(os.path.isfile(os.path.join(expanded, f'effect_{i}.png')) for i in range(1, 9)) else 4
+            if count == 8:
+                folder = expanded
+            for i in range(1, count+1):
                 try:
                     effects.append(pygame.image.load(os.path.join(folder, f'effect_{i}.png')).convert_alpha())
                 except (pygame.error, FileNotFoundError):
