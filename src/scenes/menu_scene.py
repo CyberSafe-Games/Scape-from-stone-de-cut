@@ -1,5 +1,6 @@
 import sys
 import pygame
+from pygame import surface
 
 from src.scenes.base_scene import BaseScene
 from src.config.settings import WIDTH, HEIGHT
@@ -27,8 +28,14 @@ class MenuScene(BaseScene):
 
     def draw_button(self, surface, rect, text):
         hovered = rect.collidepoint(self.window_manager.get_virtual_mouse_pos())
-        theme.button(surface, rect, text, self.asset_manager.menu_font,
-                     hover=hovered, prominent=(rect == self.play_button))
+        theme.button(
+            surface,
+            rect,
+            text,
+            self.asset_manager.menu_font,
+            hover=hovered,
+            prominent=(rect == self.play_button),
+        )
 
     def update(self, dt):
         pass
@@ -38,16 +45,37 @@ class MenuScene(BaseScene):
         # Placa vertical e sigilo discreto em vez de botões coloridos genéricos.
         pygame.draw.line(surface, (118, 91, 52), (116, 132), (116, 583), 2)
         for y in (132, 583):
-            pygame.draw.polygon(surface, GOLD,
-                                [(116, y-6), (122, y), (116, y+6), (110, y)])
-        theme.eyebrow(surface, "CRÔNICAS DA PEDRA CORTADA", self.asset_manager.small_font, 144, 160)
+            pygame.draw.polygon(
+                surface, GOLD, [(116, y - 6), (122, y), (116, y + 6), (110, y)]
+            )
+        theme.eyebrow(
+            surface,
+            "CRÔNICAS DA PEDRA CORTADA",
+            self.asset_manager.small_font,
+            144,
+            160,
+        )
         draw_text(surface, "SCAPE FROM", self.asset_manager.title_font, WHITE, 139, 208)
-        draw_text(surface, "STONE DE CUT", self.asset_manager.title_font, GOLD, 139, 280)
+        draw_text(
+            surface, "STONE DE CUT", self.asset_manager.title_font, GOLD, 139, 280
+        )
         pygame.draw.line(surface, (117, 94, 57), (146, 375), (530, 375), 1)
-        draw_text(surface, "A FLORESTA NÃO ESQUECE.", self.asset_manager.font,
-                  (200, 199, 179), 145, 393)
-        draw_text(surface, "Um roguelike de cartas entre ruínas, tribos e sombras.",
-                  self.asset_manager.small_font, GRAY, 145, 426)
+        draw_text(
+            surface,
+            "A FLORESTA NÃO ESQUECE.",
+            self.asset_manager.font,
+            (200, 199, 179),
+            145,
+            393,
+        )
+        draw_text(
+            surface,
+            "Um roguelike de cartas entre ruínas, tribos e sombras.",
+            self.asset_manager.small_font,
+            GRAY,
+            145,
+            426,
+        )
         self.draw_button(surface, self.play_button, "INICIAR JORNADA")
         self.draw_button(surface, self.quit_button, "SAIR DO JOGO")
 
@@ -57,18 +85,24 @@ class MenuScene(BaseScene):
         pygame.draw.circle(surface, (90, 78, 54), (cx, cy), 98, 1)
         for d in range(0, 360, 45):
             import math
+
             a = math.radians(d)
             px, py = int(cx + 108 * math.cos(a)), int(cy + 108 * math.sin(a))
             pygame.draw.circle(surface, (126, 102, 64), (px, py), 3)
-        pts = [(cx, cy-68), (cx+55, cy), (cx, cy+68), (cx-55, cy)]
+        pts = [(cx, cy - 68), (cx + 55, cy), (cx, cy + 68), (cx - 55, cy)]
         pygame.draw.lines(surface, (127, 100, 61), True, pts, 2)
-        pygame.draw.line(surface, (127, 100, 61), (cx, cy-68), (cx, cy+68), 1)
+        pygame.draw.line(surface, (127, 100, 61), (cx, cy - 68), (cx, cy + 68), 1)
         pygame.draw.circle(surface, (127, 100, 61), (cx, cy), 13, 2)
-        draw_text(surface, "I", self.asset_manager.small_font, GOLD, cx, cy+139, center=True)
+        draw_text(
+            surface, "I", self.asset_manager.small_font, GOLD, cx, cy + 139, center=True
+        )
 
         self.window_manager.draw_fullscreen_button(self.asset_manager.small_font)
-        theme.footer(surface, "ENTER / ESPAÇO  ·  JOGAR                         F11  ·  TELA CHEIA",
-                     self.asset_manager.small_font)
+        theme.footer(
+            surface,
+            "ENTER / ESPAÇO  ·  JOGAR                     F11  ·  TELA CHEIA",
+            self.asset_manager.small_font,
+        )
 
     def handle_event(self, event):
         # Janela / tela cheia
@@ -89,6 +123,7 @@ class MenuScene(BaseScene):
                 return
 
             if self.quit_button.collidepoint(virt_pos):
+                self.play_ui_sound("ui.click")
                 pygame.quit()
                 sys.exit()
 
@@ -97,11 +132,15 @@ class MenuScene(BaseScene):
                 self.play_ui_sound("ui.confirm")
                 self._start_game()
             elif event.key == pygame.K_ESCAPE:
+                self.play_ui_sound("ui.click")
                 pygame.quit()
                 sys.exit()
 
     def _start_game(self):
         from src.scenes.save_selection_scene import SaveSelectionScene
+
         self.scene_manager.change_scene(
-            SaveSelectionScene(self.scene_manager, self.window_manager, self.asset_manager)
+            SaveSelectionScene(
+                self.scene_manager, self.window_manager, self.asset_manager
+            )
         )

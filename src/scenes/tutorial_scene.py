@@ -524,12 +524,14 @@ class TutorialScene(BattleScene):
             and event.button == 1
         ):
             if self.help_button_rect.collidepoint(virt_pos):
+                self.play_ui_sound("ui.click")
                 self.overlay.reset()
                 return
 
         # Tecla de atalho 'H' ou 'F1' para reabrir o guia
         if not self.overlay.is_active and event.type == pygame.KEYDOWN:
             if event.key in (pygame.K_h, pygame.K_F1):
+                self.play_ui_sound("ui.click")
                 self.overlay.reset()
                 return
 
