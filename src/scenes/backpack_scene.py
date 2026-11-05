@@ -449,7 +449,7 @@ class BackpackScene(BaseScene):
                 if rect.collidepoint(point):
                     self.selected_card = name
                     self.play_ui_sound("ui.click")
-                return
+                    return
 
     def _equip_selected(self):
         if self.selected_card in self.save_data["progresso"]["cartas_colecao"]:

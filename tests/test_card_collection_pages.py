@@ -53,3 +53,19 @@ class CardCollectionPageTests(unittest.TestCase):
         self.click(scene, scene.equip_rect)
         self.assertEqual(self.data['progresso']['deck_slots'][2], 'Poção Venenosa')
         self.assertEqual(self.data['progresso']['cartas'].count('Poção Venenosa'), 3)
+
+    def test_every_visible_card_can_be_selected_without_equipping(self):
+        self.data['progresso']['cartas_colecao'] = list(CARD_BY_NAME)
+        scene = BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, self.data)
+        original_slots = list(self.data['progresso']['deck_slots'])
+        selected = set()
+        for page in range(scene.page_count):
+            scene._set_page(page)
+            for name, rect in scene.cards.items():
+                with self.subTest(page=page, card=name):
+                    scene.selected_card = None
+                    self.click(scene, rect)
+                    self.assertEqual(scene.selected_card, name)
+                    self.assertEqual(self.data['progresso']['deck_slots'], original_slots)
+                    selected.add(name)
+        self.assertEqual(selected, set(CARD_BY_NAME))
