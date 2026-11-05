@@ -5,6 +5,7 @@ from src.models.enemy import Enemy
 from src.config.layout import MINIBOSS_INTERVAL
 from src.models.effects.crimson_vigor_effect import CrimsonVigorEffect
 from src.models.effects.forest_smoke_effect import ForestSmokeEffect
+from src.models.effects.golden_amulet_effect import GoldenAmuletEffect
 from src.systems.normal_enemy_catalog import biome_enemy_names, NORMAL_SPRITES, NORMAL_ACTIONS
 
 # Configuração de inimigos comuns: (Nome, HP Base, HP por Andar)
@@ -178,11 +179,50 @@ def create_point_enemy(level):
         return create_alvaro_tex(level)
     if level == 3:
         return create_goblin_nerd(level)
+    if level == 4:
+        return create_gordofera(level)
     if level == 5:
         return create_corpo_seco(level)
     if level == 6:
         return create_carrasco_da_vigilia(level)
+    if level == 7:
+        return create_zanzara(level)
     return create_enemy(level, is_miniboss_level(level))
+
+
+def create_zanzara(level=7):
+    """Boss final do Santuário: investida, moedas, energia e amuleto restaurador."""
+    actions = [
+        Action('Investida Soberana', 'attack', damage=15, energy_cost=1,
+               weight=.35, visual_effect='atk1'),
+        Action('Chuva de Moedas', 'attack', damage=17, energy_cost=1,
+               weight=.25, visual_effect='atk2'),
+        Action('Onda Imperial', 'attack', damage=20, energy_cost=2,
+               weight=.25, visual_effect='atk3'),
+        Action('Amuleto Dourado', 'buff', defense=16, energy_cost=1,
+               weight=.15, visual_effect='healer2', effect=GoldenAmuletEffect()),
+    ]
+    boss = Enemy('Zanzara', hp=190, energy=4, max_energy=4, actions=actions, is_miniboss=True)
+    boss.boss_id = 'zanzara'
+    boss.is_final_boss = True
+    return _configure_boss(boss, 'Maré Soberana', 32, 'atk3')
+
+
+def create_gordofera(level=4):
+    """Guardião do Pântano: garras, investidas e guarda; salto no oitavo ato."""
+    actions = [
+        Action('Garras Dilacerantes', 'attack', damage=9, energy_cost=1,
+               weight=.35, visual_effect='atk1', status_effect=('bleed', 2, 4)),
+        Action('Rugido Feroz', 'attack', damage=11, energy_cost=1,
+               weight=.25, visual_effect='atk2'),
+        Action('Cabeçada Brutal', 'attack', damage=14, energy_cost=2,
+               weight=.25, visual_effect='atk3'),
+        Action('Guarda Ferrenha', 'defend', defense=10, energy_cost=1,
+               weight=.15, visual_effect='def'),
+    ]
+    boss = Enemy('Gordofera', hp=116, energy=4, max_energy=4, actions=actions, is_miniboss=True)
+    boss.boss_id = 'gordofera'
+    return _configure_boss(boss, 'Abalo Abissal', 21, 'atk4')
 
 
 def create_alvaro_tex(level=2, phase=1):

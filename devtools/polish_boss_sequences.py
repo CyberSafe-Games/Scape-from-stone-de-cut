@@ -140,7 +140,8 @@ def recolor_materials(im,mapping):
 
 def main():
     pygame.init();pygame.display.set_mode((1,1))
-    manifest={}
+    manifest_path=FOLDER/'manifest.json'
+    manifest=json.loads(manifest_path.read_text(encoding='utf8')) if manifest_path.exists() else {}
     for name,(slug,groups) in list(KITS.items())[:4]:
         sheet=Image.open(FOLDER/slug/'sequence_v2.png').convert('RGBA')
         rows=cells(sheet,7)

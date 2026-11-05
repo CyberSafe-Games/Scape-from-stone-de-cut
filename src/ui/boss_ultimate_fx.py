@@ -55,7 +55,7 @@ def _back(surface, view, frames, p):
 
 def _front(surface, view, frames, p):
     spec = view.enemy_ultimate
-    if spec.mode in ('bear', 'plasma'):
+    if spec.mode in ('bear', 'plasma', 'sovereign'):
         pose = view.get_enemy_projectile_pose()
         if pose is not None:
             x, y, flight = pose
@@ -65,6 +65,11 @@ def _front(surface, view, frames, p):
                 _sprite(surface, frame, (x+distance, y), .9, alpha)
             _sprite(surface, frame, (x, y), .9+.12*math.sin(flight*math.pi))
             _particles(surface, (x+55, y), spec.color, flight, 57, 12)
+            if spec.mode == 'sovereign':
+                for band in range(2):
+                    angle = flight*math.tau*2+band*math.pi
+                    xx, yy = round(x+math.cos(angle)*58), round(y+math.sin(angle)*32)
+                    pygame.draw.ellipse(surface, (255, 214, 100), (xx-5, yy-7, 10, 14), 2)
             if spec.mode == 'plasma':
                 for band in range(3):
                     points = [(round(x+35+i*13), round(y+math.sin(i*.8+p*35+band)*9+(band-1)*13)) for i in range(8)]
@@ -76,10 +81,13 @@ def _front(surface, view, frames, p):
             _sprite(surface, blade, (x-45, PLAYER_GROUND_Y-75-lift), .85, 190)
         elif spec.mode == 'execution' and .45 <= p < spec.impact:
             _sprite(surface, frames[1], (x-65, PLAYER_GROUND_Y-100-lift), .75, 235)
+        elif spec.mode == 'tremor' and .43 <= p < spec.impact:
+            _sprite(surface, frames[1], (x-45, PLAYER_GROUND_Y-38-lift), .68, 210)
     if p >= spec.impact:
         fade = (p-spec.impact)/(1-spec.impact)
-        index = 2 if spec.mode == 'execution' and fade < .42 else 3
-        _sprite(surface, frames[index], (PLAYER_X+12, PLAYER_GROUND_Y-82), 1+fade*.3, 255*(1-fade))
+        index = 2 if spec.mode in ('execution', 'tremor') and fade < .42 else 3
+        impact_y = PLAYER_GROUND_Y-45 if spec.mode == 'tremor' else PLAYER_GROUND_Y-82
+        _sprite(surface, frames[index], (PLAYER_X+12, impact_y), 1+fade*.3, 255*(1-fade))
         _particles(surface, (PLAYER_X, PLAYER_GROUND_Y-75), spec.color, fade, 30+fade*100, 20)
         ring = pygame.Surface((240, 220), pygame.SRCALPHA)
         for i in range(2):

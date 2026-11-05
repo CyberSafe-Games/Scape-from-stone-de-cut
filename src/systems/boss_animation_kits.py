@@ -8,6 +8,8 @@ KITS = {
     'carrasco da vigília': ('carrasco_da_vigilia', ('idle','atk1','atk2','atk3','healer2','dano','ultimate')),
     'álvaro e tex': ('alvaro_tex_phase1', ('idle','dano','atk1','atk2','atk3','atk4','transition')),
     'álvaro e tex · pequeno': ('alvaro_tex_phase2', ('idle','dano','atk1','atk2','atk3','atk4')),
+    'zanzara': ('zanzara', ('idle','dano','atk1','atk2','atk3','healer2','ultimate')),
+    'gordofera': ('gordofera', ('idle','dano','atk1','atk2','atk3','def','ultimate')),
 }
 
 # The last four bosses keep their established action durations and damage values.

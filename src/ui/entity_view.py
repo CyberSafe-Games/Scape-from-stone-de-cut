@@ -39,6 +39,7 @@ class EntityView:
     # duração, lançamento e impacto como frações da animação completa.
     GOBLIN_RANGED_ATTACKS = {"atk1": (1100, 0.30, 0.74), "atk2": (900, 0.30, 0.58)}
     RANGED_ATTACKS = {
+        'zanzara': {'atk2': (1600, .42, .78), 'atk3': (1900, .44, .80)},
         "goblin nerd": GOBLIN_RANGED_ATTACKS,
         "vinimuth": {"atk2": (1200, 0.54, 0.87)},
         'guardião da pedra': {'atk2': (1400, 0.50, 0.84)},
@@ -95,6 +96,10 @@ class EntityView:
             self.enemy_idle_timer = 0
             self.enemy_action = action
             self.enemy_attack_duration = animation_duration(action, ATTACK_DURATION)
+            if self.enemy_attack_name == 'zanzara':
+                self.enemy_attack_duration = 1300
+            if self.enemy_attack_name == 'gordofera':
+                self.enemy_attack_duration = {'atk1': 1150, 'atk2': 1300, 'atk3': 1450}.get(action, 1300)
             if self.enemy_attack_name == 'carrasco da vigília':
                 self.enemy_attack_duration = {'atk1': 1050, 'atk2': 1150, 'atk3': 1500}.get(action, ATTACK_DURATION)
             if self.enemy_attack_name in DUO_ATTACK_MS:
@@ -106,7 +111,7 @@ class EntityView:
                 spec = self.enemy_ultimate
                 self.enemy_attack_duration = spec.duration
                 self.enemy_ranged_attack = ((spec.duration, spec.release, spec.impact)
-                                           if spec.mode in ('bear', 'plasma') else None)
+                                           if spec.mode in ('bear', 'plasma', 'sovereign') else None)
             self.enemy_action_timer = 0
 
     def trigger_enemy_action(self, action, enemy_name=None):
@@ -115,6 +120,10 @@ class EntityView:
             self.enemy_attack_name = enemy_name.strip().lower()
         self.enemy_action = action
         self.enemy_action_duration = animation_duration(action, 600)
+        if self.enemy_attack_name == 'gordofera' and action == 'def':
+            self.enemy_action_duration = 1400
+        if self.enemy_attack_name == 'zanzara' and action == 'healer2':
+            self.enemy_action_duration = 1800
         if self.enemy_attack_name == 'carrasco da vigília' and action == 'healer2':
             self.enemy_action_duration = 1500
         if self.enemy_attack_name in DUO_NAMES and action == 'healer2':
@@ -275,6 +284,7 @@ class EntityView:
             start_x = ENEMY_X - 135
             start_y = PLAYER_GROUND_Y - 95
         origins = {'golem das ruínas': (165, 115), 'centauro vigia': (66, 84),
+                   'zanzara': (90, 100),
                    'putrefato do pântano': (95, 70), 'morcego sombrio': (76, 120)}
         if self.enemy_attack_name in origins:
             offset_x, offset_y = origins[self.enemy_attack_name]
@@ -289,6 +299,10 @@ class EntityView:
         return x, y, flight
 
     def draw_enemy_projectile(self, surface):
+        if self.enemy_attack_name == 'zanzara' and not self.enemy_ultimate:
+            from src.ui.zanzara_fx import draw_zanzara_fx
+            draw_zanzara_fx(surface, self)
+            return
         if self.enemy_attack_name == DUO_NAMES[0] and self.enemy_action == 'healer2':
             draw_alvaro_tex_fx(surface, self)
             return
@@ -449,7 +463,10 @@ class EntityView:
                 sprites = self.asset_manager.get_boss_ultimate_sprites(enemy_name)
                 if sprites:
                     p = self.attack_timer/max(1, self.enemy_attack_duration)
-                    release = (self.enemy_ultimate.release if self.enemy_ultimate.mode in ('bear','plasma')
+                    if self.enemy_ultimate.mode == 'tremor':
+                        from src.systems.gordofera_animations import tremor_frame
+                        return sprites[tremor_frame(p)]
+                    release = (self.enemy_ultimate.release if self.enemy_ultimate.mode in ('bear','plasma','sovereign')
                                else self.enemy_ultimate.impact)
                     index = (kit_frame(p,len(sprites),release) if len(sprites)==8
                              else boss_cast_frame(p,self.enemy_ultimate))

@@ -371,7 +371,7 @@ class AssetManager:
         for name, spec in BOSS_ULTIMATE_ANIMATIONS.items():
             folder = os.path.join(os.path.dirname(ULTIMATE_ASSETS_DIR), 'boss_ultimate_effects', spec.asset_id)
             casts = []
-            for group, index in BOSS_ORIGINAL_CASTS[name]:
+            for group, index in BOSS_ORIGINAL_CASTS.get(name, ()):
                 originals = self.get_enemy_sprite_group(name, group)
                 if originals:
                     source = originals[min(index, len(originals)-1)]
@@ -430,6 +430,7 @@ class AssetManager:
         for name,(slug,groups) in KITS.items():
             if slug not in prepared:
                 continue
+            self._enemy_sprites.setdefault(name, {})
             for group in prepared[slug]:
                 frames = [pygame.image.load(os.path.join(root,slug,f'{group}_{i}.png')).convert_alpha()
                           for i in range(1,9)]
@@ -447,6 +448,17 @@ class AssetManager:
                 current['atk4'] = current['atk2']
             if name == 'álvaro e tex':
                 current['healer2'] = current['atk3']
+            if name == 'zanzara':
+                current['def'] = current['healer2']
+                for action in ('atk2', 'atk3'):
+                    self._enemy_projectiles[(name, action)] = [
+                        pygame.image.load(os.path.join(root, slug, f'projectile_{action}_{i}.png')).convert_alpha()
+                        for i in range(1, 5)]
+                    if action == 'atk3':
+                        # A frente da onda de palma acompanha o disparo para a esquerda.
+                        self._enemy_projectiles[(name, action)] = [
+                            pygame.transform.flip(frame, True, False)
+                            for frame in self._enemy_projectiles[(name, action)]]
 
     def get_card_action_sprites(self, action_name):
         return self._card_action_sprites.get(action_name, [])
@@ -630,8 +642,9 @@ class AssetManager:
                 path = os.path.join(folder, f'projectile_{action}.png')
                 self._enemy_projectiles[(name.lower(), action)] = pygame.image.load(path).convert_alpha()
 
-    def get_enemy_projectile(self, enemy_name, action):
-        return self._enemy_projectiles.get((enemy_name.strip().lower(), action))
+    def get_enemy_projectile(self, enemy_name, action, frame=0):
+        projectile = self._enemy_projectiles.get((enemy_name.strip().lower(), action))
+        return projectile[frame % len(projectile)] if isinstance(projectile, list) else projectile
 
     def has_enemy_sprites(self, enemy_name):
         """Verifica se existem sprites customizados carregados para o inimigo."""

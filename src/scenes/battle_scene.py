@@ -894,7 +894,7 @@ class BattleScene(BaseScene):
             RED,
             enemy_stats,
             title_color=GOLD if enemy.is_miniboss else WHITE,
-            subtitle="MINIBOSS" if enemy.is_miniboss else None,
+            subtitle="BOSS FINAL" if getattr(enemy, 'is_final_boss', False) else "MINIBOSS" if enemy.is_miniboss else None,
             align="right",
         )
         intent_rect = pygame.Rect(900, 156, 270, 28)

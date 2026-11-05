@@ -15,6 +15,10 @@ class BossUltimateAnimation:
 
 
 BOSS_ULTIMATE_ANIMATIONS = {
+    'gordofera': BossUltimateAnimation('gordofera', 'Abalo Abissal', 2700, .40, .64,
+                                         (218, 186, 112), 'tremor', 165),
+    'zanzara': BossUltimateAnimation('zanzara', 'Maré Soberana', 2900, .44, .80,
+                                    (244, 199, 83), 'sovereign', 170),
     'guardião da pedra': BossUltimateAnimation('guardiao_da_pedra', 'Rugido Espiritual', 2600, .42, .78,
                                                (71, 183, 255), 'bear', 155),
     'goblin nerd': BossUltimateAnimation('goblin_nerd', 'Descarga Sobrecarregada', 2400, .44, .77,
@@ -36,18 +40,18 @@ BOSS_ORIGINAL_CASTS = {
 
 
 def boss_cast_frame(progress, spec=None):
-    release = spec.release if spec and spec.mode in ('bear', 'plasma') else .50
+    release = spec.release if spec and spec.mode in ('bear', 'plasma', 'sovereign') else .50
     return 0 if progress < .22 else 1 if progress < release else 2 if progress < .80 else 3
 
 
 def boss_ultimate_pose(spec, progress, home_x, target_x):
-    if spec.mode in ('bear', 'plasma') or progress < .25:
+    if spec.mode in ('bear', 'plasma', 'sovereign') or progress < .25:
         return home_x, 0
     if progress < .52:
         t = (progress-.25)/.27
         eased = t*t*(3-2*t)
         import math
-        lift = math.sin(t*math.pi)*65 if spec.mode == 'execution' else 0
+        lift = math.sin(t*math.pi)*(85 if spec.mode == 'tremor' else 65) if spec.mode in ('execution', 'tremor') else 0
         return home_x+(target_x-home_x)*eased, lift
     if progress < .76:
         return target_x, 0

@@ -55,6 +55,8 @@ class BattleHUD:
         track = pygame.Rect(rect.left if enemy else portrait.right + 4, rect.top + 30,
                             rect.width - 96, 42)
         label = name + ('  ·  MINIBOSS' if boss else '')
+        if getattr(combatant, 'is_final_boss', False):
+            label = name + ' · BOSS FINAL'
         if getattr(combatant, 'total_phases', 0):
             label = f'{name} · {combatant.phase}/{combatant.total_phases}'
         title = self.assets.menu_font

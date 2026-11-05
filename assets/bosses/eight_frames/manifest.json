@@ -51,5 +51,23 @@
     "atk2",
     "atk3",
     "atk4"
+  ],
+  "zanzara": [
+    "idle",
+    "dano",
+    "atk1",
+    "atk2",
+    "atk3",
+    "healer2",
+    "ultimate"
+  ],
+  "gordofera": [
+    "idle",
+    "dano",
+    "atk1",
+    "atk2",
+    "atk3",
+    "def",
+    "ultimate"
   ]
 }

@@ -45,7 +45,7 @@ class BossUltimateAnimationTests(unittest.TestCase):
         scene.engine.enemy_turn()
 
     def test_all_four_specials_are_marked_only_on_the_eighth_and_sixteenth_actions(self):
-        for level in (1, 3, 5, 6):
+        for level in (1, 3, 4, 5, 6, 7):
             with self.subTest(level=level):
                 events = []
                 engine = CombatEngine(on_event_callback=lambda event, **data: events.append((event, data)))
@@ -90,7 +90,7 @@ class BossUltimateAnimationTests(unittest.TestCase):
         self.assertIs(view.get_enemy_frame(create_point_enemy(3)), self.assets.get_boss_ultimate_sprites('Goblin Nerd')[0])
 
     def test_damage_flash_and_visual_health_shield_wait_for_each_impact(self):
-        for level in (1, 3, 5, 6):
+        for level in (1, 3, 4, 5, 6, 7):
             with self.subTest(level=level):
                 scene = self.scene(level)
                 scene.engine.player.add_block(5)
@@ -137,10 +137,10 @@ class BossUltimateAnimationTests(unittest.TestCase):
     def test_projectiles_go_left_melee_bosses_advance_and_all_return_home(self):
         for name, spec in BOSS_ULTIMATE_ANIMATIONS.items():
             view = EntityView(self.assets)
-            boss = create_point_enemy({'bear': 1, 'plasma': 3, 'blades': 5, 'execution': 6}[spec.mode])
+            boss = create_point_enemy({'bear': 1, 'plasma': 3, 'blades': 5, 'execution': 6, 'sovereign': 7, 'tremor': 4}[spec.mode])
             view.trigger_attack('enemy', boss.special_action.visual_effect, boss.name, ultimate=True)
             view.update(spec.duration*.60)
-            if spec.mode in ('bear', 'plasma'):
+            if spec.mode in ('bear', 'plasma', 'sovereign'):
                 self.assertEqual(view.get_attack_pose('enemy', ENEMY_X, PLAYER_X)[0], ENEMY_X)
                 start = view.get_enemy_projectile_pose()
                 view.update(30)
