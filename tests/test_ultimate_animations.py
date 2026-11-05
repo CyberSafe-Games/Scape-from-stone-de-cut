@@ -36,12 +36,12 @@ class UltimateAnimationTests(unittest.TestCase):
         scene.engine.enemy.hp = scene.engine.enemy.max_hp = 200
         return scene
 
-    def test_every_ultimate_has_eight_cast_poses_and_eight_independent_alpha_effects(self):
+    def test_every_ultimate_has_twelve_cast_poses_and_twelve_independent_alpha_effects(self):
         for name in ULTIMATE_ANIMATIONS:
             casts = self.assets.get_card_action_sprites(name)
             effects = self.assets.get_ultimate_effect_sprites(name)
-            self.assertEqual(len(casts), 8, name)
-            self.assertEqual(len(effects), 8, name)
+            self.assertEqual(len(casts), 12, name)
+            self.assertEqual(len(effects), 12, name)
             for frame in casts:
                 self.assertEqual(frame.get_size(), (320, 260))
                 bounds = frame.get_bounding_rect(min_alpha=50)
@@ -62,7 +62,7 @@ class UltimateAnimationTests(unittest.TestCase):
                     view.update(spec.duration*progress)
                     x, frame = view.get_player_frame('player_turn')
                     self.assertEqual(x, PLAYER_X)
-                    self.assertIs(frame, self.assets.get_card_action_sprites(name)[cast_frame(progress, spec.release)])
+                    self.assertIs(frame, self.assets.get_card_action_sprites(name)[cast_frame(progress, spec.release, 12)])
                     self.assertIsNone(view.attacker)
             view.update(spec.duration)
             self.assertIsNone(view.player_action)

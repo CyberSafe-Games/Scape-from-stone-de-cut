@@ -1,0 +1,49 @@
+{
+  "base": [
+    "idle",
+    "dano",
+    "soco",
+    "vitoria"
+  ],
+  "ultimates": [
+    "idle",
+    "mana_ancestral",
+    "forcas_ancestrais",
+    "rugido_da_floresta"
+  ],
+  "cards_1": [
+    "idle",
+    "esfera_protetora",
+    "soco_simples",
+    "investida",
+    "aura_rubra"
+  ],
+  "cards_2": [
+    "idle",
+    "pocao_fragilizante",
+    "pocao_purificadora",
+    "totem_protetor",
+    "zarabatana_venenosa"
+  ],
+  "cards_3": [
+    "idle",
+    "disparo_de_arco",
+    "esfera_escudo",
+    "machado_quebra_escudo",
+    "amuleto_dissipador"
+  ],
+  "cards_4": [
+    "idle",
+    "adaga_sangrenta",
+    "mascara_ancestral",
+    "machados_gemeos",
+    "lanca_perfurante"
+  ],
+  "cards_5": [
+    "idle",
+    "bola_de_fogo",
+    "pocao_de_cura",
+    "surto_de_energia",
+    "pocao_venenosa"
+  ]
+}

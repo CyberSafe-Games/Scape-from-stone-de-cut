@@ -345,9 +345,13 @@ class AssetManager:
         """Usa sequências completas com o mesmo desenho e a mesma paleta."""
         from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS
         folder = os.path.join(PLAYER_ASSETS_DIR, 'eight_frames')
+        count = 8
+        expanded = os.path.join(PLAYER_ASSETS_DIR, 'twelve_frames')
+        if os.path.isfile(os.path.join(expanded,'manifest.json')):
+            folder,count = expanded,12
 
         def load(group):
-            paths = [os.path.join(folder, f'{group}_{i}.png') for i in range(1, 9)]
+            paths = [os.path.join(folder, f'{group}_{i}.png') for i in range(1, count+1)]
             if not all(os.path.isfile(path) for path in paths):
                 return None
             return [pygame.image.load(path).convert_alpha() for path in paths]

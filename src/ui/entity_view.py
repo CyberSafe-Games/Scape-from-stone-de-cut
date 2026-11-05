@@ -368,7 +368,7 @@ class EntityView:
         if game_state == "victory" and self.player_action is None and self.attacker != 'player':
             sprites = self.asset_manager.get_player_sprite_group("vitoria")
             if sprites:
-                frame = sprites[(int(self.player_victory_timer) // 140) % len(sprites)]
+                frame = sprites[int(self.player_victory_timer*len(sprites)//1120) % len(sprites)]
                 return PLAYER_X, frame
 
         # Ação específica da carta
@@ -380,9 +380,9 @@ class EntityView:
                 )
                 spec = SPECS_BY_NAME.get(self.player_action)
                 if self.player_action in ULTIMATE_ANIMATIONS:
-                    index = cast_frame(progress, ULTIMATE_ANIMATIONS[self.player_action].release)
-                elif len(sprites) == 8:
-                    index = player_frame(progress, spec[6] if spec else 'self')
+                    index = cast_frame(progress, ULTIMATE_ANIMATIONS[self.player_action].release, len(sprites))
+                elif len(sprites) in (8,12):
+                    index = player_frame(progress, spec[6] if spec else 'self', count=len(sprites))
                 elif spec and spec[6] == 'melee':
                     index = 0 if progress < 0.4 else 1 if progress < 0.5 else 2 if progress < 0.68 else 3
                 elif spec and spec[6] == 'ranged':
@@ -391,7 +391,9 @@ class EntityView:
                     index = min(len(sprites) - 1, int(progress * len(sprites)))
                 frame = sprites[min(len(sprites) - 1, index)]
             else:
-                frame = self.asset_manager.get_player_sprite("idle", int(self.player_idle_timer) // 150)
+                idle = self.asset_manager.get_player_sprite_group('idle')
+                frame = (idle[int(self.player_idle_timer*len(idle)//1200) % len(idle)] if idle
+                         else self.asset_manager.get_fallback_sprite())
 
             if self.attacker == "player":
                 x, _ = self.get_attack_pose("player", PLAYER_X, ENEMY_X - APPROACH_GAP)
@@ -403,10 +405,14 @@ class EntityView:
             target_x = ENEMY_X - APPROACH_GAP
             x, _ = self.get_attack_pose("player", PLAYER_X, target_x)
             progress = min(1.0, self.attack_timer / ATTACK_DURATION)
+            punches = self.asset_manager.get_player_sprite_group('soco')
+            if punches and len(punches) in (8,12):
+                progress = self.attack_timer/max(1,self.player_attack_duration)
+                return x,punches[player_frame(progress,'melee',count=len(punches))]
 
             if progress < APPROACH_FRAC:
                 sprites = self.asset_manager.get_player_sprite_group("idle")
-                frame = sprites[(int(self.player_idle_timer) // 150) % len(sprites)] if sprites else self.asset_manager.get_fallback_sprite()
+                frame = sprites[int(self.player_idle_timer*len(sprites)//1200) % len(sprites)] if sprites else self.asset_manager.get_fallback_sprite()
             elif progress < (APPROACH_FRAC + STRIKE_FRAC):
                 sprites = self.asset_manager.get_player_sprite_group("soco")
                 if sprites:
@@ -432,7 +438,7 @@ class EntityView:
         # Idle normal
         sprites = self.asset_manager.get_player_sprite_group("idle")
         if sprites:
-            frame = sprites[(int(self.player_idle_timer) // 150) % len(sprites)]
+            frame = sprites[int(self.player_idle_timer*len(sprites)//1200) % len(sprites)]
             return PLAYER_X, frame
 
         return PLAYER_X, self.asset_manager.get_fallback_sprite()

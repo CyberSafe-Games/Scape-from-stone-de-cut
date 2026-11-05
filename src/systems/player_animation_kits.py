@@ -1,11 +1,11 @@
-"""Oito poses do protagonista, alinhadas aos efeitos e impactos do combate."""
-from bisect import bisect_right
+"""Oito ou doze poses do protagonista, alinhadas aos impactos do combate."""
+from src.systems.animation_inbetweens import timed_frame
 
 
-def player_frame(progress, mode='self', release=None):
+def player_frame(progress, mode='self', release=None, count=8):
     """Seleciona preparação, ação e retorno sem pular poses intermediárias."""
     if release is None:
         release = .64 if mode == 'ranged' else .52
     boundaries = (0, .12, .24, (.24 + release) / 2, release,
                   release + (1-release)*.36, release + (1-release)*.66, .94)
-    return max(0, min(7, bisect_right(boundaries, progress)-1))
+    return timed_frame(progress,boundaries,count)
