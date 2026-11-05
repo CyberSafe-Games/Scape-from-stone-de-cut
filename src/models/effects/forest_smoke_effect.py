@@ -4,6 +4,8 @@ from src.models.effects.base_effect import CardEffect
 
 class ForestSmokeEffect(CardEffect):
     """Cura limitada à vida máxima e força temporária sem acúmulo por reaplicação."""
+    attack_bonus = 3
+    duration = 2
 
     def apply(self, action, user, target, context):
         recovered = min(action.defense, max(0, user.max_hp - user.hp))

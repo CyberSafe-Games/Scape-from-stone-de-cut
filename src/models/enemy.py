@@ -23,6 +23,8 @@ class Enemy(Combatant):
         self.intent = None
         self.intent_value = 0
         self.current_action = None
+        self.action_plan = []
+        self.action_plan_index = 0
 
     @property
     def defense(self):
@@ -49,4 +51,15 @@ class Enemy(Combatant):
         self.intent = intent_type
         self.intent_value = value
         self.current_action = action
+        if action is not None and self.action_plan_index < len(self.action_plan):
+            self.action_plan[self.action_plan_index] = action
+
+    def advance_intent(self):
+        """Avança na sequência anunciada, sem sortear novamente a segunda ação."""
+        if self.action_plan_index + 1 >= len(self.action_plan):
+            return False
+        self.action_plan_index += 1
+        action = self.action_plan[self.action_plan_index]
+        self.set_intent(action.action_type, action.value, action)
+        return True
 

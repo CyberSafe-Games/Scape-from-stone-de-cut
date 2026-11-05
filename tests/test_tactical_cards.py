@@ -18,8 +18,9 @@ from src.ui.card_fx import projectile_pose
 class TacticalCardTests(unittest.TestCase):
     def engine(self):
         engine = CombatEngine()
-        engine.enemy = Enemy('Alvo', 500)
-        engine.enemy.set_intent('attack', 0, Action('Ataque', damage=0))
+        harmless = Action('Ataque', damage=0)
+        engine.enemy = Enemy('Alvo', 500, actions=[harmless])
+        engine.enemy.set_intent('attack', 0, harmless)
         engine.player.energy_max = 8
         engine.player.energy = 8
         return engine

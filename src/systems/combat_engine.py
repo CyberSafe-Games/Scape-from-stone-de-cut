@@ -389,7 +389,8 @@ class CombatEngine:
         if self.state != 'enemy_resolving':
             return
         if self.enemy_actions_remaining > 0:
-            choose_next_action(self.enemy)
+            if not self.enemy.advance_intent():
+                choose_next_action(self.enemy, count=self.enemy_actions_remaining)
             self.state = "enemy_turn"
             return
         self._advance_status_effects()

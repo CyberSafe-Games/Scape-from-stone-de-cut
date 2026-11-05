@@ -13,6 +13,7 @@ from src.ui.floating_text import FloatingTextManager
 from src.ui.coin_hud import CoinHUD
 from src.ui.energy_hud import EnergyHUD
 from src.ui.battle_hud import BattleHUD
+from src.ui.enemy_intent_view import EnemyIntentView
 from src.ui.card_fx import draw_player_projectile
 from src.ui.ultimate_fx import draw_ultimate_fx
 from src.ui.boss_ultimate_fx import draw_boss_ultimate_fx
@@ -74,6 +75,7 @@ class BattleScene(BaseScene):
         self.floating_texts = FloatingTextManager()
         self.entity_view = EntityView(asset_manager)
         self.battle_hud = BattleHUD(asset_manager)
+        self.intent_view = EnemyIntentView(asset_manager)
         self._ultimate_events = []
         self._ultimate_clock = 0
         self._ultimate_enemy_snapshot = None
@@ -824,26 +826,10 @@ class BattleScene(BaseScene):
                 center=True,
             )
         enemy_color = WHITE
-        intent_text = "Sem intenção"
-
         if enemy.intent:
-            action_name = (
-                enemy.current_action.name
-                if getattr(enemy, "current_action", None)
-                else None
-            )
             if enemy.intent == "attack":
-                label = action_name or "Atacar"
-                preview_value = (
-                    int(round(enemy.intent_value * 0.75))
-                    if getattr(enemy, "weak_turns", 0) > 0
-                    else enemy.intent_value
-                )
-                intent_text = f"Intenção: {label} ({preview_value})"
                 enemy_color = (200, 90, 90)
             else:
-                label = action_name or "Defender"
-                intent_text = f"Intenção: {label} ({enemy.intent_value})"
                 enemy_color = (90, 130, 200)
 
         player_stats = []
@@ -897,37 +883,6 @@ class BattleScene(BaseScene):
             subtitle="BOSS FINAL" if getattr(enemy, 'is_final_boss', False) else "MINIBOSS" if enemy.is_miniboss else None,
             align="right",
         )
-        intent_rect = pygame.Rect(900, 156, 270, 28)
-        draw_panel(
-            surface,
-            intent_rect,
-            fill=(12, 19, 17, 210),
-            border=(77, 68, 54),
-            radius=12,
-            shadow=False,
-        )
-        draw_text(
-            surface,
-            intent_text,
-            self.asset_manager.small_font,
-            GOLD,
-            intent_rect.centerx,
-            intent_rect.centery,
-            center=True,
-        )
-        if getattr(enemy, "actions_per_turn", 1) > 1:
-            until_spin = enemy.special_interval - (
-                enemy.action_counter % enemy.special_interval
-            )
-            draw_text(
-                surface,
-                f"2 AÇÕES / RODADA   ·   ESPECIAL EM {until_spin} ATOS",
-                self.asset_manager.small_font,
-                GOLD,
-                970,
-                198,
-                center=True,
-            )
 
         self.window_manager.draw_fullscreen_button(self.asset_manager.small_font)
         self._draw_menu_button(surface)
@@ -940,6 +895,7 @@ class BattleScene(BaseScene):
         draw_player_projectile(surface, self.entity_view)
         draw_ultimate_fx(surface, self.entity_view)
         draw_boss_ultimate_fx(surface, self.entity_view)
+        self.intent_view.draw(surface, self.engine, self.window_manager.get_virtual_mouse_pos())
 
         self._draw_bottom_hud(surface)
         self._draw_cemetery_button(surface)
@@ -993,6 +949,7 @@ class BattleScene(BaseScene):
             )
 
         self._draw_top_message(surface)
+        self.intent_view.draw_tooltip(surface, self.window_manager.get_virtual_mouse_pos())
 
         if self.engine.state == "game_over" and self.entity_view.attacker != "enemy":
             self._draw_game_over(surface)

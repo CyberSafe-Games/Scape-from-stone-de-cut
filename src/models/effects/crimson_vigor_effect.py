@@ -3,6 +3,8 @@ from src.models.effects.base_effect import CardEffect
 
 class CrimsonVigorEffect(CardEffect):
     """Recuperação e bônus temporário do Carrasco; reaplicar renova, não soma."""
+    attack_bonus = 4
+    duration = 2
     def apply(self, action, user, target, context):
         recovered = min(action.defense, user.max_hp - user.hp)
         user.hp += recovered

@@ -3,6 +3,8 @@ from src.models.effects.base_effect import CardEffect
 
 class GoldenAmuletEffect(CardEffect):
     """Zanzara recupera vida e renova uma força temporária, sem causar dano."""
+    attack_bonus = 4
+    duration = 2
 
     def apply(self, action, user, target, context):
         recovered = max(0, min(action.defense, user.max_hp-user.hp))

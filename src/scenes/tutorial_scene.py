@@ -223,23 +223,24 @@ class TutorialScene(BattleScene):
             )
         )
 
-        # 6. Intenção do Inimigo - Balão à esquerda da caixa de intenção
+        # 6. Intenção do Inimigo - Ícones e descrição sob o mouse
         steps.append(
             TutorialStep(
                 id="intent",
                 title="INTENÇÃO DO INIMIGO",
                 subtitle="Previsão Tática",
                 lines=[
-                    "Esta caixa revela com antecedência o plano do monstro:",
-                    "• Ícone de Espada: ele atacará e exibirá o dano (ex: 5).",
-                    "• Ícone de Escudo: ele erguerá bloqueio.",
-                    "Antecipe seus passos: use Esfera Protetora se ele for atacar!",
+                    "Os ícones revelam o que o inimigo fará.",
+                    "O número indica o dano, a cura ou o Escudo da ação.",
+                    "Passe o mouse para ver o nome e o efeito da habilidade.",
+                    "Chefes mostram duas ações na ordem 1 e 2.",
+                    "A borda dourada marca a ultimate. Prepare sua defesa!",
                 ],
-                target_rect_fn=lambda: pygame.Rect(900, 156, 270, 28),
+                target_rect_fn=lambda: pygame.Rect(1094, 152, 72, 67),
                 bubble_pos=(418, 126),
-                bubble_size=(470, 190),
-                arrow_origin_fn=lambda: (888, 170),
-                arrow_target_fn=lambda: (900, 170),
+                bubble_size=(550, 244),
+                arrow_origin_fn=lambda: (968, 182),
+                arrow_target_fn=lambda: (1094, 182),
             )
         )
 

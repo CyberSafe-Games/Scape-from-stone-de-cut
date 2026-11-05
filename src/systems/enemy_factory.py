@@ -279,10 +279,32 @@ def create_road_enemy(level):
                  actions=actions, is_miniboss=False)
 
 
-def choose_next_action(enemy):
-    """Prepara o próximo ato; ataques especiais respeitam intervalos do chefe."""
-    if getattr(enemy, "special_interval", 0) and (enemy.action_counter + 1) % enemy.special_interval == 0:
-        special = enemy.special_action
-        enemy.set_intent(special.action_type, special.value, special)
-    else:
-        choose_enemy_intent(enemy)
+def choose_next_action(enemy, count=None):
+    """Planeja a rodada inteira; a segunda intenção já fica definida antes da vez do jogador."""
+    count = getattr(enemy, 'actions_per_turn', 1) if count is None else count
+    budget = enemy.energy
+    plan = []
+    for offset in range(count):
+        interval = getattr(enemy, 'special_interval', 0)
+        ordinal = getattr(enemy, 'action_counter', 0)+offset+1
+        if interval and ordinal % interval == 0:
+            action = enemy.special_action
+        elif enemy.actions:
+            reserve = sum(enemy.special_action.energy_cost for future in range(offset+1, count)
+                          if interval and (getattr(enemy, 'action_counter', 0)+future+1) % interval == 0)
+            valid = [a for a in enemy.actions if a.energy_cost <= budget-reserve]
+            action = (random.choices(valid, weights=[a.weight for a in valid], k=1)[0]
+                      if valid else Action('Aguardar', 'defend', defense=0))
+        else:
+            multiplier = 1.5 if enemy.is_miniboss else 1.0
+            if random.random() < .7:
+                damage = int(random.randint(6, 10+enemy.max_hp//10)*multiplier)
+                action = Action('Ataque', 'attack', damage=damage)
+            else:
+                action = Action('Defesa', 'defend', defense=int(random.randint(5, 10)*multiplier))
+        plan.append(action)
+        budget = max(0, budget-action.energy_cost)
+    enemy.action_plan = plan
+    enemy.action_plan_index = 0
+    if plan:
+        enemy.set_intent(plan[0].action_type, plan[0].value, plan[0])
