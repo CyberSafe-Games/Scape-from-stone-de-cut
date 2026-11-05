@@ -75,8 +75,8 @@ class ZanzaraTests(unittest.TestCase):
         view = EntityView(self.assets)
         view.trigger_attack('enemy', 'atk3', boss.name, ultimate=True)
         self.assertIs(view.enemy_ultimate, BOSS_ULTIMATE_ANIMATIONS['zanzara'])
-        self.assertEqual(len(self.assets.get_boss_ultimate_sprites('Zanzara')), 8)
-        self.assertEqual(len(self.assets.get_boss_ultimate_sprites('Zanzara', effects=True)), 8)
+        self.assertEqual(len(self.assets.get_boss_ultimate_sprites('Zanzara')), 12)
+        self.assertEqual(len(self.assets.get_boss_ultimate_sprites('Zanzara', effects=True)), 12)
         engine = CombatEngine()
         engine.enemy = boss
         boss.hp = 0

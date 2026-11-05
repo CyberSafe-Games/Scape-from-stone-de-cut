@@ -61,12 +61,12 @@ class BossUltimateAnimationTests(unittest.TestCase):
                     engine.finish_enemy_turn()
                 self.assertEqual(fired, [8, 16])
 
-    def test_every_boss_has_eight_transparent_casts_and_eight_independent_effects(self):
+    def test_every_boss_has_twelve_transparent_casts_and_twelve_independent_effects(self):
         for name in BOSS_ULTIMATE_ANIMATIONS:
             casts = self.assets.get_boss_ultimate_sprites(name)
             effects = self.assets.get_boss_ultimate_sprites(name, effects=True)
-            self.assertEqual(len(casts), 8)
-            self.assertEqual(len(effects), 8)
+            self.assertEqual(len(casts), 12)
+            self.assertEqual(len(effects), 12)
             for frame in casts:
                 self.assertEqual(frame.get_size(), (448, 320))
                 bounds = frame.get_bounding_rect(min_alpha=50)

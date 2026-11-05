@@ -127,7 +127,8 @@ class GuardiaoDaPedraTests(unittest.TestCase):
         frames = assets.get_enemy_sprite_group(boss.name, 'atk2')
         view.trigger_attack('enemy', 'atk2', boss.name)
         view.update(1400 * .6)
-        self.assertIs(view.get_enemy_frame(boss), frames[4])
+        # A pose intermediária após o lançamento ocupa agora o oitavo quadro.
+        self.assertIs(view.get_enemy_frame(boss), frames[7])
         view.update(3000)
         x, frame = view.get_player_frame('victory')
         self.assertEqual(x, PLAYER_X)

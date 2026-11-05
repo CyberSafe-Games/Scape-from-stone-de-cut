@@ -407,10 +407,12 @@ class AssetManager:
                     casts.append(frame)
             self._boss_ultimate_sprites[name] = casts
             effects = []
-            expanded = os.path.join(os.path.dirname(ULTIMATE_ASSETS_DIR), 'boss_ultimate_effects', 'eight_frames', spec.asset_id)
-            count = 8 if all(os.path.isfile(os.path.join(expanded, f'effect_{i}.png')) for i in range(1, 9)) else 4
-            if count == 8:
-                folder = expanded
+            count = 4
+            for version, candidate_count in (('twelve_frames',12),('eight_frames',8)):
+                expanded = os.path.join(os.path.dirname(ULTIMATE_ASSETS_DIR), 'boss_ultimate_effects', version, spec.asset_id)
+                if all(os.path.isfile(os.path.join(expanded, f'effect_{i}.png')) for i in range(1,candidate_count+1)):
+                    folder,count = expanded,candidate_count
+                    break
             for i in range(1, count+1):
                 try:
                     effects.append(pygame.image.load(os.path.join(folder, f'effect_{i}.png')).convert_alpha())
@@ -426,6 +428,11 @@ class AssetManager:
         from src.systems.boss_animation_kits import KITS
         from src.config.settings import ASSETS_DIR
         root = os.path.join(ASSETS_DIR,'bosses','eight_frames')
+        legacy_root = root
+        count = 8
+        expanded = os.path.join(ASSETS_DIR,'bosses','twelve_frames')
+        if os.path.isfile(os.path.join(expanded,'manifest.json')):
+            root,count = expanded,12
         # Original sources remain available for reproducible extraction and identity checks.
         self._boss_original_groups = {name: dict(self._enemy_sprites.get(name,{})) for name in KITS}
         self._boss_original_ultimates = dict(self._boss_ultimate_sprites)
@@ -439,7 +446,7 @@ class AssetManager:
             self._enemy_sprites.setdefault(name, {})
             for group in prepared[slug]:
                 frames = [pygame.image.load(os.path.join(root,slug,f'{group}_{i}.png')).convert_alpha()
-                          for i in range(1,9)]
+                          for i in range(1,count+1)]
                 if name == 'carrasco da vigília' and group == 'healer2':
                     frames = [recolor_green_aura_red(frame) for frame in frames]
                 if group == 'ultimate':
@@ -458,7 +465,7 @@ class AssetManager:
                 current['def'] = current['healer2']
                 for action in ('atk2', 'atk3'):
                     self._enemy_projectiles[(name, action)] = [
-                        pygame.image.load(os.path.join(root, slug, f'projectile_{action}_{i}.png')).convert_alpha()
+                        pygame.image.load(os.path.join(legacy_root, slug, f'projectile_{action}_{i}.png')).convert_alpha()
                         for i in range(1, 5)]
                     if action == 'atk3':
                         # A frente da onda de palma acompanha o disparo para a esquerda.

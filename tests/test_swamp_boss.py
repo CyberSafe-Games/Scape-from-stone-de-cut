@@ -71,7 +71,7 @@ class SwampBossTests(unittest.TestCase):
         spec = view.enemy_ultimate
         self.assertEqual(spec.mode, 'tremor')
         view.attack_timer = spec.duration*spec.impact
-        self.assertIs(view.get_enemy_frame(boss), self.assets.get_boss_ultimate_sprites(boss.name)[5])
+        self.assertIs(view.get_enemy_frame(boss), self.assets.get_boss_ultimate_sprites(boss.name)[8])
         view.attack_timer = 0
         x, lift = boss_ultimate_pose(spec, .38, ENEMY_X, PLAYER_X+105)
         self.assertLess(x, ENEMY_X)
@@ -80,12 +80,12 @@ class SwampBossTests(unittest.TestCase):
         view.update(spec.duration+1)
         self.assertIs(view.get_enemy_frame(boss), self.assets.get_enemy_sprite_group(boss.name, 'idle')[0])
 
-    def test_real_guard_animation_uses_all_eight_frames(self):
+    def test_real_guard_animation_uses_all_twelve_frames(self):
         boss = create_gordofera()
         view = EntityView(self.assets)
         view.trigger_enemy_action('def', boss.name)
         frames = self.assets.get_enemy_sprite_group(boss.name, 'def')
-        self.assertEqual(len(frames), 8)
+        self.assertEqual(len(frames), 12)
         for i, frame in enumerate(frames):
-            view.enemy_action_timer = view.enemy_action_duration*(i+.1)/8
+            view.enemy_action_timer = view.enemy_action_duration*(i+.1)/12
             self.assertIs(view.get_enemy_frame(boss), frame)

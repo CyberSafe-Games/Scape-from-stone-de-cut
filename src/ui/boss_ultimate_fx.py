@@ -1,4 +1,4 @@
-"""Efeitos em oito etapas: carga, ataque, impacto e dissipação."""
+"""Efeitos em oito ou doze etapas: carga, ataque, impacto e dissipação."""
 import math
 import pygame
 from src.config.layout import ENEMY_X, PLAYER_X, PLAYER_GROUND_Y
@@ -44,21 +44,21 @@ def _back(surface, view, frames, p):
     surface.blit(seal, (round(x)-135, PLAYER_GROUND_Y-34))
     if spec.mode == 'blades' and .25 <= p < .82:
         progress = (p-.25)/.57
-        if len(frames) != 8 or p < spec.impact:
-            index = boss_effect_frame(p, spec) if len(frames) == 8 else 2
+        if len(frames) not in (8,12) or p < spec.impact:
+            index = boss_effect_frame(p, spec, len(frames)) if len(frames) in (8,12) else 2
             vortex = pygame.transform.rotate(frames[index], -progress*360)
             _sprite(surface, vortex, (x, PLAYER_GROUND_Y-80), .8+.2*math.sin(p*math.pi), 175*fade)
     elif p < spec.release:
         charge = p/spec.release
         center = (ENEMY_X, PLAYER_GROUND_Y-(205 if spec.mode == 'execution' else 90))
-        index = boss_effect_frame(p, spec) if len(frames) == 8 else 0
+        index = boss_effect_frame(p, spec, len(frames)) if len(frames) in (8,12) else 0
         _sprite(surface, frames[index], center, .25+.45*charge, 200*charge)
         _particles(surface, center, spec.color, charge, 35+55*charge, 16)
 
 
 def _front(surface, view, frames, p):
     spec = view.enemy_ultimate
-    effect_index = boss_effect_frame(p, spec) if len(frames) == 8 else None
+    effect_index = boss_effect_frame(p, spec, len(frames)) if len(frames) in (8,12) else None
     if spec.mode in ('bear', 'plasma', 'sovereign'):
         pose = view.get_enemy_projectile_pose()
         if pose is not None:

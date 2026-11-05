@@ -15,7 +15,7 @@ from src.config.layout import (
     FLASH_DURATION,
 )
 from src.ui.helpers import ease
-from src.systems.animation_timing import animation_duration, frame_index, dash_distance
+from src.systems.animation_timing import animation_duration, frame_index
 from src.systems.card_definitions import SPECS_BY_NAME
 from src.ui.guardian_spirit_fx import draw_guardian_spirit
 from src.ui.crimson_cast_fx import draw_crimson_cast
@@ -471,10 +471,10 @@ class EntityView:
                     p = self.attack_timer/max(1, self.enemy_attack_duration)
                     if self.enemy_ultimate.mode == 'tremor':
                         from src.systems.gordofera_animations import tremor_frame
-                        return sprites[tremor_frame(p)]
+                        return sprites[tremor_frame(p,len(sprites))]
                     release = (self.enemy_ultimate.release if self.enemy_ultimate.mode in ('bear','plasma','sovereign')
                                else self.enemy_ultimate.impact)
-                    index = (kit_frame(p,len(sprites),release) if len(sprites)==8
+                    index = (kit_frame(p,len(sprites),release) if len(sprites) in (8,12)
                              else boss_cast_frame(p,self.enemy_ultimate))
                     return sprites[min(index, len(sprites)-1)]
             preferred_group = self.enemy_action if self.enemy_action else "atk"
@@ -486,7 +486,7 @@ class EntityView:
             if sprites:
                 if enemy_name in DUO_NAMES:
                     return sprites[attack_frame(self.attack_timer/max(1, self.enemy_attack_duration), len(sprites))]
-                if (enemy_name in KITS or enemy_name in COMMON_KITS) and len(sprites)==8:
+                if (enemy_name in KITS or enemy_name in COMMON_KITS) and len(sprites) in (8,12):
                     p = self.attack_timer/max(1,self.enemy_attack_duration)
                     release = self.enemy_ranged_attack[1] if self.enemy_ranged_attack else (.52 if enemy_name in COMMON_KITS else None)
                     return sprites[kit_frame(p,len(sprites),release)]
@@ -541,8 +541,8 @@ class EntityView:
 
         sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "idle")
         if sprites:
-            if (enemy_name in KITS or enemy_name in COMMON_KITS) and len(sprites)==8:
-                return sprites[int(self.enemy_idle_timer//180) % len(sprites)]
+            if (enemy_name in KITS or enemy_name in COMMON_KITS) and len(sprites) in (8,12):
+                return sprites[int(self.enemy_idle_timer*len(sprites)//1440) % len(sprites)]
             if enemy_name in DUO_NAMES:
                 sequence = (0, 1, 2, 3, 2, 1)
                 return sprites[sequence[(now//260) % len(sequence)] % len(sprites)]
@@ -572,9 +572,6 @@ class EntityView:
 
         enemy_target_x = PLAYER_X + APPROACH_GAP
         is_corpo = enemy is not None and enemy.name.lower() == "corpo seco"
-        if is_corpo and self.attacker == "enemy":
-            distance = dash_distance(self.enemy_action, True)
-            enemy_target_x = ENEMY_X - distance
         enemy_x, enemy_arm = self.get_attack_pose("enemy", ENEMY_X, enemy_target_x)
 
         # Se houver sprite para o inimigo, renderiza o sprite animado

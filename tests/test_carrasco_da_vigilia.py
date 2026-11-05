@@ -117,7 +117,7 @@ class CarrascoDaVigiliaTests(unittest.TestCase):
         self.assertGreater(red.r, red.g)
         self.assertGreater(red.a, 0)
         frames = assets.get_enemy_sprite_group('Carrasco da Vigília', 'healer2')
-        self.assertEqual(len(frames), 8)
+        self.assertEqual(len(frames), 12)
         for frame in frames:
             rgb = pygame.image.tobytes(frame, 'RGBA')
             greens = sum(1 for i in range(0, len(rgb), 4)

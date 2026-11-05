@@ -1,4 +1,5 @@
-"""Tempos da dupla e do pequeno; todos os oito quadros de ataque são usados."""
+"""Tempos da dupla e do pequeno, compatíveis com oito ou doze poses."""
+from src.systems.animation_inbetweens import timed_frame
 DUO = 'álvaro e tex'
 SMALL = 'álvaro e tex · pequeno'
 NAMES = (DUO, SMALL)
@@ -14,4 +15,4 @@ RANGED = {
 
 
 def attack_frame(progress, count=8):
-    return min(count-1, max(0, int(progress*count)))
+    return timed_frame(progress,tuple(i/8 for i in range(8)),count)

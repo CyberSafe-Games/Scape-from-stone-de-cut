@@ -1,5 +1,5 @@
-"""Kits territoriais com oito poses e tempos compartilhados pelo corpo e impactos."""
-from bisect import bisect_right
+"""Kits territoriais com doze poses e os instantes de impacto preservados."""
+from src.systems.animation_inbetweens import timed_frame
 
 KITS = {
     'guardião da pedra': ('guardiao_da_pedra', ('idle','atk1','atk2','def','healer2','dano','ultimate')),
@@ -18,8 +18,8 @@ STRIKE_BOUNDARIES = (0,.18,.35,.43,.50,.66,.82,.93)
 
 
 def kit_frame(progress, count=8, release=None):
-    """All eight drawings are reachable, including the final recovery pose."""
-    if count != 8:
+    """Oito ou doze desenhos, mantendo preparação, golpe e recuperação."""
+    if count not in (8,12):
         return min(max(0,count-1),max(0,int(progress*count)))
     boundaries = (0,.12,.22,(.22+release)/2,release,(release+.80)/2,.80,.92) if release else STRIKE_BOUNDARIES
-    return max(0,min(7,bisect_right(boundaries,max(0,progress))-1))
+    return timed_frame(progress,boundaries,count)

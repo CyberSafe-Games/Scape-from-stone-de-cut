@@ -1,5 +1,6 @@
 """Apresentação dos especiais territoriais; não altera regras ou dano."""
 from dataclasses import dataclass
+from src.systems.animation_inbetweens import timed_frame
 
 
 @dataclass(frozen=True)
@@ -44,9 +45,17 @@ def boss_cast_frame(progress, spec=None):
     return 0 if progress < .22 else 1 if progress < release else 2 if progress < .80 else 3
 
 
-def boss_effect_frame(progress, spec):
-    """Oito desenhos sem antecipar o impacto: carga, ataque e dissipação."""
+def boss_effect_frame(progress, spec, count=8):
+    """Carga, ataque e dissipação em oito ou doze poses, sem antecipar o impacto."""
     p = max(0, min(1, progress))
+    if count == 12:
+        ground = spec.mode in ('execution','tremor')
+        flight_count = 2 if ground else 4
+        impact_count = 4 if ground else 2
+        boundaries = (0,spec.release/2,
+                      *(spec.release+(spec.impact-spec.release)*i/flight_count for i in range(flight_count)),
+                      *(spec.impact+(1-spec.impact)*i/impact_count for i in range(impact_count)))
+        return timed_frame(p,boundaries,count)
     if p < spec.release:
         return min(1, int(p/spec.release*2))
     ground_impact = spec.mode in ('execution', 'tremor')
