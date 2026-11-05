@@ -66,6 +66,7 @@ class AssetManager:
         self._load_territory_backgrounds()
         self._load_player_sprites()
         self._load_enemy_sprites()
+        self._load_common_eight_frames()
         self._load_card_action_sprites()
         self._load_player_eight_frames()
         self._load_boss_ultimate_sprites()
@@ -650,6 +651,28 @@ class AssetManager:
     def get_enemy_projectile(self, enemy_name, action, frame=0):
         projectile = self._enemy_projectiles.get((enemy_name.strip().lower(), action))
         return projectile[frame % len(projectile)] if isinstance(projectile, list) else projectile
+
+    def _load_common_eight_frames(self):
+        import json
+        from src.systems.common_animation_kits import COMMON_KITS
+        from src.config.settings import ASSETS_DIR
+        root = os.path.join(ASSETS_DIR, 'enemies', 'eight_frames')
+        manifest_path = os.path.join(root, 'manifest.json')
+        if not os.path.isfile(manifest_path):
+            return
+        with open(manifest_path, encoding='utf8') as stream:
+            manifest = json.load(stream)
+        for name, (slug, groups) in COMMON_KITS.items():
+            if slug not in manifest: continue
+            current = self._enemy_sprites.setdefault(name, {})
+            for group in groups:
+                current[group] = [pygame.image.load(os.path.join(root, slug, f'{group}_{i}.png')).convert_alpha()
+                                  for i in range(1, 9)]
+            if 'atk1' in current:
+                current['atk'] = current['atk1']
+            projectile = os.path.join(root, slug, 'projectile_atk.png')
+            if name == 'slime' and os.path.isfile(projectile):
+                self._enemy_projectiles[(name, 'atk')] = pygame.image.load(projectile).convert_alpha()
 
     def has_enemy_sprites(self, enemy_name):
         """Verifica se existem sprites customizados carregados para o inimigo."""

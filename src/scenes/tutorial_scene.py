@@ -80,7 +80,7 @@ class TutorialScene(BattleScene):
         """Cria um Slime balanceado com ações previsíveis para o aprendizado."""
         tutorial_actions = [
             Action(
-                name="Investida Leve",
+                name="Salpico Leve",
                 action_type="attack",
                 damage=5,
                 energy_cost=1,

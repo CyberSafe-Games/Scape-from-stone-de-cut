@@ -20,6 +20,7 @@ from src.ui.boss_ultimate_fx import draw_boss_ultimate_fx
 from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS
 from src.systems.alvaro_tex_animations import TRANSITION_MS
 from src.systems.boss_animation_kits import KITS
+from src.systems.common_animation_kits import COMMON_KITS
 from src.ui.helpers import (
     draw_text,
     draw_health_bar,
@@ -120,7 +121,7 @@ class BattleScene(BaseScene):
             return
         boss_attack = (
             self.entity_view.attacker == "enemy"
-            and self.entity_view.enemy_attack_name in KITS
+            and (self.entity_view.enemy_attack_name in KITS or self.entity_view.enemy_attack_name in COMMON_KITS)
         )
         if boss_attack and event_name == "floating_text":
             impact = (
@@ -139,7 +140,7 @@ class BattleScene(BaseScene):
         elif event_name == "attack":
             if (
                 kwargs.get("attacker") == "enemy"
-                and self.engine.enemy.name.lower() in KITS
+                and (self.engine.enemy.name.lower() in KITS or self.engine.enemy.name.lower() in COMMON_KITS)
             ):
                 self._boss_clock = 0
                 self._boss_player_snapshot = deepcopy(self.engine.player)

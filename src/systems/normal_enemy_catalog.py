@@ -62,8 +62,9 @@ NORMAL_ACTIONS = {
         ('Lanche da Selva', 'heal', 7, .2, 'healer2', None)),
 }
 
-# Lançamento sincronizado com a terceira pose, seguido por recuperação.
+# Lançamento sincronizado com a quinta pose, seguido por recuperação.
 NORMAL_RANGED = {
+    'slime': {'atk': (1100, .44, .80)},
     'golem das ruínas': {'atk1': (1250, .44, .80)},
     'centauro vigia': {'atk1': (1100, .44, .80)},
     'putrefato do pântano': {'atk1': (1250, .44, .80)},
@@ -73,6 +74,7 @@ NORMAL_RANGED = {
 
 # Recortes relativos à silhueta: asas e caudas não devem virar o retrato da HUD.
 NORMAL_PORTRAITS = {
+    'slime': (0, 0, 1, 1),
     'lagarto couraçado': (0, 0, .40, .65),
     'morcego sombrio': (0, .32, .40, .60),
     'macaco selvagem': (0, .28, .45, .72),

@@ -69,13 +69,13 @@ class GoblinMongeTests(unittest.TestCase):
         root = Path(__file__).resolve().parents[1] / 'assets' / 'goblin_monge'
         for group in ('idle', 'dano', 'atk1', 'atk2'):
             frames = assets.get_enemy_sprite_group('Vinimuth', group)
-            self.assertEqual(len(frames), 4)
+            self.assertEqual(len(frames), 8)
             for frame in frames:
-                self.assertEqual(frame.get_size(), (240, 180))
+                self.assertEqual(frame.get_size(), (448, 260))
                 self.assertEqual(frame.get_at((0, 0)).a, 0)
                 bounds = frame.get_bounding_rect(min_alpha=50)
-                self.assertLessEqual(bounds.bottom, 177)
-                self.assertGreaterEqual(bounds.bottom, 170)
+                self.assertLessEqual(bounds.bottom, 258)
+                self.assertGreaterEqual(bounds.bottom, 255)
             self.assertEqual(len(list(root.glob(f'{group}_*.png'))), 4)
         with patch('src.systems.enemy_factory.random.choice', return_value='Vinimuth'):
             enemy = create_road_enemy(7)

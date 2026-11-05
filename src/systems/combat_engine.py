@@ -5,6 +5,7 @@ from src.models.deck import DeckManager
 from src.models.effects.ultimate_effect import create_ultimate, ULTIMATE_METADATA, DEFAULT_ULTIMATE_ID
 from src.systems.card_catalog import CARD_POOL, create_starting_deck
 from src.systems.boss_animation_kits import KITS
+from src.systems.common_animation_kits import COMMON_KITS
 from src.systems.enemy_factory import (
     create_enemy,
     choose_enemy_intent,
@@ -340,7 +341,7 @@ class CombatEngine:
                 action.execute(self.enemy, self.player, context=self)
             elif action.action_type == "attack":
                 ultimate = action is getattr(self.enemy, 'special_action', None)
-                animated_boss = self.enemy.name.lower() in KITS
+                animated_boss = self.enemy.name.lower() in KITS or self.enemy.name.lower() in COMMON_KITS
                 if ultimate or animated_boss:
                     self.trigger_attack('enemy', action=action.visual_effect or 'atk', ultimate=ultimate)
                 damage = self._apply_weakness_modifier(action.damage)

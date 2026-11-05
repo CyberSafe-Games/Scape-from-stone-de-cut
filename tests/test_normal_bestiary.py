@@ -70,11 +70,11 @@ class NormalBestiaryTests(unittest.TestCase):
         if not was_initialized:
             self.addCleanup(pygame.quit)
         assets = AssetManager()
-        root = Path(__file__).resolve().parents[1] / 'assets' / 'enemies'
+        root = Path(__file__).resolve().parents[1] / 'assets' / 'enemies' / 'eight_frames'
         for name, (slug, groups, _, _) in NORMAL_SPRITES.items():
             for group in groups:
                 frames = assets.get_enemy_sprite_group(name, group)
-                self.assertEqual(len(frames), 4, (name, group))
+                self.assertEqual(len(frames), 8, (name, group))
                 for i, frame in enumerate(frames, 1):
                     with self.subTest(name=name, group=group, frame=i):
                         self.assertTrue((root/slug/f'{group}_{i}.png').is_file())

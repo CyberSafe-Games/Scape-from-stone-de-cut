@@ -44,7 +44,7 @@ class GoblinRangedAttackTests(unittest.TestCase):
                 self.assertIsNone(view.get_enemy_projectile_pose())
 
     def test_other_enemies_and_goblin_melee_still_approach(self):
-        for name, action in (("Corpo Seco", "atk1"), ("Slime", "atk"), ("Goblin Nerd", "atk3")):
+        for name, action in (("Corpo Seco", "atk1"), ("Vinimuth", "atk1"), ("Goblin Nerd", "atk3")):
             with self.subTest(name=name, action=action):
                 view = EntityView(None)
                 view.trigger_attack("enemy", action, name)

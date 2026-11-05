@@ -26,6 +26,7 @@ from src.systems.alvaro_tex_animations import NAMES as DUO_NAMES, ATTACK_MS as D
 from src.ui.alvaro_tex_fx import draw_alvaro_tex_fx
 from src.systems.boss_animation_kits import KITS, kit_frame
 from src.systems.player_animation_kits import player_frame
+from src.systems.common_animation_kits import COMMON_KITS, PROJECTILE_ORIGINS
 
 NORMAL_IDLE_NAMES = frozenset(name.lower() for name in NORMAL_SPRITES) - {'morcego sombrio'}
 
@@ -138,7 +139,7 @@ class EntityView:
             return self.enemy_ranged_attack[2]
         if self.enemy_attack_name in DUO_NAMES:
             return .58 if self.enemy_attack_name==DUO_NAMES[0] else .60
-        return .52 if self.enemy_attack_name in KITS else .49
+        return .52 if self.enemy_attack_name in KITS or self.enemy_attack_name in COMMON_KITS else .49
 
     def trigger_flash(self, target):
         if target == "player":
@@ -292,6 +293,11 @@ class EntityView:
         end_y = PLAYER_GROUND_Y - 65
         if self.enemy_attack_name in DUO_NAMES:
             start_y = PLAYER_GROUND_Y - (160 if self.enemy_attack_name == DUO_NAMES[0] else 65)
+        origin = PROJECTILE_ORIGINS.get((self.enemy_attack_name, self.enemy_action))
+        if origin:
+            start_x, start_y, end_y = ENEMY_X-origin[0], PLAYER_GROUND_Y-origin[1], PLAYER_GROUND_Y-origin[2]
+            if self.enemy_attack_name == 'morcego sombrio':
+                start_y -= 28 + round(3*math.sin(pygame.time.get_ticks()/300))
         x = start_x + (end_x - start_x) * flight
         y = start_y + (end_y - start_y) * flight
         if self.enemy_attack_name == 'goblin nerd' and self.enemy_action == "atk1":
@@ -480,9 +486,9 @@ class EntityView:
             if sprites:
                 if enemy_name in DUO_NAMES:
                     return sprites[attack_frame(self.attack_timer/max(1, self.enemy_attack_duration), len(sprites))]
-                if enemy_name in KITS and len(sprites)==8:
+                if (enemy_name in KITS or enemy_name in COMMON_KITS) and len(sprites)==8:
                     p = self.attack_timer/max(1,self.enemy_attack_duration)
-                    release = self.enemy_ranged_attack[1] if self.enemy_ranged_attack else None
+                    release = self.enemy_ranged_attack[1] if self.enemy_ranged_attack else (.52 if enemy_name in COMMON_KITS else None)
                     return sprites[kit_frame(p,len(sprites),release)]
                 if enemy_name in NORMAL_RANGED and attack_group in NORMAL_RANGED[enemy_name]:
                     progress = self.attack_timer / max(1, self.enemy_attack_duration)
@@ -535,7 +541,7 @@ class EntityView:
 
         sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "idle")
         if sprites:
-            if enemy_name in KITS and len(sprites)==8:
+            if (enemy_name in KITS or enemy_name in COMMON_KITS) and len(sprites)==8:
                 return sprites[int(self.enemy_idle_timer//180) % len(sprites)]
             if enemy_name in DUO_NAMES:
                 sequence = (0, 1, 2, 3, 2, 1)
