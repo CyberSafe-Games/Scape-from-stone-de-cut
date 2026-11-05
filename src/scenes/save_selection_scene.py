@@ -312,6 +312,7 @@ class SaveSelectionScene(BaseScene):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             point = self.window_manager.map_to_virtual(event.pos)
             if self.window_manager.get_fullscreen_button_rect().collidepoint(point):
+                self.play_ui_sound("ui.click")
                 self.window_manager.toggle_fullscreen()
                 return
             if self.back_button.collidepoint(point):
@@ -332,6 +333,7 @@ class SaveSelectionScene(BaseScene):
                     return
 
     def _open_test_save(self):
+        self.play_ui_sound("ui.confirm")
         try:
             data = self.save_manager.load_or_create_test_save()
             from src.scenes.map_scene import MapScene
@@ -399,6 +401,7 @@ class SaveSelectionScene(BaseScene):
             self.refresh()
 
     def _request_delete(self, index):
+        self.play_ui_sound("ui.click")
         self.scene_manager.push_modal(
             ConfirmationModal(
                 self.scene_manager,
@@ -414,7 +417,6 @@ class SaveSelectionScene(BaseScene):
     def _delete(self, index):
         try:
             self.save_manager.delete_save(self.save_manager.slot_id(index + 1))
-            self.play_ui_sound("ui.confirm")
             self.error = ""
         except OSError as exc:
             self.error = f"Não foi possível excluir: {exc}"

@@ -1,3 +1,7 @@
+from pygame import event
+import pygame
+
+
 class SceneManager:
     """Gerencia a máquina de estados de cenas do jogo e sobreposição de modais."""
 
@@ -28,6 +32,12 @@ class SceneManager:
 
     def handle_event(self, event):
         """Delega o evento para o modal ativo ou para a cena atual."""
+        import pygame
+
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_F11:
+            if self.audio_manager is not None:
+                self.audio_manager.play_sfx("ui.click", volume=1.0)
+
         if self.modal_stack:
             self.modal_stack[-1].handle_event(event)
         elif self.current_scene:

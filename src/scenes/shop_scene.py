@@ -82,6 +82,7 @@ class ShopScene(BaseScene):
         self.message = result.message
         self.message_positive = result.success
         self.message_timer = 3600
+        self.play_ui_sound("ui.confirm" if result.success else "ui.click")
 
     def _draw_coins(self, surface):
         rect = pygame.Rect(998, 42, 222, 50)
@@ -418,6 +419,7 @@ class ShopScene(BaseScene):
             return
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            self.play_ui_sound("ui.click")
             self._back()
             return
 

@@ -1,9 +1,11 @@
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
 import pygame
+from src.core import scene_manager
 from src.scenes.save_selection_scene import SaveSelectionScene
 from src.scenes.shop_scene import ShopScene
+from src.systems import save_manager
 from src.systems.save_manager import SaveManager
 from src.scenes.backpack_scene import BackpackScene
 
@@ -874,6 +876,319 @@ class TestSaveSelectionAudio(unittest.TestCase):
             volume=1.0,
         )
         scene_manager.change_scene.assert_called_once()
+
+    def test_delete_confirmation_plays_sound_once(self):
+        scene_manager = MagicMock()
+        save_manager = MagicMock()
+
+        scene = SaveSelectionScene(
+            scene_manager,
+            MagicMock(),
+            MagicMock(),
+            save_manager,
+        )
+
+        scene._request_delete(0)
+
+        modal = scene_manager.push_modal.call_args.args[0]
+        modal._confirm()
+
+        self.assertEqual(
+            scene_manager.audio_manager.play_sfx.call_args_list,
+            [
+                call("ui.click", volume=1.0),
+                call("ui.confirm", volume=1.0),
+            ],
+        )
+
+        save_manager.delete_save.assert_called_once()
+
+    def test_open_test_save_plays_confirm_sound(self):
+        scene_manager = MagicMock()
+        window_manager = MagicMock()
+        save_manager = MagicMock()
+
+        scene = SaveSelectionScene(
+            scene_manager,
+            window_manager,
+            MagicMock(),
+            save_manager,
+        )
+
+        with patch("src.scenes.map_scene.MapScene"):
+            scene._open_test_save()
+
+        scene_manager.audio_manager.play_sfx.assert_called_once_with(
+            "ui.confirm",
+            volume=1.0,
+        )
+
+    def test_fullscreen_button_plays_click_sound(self):
+        scene_manager = MagicMock()
+        window_manager = MagicMock()
+        window_manager.handle_window_event.return_value = False
+
+        scene = SaveSelectionScene(
+            scene_manager,
+            window_manager,
+            MagicMock(),
+            MagicMock(),
+        )
+
+        window_manager.map_to_virtual.return_value = (10, 10)
+        window_manager.get_fullscreen_button_rect.return_value.collidepoint.return_value = True
+
+        event = pygame.event.Event(
+            pygame.MOUSEBUTTONDOWN,
+            {"button": 1, "pos": (10, 10)},
+        )
+
+        scene.handle_event(event)
+
+        window_manager.toggle_fullscreen.assert_called_once()
+        scene_manager.audio_manager.play_sfx.assert_called_once_with(
+            "ui.click",
+            volume=1.0,
+        )
+
+    def test_open_delete_confirmation_plays_click_sound(self):
+        scene_manager = MagicMock()
+
+        scene = SaveSelectionScene(
+            scene_manager,
+            MagicMock(),
+            MagicMock(),
+            MagicMock(),
+        )
+
+        scene._request_delete(0)
+
+        scene_manager.push_modal.assert_called_once()
+        scene_manager.audio_manager.play_sfx.assert_called_once_with(
+            "ui.click",
+            volume=1.0,
+        )
+
+
+class TestConfirmationModalAudio(unittest.TestCase):
+    def test_confirm_plays_confirm_sound(self):
+        from src.scenes.confirmation_modal import ConfirmationModal
+
+        scene_manager = MagicMock()
+        on_confirm = MagicMock()
+
+        modal = ConfirmationModal(
+            scene_manager,
+            MagicMock(),
+            MagicMock(),
+            on_confirm=on_confirm,
+        )
+
+        modal._confirm()
+
+        scene_manager.audio_manager.play_sfx.assert_called_once_with(
+            "ui.confirm",
+            volume=1.0,
+        )
+        scene_manager.pop_modal.assert_called_once()
+        on_confirm.assert_called_once()
+
+
+class TestBattleMenuAudio(unittest.TestCase):
+    def test_open_menu_confirmation_plays_click_sound(self):
+        from src.scenes.battle_scene import BattleScene
+
+        scene_manager = MagicMock()
+
+        scene = object.__new__(BattleScene)
+        scene.scene_manager = scene_manager
+        scene.window_manager = MagicMock()
+        scene.asset_manager = MagicMock()
+        scene.engine = MagicMock()
+        scene.engine.state = "player_turn"
+
+        scene._open_menu_confirmation()
+
+        scene_manager.push_modal.assert_called_once()
+        scene_manager.audio_manager.play_sfx.assert_called_once_with(
+            "ui.click",
+            volume=1.0,
+        )
+
+
+class TestTutorialReopenAudio(unittest.TestCase):
+    def test_reopen_guide_plays_click_sound(self):
+        from src.scenes.tutorial_scene import TutorialScene
+
+        events = {
+            "button": pygame.event.Event(
+                pygame.MOUSEBUTTONDOWN,
+                {"button": 1, "pos": (10, 10)},
+            ),
+            "H": pygame.event.Event(
+                pygame.KEYDOWN,
+                {"key": pygame.K_h},
+            ),
+            "F1": pygame.event.Event(
+                pygame.KEYDOWN,
+                {"key": pygame.K_F1},
+            ),
+        }
+
+        for interaction, event in events.items():
+            with self.subTest(interaction=interaction):
+                scene_manager = MagicMock()
+                window_manager = MagicMock()
+                window_manager.map_to_virtual.return_value = (10, 10)
+
+                scene = object.__new__(TutorialScene)
+                scene.scene_manager = scene_manager
+                scene.window_manager = window_manager
+                scene.asset_manager = MagicMock()
+                scene.engine = MagicMock()
+                scene.engine.state = "player_turn"
+                scene.overlay = MagicMock()
+                scene.overlay.is_active = False
+                scene.help_button_rect = pygame.Rect(0, 0, 20, 20)
+
+                scene.handle_event(event)
+
+                scene.overlay.reset.assert_called_once()
+                scene_manager.audio_manager.play_sfx.assert_called_once_with(
+                    "ui.click",
+                    volume=1.0,
+                )
+
+
+class TestShopEscapeAudio(unittest.TestCase):
+    def test_escape_plays_click_sound(self):
+        from src.scenes.shop_scene import ShopScene
+
+        scene_manager = MagicMock()
+        window_manager = MagicMock()
+        window_manager.handle_window_event.return_value = False
+
+        scene = object.__new__(ShopScene)
+        scene.scene_manager = scene_manager
+        scene.window_manager = window_manager
+        scene._back = MagicMock()
+
+        event = pygame.event.Event(
+            pygame.KEYDOWN,
+            {"key": pygame.K_ESCAPE},
+        )
+
+        scene.handle_event(event)
+
+        scene._back.assert_called_once()
+        scene_manager.audio_manager.play_sfx.assert_called_once_with(
+            "ui.click",
+            volume=1.0,
+        )
+
+
+class TestShopPurchaseAudio(unittest.TestCase):
+    def test_purchase_feedback_plays_correct_sound(self):
+        from src.scenes.shop_scene import ShopScene
+
+        cases = (
+            (True, "ui.confirm"),
+            (False, "ui.click"),
+        )
+
+        for success, expected_sound in cases:
+            with self.subTest(success=success):
+                scene_manager = MagicMock()
+
+                scene = object.__new__(ShopScene)
+                scene.scene_manager = scene_manager
+
+                result = MagicMock()
+                result.success = success
+                result.message = "Resultado da compra"
+
+                scene._notify(result)
+
+                self.assertEqual(scene.message, result.message)
+                self.assertEqual(scene.message_positive, success)
+                self.assertEqual(scene.message_timer, 3600)
+
+                scene_manager.audio_manager.play_sfx.assert_called_once_with(
+                    expected_sound,
+                    volume=1.0,
+                )
+
+
+class TestF11Audio(unittest.TestCase):
+    def test_f11_plays_click_sound_once(self):
+        import pygame
+        from src.core.scene_manager import SceneManager
+
+        audio_manager = MagicMock()
+        scene_manager = SceneManager(audio_manager=audio_manager)
+
+        scene = MagicMock()
+        scene_manager.change_scene(scene)
+
+        event = pygame.event.Event(
+            pygame.KEYDOWN,
+            key=pygame.K_F11,
+        )
+
+        scene_manager.handle_event(event)
+
+        audio_manager.play_sfx.assert_called_once_with(
+            "ui.click",
+            volume=1.0,
+        )
+
+        scene.handle_event.assert_called_once_with(event)
+
+
+class TestMenuExitAudio(unittest.TestCase):
+    def test_exit_plays_click_before_quitting(self):
+        import pygame
+        from unittest.mock import patch
+        from src.scenes.menu_scene import MenuScene
+
+        for exit_method in ("mouse", "escape"):
+            with self.subTest(exit_method=exit_method):
+                scene = object.__new__(MenuScene)
+                scene.scene_manager = MagicMock()
+                scene.window_manager = MagicMock()
+
+                scene.window_manager.handle_window_event.return_value = False
+                scene.window_manager.map_to_virtual.return_value = (50, 50)
+                scene.window_manager.get_fullscreen_button_rect.return_value = (
+                    pygame.Rect(200, 200, 50, 50)
+                )
+
+                scene.play_button = pygame.Rect(300, 300, 50, 50)
+                scene.quit_button = pygame.Rect(0, 0, 100, 100)
+
+                if exit_method == "mouse":
+                    event = pygame.event.Event(
+                        pygame.MOUSEBUTTONDOWN,
+                        button=1,
+                        pos=(50, 50),
+                    )
+                else:
+                    event = pygame.event.Event(
+                        pygame.KEYDOWN,
+                        key=pygame.K_ESCAPE,
+                    )
+
+                with patch("src.scenes.menu_scene.pygame.quit") as mock_quit:
+                    with patch("src.scenes.menu_scene.sys.exit") as mock_exit:
+                        scene.handle_event(event)
+
+                mock_quit.assert_called_once_with()
+                mock_exit.assert_called_once_with()
+
+                scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
+                    "ui.click",
+                    volume=1.0,
+                )
 
 
 if __name__ == "__main__":

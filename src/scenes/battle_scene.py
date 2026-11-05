@@ -1374,6 +1374,7 @@ class BattleScene(BaseScene):
             on_confirm=self._return_to_main_menu,
             message=message,
         )
+        self.play_ui_sound("ui.click")
         self.scene_manager.push_modal(modal)
 
     def _save_progress(self):
