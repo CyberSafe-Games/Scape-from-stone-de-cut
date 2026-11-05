@@ -29,6 +29,9 @@ class BattleHUD:
                             round(rect.width * 0.66), round(rect.height * 0.64))
         pygame.draw.rect(surface, (9, 14, 15), inner)
         key = ('player' if player else name.lower(), inner.size)
+        portrait = None if player else self.assets.get_character_portrait(name, inner.size)
+        if portrait is not None:
+            self._portraits[key] = portrait
         if key not in self._portraits:
             sprites = (self.assets.get_player_sprite_group('idle') if player
                        else self.assets.get_enemy_sprite_group(name, 'idle'))

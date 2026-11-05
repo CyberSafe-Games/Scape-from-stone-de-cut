@@ -1,0 +1,92 @@
+[
+  {
+    "kind": "bosses",
+    "file": "assets/portraits/source/bosses/01.jpeg",
+    "original": "boses/boss1.jpeg"
+  },
+  {
+    "kind": "bosses",
+    "file": "assets/portraits/source/bosses/02.png",
+    "original": "boses/boss2.png"
+  },
+  {
+    "kind": "bosses",
+    "file": "assets/portraits/source/bosses/03.jpeg",
+    "original": "boses/boss3.jpeg"
+  },
+  {
+    "kind": "bosses",
+    "file": "assets/portraits/source/bosses/04.jpeg",
+    "original": "boses/boss4.jpeg"
+  },
+  {
+    "kind": "bosses",
+    "file": "assets/portraits/source/bosses/05.jpeg",
+    "original": "boses/boss5.jpeg"
+  },
+  {
+    "kind": "bosses",
+    "file": "assets/portraits/source/bosses/06.jpeg",
+    "original": "boses/boss6.jpeg"
+  },
+  {
+    "kind": "bosses",
+    "file": "assets/portraits/source/bosses/07.jpeg",
+    "original": "boses/bossFinal.jpeg"
+  },
+  {
+    "kind": "enemies",
+    "file": "assets/portraits/source/enemies/01.png",
+    "original": "inimigos/Bárbaro Mascarado em Pixel Art.png"
+  },
+  {
+    "kind": "enemies",
+    "file": "assets/portraits/source/enemies/02.png",
+    "original": "inimigos/Golem de Pedra em Fúria.png"
+  },
+  {
+    "kind": "enemies",
+    "file": "assets/portraits/source/enemies/03.png",
+    "original": "inimigos/Mago Encapuzado dos Olhos Verdes.png"
+  },
+  {
+    "kind": "enemies",
+    "file": "assets/portraits/source/enemies/04.png",
+    "original": "inimigos/Retrato de Lagarto Guerreiro em Pixel Art.png"
+  },
+  {
+    "kind": "enemies",
+    "file": "assets/portraits/source/enemies/05.png",
+    "original": "inimigos/Retrato do Crocodilo Guerreiro Resmungão.png"
+  },
+  {
+    "kind": "enemies",
+    "file": "assets/portraits/source/enemies/06.png",
+    "original": "inimigos/Retrato Goblinoide de Olhar Luminoso.png"
+  },
+  {
+    "kind": "enemies",
+    "file": "assets/portraits/source/enemies/07.png",
+    "original": "inimigos/Retrato Pixelado de Esqueleto Sombrio.png"
+  },
+  {
+    "kind": "enemies",
+    "file": "assets/portraits/source/enemies/08.png",
+    "original": "inimigos/Retrato Pixelado de Guerreiro Tribal.png"
+  },
+  {
+    "kind": "enemies",
+    "file": "assets/portraits/source/enemies/09.png",
+    "original": "inimigos/Retrato Pixelado de Monstro Gosmento.png"
+  },
+  {
+    "kind": "enemies",
+    "file": "assets/portraits/source/enemies/10.png",
+    "original": "inimigos/Retrato Pixelado de Morcego Sombrio.png"
+  },
+  {
+    "kind": "enemies",
+    "file": "assets/portraits/source/enemies/11.png",
+    "original": "inimigos/Retrato Pixelado do Bárbaro Arqueiro.png"
+  }
+]

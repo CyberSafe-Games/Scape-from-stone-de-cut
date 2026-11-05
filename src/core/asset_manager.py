@@ -46,6 +46,7 @@ class AssetManager:
         self._player_sprites = {}
         self._enemy_sprites = {}
         self._enemy_projectiles = {}
+        self._character_portraits = {}
         self._background = None
         self._background_tutorial = None
         self._territory_backgrounds = {}
@@ -653,6 +654,34 @@ class AssetManager:
         key = enemy_name.strip().lower()
         groups = self._enemy_sprites.get(key, {})
         return any(bool(frames) for frames in groups.values())
+
+    def get_character_portrait(self, name, size):
+        """Enquadra o retrato sem distorcer; ausências usam o recorte de sprite da HUD."""
+        from src.systems.character_portraits import PORTRAITS
+        key = (name.strip().lower(), tuple(size))
+        if key in self._character_portraits:
+            return self._character_portraits[key]
+        spec = PORTRAITS.get(key[0])
+        result = None
+        if spec:
+            filename, crop, mode = spec
+            path = os.path.join(os.path.dirname(PLAYER_ASSETS_DIR), 'portraits', 'source', filename)
+            try:
+                source = pygame.image.load(path).convert_alpha()
+                x, y, w, h = crop
+                bounds = pygame.Rect(round(x*source.get_width()), round(y*source.get_height()),
+                                     round(w*source.get_width()), round(h*source.get_height())).clip(source.get_rect())
+                source = source.subsurface(bounds)
+                ratios = (size[0]/source.get_width(), size[1]/source.get_height())
+                scale = min(ratios) if mode == 'contain' else max(ratios)
+                image = pygame.transform.smoothscale(source, (max(1, round(source.get_width()*scale)), max(1, round(source.get_height()*scale))))
+                result = pygame.Surface(size, pygame.SRCALPHA)
+                result.fill((9, 14, 15))
+                result.blit(image, image.get_rect(center=result.get_rect().center))
+            except (pygame.error, FileNotFoundError):
+                pass
+        self._character_portraits[key] = result
+        return result
 
     def get_enemy_sprite_group(self, enemy_name, group_name="idle"):
         """Retorna a lista de frames para a ação solicitada do inimigo."""
