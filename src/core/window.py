@@ -1,7 +1,17 @@
+import os
+
 import pygame
 from src.config.settings import WIDTH, HEIGHT, TITLE, LEGACY_WINDOW_SIZE
 from src.config.colors import BLACK, BUTTON_BG, BUTTON_HOVER, GOLD, WHITE
 from src.ui import dark_fantasy_theme as theme
+
+
+# Tamanhos de janela 16:9 tentados, do maior para o menor.
+WINDOW_SIZE_CANDIDATES = ((1920, 1080), (1600, 900), LEGACY_WINDOW_SIZE)
+# Folga para barra de título, bordas e barra de tarefas do sistema.
+WINDOW_MARGIN = (40, 110)
+# Tempo em que eventos de redimensionamento gerados pela própria troca de modo são ignorados.
+MODE_CHANGE_SETTLE_MS = 400
 
 
 class WindowManager:
@@ -16,8 +26,12 @@ class WindowManager:
         self.title = title
 
         self.is_fullscreen = False
-        # Tamanho da janela real; por padrão igual à resolução de renderização.
-        self.windowed_size = tuple(window_size) if window_size else (width, height)
+        # Centraliza a janela ao criá-la e ao sair da tela cheia.
+        os.environ.setdefault("SDL_VIDEO_CENTERED", "1")
+        # Janela grande: o maior 16:9 que cabe na tela (até 1920x1080).
+        self.large_window_size = self._fit_window_size()
+        self.windowed_size = tuple(window_size) if window_size else self.large_window_size
+        self._mode_changed_at = 0
 
         self.display_surface = pygame.display.set_mode(
             self.windowed_size, pygame.RESIZABLE
@@ -26,6 +40,39 @@ class WindowManager:
 
         # Superfície interna de tamanho fixo usada por todo o desenho
         self.screen = pygame.Surface((self.width, self.height))
+
+    @staticmethod
+    def _desktop_size():
+        try:
+            sizes = pygame.display.get_desktop_sizes()
+        except (pygame.error, AttributeError):
+            sizes = []
+        return sizes[0] if sizes else None
+
+    def _fit_window_size(self):
+        """Maior tamanho 16:9 de janela que cabe inteiro na área do desktop."""
+        desktop = self._desktop_size()
+        if not desktop:
+            return (self.width, self.height)
+        max_w = desktop[0] - WINDOW_MARGIN[0]
+        max_h = desktop[1] - WINDOW_MARGIN[1]
+        for size in WINDOW_SIZE_CANDIDATES:
+            if size[0] <= max_w and size[1] <= max_h:
+                return size
+        # Telas pequenas: reduz mantendo 16:9.
+        scale = min(max_w / self.width, max_h / self.height)
+        return (max(320, int(self.width * scale)), max(180, int(self.height * scale)))
+
+    def _apply_mode(self):
+        """Aplica o modo atual (tela cheia ou janela) e descarta os ecos de redimensionamento."""
+        if self.is_fullscreen:
+            self.display_surface = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        else:
+            self.display_surface = pygame.display.set_mode(
+                self.windowed_size, pygame.RESIZABLE
+            )
+        self._mode_changed_at = pygame.time.get_ticks()
+        pygame.event.clear(pygame.VIDEORESIZE)
 
     @property
     def virtual_screen(self):
@@ -81,30 +128,21 @@ class WindowManager:
 
     def toggle_fullscreen(self):
         """Alterna entre janela redimensionável e tela cheia."""
-        if not self.is_fullscreen:
-            self.windowed_size = self.display_surface.get_size()
-            self.display_surface = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-            self.is_fullscreen = True
-        else:
-            self.display_surface = pygame.display.set_mode(
-                self.windowed_size, pygame.RESIZABLE
-            )
-            self.is_fullscreen = False
+        self.is_fullscreen = not self.is_fullscreen
+        self._apply_mode()
 
     def toggle_legacy_window(self):
-        """Alterna o modo janela entre Full HD (1920x1080) e a resolução antiga (1280x720).
+        """Alterna o modo janela entre a janela grande (até 1920x1080) e a resolução antiga (1280x720).
 
-        A renderização continua em Full HD; no modo 1280x720 a imagem é
-        reduzida para a janela. Em tela cheia, sai direto para a janela 1280x720.
+        A renderização continua em Full HD; a imagem é ajustada ao tamanho da
+        janela. Em tela cheia, sai direto para a janela 1280x720.
         """
         if self.is_fullscreen or self.windowed_size != LEGACY_WINDOW_SIZE:
             self.windowed_size = LEGACY_WINDOW_SIZE
         else:
-            self.windowed_size = (self.width, self.height)
+            self.windowed_size = self.large_window_size
         self.is_fullscreen = False
-        self.display_surface = pygame.display.set_mode(
-            self.windowed_size, pygame.RESIZABLE
-        )
+        self._apply_mode()
 
     def handle_window_event(self, event):
         """Trata redimensionamento, F11 (tela cheia) e F10 (janela 1280x720).
@@ -112,11 +150,14 @@ class WindowManager:
         Retorna True se o evento foi consumido.
         """
         if event.type == pygame.VIDEORESIZE:
-            if not self.is_fullscreen:
+            # No Pygame 2 a janela redimensionável já ajusta a própria superfície;
+            # chamar set_mode aqui desfaria a troca de modo recém-aplicada.
+            settling = pygame.time.get_ticks() - self._mode_changed_at < MODE_CHANGE_SETTLE_MS
+            if not self.is_fullscreen and not settling:
                 self.windowed_size = (event.w, event.h)
-                self.display_surface = pygame.display.set_mode(
-                    self.windowed_size, pygame.RESIZABLE
-                )
+            surface = pygame.display.get_surface()
+            if surface is not None:
+                self.display_surface = surface
             return True
 
         if event.type == pygame.KEYDOWN:
