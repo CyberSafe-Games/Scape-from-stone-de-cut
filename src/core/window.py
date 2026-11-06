@@ -1,5 +1,3 @@
-import os
-
 import pygame
 from src.config.settings import WIDTH, HEIGHT, TITLE, LEGACY_WINDOW_SIZE
 from src.config.colors import BLACK, BUTTON_BG, BUTTON_HOVER, GOLD, WHITE
@@ -26,8 +24,6 @@ class WindowManager:
         self.title = title
 
         self.is_fullscreen = False
-        # Centraliza a janela ao criá-la e ao sair da tela cheia.
-        os.environ.setdefault("SDL_VIDEO_CENTERED", "1")
         # Janela grande: o maior 16:9 que cabe na tela (até 1920x1080).
         self.large_window_size = self._fit_window_size()
         self.windowed_size = tuple(window_size) if window_size else self.large_window_size
@@ -67,6 +63,13 @@ class WindowManager:
         """Aplica o modo atual (tela cheia ou janela) e descarta os ecos de redimensionamento."""
         if self.is_fullscreen:
             self.display_surface = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            if not self.display_surface.get_flags() & pygame.FULLSCREEN:
+                # Alguns drivers ignoram a troca via set_mode; tenta o método nativo.
+                try:
+                    pygame.display.toggle_fullscreen()
+                except pygame.error:
+                    pass
+                self.display_surface = pygame.display.get_surface()
         else:
             self.display_surface = pygame.display.set_mode(
                 self.windowed_size, pygame.RESIZABLE

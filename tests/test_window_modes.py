@@ -19,7 +19,7 @@ def window_on_desktop(size, **kwargs):
 
 
 class ModeRecorder:
-    """Registra o último modo pedido ao pygame (o driver dummy não reflete tela cheia)."""
+    """Registra os modos pedidos ao pygame (o driver dummy não reflete tela cheia)."""
 
     def __init__(self, testcase):
         self.calls = []
