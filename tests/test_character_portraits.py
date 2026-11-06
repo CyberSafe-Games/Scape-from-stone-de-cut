@@ -16,7 +16,7 @@ class CharacterPortraitTests(unittest.TestCase):
 
     def test_all_supplied_portraits_load_in_the_hud_and_are_cached(self):
         hud = BattleHUD(self.assets)
-        surface = pygame.Surface((1280,720))
+        surface = pygame.Surface((1920,1080))
         for name in PORTRAITS:
             with self.subTest(name=name):
                 portrait = self.assets.get_character_portrait(name,(58,61))
@@ -31,7 +31,7 @@ class CharacterPortraitTests(unittest.TestCase):
         small = self.assets.get_character_portrait('Álvaro e Tex · Pequeno',(58,61))
         self.assertNotEqual(pygame.image.tobytes(duo,'RGB'),pygame.image.tobytes(small,'RGB'))
         hud = BattleHUD(self.assets)
-        surface = pygame.Surface((1280,720))
+        surface = pygame.Surface((1920,1080))
         for name in ('Slime','Macaco Selvagem'):
             self.assertIsNone(self.assets.get_character_portrait(name,(58,61)))
             hud.portrait(surface,pygame.Rect(20,20,88,96),name)

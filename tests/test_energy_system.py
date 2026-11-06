@@ -190,7 +190,7 @@ class TestEnergyHUD(unittest.TestCase):
     """Testes de renderização visual e componentes da interface EnergyHUD."""
 
     def setUp(self):
-        self.surface = pygame.Surface((1280, 720))
+        self.surface = pygame.Surface((1920, 1080))
         self.font = pygame.font.SysFont(None, 24)
         self.small_font = pygame.font.SysFont(None, 16)
 

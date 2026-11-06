@@ -235,10 +235,10 @@ class AlvaroTexVisualTests(TestCase):
         for i in range(8):
             view.enemy_action_timer = (i+.5)*1800/8
             self.assertIs(view.get_enemy_frame(SimpleNamespace(name=NAMES[0])), self.groups[NAMES[0],'healer2'][i])
-        canvas = pygame.Surface((1280,720),pygame.SRCALPHA)
+        canvas = pygame.Surface((1920,1080),pygame.SRCALPHA)
         view.enemy_action_timer = 900
         view.draw_enemy_projectile(canvas)
-        self.assertGreater(canvas.get_bounding_rect().left,800)
+        self.assertGreater(canvas.get_bounding_rect().left,1200)
         self.assertFalse(view.is_enemy_resolving_done())
         view.update(1800)
         self.assertTrue(view.is_enemy_resolving_done())

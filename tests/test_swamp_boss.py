@@ -73,7 +73,7 @@ class SwampBossTests(unittest.TestCase):
         view.attack_timer = spec.duration*spec.impact
         self.assertIs(view.get_enemy_frame(boss), self.assets.get_boss_ultimate_sprites(boss.name)[8])
         view.attack_timer = 0
-        x, lift = boss_ultimate_pose(spec, .38, ENEMY_X, PLAYER_X+105)
+        x, lift = boss_ultimate_pose(spec, .38, ENEMY_X, PLAYER_X+158)
         self.assertLess(x, ENEMY_X)
         self.assertGreater(lift, 40)
         self.assertIsNone(view.enemy_ranged_attack)

@@ -29,7 +29,7 @@ class CardCollectionPageTests(unittest.TestCase):
         found = set()
         while True:
             for name, rect in scene.offer_rects.items():
-                self.assertTrue(pygame.Rect(0, 0, 1280, 720).contains(rect))
+                self.assertTrue(pygame.Rect(0, 0, 1920, 1080).contains(rect))
                 found.add(name)
                 self.click(scene, rect)
             if scene.page == scene.page_count - 1: break

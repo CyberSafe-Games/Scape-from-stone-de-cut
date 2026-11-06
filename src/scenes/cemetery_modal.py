@@ -43,8 +43,8 @@ class CemeteryModal(BaseScene):
         self.feedback_timer = 0
 
         # Dimensões da janela modal central
-        self.modal_width = 1060
-        self.modal_height = 540
+        self.modal_width = 1590
+        self.modal_height = 810
         self.modal_rect = pygame.Rect(
             WIDTH // 2 - self.modal_width // 2,
             HEIGHT // 2 - self.modal_height // 2,
@@ -53,24 +53,24 @@ class CemeteryModal(BaseScene):
         )
 
         # Ações independentes: descarte livre, troca única e fechamento.
-        button_y = self.modal_rect.bottom - 74
-        self.discard_button_rect = pygame.Rect(WIDTH // 2 - 360, button_y, 224, 48)
-        self.swap_button_rect = pygame.Rect(WIDTH // 2 - 112, button_y, 224, 48)
-        self.close_button_rect = pygame.Rect(WIDTH // 2 + 136, button_y, 224, 48)
+        button_y = self.modal_rect.bottom - 111
+        self.discard_button_rect = pygame.Rect(WIDTH // 2 - 540, button_y, 336, 72)
+        self.swap_button_rect = pygame.Rect(WIDTH // 2 - 168, button_y, 336, 72)
+        self.close_button_rect = pygame.Rect(WIDTH // 2 + 204, button_y, 336, 72)
 
     def _get_card_rects(self, count):
         """Centraliza as cartas e reduz seu tamanho em mãos muito grandes."""
         if count <= 0:
             return []
-        spacing = 12
-        usable_width = self.modal_rect.width - 80
+        spacing = 18
+        usable_width = self.modal_rect.width - 120
         card_width = min(
-            CARD_WIDTH, max(46, (usable_width - (count - 1) * spacing) // count)
+            CARD_WIDTH, max(69, (usable_width - (count - 1) * spacing) // count)
         )
         card_height = int(CARD_HEIGHT * (card_width / CARD_WIDTH))
         total_width = count * card_width + (count - 1) * spacing
         start_x = WIDTH // 2 - total_width // 2
-        y = self.modal_rect.top + 185
+        y = self.modal_rect.top + 278
         return [
             pygame.Rect(
                 start_x + i * (card_width + spacing), y, card_width, card_height
@@ -91,9 +91,9 @@ class CemeteryModal(BaseScene):
         theme.panel(surface, self.modal_rect, highlighted=True)
         theme.divider(
             surface,
-            self.modal_rect.x + 72,
-            self.modal_rect.right - 72,
-            self.modal_rect.y + 129,
+            self.modal_rect.x + 108,
+            self.modal_rect.right - 108,
+            self.modal_rect.y + 194,
         )
 
         draw_text(
@@ -102,7 +102,7 @@ class CemeteryModal(BaseScene):
             self.asset_manager.big_font,
             WHITE,
             WIDTH // 2,
-            self.modal_rect.top + 33,
+            self.modal_rect.top + 50,
             center=True,
         )
         draw_text(
@@ -111,7 +111,7 @@ class CemeteryModal(BaseScene):
             self.asset_manager.small_font,
             WHITE,
             WIDTH // 2,
-            self.modal_rect.top + 74,
+            self.modal_rect.top + 111,
             center=True,
         )
 
@@ -127,7 +127,7 @@ class CemeteryModal(BaseScene):
             self.asset_manager.small_font,
             (179, 187, 170),
             WIDTH // 2,
-            self.modal_rect.top + 100,
+            self.modal_rect.top + 150,
             center=True,
         )
         draw_text(
@@ -136,7 +136,7 @@ class CemeteryModal(BaseScene):
             self.asset_manager.small_font,
             GOLD if swap_available else GRAY,
             WIDTH // 2,
-            self.modal_rect.top + 145,
+            self.modal_rect.top + 218,
             center=True,
         )
 
@@ -166,9 +166,9 @@ class CemeteryModal(BaseScene):
                 )
                 if selected:
                     # Mantém a seleção no mesmo deslocamento do efeito hover.
-                    draw_rect = rect.move(0, -12)
+                    draw_rect = rect.move(0, -18)
                     pygame.draw.rect(
-                        surface, GOLD, draw_rect.inflate(8, 8), 3, border_radius=12
+                        surface, GOLD, draw_rect.inflate(12, 12), 5, border_radius=18
                     )
                     draw_text(
                         surface,
@@ -176,7 +176,7 @@ class CemeteryModal(BaseScene):
                         self.asset_manager.small_font,
                         GOLD,
                         draw_rect.centerx,
-                        draw_rect.top - 17,
+                        draw_rect.top - 26,
                         center=True,
                     )
 
@@ -187,7 +187,7 @@ class CemeteryModal(BaseScene):
                 self.asset_manager.small_font,
                 (205, 186, 137),
                 WIDTH // 2,
-                self.modal_rect.bottom - 100,
+                self.modal_rect.bottom - 150,
                 center=True,
             )
 

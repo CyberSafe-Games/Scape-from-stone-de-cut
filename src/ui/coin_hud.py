@@ -2,19 +2,19 @@ import math
 import random
 import pygame
 
-HUD_COIN_X = 54
-HUD_COIN_Y = 82
+HUD_COIN_X = 81
+HUD_COIN_Y = 123
 
 # Tamanho do icone desenhado na HUD (px) - aumente aqui para deixar maior
-HUD_ICON_SIZE = 42
+HUD_ICON_SIZE = 63
 # Largura do painel de fundo da HUD
-HUD_PANEL_W = 176
-HUD_PANEL_H = 56
+HUD_PANEL_W = 264
+HUD_PANEL_H = 84
 
 PARTICLE_DURATION = 900
 PARTICLE_STAGGER = 70
 MAX_PARTICLES = 10
-PARTICLE_RADIUS = 7
+PARTICLE_RADIUS = 11
 PARTICLE_COLOR = (255, 210, 50)
 PARTICLE_OUTLINE = (0, 0, 0)
 
@@ -43,9 +43,9 @@ class CoinParticle:
         self.credited = False
 
         mid_x = (self.origin_x + self.dest_x) / 2
-        arc_offset = random.uniform(-120, 120)
+        arc_offset = random.uniform(-180, 180)
         self.ctrl_x = mid_x + arc_offset
-        self.ctrl_y = min(self.origin_y, self.dest_y) - random.uniform(60, 160)
+        self.ctrl_y = min(self.origin_y, self.dest_y) - random.uniform(90, 240)
 
         self.x = self.origin_x
         self.y = self.origin_y
@@ -74,15 +74,15 @@ class CoinParticle:
         if self.elapsed < self.delay:
             return
         radius = PARTICLE_RADIUS
-        size = radius * 2 + 4
+        size = radius * 2 + 6
         tmp = pygame.Surface((size, size), pygame.SRCALPHA)
         cx, cy = size // 2, size // 2
         shadow_surf = pygame.Surface((size, size), pygame.SRCALPHA)
-        pygame.draw.circle(shadow_surf, (0, 0, 0, 80), (cx + 1, cy + 2), radius)
+        pygame.draw.circle(shadow_surf, (0, 0, 0, 80), (cx + 2, cy + 3), radius)
         tmp.blit(shadow_surf, (0, 0))
         pygame.draw.circle(tmp, (*PARTICLE_COLOR, self.alpha), (cx, cy), radius)
-        pygame.draw.circle(tmp, (*PARTICLE_OUTLINE, self.alpha), (cx, cy), radius, 2)
-        pygame.draw.circle(tmp, (255, 240, 150, min(self.alpha, 180)), (cx - 2, cy - 2), radius // 3)
+        pygame.draw.circle(tmp, (*PARTICLE_OUTLINE, self.alpha), (cx, cy), radius, 3)
+        pygame.draw.circle(tmp, (255, 240, 150, min(self.alpha, 180)), (cx - 3, cy - 3), radius // 3)
         surface.blit(tmp, (int(self.x) - cx, int(self.y) - cy))
 
 
@@ -106,8 +106,8 @@ class CoinHUD:
         remainder = amount - base_value * num_particles
         for i in range(num_particles):
             value = base_value + (1 if i < remainder else 0)
-            ox = origin_x + random.randint(-30, 30)
-            oy = origin_y + random.randint(-20, 20)
+            ox = origin_x + random.randint(-45, 45)
+            oy = origin_y + random.randint(-30, 30)
             delay = i * PARTICLE_STAGGER
             self._particles.append(CoinParticle(ox, oy, delay, value, self.anchor_x + HUD_ICON_SIZE // 2, self.anchor_y + HUD_ICON_SIZE // 2))
 
@@ -147,23 +147,23 @@ class CoinHUD:
         y = self.anchor_y
 
         # Painel de fundo semi-transparente
-        shadow = pygame.Surface((HUD_PANEL_W + 10, HUD_PANEL_H + 10), pygame.SRCALPHA)
-        pygame.draw.rect(shadow, (0, 0, 0, 85), (6, 6, HUD_PANEL_W, HUD_PANEL_H), border_radius=12)
-        surface.blit(shadow, (x - 8, y - 6))
+        shadow = pygame.Surface((HUD_PANEL_W + 15, HUD_PANEL_H + 15), pygame.SRCALPHA)
+        pygame.draw.rect(shadow, (0, 0, 0, 85), (9, 9, HUD_PANEL_W, HUD_PANEL_H), border_radius=18)
+        surface.blit(shadow, (x - 12, y - 9))
         panel = pygame.Surface((HUD_PANEL_W, HUD_PANEL_H), pygame.SRCALPHA)
-        pygame.draw.rect(panel, (15, 16, 26, 228), (0, 0, HUD_PANEL_W, HUD_PANEL_H), border_radius=12)
-        pygame.draw.rect(panel, (228, 191, 88, 210), (0, 0, HUD_PANEL_W, HUD_PANEL_H), 2, border_radius=12)
-        surface.blit(panel, (x - 4, y - 4))
+        pygame.draw.rect(panel, (15, 16, 26, 228), (0, 0, HUD_PANEL_W, HUD_PANEL_H), border_radius=18)
+        pygame.draw.rect(panel, (228, 191, 88, 210), (0, 0, HUD_PANEL_W, HUD_PANEL_H), 3, border_radius=18)
+        surface.blit(panel, (x - 6, y - 6))
 
         # Icone da moeda
         if coin_icon:
             icon_scaled = pygame.transform.smoothscale(coin_icon, (HUD_ICON_SIZE, HUD_ICON_SIZE))
-            surface.blit(icon_scaled, (x, y + (HUD_PANEL_H - HUD_ICON_SIZE) // 2 - 4))
+            surface.blit(icon_scaled, (x, y + (HUD_PANEL_H - HUD_ICON_SIZE) // 2 - 6))
 
         label = font.render("MOEDAS", True, (194, 179, 133))
-        surface.blit(label, (x + HUD_ICON_SIZE + 8, y + 1))
+        surface.blit(label, (x + HUD_ICON_SIZE + 12, y + 2))
 
         # Texto do saldo ao lado do icone
         coins_text = font.render(str(self._player.coins), True, (255, 235, 110))
-        text_y = y + 22
-        surface.blit(coins_text, (x + HUD_ICON_SIZE + 12, text_y))
+        text_y = y + 33
+        surface.blit(coins_text, (x + HUD_ICON_SIZE + 18, text_y))

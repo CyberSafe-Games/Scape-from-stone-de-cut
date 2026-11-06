@@ -29,13 +29,13 @@ class SaveSelectionScene(BaseScene):
     def __init__(self, scene_manager, window_manager, asset_manager, save_manager=None):
         super().__init__(scene_manager, window_manager, asset_manager)
         self.save_manager = save_manager or SaveManager()
-        self.back_button = pygame.Rect(38, 32, 160, 44)
-        self.test_button = pygame.Rect(WIDTH // 2 - 210, 590, 420, 44)
+        self.back_button = pygame.Rect(57, 48, 240, 66)
+        self.test_button = pygame.Rect(WIDTH // 2 - 315, 885, 630, 66)
         self.card_rects = [
-            pygame.Rect(135 + index * 338, 208, 320, 352) for index in range(3)
+            pygame.Rect(203 + index * 507, 312, 480, 528) for index in range(3)
         ]
         self.delete_rects = [
-            pygame.Rect(r.centerx - 65, r.bottom - 52, 130, 32) for r in self.card_rects
+            pygame.Rect(r.centerx - 98, r.bottom - 78, 195, 48) for r in self.card_rects
         ]
         self.slots = []
         self.error = ""
@@ -76,7 +76,7 @@ class SaveSelectionScene(BaseScene):
             "ARQUIVO DE JORNADAS",
             self.asset_manager.small_font,
             WIDTH // 2,
-            95,
+            143,
             center=True,
         )
         draw_text(
@@ -85,7 +85,7 @@ class SaveSelectionScene(BaseScene):
             self.asset_manager.big_font,
             WHITE,
             WIDTH // 2,
-            128,
+            192,
             center=True,
         )
         draw_text(
@@ -94,10 +94,10 @@ class SaveSelectionScene(BaseScene):
             self.asset_manager.font,
             GRAY,
             WIDTH // 2,
-            171,
+            257,
             center=True,
         )
-        theme.divider(surface, 404, 876, 192)
+        theme.divider(surface, 606, 1314, 288)
 
         cursor = self.window_manager.get_virtual_mouse_pos()
         for index, rect in enumerate(self.card_rects):
@@ -109,15 +109,15 @@ class SaveSelectionScene(BaseScene):
                 f"CRÔNICA {index + 1:02d}",
                 self.asset_manager.small_font,
                 rect.centerx,
-                rect.top + 27,
+                rect.top + 41,
                 center=True,
             )
             pygame.draw.line(
                 surface,
                 (91, 76, 52),
-                (rect.x + 29, rect.y + 64),
-                (rect.right - 29, rect.y + 64),
-                1,
+                (rect.x + 44, rect.y + 96),
+                (rect.right - 44, rect.y + 96),
+                2,
             )
 
             if state == "occupied":
@@ -128,7 +128,7 @@ class SaveSelectionScene(BaseScene):
                     self.asset_manager.menu_font,
                     WHITE,
                     rect.centerx,
-                    rect.y + 94,
+                    rect.y + 141,
                     center=True,
                 )
                 draw_text(
@@ -137,17 +137,17 @@ class SaveSelectionScene(BaseScene):
                     self.asset_manager.big_font,
                     GOLD,
                     rect.centerx,
-                    rect.y + 147,
+                    rect.y + 221,
                     center=True,
                 )
-                theme.divider(surface, rect.x + 72, rect.right - 72, rect.y + 179)
+                theme.divider(surface, rect.x + 108, rect.right - 108, rect.y + 269)
                 draw_text(
                     surface,
                     f"MOEDAS     {progress['moedas']}",
                     self.asset_manager.font,
                     WHITE,
                     rect.centerx,
-                    rect.y + 200,
+                    rect.y + 300,
                     center=True,
                 )
                 draw_text(
@@ -156,7 +156,7 @@ class SaveSelectionScene(BaseScene):
                     self.asset_manager.font,
                     WHITE,
                     rect.centerx,
-                    rect.y + 229,
+                    rect.y + 344,
                     center=True,
                 )
                 try:
@@ -171,7 +171,7 @@ class SaveSelectionScene(BaseScene):
                     self.asset_manager.small_font,
                     GRAY,
                     rect.centerx,
-                    rect.y + 265,
+                    rect.y + 398,
                     center=True,
                 )
                 draw_text(
@@ -180,31 +180,31 @@ class SaveSelectionScene(BaseScene):
                     self.asset_manager.small_font,
                     GOLD if hovered else GRAY,
                     rect.centerx,
-                    rect.y + 291,
+                    rect.y + 437,
                     center=True,
                 )
                 self._button(surface, self.delete_rects[index], "EXCLUIR", danger=True)
             elif state == "empty":
                 pygame.draw.circle(
-                    surface, (83, 75, 56), (rect.centerx, rect.y + 154), 43, 1
+                    surface, (83, 75, 56), (rect.centerx, rect.y + 231), 65, 2
                 )
                 pygame.draw.polygon(
                     surface,
                     GOLD,
                     [
-                        (rect.centerx, rect.y + 128),
-                        (rect.centerx + 23, rect.y + 154),
-                        (rect.centerx, rect.y + 180),
-                        (rect.centerx - 23, rect.y + 154),
+                        (rect.centerx, rect.y + 192),
+                        (rect.centerx + 35, rect.y + 231),
+                        (rect.centerx, rect.y + 270),
+                        (rect.centerx - 35, rect.y + 231),
                     ],
-                    2,
+                    3,
                 )
                 pygame.draw.line(
                     surface,
                     GOLD,
-                    (rect.centerx - 11, rect.y + 154),
-                    (rect.centerx + 11, rect.y + 154),
-                    2,
+                    (rect.centerx - 17, rect.y + 231),
+                    (rect.centerx + 17, rect.y + 231),
+                    3,
                 )
                 draw_text(
                     surface,
@@ -212,7 +212,7 @@ class SaveSelectionScene(BaseScene):
                     self.asset_manager.font,
                     WHITE,
                     rect.centerx,
-                    rect.y + 233,
+                    rect.y + 350,
                     center=True,
                 )
                 draw_text(
@@ -221,7 +221,7 @@ class SaveSelectionScene(BaseScene):
                     self.asset_manager.small_font,
                     GOLD if hovered else GRAY,
                     rect.centerx,
-                    rect.y + 285,
+                    rect.y + 428,
                     center=True,
                 )
             else:
@@ -231,7 +231,7 @@ class SaveSelectionScene(BaseScene):
                     self.asset_manager.menu_font,
                     (188, 110, 101),
                     rect.centerx,
-                    rect.y + 147,
+                    rect.y + 221,
                     center=True,
                 )
                 draw_text(
@@ -240,7 +240,7 @@ class SaveSelectionScene(BaseScene):
                     self.asset_manager.small_font,
                     GRAY,
                     rect.centerx,
-                    rect.y + 208,
+                    rect.y + 312,
                     center=True,
                 )
                 draw_text(
@@ -249,7 +249,7 @@ class SaveSelectionScene(BaseScene):
                     self.asset_manager.small_font,
                     GRAY,
                     rect.centerx,
-                    rect.y + 239,
+                    rect.y + 359,
                     center=True,
                 )
                 self._button(surface, self.delete_rects[index], "EXCLUIR", danger=True)
@@ -262,7 +262,7 @@ class SaveSelectionScene(BaseScene):
                 self.asset_manager.small_font,
                 GOLD,
                 WIDTH // 2,
-                650,
+                975,
                 center=True,
             )
         if self.error:
@@ -272,7 +272,7 @@ class SaveSelectionScene(BaseScene):
                 self.asset_manager.small_font,
                 (210, 116, 103),
                 WIDTH // 2,
-                650,
+                975,
                 center=True,
             )
         theme.footer(

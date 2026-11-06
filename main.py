@@ -16,6 +16,9 @@ def main():
     """
     pygame.init()
 
+    # O jogo abre em janela 1280x720 e renderiza em Full HD (1920x1080).
+    # F11 alterna entre tela cheia e a janela 1280x720; F10 alterna a janela
+    # entre 1280x720 e o maior tamanho 16:9 que cabe na tela.
     window_manager = WindowManager(WIDTH, HEIGHT, TITLE)
     asset_manager = AssetManager()
     audio_manager = AudioManager()
@@ -40,6 +43,13 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
                 break
+            # Tela cheia (F11), janela 1280x720 (F10) e redimensionamento valem
+            # em qualquer tela, inclusive com modais abertos.
+            is_window_shortcut = event.type == pygame.KEYDOWN and event.key in (pygame.K_F11, pygame.K_F10)
+            if window_manager.handle_window_event(event):
+                if is_window_shortcut:
+                    audio_manager.play_sfx("ui.click", volume=1.0)
+                continue
             scene_manager.handle_event(event)
 
         scene_manager.update(dt)

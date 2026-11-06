@@ -90,11 +90,11 @@ class AssetManager:
         """Serifa só nos títulos, legibilidade neutra em controles e informações."""
         headings = ["cinzel", "constantia", "georgia", "liberationserif", "dejavuserif"]
         body = ["segoeui", "trebuchetms", "liberationsans", "dejavusans"]
-        self._fonts["default"] = self._pick_font(body, 20)
-        self._fonts["big"] = self._pick_font(headings, 33, bold=True)
-        self._fonts["title"] = self._pick_font(headings, 56, bold=True)
-        self._fonts["menu"] = self._pick_font(headings, 23, bold=True)
-        self._fonts["small"] = self._pick_font(body, 16)
+        self._fonts["default"] = self._pick_font(body, 30)
+        self._fonts["big"] = self._pick_font(headings, 50, bold=True)
+        self._fonts["title"] = self._pick_font(headings, 84, bold=True)
+        self._fonts["menu"] = self._pick_font(headings, 35, bold=True)
+        self._fonts["small"] = self._pick_font(body, 24)
 
     def get_font(self, name="default"):
         return self._fonts.get(name, self._fonts["default"])
@@ -194,8 +194,8 @@ class AssetManager:
         return self._background
 
     def _load_coin_icon(self):
-        """Carrega o icone de moeda (48x48). Fallback: circulo dourado procedural."""
-        ICON_SIZE = 48
+        """Carrega o icone de moeda (72x72). Fallback: circulo dourado procedural."""
+        ICON_SIZE = 72
         try:
             raw = pygame.image.load(COIN_ICON_PATH).convert_alpha()
             self._coin_icon = pygame.transform.smoothscale(raw, (ICON_SIZE, ICON_SIZE))
@@ -203,7 +203,7 @@ class AssetManager:
             # Fallback procedural: círculo dourado
             surf = pygame.Surface((ICON_SIZE, ICON_SIZE), pygame.SRCALPHA)
             pygame.draw.circle(surf, (255, 200, 50), (ICON_SIZE // 2, ICON_SIZE // 2), ICON_SIZE // 2)
-            pygame.draw.circle(surf, (220, 160, 20), (ICON_SIZE // 2, ICON_SIZE // 2), ICON_SIZE // 2, 3)
+            pygame.draw.circle(surf, (220, 160, 20), (ICON_SIZE // 2, ICON_SIZE // 2), ICON_SIZE // 2, 5)
             self._coin_icon = surf
             print(f"[AVISO] Ícone de moeda não encontrado: {COIN_ICON_PATH}")
 

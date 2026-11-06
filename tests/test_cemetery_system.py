@@ -77,7 +77,7 @@ class TestCemeteryModalUI(unittest.TestCase):
     """Testes de interface, renderização e seleção do modal do Cemitério."""
 
     def setUp(self):
-        self.wm = WindowManager(WIDTH, HEIGHT, TITLE)
+        self.wm = WindowManager(WIDTH, HEIGHT, TITLE, window_size=(WIDTH, HEIGHT))
         self.am = AssetManager()
         self.sm = SceneManager()
         self.engine = CombatEngine()
@@ -208,7 +208,7 @@ class TestBattleSceneCemeteryIntegration(unittest.TestCase):
         """Clicar no botão Cemitério na BattleScene deve abrir o CemeteryModal."""
         from unittest.mock import MagicMock
 
-        wm = WindowManager(WIDTH, HEIGHT, TITLE)
+        wm = WindowManager(WIDTH, HEIGHT, TITLE, window_size=(WIDTH, HEIGHT))
         am = AssetManager()
         sm = SceneManager()
         sm.audio_manager = MagicMock()
@@ -232,7 +232,7 @@ class TestBattleSceneCemeteryIntegration(unittest.TestCase):
         """Pressionar a tecla C durante o turno do jogador deve abrir o CemeteryModal."""
         from unittest.mock import MagicMock
 
-        wm = WindowManager(WIDTH, HEIGHT, TITLE)
+        wm = WindowManager(WIDTH, HEIGHT, TITLE, window_size=(WIDTH, HEIGHT))
         am = AssetManager()
         sm = SceneManager()
         sm.audio_manager = MagicMock()

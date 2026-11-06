@@ -23,8 +23,8 @@ class MenuScene(BaseScene):
     def __init__(self, scene_manager, window_manager, asset_manager):
         super().__init__(scene_manager, window_manager, asset_manager)
 
-        self.play_button = pygame.Rect(144, 456, 326, 56)
-        self.quit_button = pygame.Rect(144, 526, 326, 53)
+        self.play_button = pygame.Rect(216, 684, 489, 84)
+        self.quit_button = pygame.Rect(216, 789, 489, 80)
 
     def draw_button(self, surface, rect, text):
         hovered = rect.collidepoint(self.window_manager.get_virtual_mouse_pos())
@@ -43,58 +43,58 @@ class MenuScene(BaseScene):
     def draw(self, surface):
         theme.backdrop(surface, self.asset_manager.background, opacity=186)
         # Placa vertical e sigilo discreto em vez de botões coloridos genéricos.
-        pygame.draw.line(surface, (118, 91, 52), (116, 132), (116, 583), 2)
-        for y in (132, 583):
+        pygame.draw.line(surface, (118, 91, 52), (174, 198), (174, 875), 3)
+        for y in (198, 875):
             pygame.draw.polygon(
-                surface, GOLD, [(116, y - 6), (122, y), (116, y + 6), (110, y)]
+                surface, GOLD, [(174, y - 9), (183, y), (174, y + 9), (165, y)]
             )
         theme.eyebrow(
             surface,
             "CRÔNICAS DA PEDRA CORTADA",
             self.asset_manager.small_font,
-            144,
-            160,
+            216,
+            240,
         )
-        draw_text(surface, "SCAPE FROM", self.asset_manager.title_font, WHITE, 139, 208)
+        draw_text(surface, "SCAPE FROM", self.asset_manager.title_font, WHITE, 209, 312)
         draw_text(
-            surface, "STONE DE CUT", self.asset_manager.title_font, GOLD, 139, 280
+            surface, "STONE DE CUT", self.asset_manager.title_font, GOLD, 209, 420
         )
-        pygame.draw.line(surface, (117, 94, 57), (146, 375), (530, 375), 1)
+        pygame.draw.line(surface, (117, 94, 57), (219, 563), (795, 563), 2)
         draw_text(
             surface,
             "A FLORESTA NÃO ESQUECE.",
             self.asset_manager.font,
             (200, 199, 179),
-            145,
-            393,
+            218,
+            590,
         )
         draw_text(
             surface,
             "Um roguelike de cartas entre ruínas, tribos e sombras.",
             self.asset_manager.small_font,
             GRAY,
-            145,
-            426,
+            218,
+            639,
         )
         self.draw_button(surface, self.play_button, "INICIAR JORNADA")
         self.draw_button(surface, self.quit_button, "SAIR DO JOGO")
 
         # Marca ornamental sobre o cenário. Não é um botão.
-        cx, cy = 951, 348
-        pygame.draw.circle(surface, (74, 78, 60), (cx, cy), 119, 1)
-        pygame.draw.circle(surface, (90, 78, 54), (cx, cy), 98, 1)
+        cx, cy = 1427, 522
+        pygame.draw.circle(surface, (74, 78, 60), (cx, cy), 179, 2)
+        pygame.draw.circle(surface, (90, 78, 54), (cx, cy), 147, 2)
         for d in range(0, 360, 45):
             import math
 
             a = math.radians(d)
-            px, py = int(cx + 108 * math.cos(a)), int(cy + 108 * math.sin(a))
-            pygame.draw.circle(surface, (126, 102, 64), (px, py), 3)
-        pts = [(cx, cy - 68), (cx + 55, cy), (cx, cy + 68), (cx - 55, cy)]
-        pygame.draw.lines(surface, (127, 100, 61), True, pts, 2)
-        pygame.draw.line(surface, (127, 100, 61), (cx, cy - 68), (cx, cy + 68), 1)
-        pygame.draw.circle(surface, (127, 100, 61), (cx, cy), 13, 2)
+            px, py = int(cx + 162 * math.cos(a)), int(cy + 162 * math.sin(a))
+            pygame.draw.circle(surface, (126, 102, 64), (px, py), 5)
+        pts = [(cx, cy - 102), (cx + 83, cy), (cx, cy + 102), (cx - 83, cy)]
+        pygame.draw.lines(surface, (127, 100, 61), True, pts, 3)
+        pygame.draw.line(surface, (127, 100, 61), (cx, cy - 102), (cx, cy + 102), 2)
+        pygame.draw.circle(surface, (127, 100, 61), (cx, cy), 20, 3)
         draw_text(
-            surface, "I", self.asset_manager.small_font, GOLD, cx, cy + 139, center=True
+            surface, "I", self.asset_manager.small_font, GOLD, cx, cy + 209, center=True
         )
 
         self.window_manager.draw_fullscreen_button(self.asset_manager.small_font)

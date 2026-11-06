@@ -63,7 +63,7 @@ class ZanzaraTests(unittest.TestCase):
             images = [self.assets.get_enemy_projectile('Zanzara', action, i) for i in range(4)]
             self.assertTrue(all(im is not None for im in images))
             self.assertEqual(len({pygame.image.tobytes(im, 'RGBA') for im in images}), 4)
-            screen = pygame.Surface((1280, 720), pygame.SRCALPHA)
+            screen = pygame.Surface((1920, 1080), pygame.SRCALPHA)
             draw_zanzara_fx(screen, view)
             self.assertGreater(screen.get_bounding_rect().width, 20)
 

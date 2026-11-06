@@ -13,14 +13,14 @@ def draw_zanzara_fx(surface, view):
         fade = min(1, p/.18, (1-p)/.20)
         effects = view.asset_manager.get_boss_ultimate_sprites('Zanzara', effects=True)
         if effects:
-            _sprite(surface, effects[0], (ENEMY_X, PLAYER_GROUND_Y-202), .22+.08*math.sin(p*math.pi), 225*fade)
-        _particles(surface, (ENEMY_X, PLAYER_GROUND_Y-86), (246, 199, 83), p, 83, 18)
+            _sprite(surface, effects[0], (ENEMY_X, PLAYER_GROUND_Y-303), .22+.08*math.sin(p*math.pi), 225*fade)
+        _particles(surface, (ENEMY_X, PLAYER_GROUND_Y-129), (246, 199, 83), p, 125, 18)
         for i in range(3):
-            yy = round(PLAYER_GROUND_Y-26-((p*140+i*42) % 145))
-            xx = round(ENEMY_X+math.sin(i*2+p*5)*65)
+            yy = round(PLAYER_GROUND_Y-39-((p*210+i*63) % 218))
+            xx = round(ENEMY_X+math.sin(i*2+p*5)*98)
             color = (255, 221, 118)
-            pygame.draw.line(surface, color, (xx-4, yy), (xx+4, yy), 2)
-            pygame.draw.line(surface, color, (xx, yy-4), (xx, yy+4), 2)
+            pygame.draw.line(surface, color, (xx-6, yy), (xx+6, yy), 3)
+            pygame.draw.line(surface, color, (xx, yy-6), (xx, yy+6), 3)
         return
     pose = view.get_enemy_projectile_pose()
     if pose is None:
@@ -30,6 +30,6 @@ def draw_zanzara_fx(surface, view):
     if projectile is None:
         return
     if view.enemy_action == 'atk2':
-        y -= 24*math.sin(flight*math.pi)
-    _sprite(surface, projectile, (x+30, y), .90, 45)
+        y -= 36*math.sin(flight*math.pi)
+    _sprite(surface, projectile, (x+45, y), .90, 45)
     _sprite(surface, projectile, (x, y))

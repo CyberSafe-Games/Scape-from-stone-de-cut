@@ -94,7 +94,7 @@ class NormalBestiaryTests(unittest.TestCase):
                     view.update(duration*(launch+impact)/2)
                     self.assertEqual(view.get_attack_pose('enemy', ENEMY_X, PLAYER_X)[0], ENEMY_X)
                     self.assertIsNotNone(view.get_enemy_projectile_pose())
-                    screen = pygame.Surface((1280, 720), pygame.SRCALPHA)
+                    screen = pygame.Surface((1920, 1080), pygame.SRCALPHA)
                     view.draw_enemy_projectile(screen)
                     self.assertGreater(screen.get_bounding_rect().width, 10)
                     self.assertEqual(view.player_flash, 0)
