@@ -10,11 +10,13 @@ class BaseScene(ABC):
         self.window_manager = window_manager
         self.asset_manager = asset_manager
 
-    def play_ui_sound(self, sound_id, volume=1.0):
+    def play_ui_sound(self, sound_id, volume=1.0, maxtime=None):
         """Reproduz um efeito de interface se o áudio estiver disponível."""
         audio_manager = getattr(self.scene_manager, "audio_manager", None)
 
         if audio_manager is not None:
+            if maxtime is not None:
+                return audio_manager.play_sfx(sound_id, volume=volume, maxtime=maxtime)
             return audio_manager.play_sfx(sound_id, volume=volume)
 
         return None

@@ -287,6 +287,7 @@ class CombatEngine:
         )
         self.state = "victory"
         self.generate_rewards()
+        self.on_event("victory")
 
     def finish_boss_transition(self):
         """Troca somente o inimigo; não reinicia a luta ou concede recompensa."""

@@ -70,6 +70,9 @@ class TutorialScene(BattleScene):
         self.overlay = TutorialOverlay(self._create_tutorial_steps())
 
     def _handle_combat_event(self, event_name, **kwargs):
+        # A conclusão do tutorial apresenta instruções sem fanfarra de vitória.
+        if event_name == "victory":
+            return
         # O treinamento concede uma recompensa fixa na conclusão, em vez do
         # sorteio de moedas do combate comum (que impediria repetir com segurança).
         if event_name == "coin_drop":
@@ -518,6 +521,7 @@ class TutorialScene(BattleScene):
                     self.play_ui_sound("ui.click")
 
                 return
+            return
         # Clique no botão de rever guia
         if (
             not self.overlay.is_active
