@@ -24,9 +24,10 @@ class WindowManager:
         self.title = title
 
         self.is_fullscreen = False
-        # Janela grande: o maior 16:9 que cabe na tela (até 1920x1080).
+        # Janela grande (F10): o maior 16:9 que cabe na tela (até 1920x1080).
         self.large_window_size = self._fit_window_size()
-        self.windowed_size = tuple(window_size) if window_size else self.large_window_size
+        # O jogo abre em janela 1280x720; F11 alterna entre ela e a tela cheia.
+        self.windowed_size = tuple(window_size) if window_size else LEGACY_WINDOW_SIZE
         self._mode_changed_at = 0
 
         self.display_surface = pygame.display.set_mode(
@@ -130,8 +131,10 @@ class WindowManager:
         pygame.display.flip()
 
     def toggle_fullscreen(self):
-        """Alterna entre janela redimensionável e tela cheia."""
+        """Alterna entre tela cheia (sem barra de título) e a janela 1280x720."""
         self.is_fullscreen = not self.is_fullscreen
+        if not self.is_fullscreen:
+            self.windowed_size = LEGACY_WINDOW_SIZE
         self._apply_mode()
 
     def toggle_legacy_window(self):
@@ -148,7 +151,7 @@ class WindowManager:
         self._apply_mode()
 
     def handle_window_event(self, event):
-        """Trata redimensionamento, F11 (tela cheia) e F10 (janela 1280x720).
+        """Trata redimensionamento, F11 (tela cheia / janela 1280x720) e F10 (tamanho da janela).
 
         Retorna True se o evento foi consumido.
         """

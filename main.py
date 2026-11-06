@@ -1,7 +1,7 @@
 import sys
 import pygame
 
-from src.config.settings import TITLE, WIDTH, HEIGHT, FPS, LEGACY_WINDOW_SIZE
+from src.config.settings import TITLE, WIDTH, HEIGHT, FPS
 from src.core.window import WindowManager
 from src.core.asset_manager import AssetManager
 from src.core.scene_manager import SceneManager
@@ -16,10 +16,10 @@ def main():
     """
     pygame.init()
 
-    # `--janela-720p` abre o jogo na janela de resolução antiga (1280x720).
-    # Durante o jogo, F10 alterna entre as janelas 1920x1080 e 1280x720.
-    window_size = LEGACY_WINDOW_SIZE if "--janela-720p" in sys.argv[1:] else None
-    window_manager = WindowManager(WIDTH, HEIGHT, TITLE, window_size=window_size)
+    # O jogo abre em janela 1280x720 e renderiza em Full HD (1920x1080).
+    # F11 alterna entre tela cheia e a janela 1280x720; F10 alterna a janela
+    # entre 1280x720 e o maior tamanho 16:9 que cabe na tela.
+    window_manager = WindowManager(WIDTH, HEIGHT, TITLE)
     asset_manager = AssetManager()
     audio_manager = AudioManager()
     audio_manager.register_sounds({

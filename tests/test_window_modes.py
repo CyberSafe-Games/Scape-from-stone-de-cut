@@ -43,15 +43,18 @@ class TestWindowModes(unittest.TestCase):
     def setUp(self):
         pygame.init()
 
-    def test_render_is_full_hd_and_window_fits_the_desktop(self):
+    def test_render_is_full_hd_and_game_opens_in_720p_window(self):
         self.assertEqual((WIDTH, HEIGHT), (1920, 1080))
         cases = {(2560, 1440): (1920, 1080), (1920, 1080): (1600, 900), (1366, 768): (1169, 658)}
-        for desktop, expected in cases.items():
+        for desktop, large in cases.items():
             with self.subTest(desktop=desktop):
                 wm = window_on_desktop(desktop)
                 self.assertEqual(wm.virtual_screen.get_size(), (1920, 1080))
-                self.assertEqual(wm.windowed_size, expected)
-                self.assertEqual(wm.display_surface.get_size(), expected)
+                self.assertFalse(wm.is_fullscreen)
+                self.assertEqual(wm.windowed_size, LEGACY_WINDOW_SIZE)
+                self.assertEqual(wm.display_surface.get_size(), LEGACY_WINDOW_SIZE)
+                # Tamanho grande usado pelo F10: o maior 16:9 que cabe na tela.
+                self.assertEqual(wm.large_window_size, large)
 
     def test_legacy_window_keeps_full_hd_render_and_maps_mouse(self):
         wm = window_on_desktop((1920, 1080), window_size=LEGACY_WINDOW_SIZE)
@@ -61,16 +64,16 @@ class TestWindowModes(unittest.TestCase):
         self.assertEqual(wm.map_to_virtual((1280, 720)), (1920, 1080))
         wm.present()
 
-    def test_f11_switches_fullscreen_and_back_to_the_same_window(self):
+    def test_f11_alternates_fullscreen_and_720p_window(self):
         wm = window_on_desktop((1920, 1080))
-        window = wm.windowed_size
         modes = ModeRecorder(self)
-        self.assertTrue(wm.handle_window_event(F11))
-        self.assertTrue(wm.is_fullscreen)
-        self.assertEqual(modes.last, ((0, 0), True))
-        self.assertTrue(wm.handle_window_event(F11))
-        self.assertFalse(wm.is_fullscreen)
-        self.assertEqual(modes.last, (window, False))
+        for _ in range(2):
+            self.assertTrue(wm.handle_window_event(F11))
+            self.assertTrue(wm.is_fullscreen)
+            self.assertEqual(modes.last, ((0, 0), True))
+            self.assertTrue(wm.handle_window_event(F11))
+            self.assertFalse(wm.is_fullscreen)
+            self.assertEqual(modes.last, (LEGACY_WINDOW_SIZE, False))
 
     def test_resize_echo_after_leaving_fullscreen_does_not_restore_screen_size(self):
         wm = window_on_desktop((1920, 1080))
@@ -84,23 +87,22 @@ class TestWindowModes(unittest.TestCase):
         self.assertEqual(wm.windowed_size, window)
         self.assertEqual(len(modes.calls), calls)  # nenhum set_mode extra
 
-    def test_user_resize_is_remembered_when_returning_from_fullscreen(self):
+    def test_leaving_fullscreen_always_returns_to_720p_window(self):
         wm = window_on_desktop((1920, 1080))
         modes = ModeRecorder(self)
-        wm._mode_changed_at = -10_000
-        wm.handle_window_event(pygame.event.Event(pygame.VIDEORESIZE, w=1400, h=800, size=(1400, 800)))
-        self.assertEqual(wm.windowed_size, (1400, 800))
+        wm.handle_window_event(F10)  # janela grande
+        self.assertEqual(modes.last, ((1600, 900), False))
         wm.handle_window_event(F11)
         wm.handle_window_event(F11)
-        self.assertEqual(modes.last, ((1400, 800), False))
+        self.assertEqual(modes.last, (LEGACY_WINDOW_SIZE, False))
 
-    def test_f10_toggles_legacy_window_and_leaves_fullscreen(self):
+    def test_f10_toggles_window_size_and_leaves_fullscreen(self):
         wm = window_on_desktop((2560, 1440))
         modes = ModeRecorder(self)
         self.assertTrue(wm.handle_window_event(F10))
-        self.assertEqual(modes.last, (LEGACY_WINDOW_SIZE, False))
-        self.assertTrue(wm.handle_window_event(F10))
         self.assertEqual(modes.last, ((1920, 1080), False))
+        self.assertTrue(wm.handle_window_event(F10))
+        self.assertEqual(modes.last, (LEGACY_WINDOW_SIZE, False))
         wm.handle_window_event(F11)
         self.assertTrue(wm.is_fullscreen)
         wm.handle_window_event(F10)
