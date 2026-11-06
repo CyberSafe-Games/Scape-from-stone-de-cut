@@ -9,6 +9,13 @@ from src.core.audio_manager import AudioManager
 
 
 class TestAudioManager(unittest.TestCase):
+    @patch("src.core.audio_manager.pygame.mixer.get_init", return_value=(44100, -16, 2))
+    @patch("src.core.audio_manager.pygame.mixer.Sound")
+    def test_limits_playback_to_collision_window(self, mock_sound, mock_get_init):
+        manager = AudioManager()
+        manager.register_sound("gameplay.attack.fireball", "bola_de_fogo.ogg")
+        manager.play_sfx("gameplay.attack.fireball", maxtime=312)
+        mock_sound.return_value.play.assert_called_once_with(maxtime=312)
 
     @patch("src.core.audio_manager.pygame.mixer.get_init")
     @patch("src.core.audio_manager.pygame.mixer.init")

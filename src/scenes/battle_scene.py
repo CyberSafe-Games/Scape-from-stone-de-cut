@@ -84,6 +84,7 @@ class BattleScene(BaseScene):
         self._boss_clock = 0
         self._boss_player_snapshot = None
         self._phase_transition_pending = False
+        self._pending_attack_sound = None
 
         # Inicializa o motor puro de combate com callbacks para efeitos visuais
         self.engine = CombatEngine(
@@ -110,6 +111,8 @@ class BattleScene(BaseScene):
         self.skip_reward_rect = pygame.Rect(WIDTH // 2 - 90, HEIGHT - 150, 180, 60)
         self.ultimate_button_rect = pygame.Rect(0, 0, 0, 0)
         self.ultimate_hand_rect = None
+        self._hovered_hand_card = None
+        self._last_card_hover_sound_at = -120
 
     def _handle_combat_event(self, event_name, **kwargs):
         """Reage a eventos emitidos pelo motor de combate."""
@@ -119,9 +122,9 @@ class BattleScene(BaseScene):
                 (ultimate.duration * ultimate.impact, event_name, kwargs)
             )
             return
-        boss_attack = (
-            self.entity_view.attacker == "enemy"
-            and (self.entity_view.enemy_attack_name in KITS or self.entity_view.enemy_attack_name in COMMON_KITS)
+        boss_attack = self.entity_view.attacker == "enemy" and (
+            self.entity_view.enemy_attack_name in KITS
+            or self.entity_view.enemy_attack_name in COMMON_KITS
         )
         if boss_attack and event_name == "floating_text":
             impact = (
@@ -130,7 +133,11 @@ class BattleScene(BaseScene):
             )
             self._boss_events.append((impact, kwargs))
             return
-        if event_name == "boss_phase_transition":
+        if event_name == "game_over":
+            self.play_ui_sound("gameplay.game_over")
+        elif event_name == "victory":
+            self.play_ui_sound("gameplay.victory")
+        elif event_name == "boss_phase_transition":
             self._phase_transition_pending = True
         elif event_name == "boss_phase_started":
             self.entity_view.phase_transition_timer = None
@@ -138,9 +145,9 @@ class BattleScene(BaseScene):
             self.entity_view.pending_enemy_hit_at = None
             self._ultimate_enemy_snapshot = None
         elif event_name == "attack":
-            if (
-                kwargs.get("attacker") == "enemy"
-                and (self.engine.enemy.name.lower() in KITS or self.engine.enemy.name.lower() in COMMON_KITS)
+            if kwargs.get("attacker") == "enemy" and (
+                self.engine.enemy.name.lower() in KITS
+                or self.engine.enemy.name.lower() in COMMON_KITS
             ):
                 self._boss_clock = 0
                 self._boss_player_snapshot = deepcopy(self.engine.player)
@@ -150,10 +157,109 @@ class BattleScene(BaseScene):
                 enemy_name=getattr(self.engine.enemy, "name", None),
                 ultimate=kwargs.get("ultimate", False),
             )
+            if kwargs.get("attacker") == "player":
+                sound_cue = {
+                    "Soco Simples": ("gameplay.attack.punch", 0.24),
+                    "Adaga Sangrenta": ("gameplay.attack.dagger", 0.24),
+                    "Zarabatana Venenosa": ("gameplay.attack.blowgun", 0.64),
+                    "Disparo de Arco": ("gameplay.attack.arrow_impact", 0.64),
+                    "Investida": ("gameplay.attack.charge", 0.24),
+                    "Lança Perfurante": ("gameplay.attack.spear", 0.24),
+                    "Machados Gêmeos": ("gameplay.attack.twin_axes", 0.24),
+                    "Machado Quebra-Escudo": ("gameplay.attack.shield_break", 0.24),
+                    "Bola de Fogo": ("gameplay.attack.fireball", 0.64),
+                }.get(kwargs.get("action"))
+                self._pending_attack_sound = (
+                    (
+                        kwargs.get("action"),
+                        self.entity_view.player_attack_duration * sound_cue[1],
+                        sound_cue[0],
+                        self.entity_view.player_attack_duration
+                        * (0.90 if sound_cue[1] == 0.64 else 0.52),
+                    )
+                    if sound_cue is not None
+                    else None
+                )
+                revised = {
+                    "Adaga Sangrenta": (216, "gameplay.attack.dagger", 1982),
+                    "Investida": (0, "gameplay.attack.charge", 1500),
+                    "Lança Perfurante": (308, "gameplay.attack.spear", 900),
+                    "Machados Gêmeos": (368, "gameplay.attack.twin_axes", 900),
+                    "Machado Quebra-Escudo": (216, "gameplay.attack.shield_break", 2416),
+                    "Bola de Fogo": (768, "gameplay.attack.fireball", 2868),
+                    "Poção Venenosa": (768, "gameplay.potion.poison", 3175),
+                    "Poção Fragilizante": (768, "gameplay.potion.weaken", 2460),
+                    "Amuleto Dissipador": (768, "gameplay.skill.dispel", 1488),
+                }.get(kwargs.get("action"))
+                if revised is not None:
+                    start, sound_id, end = revised
+                    reference_duration = (
+                        1200 if kwargs.get("action") in (
+                            "Bola de Fogo", "Poção Venenosa", "Poção Fragilizante", "Amuleto Dissipador"
+                        )
+                        else 900
+                    )
+                    scale = self.entity_view.player_attack_duration / reference_duration
+                    self._pending_attack_sound = (
+                        kwargs.get("action"), start * scale, sound_id, end * scale,
+                    )
+                self._pending_contact_sound = (
+                    (kwargs.get("action"), self.entity_view.player_attack_duration * 0.52)
+                    if kwargs.get("action") in ("Lança Perfurante", "Machados Gêmeos", "Investida")
+                    else None
+                )
+                self._attack_latest_start_ms = self.entity_view.player_attack_duration * (
+                    0.90 if kwargs.get("action") in (
+                        "Zarabatana Venenosa", "Disparo de Arco", "Bola de Fogo", "Poção Venenosa",
+                        "Poção Fragilizante", "Amuleto Dissipador"
+                    ) else 0.52
+                )
+                if kwargs.get("action") == "Amuleto Dissipador":
+                    self._attack_latest_start_ms = self.entity_view.player_attack_duration
         elif event_name == "flash":
             self.entity_view.trigger_flash(kwargs.get("target"))
         elif event_name == "player_action":
+            self._attack_latest_start_ms = None
             self.entity_view.trigger_player_action(kwargs.get("action"))
+            sound_id = {
+                "Aura Rubra": "gameplay.skill.aura",
+                "Esfera Protetora": "gameplay.skill.shield_light",
+                "Esfera Escudo": "gameplay.skill.shield_heavy",
+                "Totem Protetor": "gameplay.skill.totem",
+                "Poção de Cura": "gameplay.potion.heal",
+                "Poção Purificadora": "gameplay.potion.cleanse",
+                "Máscara Ancestral": "gameplay.skill.mask",
+                "Surto de Energia": "gameplay.skill.energy",
+            }.get(kwargs.get("action"))
+            if sound_id is not None:
+                self._pending_attack_sound = (
+                    kwargs.get("action"),
+                    self.entity_view.player_action_duration * 0.52,
+                    sound_id,
+                    None,
+                )
+                if kwargs.get("action") in (
+                    "Aura Rubra", "Totem Protetor", "Máscara Ancestral", "Surto de Energia"
+                ):
+                    self._pending_attack_sound = (
+                        kwargs.get("action"), 0, sound_id,
+                        self.entity_view.player_action_duration,
+                    )
+                elif kwargs.get("action") == "Esfera Escudo":
+                    self._pending_attack_sound = (
+                        kwargs.get("action"), self.entity_view.player_action_duration * 0.52,
+                        sound_id, self.entity_view.player_action_duration + 1200,
+                    )
+                if kwargs.get("action") == "Surto de Energia":
+                    self._pending_attack_sound = (
+                        kwargs.get("action"), 0, sound_id,
+                        self.entity_view.player_action_duration + 800,
+                    )
+                elif kwargs.get("action") == "Máscara Ancestral":
+                    self._pending_attack_sound = (
+                        kwargs.get("action"), 0, sound_id,
+                        self.entity_view.player_action_duration + 600,
+                    )
             self._ultimate_clock = 0
             self._ultimate_enemy_snapshot = (
                 deepcopy(self.engine.enemy)
@@ -197,6 +303,36 @@ class BattleScene(BaseScene):
             )
 
     def update(self, dt):
+        pending_attack = getattr(self, "_pending_attack_sound", None)
+        if pending_attack is not None:
+            action, start_ms, sound_id, collision_ms = pending_attack
+            animation_ms = self.entity_view.player_action_timer + dt
+            if self.entity_view.player_action != action:
+                self._pending_attack_sound = None
+            elif animation_ms >= start_ms:
+                self._pending_attack_sound = None
+                latest_start = getattr(self, "_attack_latest_start_ms", None)
+                if latest_start is not None and animation_ms > latest_start:
+                    pass
+                elif collision_ms is None:
+                    self.play_ui_sound(sound_id)
+                elif collision_ms > animation_ms:
+                    self.play_ui_sound(sound_id, maxtime=collision_ms - animation_ms)
+        pending_contact = getattr(self, "_pending_contact_sound", None)
+        if pending_contact is not None:
+            action, contact_ms = pending_contact
+            animation_ms = self.entity_view.player_action_timer + dt
+            if self.entity_view.player_action != action:
+                self._pending_contact_sound = None
+            elif animation_ms >= contact_ms:
+                self._pending_contact_sound = None
+                is_charge = action == "Investida"
+                remaining = contact_ms + (450 if is_charge else 160) - animation_ms
+                if remaining > 0:
+                    self.play_ui_sound(
+                        "gameplay.attack.charge_impact" if is_charge else "gameplay.attack.punch",
+                        volume=1.0 if is_charge else 0.6, maxtime=remaining,
+                    )
         self.engine.update_message(dt)
         self.entity_view.update(dt)
         self.floating_texts.update(dt)
@@ -881,7 +1017,11 @@ class BattleScene(BaseScene):
             RED,
             enemy_stats,
             title_color=GOLD if enemy.is_miniboss else WHITE,
-            subtitle="BOSS FINAL" if getattr(enemy, 'is_final_boss', False) else "MINIBOSS" if enemy.is_miniboss else None,
+            subtitle="BOSS FINAL"
+            if getattr(enemy, "is_final_boss", False)
+            else "MINIBOSS"
+            if enemy.is_miniboss
+            else None,
             align="right",
         )
 
@@ -896,7 +1036,9 @@ class BattleScene(BaseScene):
         draw_player_projectile(surface, self.entity_view)
         draw_ultimate_fx(surface, self.entity_view)
         draw_boss_ultimate_fx(surface, self.entity_view)
-        self.intent_view.draw(surface, self.engine, self.window_manager.get_virtual_mouse_pos())
+        self.intent_view.draw(
+            surface, self.engine, self.window_manager.get_virtual_mouse_pos()
+        )
 
         self._draw_bottom_hud(surface)
         self._draw_cemetery_button(surface)
@@ -950,7 +1092,9 @@ class BattleScene(BaseScene):
             )
 
         self._draw_top_message(surface)
-        self.intent_view.draw_tooltip(surface, self.window_manager.get_virtual_mouse_pos())
+        self.intent_view.draw_tooltip(
+            surface, self.window_manager.get_virtual_mouse_pos()
+        )
 
         if self.engine.state == "game_over" and self.entity_view.attacker != "enemy":
             self._draw_game_over(surface)
@@ -1239,6 +1383,24 @@ class BattleScene(BaseScene):
         if self.window_manager.handle_window_event(event):
             return
 
+        if event.type == pygame.MOUSEMOTION:
+            hovered_card = None
+            if self.engine.state == "player_turn":
+                virt_pos = self.window_manager.map_to_virtual(event.pos)
+                for card, rect in zip(self.engine.hand, self._get_battle_hand_rects()):
+                    if rect.collidepoint(virt_pos):
+                        hovered_card = card
+                        break
+            if (
+                hovered_card is not None
+                and hovered_card is not getattr(self, "_hovered_hand_card", None)
+            ):
+                now = pygame.time.get_ticks()
+                if now - getattr(self, "_last_card_hover_sound_at", -120) >= 120:
+                    self.play_ui_sound("gameplay.card_hover")
+                    self._last_card_hover_sound_at = now
+            self._hovered_hand_card = hovered_card
+
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             virt_pos = self.window_manager.map_to_virtual(event.pos)
 
@@ -1268,16 +1430,25 @@ class BattleScene(BaseScene):
                     ultimate_rect = hand_rects[-1]
                     if ultimate_rect.collidepoint(virt_pos):
                         self.engine.activate_ultimate()
+                        self.play_ui_sound("gameplay.ultimate_activate")
                         return
                     hand_rects = hand_rects[:normal_count]
 
                 for index, rect in enumerate(hand_rects[:normal_count]):
                     if rect.collidepoint(virt_pos):
                         self.engine.play_card(index)
+                        self._hovered_hand_card = None
+                        for card, new_rect in zip(
+                            self.engine.hand, self._get_battle_hand_rects()
+                        ):
+                            if new_rect.collidepoint(virt_pos):
+                                self._hovered_hand_card = card
+                                break
                         return
 
                 if self.end_turn_rect.collidepoint(virt_pos):
                     self.engine.end_turn()
+                    self.play_ui_sound("gameplay.turn_end")
                     return
 
             # Recompensa de Vitória: Escolher Carta ou Pular
