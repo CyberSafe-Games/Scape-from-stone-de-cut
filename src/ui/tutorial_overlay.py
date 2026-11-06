@@ -36,7 +36,7 @@ def draw_tutorial_arrow(
     color: tuple[int, int, int] = GOLD,
     pulse: float = 0.0,
     alpha: int = 255,
-    head_size: float = 18.0,
+    head_size: float = 27.0,
 ):
     """Desenha uma seta direcional estilizada com sombra e pulso dinâmico."""
     if alpha <= 5:
@@ -57,7 +57,7 @@ def draw_tutorial_arrow(
     py = ux
 
     # Oscilação suave na direção do alvo
-    offset = math.sin(pulse * 3.0) * 4.0
+    offset = math.sin(pulse * 3.0) * 6.0
     cur_tx = tx + ux * offset
     cur_ty = ty + uy * offset
     cur_ox = ox
@@ -70,29 +70,29 @@ def draw_tutorial_arrow(
     pts = [
         (cur_tx, cur_ty),
         (bx + px * head_w, by + py * head_w),
-        (bx + ux * 2.5, by + uy * 2.5),
+        (bx + ux * 3.75, by + uy * 3.75),
         (bx - px * head_w, by - py * head_w),
     ]
 
     arrow_surf = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
 
     # Sombra projetada
-    shadow_pts = [(x + 2, y + 2) for x, y in pts]
-    pygame.draw.line(arrow_surf, (0, 0, 0, int(150 * (alpha / 255))), (cur_ox + 2, cur_oy + 2), (bx + 2, by + 2), 5)
+    shadow_pts = [(x + 3, y + 3) for x, y in pts]
+    pygame.draw.line(arrow_surf, (0, 0, 0, int(150 * (alpha / 255))), (cur_ox + 3, cur_oy + 3), (bx + 3, by + 3), 8)
     pygame.draw.polygon(arrow_surf, (0, 0, 0, int(150 * (alpha / 255))), shadow_pts)
 
     # Haste
-    pygame.draw.line(arrow_surf, (35, 28, 16, alpha), (cur_ox, cur_oy), (bx, by), 5)
-    pygame.draw.line(arrow_surf, (*color, alpha), (cur_ox, cur_oy), (bx, by), 3)
+    pygame.draw.line(arrow_surf, (35, 28, 16, alpha), (cur_ox, cur_oy), (bx, by), 8)
+    pygame.draw.line(arrow_surf, (*color, alpha), (cur_ox, cur_oy), (bx, by), 5)
 
     # Ponta da seta
     pygame.draw.polygon(arrow_surf, (*color, alpha), pts)
-    pygame.draw.polygon(arrow_surf, (255, 245, 205, alpha), pts, 1)
+    pygame.draw.polygon(arrow_surf, (255, 245, 205, alpha), pts, 2)
 
     # Anel rúnico no ponto de origem
-    pygame.draw.circle(arrow_surf, (20, 15, 10, alpha), (int(cur_ox), int(cur_oy)), 5)
-    pygame.draw.circle(arrow_surf, (*color, alpha), (int(cur_ox), int(cur_oy)), 4)
-    pygame.draw.circle(arrow_surf, (255, 255, 255, alpha), (int(cur_ox), int(cur_oy)), 2)
+    pygame.draw.circle(arrow_surf, (20, 15, 10, alpha), (int(cur_ox), int(cur_oy)), 8)
+    pygame.draw.circle(arrow_surf, (*color, alpha), (int(cur_ox), int(cur_oy)), 6)
+    pygame.draw.circle(arrow_surf, (255, 255, 255, alpha), (int(cur_ox), int(cur_oy)), 3)
 
     surface.blit(arrow_surf, (0, 0))
 
@@ -108,7 +108,7 @@ def draw_tutorial_spotlight(
     if alpha <= 5:
         return
 
-    r = rect.inflate(8, 8)
+    r = rect.inflate(12, 12)
     glow_alpha = int((160 + 60 * math.sin(pulse * 3.0)) * (alpha / 255))
     glow_surf = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
 
@@ -116,20 +116,20 @@ def draw_tutorial_spotlight(
     pygame.draw.rect(
         glow_surf,
         (*color, max(0, min(255, glow_alpha // 3))),
-        r.inflate(6, 6),
-        width=3,
-        border_radius=10,
+        r.inflate(9, 9),
+        width=5,
+        border_radius=15,
     )
     pygame.draw.rect(
         glow_surf,
         (*color, max(0, min(255, glow_alpha))),
         r,
-        width=2,
-        border_radius=8,
+        width=3,
+        border_radius=12,
     )
 
     # Cantoneiras ornamentais
-    corner_len = 9
+    corner_len = 14
     corners = [
         (r.left, r.top, 1, 1),
         (r.right, r.top, -1, 1),
@@ -137,8 +137,8 @@ def draw_tutorial_spotlight(
         (r.right, r.bottom, -1, -1),
     ]
     for cx, cy, sx, sy in corners:
-        pygame.draw.line(glow_surf, (255, 245, 200, alpha), (cx, cy), (cx + sx * corner_len, cy), 2)
-        pygame.draw.line(glow_surf, (255, 245, 200, alpha), (cx, cy), (cx, cy + sy * corner_len), 2)
+        pygame.draw.line(glow_surf, (255, 245, 200, alpha), (cx, cy), (cx + sx * corner_len, cy), 3)
+        pygame.draw.line(glow_surf, (255, 245, 200, alpha), (cx, cy), (cx, cy + sy * corner_len), 3)
 
     surface.blit(glow_surf, (0, 0))
 
@@ -150,8 +150,8 @@ class TutorialStep:
     subtitle: str
     lines: Sequence[str]
     target_rect_fn: Optional[Callable[[], Optional[pygame.Rect]]] = None
-    bubble_pos: tuple[int, int] = (400, 200)  # Posição do balão flutuante (x, y)
-    bubble_size: tuple[int, int] = (460, 192)  # Largura e altura do balão
+    bubble_pos: tuple[int, int] = (600, 300)  # Posição do balão flutuante (x, y)
+    bubble_size: tuple[int, int] = (690, 288)  # Largura e altura do balão
     arrow_origin_fn: Optional[Callable[[], Optional[tuple[int, int]]]] = None
     arrow_target_fn: Optional[Callable[[], Optional[tuple[int, int]]]] = None
 
@@ -175,15 +175,15 @@ class TutorialOverlay:
     TRANSITION_OUT_TIME = 0.10  # Segundos para fade-out ao avançar
 
     # Métricas internas do balão
-    PADDING_X = 22          # Margem lateral entre a borda e o texto
-    EYEBROW_Y = 13          # Topo da linha "PASSO xx/yy"; o título vem logo abaixo dela
-    DIVIDER_GAP = 6         # Espaço entre o título e o divisor rúnico
-    BODY_GAP = 9            # Espaço entre o divisor e o corpo do texto
-    PARAGRAPH_GAP = 3       # Respiro extra entre frases distintas
-    FOOTER_OFFSET = 22      # Centro do rodapé, medido a partir da base
-    FOOTER_GAP = 10         # Espaço mínimo entre o corpo e o rodapé
-    INNER_BORDER = 4        # Área reservada para borda e cantoneiras
-    SCREEN_MARGIN = 8       # Distância mínima do balão até a borda da tela
+    PADDING_X = 33          # Margem lateral entre a borda e o texto
+    EYEBROW_Y = 20          # Topo da linha "PASSO xx/yy"; o título vem logo abaixo dela
+    DIVIDER_GAP = 9         # Espaço entre o título e o divisor rúnico
+    BODY_GAP = 14            # Espaço entre o divisor e o corpo do texto
+    PARAGRAPH_GAP = 5       # Respiro extra entre frases distintas
+    FOOTER_OFFSET = 33      # Centro do rodapé, medido a partir da base
+    FOOTER_GAP = 15         # Espaço mínimo entre o corpo e o rodapé
+    INNER_BORDER = 6        # Área reservada para borda e cantoneiras
+    SCREEN_MARGIN = 12       # Distância mínima do balão até a borda da tela
 
     CLICK_PROMPT = "CLIQUE EM QUALQUER LUGAR PARA AVANÇAR  ▸"
 
@@ -199,10 +199,10 @@ class TutorialOverlay:
         self.anim_state = "in"
         self.anim_timer = 0.0
         self.current_alpha = 0
-        self.offset_y = 12.0
+        self.offset_y = 18.0
 
         # Botão sutil para pular tutorial no topo direito
-        self.skip_button_rect = pygame.Rect(WIDTH - 150, 16, 134, 30)
+        self.skip_button_rect = pygame.Rect(WIDTH - 225, 24, 201, 45)
 
         # Layouts calculados por passo (fontes e textos não mudam durante o guia)
         self._layout_cache: dict[int, BubbleLayout] = {}
@@ -300,7 +300,7 @@ class TutorialOverlay:
             t = min(1.0, self.anim_timer / self.TRANSITION_IN_TIME)
             ease = 1.0 - (1.0 - t) ** 3
             self.current_alpha = int(255 * ease)
-            self.offset_y = (1.0 - ease) * 12.0
+            self.offset_y = (1.0 - ease) * 18.0
             if t >= 1.0:
                 self.anim_state = "active"
                 self.anim_timer = 0.0
@@ -312,7 +312,7 @@ class TutorialOverlay:
             t = min(1.0, self.anim_timer / self.TRANSITION_OUT_TIME)
             ease = t * t
             self.current_alpha = int(255 * (1.0 - ease))
-            self.offset_y = ease * -8.0
+            self.offset_y = ease * -12.0
             if t >= 1.0:
                 if self.step_index < len(self.steps) - 1:
                     self.step_index += 1
@@ -388,7 +388,7 @@ class TutorialOverlay:
         self.anim_state = "in"
         self.anim_timer = 0.0
         self.current_alpha = 0
-        self.offset_y = 12.0
+        self.offset_y = 18.0
 
     def draw(self, surface: pygame.Surface, asset_manager, mouse_pos: tuple[int, int]):
         if not self.is_active or self.current_alpha <= 2:
@@ -410,7 +410,7 @@ class TutorialOverlay:
 
         # 3. Flutuação suave contínua do balão
         layout = self.layout_step(self.step_index, asset_manager)
-        float_hover = math.sin(self.elapsed * 2.8) * 3.5
+        float_hover = math.sin(self.elapsed * 2.8) * 5.25
         bx, by = layout.rect.topleft
         bw, bh = layout.rect.size
         actual_y = by + self.offset_y + float_hover
@@ -433,18 +433,18 @@ class TutorialOverlay:
             bubble_surf,
             (11, 18, 18, bg_alpha),
             pygame.Rect(0, 0, bw, bh),
-            border_radius=12,
+            border_radius=18,
         )
         # Borda dourada ornamentada
         pygame.draw.rect(
             bubble_surf,
             (196, 160, 94, border_alpha),
             pygame.Rect(0, 0, bw, bh),
-            width=2,
-            border_radius=12,
+            width=3,
+            border_radius=18,
         )
         # Cantoneiras internas
-        c_len = 8
+        c_len = 12
         c_pts = [
             (0, 0, 1, 1),
             (bw - 1, 0, -1, 1),
@@ -452,8 +452,8 @@ class TutorialOverlay:
             (bw - 1, bh - 1, -1, -1),
         ]
         for cx, cy, sx, sy in c_pts:
-            pygame.draw.line(bubble_surf, (255, 245, 195, border_alpha), (cx, cy), (cx + sx * c_len, cy), 2)
-            pygame.draw.line(bubble_surf, (255, 245, 195, border_alpha), (cx, cy), (cx, cy + sy * c_len), 2)
+            pygame.draw.line(bubble_surf, (255, 245, 195, border_alpha), (cx, cy), (cx + sx * c_len, cy), 3)
+            pygame.draw.line(bubble_surf, (255, 245, 195, border_alpha), (cx, cy), (cx, cy + sy * c_len), 3)
 
         # Todo o conteúdo fica restrito à área interna, sem invadir borda e cantoneiras
         inset = self.INNER_BORDER
@@ -467,7 +467,7 @@ class TutorialOverlay:
 
         # Divisor rúnico
         pygame.draw.line(bubble_surf, (80, 68, 48, border_alpha),
-                         (pad, layout.divider_y), (bw - pad, layout.divider_y), 1)
+                         (pad, layout.divider_y), (bw - pad, layout.divider_y), 2)
 
         # Linhas de texto explicativas, já quebradas na largura útil
         for text, x, y in layout.body_lines:
@@ -494,8 +494,8 @@ class TutorialOverlay:
         skip_surf = pygame.Surface(self.skip_button_rect.size, pygame.SRCALPHA)
         btn_bg = (30, 22, 18, int(190 * (alpha / 255))) if skip_hover else (16, 18, 18, int(150 * (alpha / 255)))
         border_col = (210, 160, 90, alpha) if skip_hover else (120, 105, 75, alpha)
-        pygame.draw.rect(skip_surf, btn_bg, pygame.Rect(0, 0, *self.skip_button_rect.size), border_radius=6)
-        pygame.draw.rect(skip_surf, border_col, pygame.Rect(0, 0, *self.skip_button_rect.size), width=1, border_radius=6)
+        pygame.draw.rect(skip_surf, btn_bg, pygame.Rect(0, 0, *self.skip_button_rect.size), border_radius=9)
+        pygame.draw.rect(skip_surf, border_col, pygame.Rect(0, 0, *self.skip_button_rect.size), width=2, border_radius=9)
         draw_text(
             skip_surf,
             "✕ PULAR GUIA",

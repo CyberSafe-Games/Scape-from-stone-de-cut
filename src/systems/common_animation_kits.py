@@ -9,12 +9,12 @@ COMMON_KITS.update({
 
 # x a partir do centro do ator; y acima dos pés; altura final do impacto.
 PROJECTILE_ORIGINS = {
-    ('golem das ruínas','atk1'): (105, 100, 65),
-    ('centauro vigia','atk1'): (100, 95, 65),
-    ('putrefato do pântano','atk1'): (80, 72, 65),
-    ('morcego sombrio','atk2'): (70, 90, 65),
-    ('mago do santuário','atk1'): (65, 64, 65),
-    ('mago do santuário','atk2'): (65, 18, 18),
-    ('vinimuth','atk2'): (85, 84, 65),
-    ('slime','atk'): (40, 35, 55),
+    ('golem das ruínas','atk1'): (158, 150, 98),
+    ('centauro vigia','atk1'): (150, 143, 98),
+    ('putrefato do pântano','atk1'): (120, 108, 98),
+    ('morcego sombrio','atk2'): (105, 135, 98),
+    ('mago do santuário','atk1'): (98, 96, 98),
+    ('mago do santuário','atk2'): (98, 27, 27),
+    ('vinimuth','atk2'): (128, 126, 98),
+    ('slime','atk'): (60, 53, 83),
 }

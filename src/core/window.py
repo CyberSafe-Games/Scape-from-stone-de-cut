@@ -7,7 +7,7 @@ from src.ui import dark_fantasy_theme as theme
 class WindowManager:
     """Gerencia a janela real do Pygame, alternância de tela cheia,
 
-    resolução virtual (1280x720) e mapeamento de coordenadas do mouse.
+    resolução virtual (1920x1080) e mapeamento de coordenadas do mouse.
     """
 
     def __init__(self, width=WIDTH, height=HEIGHT, title=TITLE):

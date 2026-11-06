@@ -82,7 +82,7 @@ class GoblinMongeTests(unittest.TestCase):
         view = EntityView(assets)
         view.trigger_attack('enemy', 'atk2', enemy.name)
         view.update(1200 * 0.7)
-        screen = pygame.Surface((1280, 720), pygame.SRCALPHA)
+        screen = pygame.Surface((1920, 1080), pygame.SRCALPHA)
         view.draw_enemy(screen, enemy)
         pose = view.get_enemy_projectile_pose()
         before = screen.copy()

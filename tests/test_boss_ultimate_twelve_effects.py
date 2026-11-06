@@ -58,13 +58,13 @@ class BossTwelveEffectTests(unittest.TestCase):
                 p=(step+.5)/100
                 view.attack_timer=p*spec.duration
                 seen.add(boss_effect_frame(p,spec,12))
-                screen=pygame.Surface((1280,720),pygame.SRCALPHA)
+                screen=pygame.Surface((1920,1080),pygame.SRCALPHA)
                 draw_boss_ultimate_fx(screen,view,True)
                 draw_boss_ultimate_fx(screen,view)
                 b=screen.get_bounding_rect()
                 self.assertGreater(b.width,0)
-                self.assertGreaterEqual(b.top,116)
-                self.assertLessEqual(b.bottom,516)
+                self.assertGreaterEqual(b.top,174)
+                self.assertLessEqual(b.bottom,774)
             self.assertEqual(seen,set(range(12)),name)
             view.attack_timer=spec.duration
             screen.fill((0,0,0,0))

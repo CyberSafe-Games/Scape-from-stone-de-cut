@@ -4,22 +4,22 @@ from src.config.settings import WIDTH, HEIGHT
 # POSIÇÕES DOS COMBATENTES NA TELA
 # ============================================================
 
-PLAYER_X = 260
-PLAYER_Y = 380
+PLAYER_X = 390
+PLAYER_Y = 570
 
-ENEMY_X = WIDTH - 260
-ENEMY_Y = 380
+ENEMY_X = WIDTH - 390
+ENEMY_Y = 570
 
-PLAYER_GROUND_Y = PLAYER_Y + 40
+PLAYER_GROUND_Y = PLAYER_Y + 60
 
 
 # ============================================================
 # DIMENSÕES E ESPAÇAMENTO DE CARTAS
 # ============================================================
 
-CARD_WIDTH = 100
-CARD_HEIGHT = 172
-CARD_SPACING = 12
+CARD_WIDTH = 150
+CARD_HEIGHT = 258
+CARD_SPACING = 18
 
 
 # ============================================================
@@ -34,7 +34,7 @@ ATTACK_DURATION = 700
 APPROACH_FRAC = 0.4
 STRIKE_FRAC = 0.25
 
-APPROACH_GAP = 78
+APPROACH_GAP = 117
 
 POST_ENEMY_PAUSE = 350
 

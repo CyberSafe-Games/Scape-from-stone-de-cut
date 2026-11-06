@@ -14,7 +14,7 @@ from src.config.layout import (
     STRIKE_FRAC,
     FLASH_DURATION,
 )
-from src.ui.helpers import ease
+from src.ui.helpers import ease, scale_to_display
 from src.systems.animation_timing import animation_duration, frame_index
 from src.systems.card_definitions import SPECS_BY_NAME
 from src.ui.guardian_spirit_fx import draw_guardian_spirit
@@ -239,7 +239,7 @@ class EntityView:
             return home_x, 0.0
         if attacker == 'enemy' and self.enemy_ultimate:
             progress = self.attack_timer/max(1, self.enemy_attack_duration)
-            x, _ = boss_ultimate_pose(self.enemy_ultimate, progress, home_x, PLAYER_X+105)
+            x, _ = boss_ultimate_pose(self.enemy_ultimate, progress, home_x, PLAYER_X+158)
             return x, 0
         if attacker == "enemy" and self.enemy_ranged_attack:
             return home_x, 0.0
@@ -278,30 +278,30 @@ class EntityView:
         if not launch <= progress < impact:
             return None
         flight = (progress - launch) / (impact - launch)
-        start_x, end_x = ENEMY_X - 66, PLAYER_X + 12
-        start_y = PLAYER_GROUND_Y - (95 if self.enemy_attack_name == 'morcego sombrio'
-                                     else 78 if self.enemy_attack_name in ('vinimuth', 'centauro vigia') else 58)
+        start_x, end_x = ENEMY_X - 99, PLAYER_X + 18
+        start_y = PLAYER_GROUND_Y - (143 if self.enemy_attack_name == 'morcego sombrio'
+                                     else 117 if self.enemy_attack_name in ('vinimuth', 'centauro vigia') else 87)
         if self.enemy_attack_name == 'guardião da pedra':
-            start_x = ENEMY_X - 135
-            start_y = PLAYER_GROUND_Y - 95
-        origins = {'golem das ruínas': (165, 115), 'centauro vigia': (66, 84),
-                   'zanzara': (90, 100),
-                   'putrefato do pântano': (95, 70), 'morcego sombrio': (76, 120)}
+            start_x = ENEMY_X - 203
+            start_y = PLAYER_GROUND_Y - 143
+        origins = {'golem das ruínas': (248, 173), 'centauro vigia': (99, 126),
+                   'zanzara': (135, 150),
+                   'putrefato do pântano': (143, 105), 'morcego sombrio': (114, 180)}
         if self.enemy_attack_name in origins:
             offset_x, offset_y = origins[self.enemy_attack_name]
             start_x, start_y = ENEMY_X-offset_x, PLAYER_GROUND_Y-offset_y
-        end_y = PLAYER_GROUND_Y - 65
+        end_y = PLAYER_GROUND_Y - 98
         if self.enemy_attack_name in DUO_NAMES:
-            start_y = PLAYER_GROUND_Y - (160 if self.enemy_attack_name == DUO_NAMES[0] else 65)
+            start_y = PLAYER_GROUND_Y - (240 if self.enemy_attack_name == DUO_NAMES[0] else 98)
         origin = PROJECTILE_ORIGINS.get((self.enemy_attack_name, self.enemy_action))
         if origin:
             start_x, start_y, end_y = ENEMY_X-origin[0], PLAYER_GROUND_Y-origin[1], PLAYER_GROUND_Y-origin[2]
             if self.enemy_attack_name == 'morcego sombrio':
-                start_y -= 28 + round(3*math.sin(pygame.time.get_ticks()/300))
+                start_y -= 42 + round(4.5*math.sin(pygame.time.get_ticks()/300))
         x = start_x + (end_x - start_x) * flight
         y = start_y + (end_y - start_y) * flight
         if self.enemy_attack_name == 'goblin nerd' and self.enemy_action == "atk1":
-            y -= 65 * math.sin(math.pi * flight)
+            y -= 98 * math.sin(math.pi * flight)
         return x, y, flight
 
     def draw_enemy_projectile(self, surface):
@@ -328,7 +328,7 @@ class EntityView:
             return
         x, y, flight = pose
         if self.enemy_attack_name != 'goblin nerd':
-            wave = self.asset_manager.get_enemy_projectile(self.enemy_attack_name, self.enemy_action)
+            wave = scale_to_display(self.asset_manager.get_enemy_projectile(self.enemy_attack_name, self.enemy_action))
             if wave is not None:
                 surface.blit(wave, wave.get_rect(center=(round(x), round(y))))
                 return
@@ -343,19 +343,19 @@ class EntityView:
                 pygame.draw.line(tool, (239, 179, 72), (29, 4), (38, 4), 2)
                 pygame.draw.line(tool, (85, 48, 24), (29, 9), (38, 9), 2)
                 self._screwdriver_sprite = tool
-            tool = pygame.transform.rotate(self._screwdriver_sprite, flight * 720)
+            tool = pygame.transform.rotate(scale_to_display(self._screwdriver_sprite), flight * 720)
             surface.blit(tool, tool.get_rect(center=(round(x), round(y))))
         else:
             # Descarga azul, na mesma paleta da arma nos frames de atk2.
-            glow = pygame.Surface((90, 40), pygame.SRCALPHA)
-            pygame.draw.ellipse(glow, (35, 133, 255, 45), (0, 4, 87, 32))
-            pygame.draw.ellipse(glow, (55, 170, 255, 95), (2, 10, 66, 20))
+            glow = pygame.Surface((135, 60), pygame.SRCALPHA)
+            pygame.draw.ellipse(glow, (35, 133, 255, 45), (0, 6, 131, 48))
+            pygame.draw.ellipse(glow, (55, 170, 255, 95), (3, 15, 99, 30))
             pygame.draw.lines(glow, (63, 182, 255), False,
-                              [(80, 20), (55, 14), (45, 23), (28, 13), (5, 20)], 5)
+                              [(120, 30), (83, 21), (68, 35), (42, 20), (8, 30)], 8)
             pygame.draw.lines(glow, (215, 249, 255), False,
-                              [(70, 20), (50, 18), (39, 23), (26, 17), (5, 20)], 2)
-            pygame.draw.circle(glow, (235, 253, 255), (8, 20), 4)
-            surface.blit(glow, (round(x) - 8, round(y) - 20))
+                              [(105, 30), (75, 27), (59, 35), (39, 26), (8, 30)], 3)
+            pygame.draw.circle(glow, (235, 253, 255), (12, 30), 6)
+            surface.blit(glow, (round(x) - 12, round(y) - 30))
 
     def get_player_frame(self, game_state):
         """Determina o sprite e a posição X exata do jogador com base no estado e nos timers."""
@@ -446,6 +446,7 @@ class EntityView:
     def draw_player(self, surface, game_state):
         """Renderiza o jogador e seu efeito de impacto (flash)."""
         player_x, player_frame = self.get_player_frame(game_state)
+        player_frame = scale_to_display(player_frame)
         player_rect = player_frame.get_rect(midbottom=(int(player_x), PLAYER_GROUND_Y))
         surface.blit(player_frame, player_rect)
 
@@ -454,9 +455,9 @@ class EntityView:
             pygame.draw.circle(
                 surface,
                 WHITE,
-                (int(player_x), PLAYER_Y - 15),
-                70 + int(8 * alpha),
-                3,
+                (int(player_x), PLAYER_Y - 23),
+                105 + int(12 * alpha),
+                5,
             )
 
     def get_enemy_frame(self, enemy):
@@ -582,20 +583,20 @@ class EntityView:
 
         # Se houver sprite para o inimigo, renderiza o sprite animado
         if enemy is not None and self.asset_manager.has_enemy_sprites(enemy.name):
-            frame = self.get_enemy_frame(enemy)
+            frame = scale_to_display(self.get_enemy_frame(enemy))
             if frame is not None:
-                hover = 28 + round(3 * math.sin(pygame.time.get_ticks() / 300)) if enemy.name == 'Morcego Sombrio' else 0
+                hover = 42 + round(4.5 * math.sin(pygame.time.get_ticks() / 300)) if enemy.name == 'Morcego Sombrio' else 0
                 if self.enemy_ultimate:
-                    _, hover = boss_ultimate_pose(self.enemy_ultimate, self.attack_timer/max(1, self.enemy_attack_duration), ENEMY_X, PLAYER_X+105)
+                    _, hover = boss_ultimate_pose(self.enemy_ultimate, self.attack_timer/max(1, self.enemy_attack_duration), ENEMY_X, PLAYER_X+158)
                 rect = frame.get_rect(midbottom=(int(enemy_x), PLAYER_GROUND_Y-hover))
                 # Eco visual discreto acompanha o giro, sem piscar frames nem
                 # trocar artificialmente a posição do personagem.
                 if is_corpo and self.attacker == "enemy" and self.enemy_action == "atk4":
                     trail = frame.copy()
                     trail.set_alpha(48)
-                    surface.blit(trail, rect.move(18, -3))
+                    surface.blit(trail, rect.move(27, -5))
                     trail.set_alpha(28)
-                    surface.blit(trail, rect.move(-17, 3))
+                    surface.blit(trail, rect.move(-26, 5))
                 surface.blit(frame, rect)
 
                 # Efeito de flash de dano
@@ -604,9 +605,9 @@ class EntityView:
                     pygame.draw.circle(
                         surface,
                         WHITE,
-                        (int(enemy_x), ENEMY_Y - 15),
-                        55 + int(8 * alpha),
-                        3,
+                        (int(enemy_x), ENEMY_Y - 23),
+                        83 + int(12 * alpha),
+                        5,
                     )
                 return
 
@@ -616,27 +617,27 @@ class EntityView:
         facing = -1
 
         # Cabeça
-        pygame.draw.circle(surface, color, (x, y - 46), 13, 4)
+        pygame.draw.circle(surface, color, (x, y - 69), 20, 6)
 
         # Corpo
-        pygame.draw.line(surface, color, (x, y - 33), (x, y + 8), 4)
+        pygame.draw.line(surface, color, (x, y - 50), (x, y + 12), 6)
 
         # Pernas
-        pygame.draw.line(surface, color, (x, y + 8), (x - 15, y + 40), 4)
-        pygame.draw.line(surface, color, (x, y + 8), (x + 15, y + 40), 4)
+        pygame.draw.line(surface, color, (x, y + 12), (x - 23, y + 60), 6)
+        pygame.draw.line(surface, color, (x, y + 12), (x + 23, y + 60), 6)
 
         # Braço traseiro
-        back_dx = -14 * facing
-        pygame.draw.line(surface, color, (x, y - 18), (x + back_dx, y - 2), 4)
+        back_dx = -21 * facing
+        pygame.draw.line(surface, color, (x, y - 27), (x + back_dx, y - 3), 6)
 
         # Braço dianteiro
-        arm_length = 16 + 26 * enemy_arm
+        arm_length = 24 + 39 * enemy_arm
         front_dx = arm_length * facing
-        front_dy = -18 + 10 * enemy_arm
-        pygame.draw.line(surface, color, (x, y - 18), (x + front_dx, y + front_dy), 4)
+        front_dy = -27 + 15 * enemy_arm
+        pygame.draw.line(surface, color, (x, y - 27), (x + front_dx, y + front_dy), 6)
 
         if enemy_arm > 0.15:
-            pygame.draw.circle(surface, color, (int(x + front_dx), int(y + front_dy)), 6)
+            pygame.draw.circle(surface, color, (int(x + front_dx), int(y + front_dy)), 9)
 
         # Efeito de flash de dano
         if self.enemy_flash > 0:
@@ -644,7 +645,7 @@ class EntityView:
             pygame.draw.circle(
                 surface,
                 WHITE,
-                (int(enemy_x), ENEMY_Y - 15),
-                55 + int(8 * alpha),
-                3,
+                (int(enemy_x), ENEMY_Y - 23),
+                83 + int(12 * alpha),
+                5,
             )

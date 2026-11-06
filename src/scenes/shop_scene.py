@@ -26,9 +26,9 @@ TYPE_NAMES = {
     "power": "PODER",
 }
 
-COLUMNS = (55, 451, 847)
-ROWS = (323, 482)
-TILE_W, TILE_H = 374, 140
+COLUMNS = (83, 677, 1271)
+ROWS = (485, 723)
+TILE_W, TILE_H = 561, 210
 
 
 class ShopScene(BaseScene):
@@ -47,14 +47,14 @@ class ShopScene(BaseScene):
         self.save_manager = save_manager
         self.save_data = save_data
 
-        self.heal_button = pygame.Rect(932, 176, 256, 45)
-        self.back_button = pygame.Rect(945, 656, 275, 43)
+        self.heal_button = pygame.Rect(1398, 264, 384, 68)
+        self.back_button = pygame.Rect(1418, 984, 413, 65)
 
         self.offer_rects = {}
         self.page = 0
 
-        self.previous_page_rect = pygame.Rect(420, 650, 90, 30)
-        self.next_page_rect = pygame.Rect(710, 650, 90, 30)
+        self.previous_page_rect = pygame.Rect(630, 975, 135, 45)
+        self.next_page_rect = pygame.Rect(1065, 975, 135, 45)
 
         self._set_page(0)
 
@@ -72,7 +72,7 @@ class ShopScene(BaseScene):
 
         for i, name in enumerate(names):
             x, y = COLUMNS[i % 3], ROWS[i // 3]
-            self.offer_rects[name] = pygame.Rect(x + 224, y + 98, 137, 31)
+            self.offer_rects[name] = pygame.Rect(x + 336, y + 147, 206, 47)
 
     def update(self, dt):
         if self.message_timer > 0:
@@ -85,20 +85,20 @@ class ShopScene(BaseScene):
         self.play_ui_sound("ui.confirm" if result.success else "ui.click")
 
     def _draw_coins(self, surface):
-        rect = pygame.Rect(998, 42, 222, 50)
+        rect = pygame.Rect(1497, 63, 333, 75)
         theme.panel(surface, rect)
 
         if self.asset_manager.coin_icon is not None:
-            icon = pygame.transform.smoothscale(self.asset_manager.coin_icon, (30, 30))
-            surface.blit(icon, (1015, 52))
+            icon = pygame.transform.smoothscale(self.asset_manager.coin_icon, (45, 45))
+            surface.blit(icon, (1523, 78))
 
         draw_text(
             surface,
             str(self.save_data["progresso"]["moedas"]),
             self.asset_manager.menu_font,
             GOLD,
-            1062,
-            51,
+            1593,
+            77,
         )
 
         draw_text(
@@ -106,14 +106,14 @@ class ShopScene(BaseScene):
             "MOEDAS",
             self.asset_manager.small_font,
             GRAY,
-            1131,
-            60,
+            1697,
+            90,
         )
 
     def _draw_healing(self, surface):
         p = self.save_data["progresso"]
 
-        rect = pygame.Rect(55, 132, 1166, 127)
+        rect = pygame.Rect(83, 198, 1749, 191)
         theme.panel(surface, rect, highlighted=True)
 
         draw_text(
@@ -121,8 +121,8 @@ class ShopScene(BaseScene):
             "RECUPERAÇÃO DE VIDA",
             self.asset_manager.menu_font,
             WHITE,
-            rect.x + 26,
-            rect.y + 15,
+            rect.x + 39,
+            rect.y + 23,
         )
 
         draw_text(
@@ -133,8 +133,8 @@ class ShopScene(BaseScene):
             ),
             self.asset_manager.font,
             (199, 205, 188),
-            rect.x + 26,
-            rect.y + 51,
+            rect.x + 39,
+            rect.y + 77,
         )
 
         draw_text(
@@ -142,8 +142,8 @@ class ShopScene(BaseScene):
             f"VIDA  {p['vida']}/{MAX_PLAYER_HP}",
             self.asset_manager.small_font,
             (145, 194, 154),
-            rect.x + 26,
-            rect.y + 89,
+            rect.x + 39,
+            rect.y + 134,
         )
 
         remaining = HEAL_PURCHASE_LIMIT - p["curas_compradas_run"]
@@ -153,8 +153,8 @@ class ShopScene(BaseScene):
             (f"CURAS RESTANTES NESTA RUN  {remaining}/{HEAL_PURCHASE_LIMIT}"),
             self.asset_manager.small_font,
             GOLD,
-            rect.x + 278,
-            rect.y + 89,
+            rect.x + 417,
+            rect.y + 134,
         )
 
         hovered = self.heal_button.collidepoint(
@@ -199,8 +199,8 @@ class ShopScene(BaseScene):
             size = img.get_size()
 
             factor = min(
-                84 / max(1, size[0]),
-                118 / max(1, size[1]),
+                126 / max(1, size[0]),
+                177 / max(1, size[1]),
             )
 
             thumb = pygame.transform.smoothscale(
@@ -214,12 +214,12 @@ class ShopScene(BaseScene):
             surface.blit(
                 thumb,
                 (
-                    x + 12 + (84 - thumb.get_width()) // 2,
-                    y + 10,
+                    x + 18 + (126 - thumb.get_width()) // 2,
+                    y + 15,
                 ),
             )
 
-        title_x = x + 110
+        title_x = x + 165
 
         draw_text(
             surface,
@@ -227,7 +227,7 @@ class ShopScene(BaseScene):
             self.asset_manager.small_font,
             WHITE,
             title_x,
-            y + 13,
+            y + 20,
         )
 
         draw_text(
@@ -239,13 +239,13 @@ class ShopScene(BaseScene):
             self.asset_manager.small_font,
             GOLD,
             title_x,
-            y + 39,
+            y + 59,
         )
 
         lines = wrap_text(
             card.description,
             self.asset_manager.small_font,
-            248,
+            372,
         )[:2]
 
         for idx, line in enumerate(lines):
@@ -255,7 +255,7 @@ class ShopScene(BaseScene):
                 self.asset_manager.small_font,
                 (184, 191, 182),
                 title_x,
-                y + 63 + idx * 16,
+                y + 95 + idx * 24,
             )
 
         draw_text(
@@ -264,7 +264,7 @@ class ShopScene(BaseScene):
             self.asset_manager.small_font,
             GOLD,
             title_x,
-            y + 108,
+            y + 162,
         )
 
         button = self.offer_rects[name]
@@ -293,8 +293,8 @@ class ShopScene(BaseScene):
             surface,
             "POSTO AVANÇADO  /  MERCADORIAS",
             self.asset_manager.small_font,
-            60,
-            36,
+            90,
+            54,
         )
 
         draw_text(
@@ -302,13 +302,13 @@ class ShopScene(BaseScene):
             "O MERCADO SILENCIOSO",
             self.asset_manager.big_font,
             WHITE,
-            60,
-            65,
+            90,
+            98,
         )
 
         self._draw_coins(surface)
 
-        theme.divider(surface, 55, 1221, 112)
+        theme.divider(surface, 83, 1832, 168)
 
         self._draw_healing(surface)
 
@@ -317,8 +317,8 @@ class ShopScene(BaseScene):
             "CARTAS DISPONÍVEIS",
             self.asset_manager.menu_font,
             WHITE,
-            58,
-            280,
+            87,
+            420,
         )
 
         draw_text(
@@ -326,8 +326,8 @@ class ShopScene(BaseScene):
             "Novos tipos vão para a coleção; equipe três cópias na mochila.",
             self.asset_manager.small_font,
             GRAY,
-            467,
-            286,
+            701,
+            429,
         )
 
         for index, name in enumerate(self.offer_rects):
@@ -341,8 +341,8 @@ class ShopScene(BaseScene):
                 self.message,
                 self.asset_manager.small_font,
                 color,
-                60,
-                632,
+                90,
+                948,
             )
 
         mouse = self.window_manager.get_virtual_mouse_pos()
@@ -370,8 +370,8 @@ class ShopScene(BaseScene):
             f"{self.page + 1} / {self.page_count}",
             self.asset_manager.small_font,
             GOLD,
-            610,
-            665,
+            915,
+            998,
             center=True,
         )
 
@@ -393,7 +393,7 @@ class ShopScene(BaseScene):
             self.asset_manager.small_font,
             GRAY,
             WIDTH // 2,
-            HEIGHT - 10,
+            HEIGHT - 15,
             center=True,
         )
 

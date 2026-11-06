@@ -34,10 +34,10 @@ class ConfirmationModal(BaseScene):
         self.confirm_label = confirm_label
 
         self.confirm_button = pygame.Rect(
-            WIDTH // 2 - 130, HEIGHT // 2 + 20, 260, 55
+            WIDTH // 2 - 195, HEIGHT // 2 + 30, 390, 83
         )
         self.cancel_button = pygame.Rect(
-            WIDTH // 2 - 130, HEIGHT // 2 + 90, 260, 55
+            WIDTH // 2 - 195, HEIGHT // 2 + 135, 390, 83
         )
 
     def draw_button(self, surface, rect, text):
@@ -53,15 +53,15 @@ class ConfirmationModal(BaseScene):
         overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         overlay.fill((3, 8, 8, 225))
         surface.blit(overlay, (0, 0))
-        rect = pygame.Rect(WIDTH // 2 - 345, HEIGHT // 2 - 165, 690, 370)
+        rect = pygame.Rect(WIDTH // 2 - 518, HEIGHT // 2 - 248, 1035, 555)
         theme.panel(surface, rect, highlighted=True)
         theme.eyebrow(surface, "CONFIRMAÇÃO", self.asset_manager.small_font,
-                      WIDTH // 2, rect.y + 34, center=True)
+                      WIDTH // 2, rect.y + 51, center=True)
         draw_text(surface, self.title, self.asset_manager.big_font,
-                  WHITE, WIDTH // 2, HEIGHT // 2 - 69, center=True)
-        theme.divider(surface, rect.x + 75, rect.right - 75, HEIGHT // 2 - 36)
+                  WHITE, WIDTH // 2, HEIGHT // 2 - 104, center=True)
+        theme.divider(surface, rect.x + 113, rect.right - 113, HEIGHT // 2 - 54)
         draw_text(surface, self.message, self.asset_manager.font,
-                  (201, 201, 190), WIDTH // 2, HEIGHT // 2 - 9, center=True)
+                  (201, 201, 190), WIDTH // 2, HEIGHT // 2 - 14, center=True)
         self.draw_button(surface, self.confirm_button, self.confirm_label)
         self.draw_button(surface, self.cancel_button, "CANCELAR")
 

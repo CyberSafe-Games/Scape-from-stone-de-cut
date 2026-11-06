@@ -169,7 +169,7 @@ class BackpackInteractionTests(unittest.TestCase):
         self.assertEqual(self.scene.page_count, 1)
 
     def test_both_tabs_keep_buttons_inside_the_screen(self):
-        screen = pygame.Rect(0, 0, 1280, 720)
+        screen = pygame.Rect(0, 0, 1920, 1080)
         for rect in [*self.scene.slots, *self.scene.cards.values(), *self.scene.ultimate_buttons.values(),
                      self.scene.equip_rect, self.scene.clear_rect, self.scene.back_rect]:
             self.assertTrue(screen.contains(rect))
@@ -184,13 +184,13 @@ class UltimateCardArtTests(unittest.TestCase):
         assets = AssetManager()
         for uid, meta in ULTIMATE_METADATA.items():
             image = assets.get_ultimate_image(uid)
-            self.assertEqual(image.get_size(), (300, 440))
+            self.assertEqual(image.get_size(), (450, 660))
             self.assertGreater(image.get_bounding_rect().width, 290)
             self.assertEqual(meta['charge_requirement'], 20)
         window = MagicMock()
         window.get_virtual_mouse_pos.return_value = (-1, -1)
         scene = BackpackScene(MagicMock(), window, assets, MagicMock(), SaveManager()._new_data('T', 'p'))
-        canvas = pygame.Surface((1280, 720))
+        canvas = pygame.Surface((1920, 1080))
         for tab in ('deck', 'ultimates'):
             scene.tab = tab
             scene.draw(canvas)

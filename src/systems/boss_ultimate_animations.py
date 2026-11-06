@@ -75,7 +75,7 @@ def boss_ultimate_pose(spec, progress, home_x, target_x):
         t = (progress-.25)/.27
         eased = t*t*(3-2*t)
         import math
-        lift = math.sin(t*math.pi)*(85 if spec.mode == 'tremor' else 65) if spec.mode in ('execution', 'tremor') else 0
+        lift = math.sin(t*math.pi)*(128 if spec.mode == 'tremor' else 98) if spec.mode in ('execution', 'tremor') else 0
         return home_x+(target_x-home_x)*eased, lift
     if progress < .76:
         return target_x, 0

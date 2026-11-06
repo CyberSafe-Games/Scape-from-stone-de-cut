@@ -29,21 +29,21 @@ class BackpackScene(BaseScene):
         self.selected_card = next(
             name for name in save_data["progresso"]["deck_slots"] if name
         )
-        self.back_rect = pygame.Rect(1012, 43, 220, 43)
-        self.deck_tab_rect = pygame.Rect(48, 118, 180, 39)
-        self.ultimate_tab_rect = pygame.Rect(242, 118, 180, 39)
-        self.clear_rect = pygame.Rect(48, 644, 286, 35)
-        self.equip_rect = pygame.Rect(946, 625, 268, 39)
-        self.filter_rect = pygame.Rect(790, 181, 100, 27)
-        self.previous_page_rect = pygame.Rect(352, 644, 110, 35)
-        self.next_page_rect = pygame.Rect(796, 644, 110, 35)
-        self.slots = [pygame.Rect(62, 223 + i * 64, 258, 59) for i in range(SLOT_COUNT)]
+        self.back_rect = pygame.Rect(1518, 65, 330, 65)
+        self.deck_tab_rect = pygame.Rect(72, 177, 270, 59)
+        self.ultimate_tab_rect = pygame.Rect(363, 177, 270, 59)
+        self.clear_rect = pygame.Rect(72, 966, 429, 53)
+        self.equip_rect = pygame.Rect(1419, 938, 402, 59)
+        self.filter_rect = pygame.Rect(1185, 272, 150, 41)
+        self.previous_page_rect = pygame.Rect(528, 966, 165, 53)
+        self.next_page_rect = pygame.Rect(1194, 966, 165, 53)
+        self.slots = [pygame.Rect(93, 335 + i * 96, 387, 89) for i in range(SLOT_COUNT)]
         self.ultimate_rects = {
-            uid: pygame.Rect(48 + i * 402, 178, 372, 492)
+            uid: pygame.Rect(72 + i * 603, 267, 558, 738)
             for i, uid in enumerate(ULTIMATE_METADATA)
         }
         self.ultimate_buttons = {
-            uid: pygame.Rect(r.x + 22, 608, r.width - 44, 42)
+            uid: pygame.Rect(r.x + 33, 912, r.width - 66, 63)
             for uid, r in self.ultimate_rects.items()
         }
         self._thumbs = {}
@@ -64,7 +64,7 @@ class BackpackScene(BaseScene):
             self.page * self.PAGE_SIZE : (self.page + 1) * self.PAGE_SIZE
         ]
         self.cards = {
-            c.name: pygame.Rect(377 + (i % 3) * 179, 216 + (i // 3) * 208, 125, 183)
+            c.name: pygame.Rect(566 + (i % 3) * 269, 324 + (i // 3) * 312, 188, 275)
             for i, c in enumerate(visible)
         }
 
@@ -101,15 +101,15 @@ class BackpackScene(BaseScene):
     def draw(self, surface):
         a, p = self.asset_manager, self.save_data["progresso"]
         theme.backdrop(surface, a.background, opacity=217)
-        theme.eyebrow(surface, "PREPARAÇÃO / ARSENAL ANCESTRAL", a.small_font, 50, 24)
-        draw_text(surface, "MOCHILA DO GUERREIRO", a.big_font, WHITE, 48, 48)
+        theme.eyebrow(surface, "PREPARAÇÃO / ARSENAL ANCESTRAL", a.small_font, 75, 36)
+        draw_text(surface, "MOCHILA DO GUERREIRO", a.big_font, WHITE, 72, 72)
         draw_text(
             surface,
             "Prepare seu deck e escolha o poder que vai levar para a batalha.",
             a.small_font,
             GRAY,
-            50,
-            91,
+            75,
+            137,
         )
         self._button(surface, self.back_rect, "VOLTAR AO MAPA")
         self._button(
@@ -129,37 +129,37 @@ class BackpackScene(BaseScene):
             label,
             a.small_font,
             meta["accent_color"],
-            1226 - a.small_font.size(label)[0],
-            130,
+            1839 - a.small_font.size(label)[0],
+            195,
         )
-        theme.divider(surface, 48, 1230, 166)
+        theme.divider(surface, 72, 1845, 249)
         if self.tab == "deck":
             self._draw_deck(surface)
         else:
             self._draw_ultimates(surface)
-        draw_text(surface, self.notice, a.small_font, self.notice_color, 50, 692)
+        draw_text(surface, self.notice, a.small_font, self.notice_color, 75, 1038)
 
     def _draw_deck(self, surface):
         a, p = self.asset_manager, self.save_data["progresso"]
         count = sum(n is not None for n in p["deck_slots"])
-        theme.panel(surface, (48, 178, 286, 454))
-        theme.panel(surface, (352, 178, 554, 454))
-        theme.panel(surface, (928, 178, 304, 501), highlighted=True)
+        theme.panel(surface, (72, 267, 429, 681))
+        theme.panel(surface, (528, 267, 831, 681))
+        theme.panel(surface, (1392, 267, 456, 752), highlighted=True)
         draw_text(
             surface,
             f"DECK  ·  {count}/6 TIPOS  ·  {count * COPIES_PER_SLOT} CARTAS",
             a.small_font,
             GOLD,
-            66,
-            193,
+            99,
+            290,
         )
         draw_text(
             surface,
             f"COLEÇÃO  ·  {len(p['cartas_colecao'])}/{len(CARD_POOL)}",
             a.small_font,
             GOLD,
-            371,
-            188,
+            557,
+            282,
         )
         self._button(
             surface, self.filter_rect, "OBTIDAS" if self.owned_only else "TODAS"
@@ -177,27 +177,27 @@ class BackpackScene(BaseScene):
                 str(i + 1),
                 a.small_font,
                 GOLD if selected else GRAY,
-                rect.x + 11,
-                rect.y + 21,
+                rect.x + 17,
+                rect.y + 32,
             )
             name = p["deck_slots"][i]
             if name:
-                self._image(surface, name, pygame.Rect(rect.x + 31, rect.y + 5, 34, 49))
-                for row, text in enumerate(wrap_text(name, a.small_font, 146)):
+                self._image(surface, name, pygame.Rect(rect.x + 47, rect.y + 8, 51, 74))
+                for row, text in enumerate(wrap_text(name, a.small_font, 219)):
                     draw_text(
                         surface,
                         text,
                         a.small_font,
                         WHITE,
-                        rect.x + 77,
-                        rect.y + 10 + row * 18,
+                        rect.x + 116,
+                        rect.y + 15 + row * 27,
                     )
                 draw_text(
                     surface,
                     "×3",
                     a.small_font,
                     GOLD,
-                    rect.right - 21,
+                    rect.right - 32,
                     rect.centery,
                     center=True,
                 )
@@ -207,15 +207,15 @@ class BackpackScene(BaseScene):
                     "ESPAÇO VAZIO",
                     a.small_font,
                     GRAY,
-                    rect.x + 38,
-                    rect.y + 21,
+                    rect.x + 57,
+                    rect.y + 32,
                 )
         for name, rect in self.cards.items():
             owned = name in p["cartas_colecao"]
             self._image(surface, name, rect, dim=not owned)
             if self.selected_card == name:
                 pygame.draw.rect(
-                    surface, (238, 198, 112), rect.inflate(6, 6), 2, border_radius=5
+                    surface, (238, 198, 112), rect.inflate(9, 9), 3, border_radius=8
                 )
             label = (
                 "EM USO"
@@ -233,7 +233,7 @@ class BackpackScene(BaseScene):
                 a.small_font,
                 color,
                 rect.centerx,
-                rect.bottom + 12,
+                rect.bottom + 18,
                 center=True,
             )
         self._button(
@@ -253,8 +253,8 @@ class BackpackScene(BaseScene):
             f"PÁGINA {self.page + 1} / {self.page_count}",
             a.small_font,
             GRAY,
-            629,
-            662,
+            944,
+            993,
             center=True,
         )
         self._draw_detail(surface)
@@ -263,11 +263,11 @@ class BackpackScene(BaseScene):
         a, p = self.asset_manager, self.save_data["progresso"]
         card = CARD_BY_NAME.get(self.selected_card)
         draw_text(
-            surface, "CARTA SELECIONADA", a.small_font, GOLD, 1080, 195, center=True
+            surface, "CARTA SELECIONADA", a.small_font, GOLD, 1620, 293, center=True
         )
         if card is None:
             return
-        self._image(surface, card.name, pygame.Rect(1000, 215, 160, 235))
+        self._image(surface, card.name, pygame.Rect(1500, 323, 240, 353))
         kind = {"attack": "ATAQUE", "skill": "HABILIDADE", "power": "PODER"}[
             card.card_type
         ]
@@ -276,12 +276,12 @@ class BackpackScene(BaseScene):
             f"{kind}  ·  {card.cost} DE ENERGIA",
             a.small_font,
             GOLD,
-            1080,
-            469,
+            1620,
+            704,
             center=True,
         )
-        for row, text in enumerate(wrap_text(card.description, a.small_font, 260)):
-            draw_text(surface, text, a.small_font, WHITE, 950, 482 + row * 18)
+        for row, text in enumerate(wrap_text(card.description, a.small_font, 390)):
+            draw_text(surface, text, a.small_font, WHITE, 1425, 723 + row * 27)
         owned = card.name in p["cartas_colecao"]
         duplicate = (
             card.name in p["deck_slots"]
@@ -321,13 +321,13 @@ class BackpackScene(BaseScene):
                 a.small_font,
                 meta["accent_color"],
                 rect.centerx,
-                199,
+                299,
                 center=True,
             )
             self._image(
                 surface,
                 uid,
-                pygame.Rect(rect.centerx - 91, 220, 182, 267),
+                pygame.Rect(rect.centerx - 137, 330, 273, 401),
                 ultimate=True,
             )
             draw_text(
@@ -336,11 +336,11 @@ class BackpackScene(BaseScene):
                 a.small_font,
                 GOLD,
                 rect.centerx,
-                507,
+                761,
                 center=True,
             )
-            for row, text in enumerate(wrap_text(meta["description"], a.font, 322)):
-                draw_text(surface, text, a.font, WHITE, rect.x + 25, 522 + row * 20)
+            for row, text in enumerate(wrap_text(meta["description"], a.font, 483)):
+                draw_text(surface, text, a.font, WHITE, rect.x + 38, 783 + row * 30)
             self._button(
                 surface,
                 self.ultimate_buttons[uid],

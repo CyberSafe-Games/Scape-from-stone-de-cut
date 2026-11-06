@@ -127,7 +127,7 @@ class IntentInterfaceTests(unittest.TestCase):
             e.enemy.action_counter = 6
             choose_next_action(e.enemy)
             view = EnemyIntentView(self.assets)
-            surface = pygame.Surface((1280, 720))
+            surface = pygame.Surface((1920, 1080))
             plan = list(e.enemy.action_plan)
             with patch('src.systems.enemy_factory.random.choices', side_effect=AssertionError('Hover alterou a intenção')):
                 view.draw(surface, e, (-1, -1))

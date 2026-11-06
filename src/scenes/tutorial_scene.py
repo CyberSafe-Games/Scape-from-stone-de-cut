@@ -59,11 +59,11 @@ class TutorialScene(BattleScene):
         self._tutorial_completion_committed = False
 
         # Botão para reabrir o guia durante a batalha
-        self.help_button_rect = pygame.Rect(WIDTH // 2 - 70, 16, 140, 30)
+        self.help_button_rect = pygame.Rect(WIDTH // 2 - 105, 24, 210, 45)
 
         # Botão de conclusão do tutorial na tela de vitória
         self.finish_tutorial_button_rect = pygame.Rect(
-            WIDTH // 2 - 160, HEIGHT // 2 + 130, 320, 52
+            WIDTH // 2 - 240, HEIGHT // 2 + 195, 480, 78
         )
 
         # Inicializa o overlay com todos os passos, balões flutuantes e setas
@@ -135,8 +135,8 @@ class TutorialScene(BattleScene):
                     "Aprenda seus recursos, cartas e táticas de sobrevivência.",
                 ],
                 target_rect_fn=None,
-                bubble_pos=((WIDTH - 480) // 2, 210),
-                bubble_size=(480, 196),
+                bubble_pos=((WIDTH - 720) // 2, 315),
+                bubble_size=(720, 294),
                 arrow_origin_fn=None,
                 arrow_target_fn=None,
             )
@@ -154,11 +154,11 @@ class TutorialScene(BattleScene):
                     "Reduza a vida do Slime a zero para vencer a batalha!",
                     "Se seu HP acabar, você pode reiniciar o treinamento.",
                 ],
-                target_rect_fn=lambda: pygame.Rect(22, 20, 390, 92),
-                bubble_pos=(432, 20),
-                bubble_size=(470, 190),
-                arrow_origin_fn=lambda: (432, 66),
-                arrow_target_fn=lambda: (412, 66),
+                target_rect_fn=lambda: pygame.Rect(33, 30, 585, 138),
+                bubble_pos=(648, 30),
+                bubble_size=(705, 285),
+                arrow_origin_fn=lambda: (648, 99),
+                arrow_target_fn=lambda: (618, 99),
             )
         )
 
@@ -174,11 +174,11 @@ class TutorialScene(BattleScene):
                     "Toda carta possui seu custo gravado no canto superior.",
                     "Sua energia é totalmente restaurada a cada novo turno.",
                 ],
-                target_rect_fn=lambda: pygame.Rect(36, 156, 170, 26),
-                bubble_pos=(222, 132),
-                bubble_size=(470, 190),
-                arrow_origin_fn=lambda: (222, 169),
-                arrow_target_fn=lambda: (206, 169),
+                target_rect_fn=lambda: pygame.Rect(54, 234, 255, 39),
+                bubble_pos=(333, 198),
+                bubble_size=(705, 285),
+                arrow_origin_fn=lambda: (333, 254),
+                arrow_target_fn=lambda: (309, 254),
             )
         )
 
@@ -194,11 +194,11 @@ class TutorialScene(BattleScene):
                     "• Defesas protegem seu corpo contra ataques iminentes.",
                     "Cartas não usadas permanecem na mão no próximo turno.",
                 ],
-                target_rect_fn=lambda: pygame.Rect(250, HEIGHT - 180, WIDTH - 500, 160),
-                bubble_pos=((WIDTH - 470) // 2, HEIGHT - 395),
-                bubble_size=(470, 196),
-                arrow_origin_fn=lambda: (WIDTH // 2, HEIGHT - 199),
-                arrow_target_fn=lambda: (WIDTH // 2, HEIGHT - 175),
+                target_rect_fn=lambda: pygame.Rect(375, HEIGHT - 270, WIDTH - 750, 240),
+                bubble_pos=((WIDTH - 705) // 2, HEIGHT - 593),
+                bubble_size=(705, 294),
+                arrow_origin_fn=lambda: (WIDTH // 2, HEIGHT - 299),
+                arrow_target_fn=lambda: (WIDTH // 2, HEIGHT - 263),
             )
         )
 
@@ -215,11 +215,11 @@ class TutorialScene(BattleScene):
                     "• Fogo acumula; Veneno ignora Escudo.",
                     "Sangramento pune o primeiro ataque de cada turno.",
                 ],
-                target_rect_fn=lambda: pygame.Rect(120, 94, 276, 48),
-                bubble_pos=(416, 78),
-                bubble_size=(480, 192),
-                arrow_origin_fn=lambda: (416, 106),
-                arrow_target_fn=lambda: (396, 106),
+                target_rect_fn=lambda: pygame.Rect(180, 141, 414, 72),
+                bubble_pos=(624, 117),
+                bubble_size=(720, 288),
+                arrow_origin_fn=lambda: (624, 159),
+                arrow_target_fn=lambda: (594, 159),
             )
         )
 
@@ -236,11 +236,11 @@ class TutorialScene(BattleScene):
                     "Chefes mostram duas ações na ordem 1 e 2.",
                     "A borda dourada marca a ultimate. Prepare sua defesa!",
                 ],
-                target_rect_fn=lambda: pygame.Rect(1094, 152, 72, 67),
-                bubble_pos=(418, 126),
-                bubble_size=(550, 244),
-                arrow_origin_fn=lambda: (968, 182),
-                arrow_target_fn=lambda: (1094, 182),
+                target_rect_fn=lambda: pygame.Rect(1641, 228, 108, 101),
+                bubble_pos=(627, 189),
+                bubble_size=(825, 366),
+                arrow_origin_fn=lambda: (1452, 273),
+                arrow_target_fn=lambda: (1641, 273),
             )
         )
 
@@ -258,12 +258,12 @@ class TutorialScene(BattleScene):
                     "Liberte o poder supremo quando estiver pronto.",
                 ],
                 target_rect_fn=lambda: pygame.Rect(
-                    WIDTH // 2 - 170, HEIGHT - 32, 340, 26
+                    WIDTH // 2 - 255, HEIGHT - 48, 510, 39
                 ),
-                bubble_pos=((WIDTH - 470) // 2, HEIGHT - 298),
-                bubble_size=(470, 240),
-                arrow_origin_fn=lambda: (WIDTH // 2, HEIGHT - 58),
-                arrow_target_fn=lambda: (WIDTH // 2, HEIGHT - 34),
+                bubble_pos=((WIDTH - 705) // 2, HEIGHT - 447),
+                bubble_size=(705, 360),
+                arrow_origin_fn=lambda: (WIDTH // 2, HEIGHT - 87),
+                arrow_target_fn=lambda: (WIDTH // 2, HEIGHT - 51),
             )
         )
 
@@ -279,11 +279,11 @@ class TutorialScene(BattleScene):
                     "Trocar uma carta por outra é grátis, 1 vez por turno.",
                     "Aperte C ou clique no livro do Cemitério!",
                 ],
-                target_rect_fn=lambda: pygame.Rect(28, HEIGHT - 154, 92, 124),
-                bubble_pos=(134, HEIGHT - 245),
-                bubble_size=(470, 192),
-                arrow_origin_fn=lambda: (134, HEIGHT - 100),
-                arrow_target_fn=lambda: (120, HEIGHT - 92),
+                target_rect_fn=lambda: pygame.Rect(42, HEIGHT - 231, 138, 186),
+                bubble_pos=(201, HEIGHT - 368),
+                bubble_size=(705, 288),
+                arrow_origin_fn=lambda: (201, HEIGHT - 150),
+                arrow_target_fn=lambda: (180, HEIGHT - 138),
             )
         )
 
@@ -301,10 +301,10 @@ class TutorialScene(BattleScene):
                     "Clique em qualquer lugar da tela para lutar!",
                 ],
                 target_rect_fn=lambda: self.end_turn_rect,
-                bubble_pos=(WIDTH - 604, HEIGHT - 250),
-                bubble_size=(474, 198),
-                arrow_origin_fn=lambda: (WIDTH - 130, HEIGHT - 82),
-                arrow_target_fn=lambda: (WIDTH - 120, HEIGHT - 82),
+                bubble_pos=(WIDTH - 906, HEIGHT - 375),
+                bubble_size=(711, 297),
+                arrow_origin_fn=lambda: (WIDTH - 195, HEIGHT - 123),
+                arrow_target_fn=lambda: (WIDTH - 180, HEIGHT - 123),
             )
         )
 
@@ -329,10 +329,10 @@ class TutorialScene(BattleScene):
         from src.config.layout import PLAYER_X, ENEMY_X
 
         pygame.draw.ellipse(
-            ground, (0, 0, 0, 80), pygame.Rect(PLAYER_X - 92, 422, 180, 36)
+            ground, (0, 0, 0, 80), pygame.Rect(PLAYER_X - 138, 633, 270, 54)
         )
         pygame.draw.ellipse(
-            ground, (0, 0, 0, 80), pygame.Rect(ENEMY_X - 86, 422, 170, 34)
+            ground, (0, 0, 0, 80), pygame.Rect(ENEMY_X - 129, 633, 255, 51)
         )
         surface.blit(ground, (0, 0))
 
@@ -369,13 +369,13 @@ class TutorialScene(BattleScene):
             )
 
             # Barra superior discreta com dicas essenciais de combate
-            tip_rect = pygame.Rect(WIDTH // 2 - 310, 52, 620, 24)
+            tip_rect = pygame.Rect(WIDTH // 2 - 465, 78, 930, 36)
             draw_panel(
                 surface,
                 tip_rect,
                 fill=(10, 16, 16, 210),
                 border=(90, 78, 54),
-                radius=10,
+                radius=15,
                 shadow=False,
             )
             draw_text(
@@ -405,7 +405,7 @@ class TutorialScene(BattleScene):
         overlay.fill((4, 8, 8, 230))
         surface.blit(overlay, (0, 0))
 
-        card_rect = pygame.Rect(WIDTH // 2 - 300, HEIGHT // 2 - 210, 600, 420)
+        card_rect = pygame.Rect(WIDTH // 2 - 450, HEIGHT // 2 - 315, 900, 630)
         theme.panel(surface, card_rect, highlighted=True, fill=(12, 18, 18, 250))
 
         theme.eyebrow(
@@ -413,7 +413,7 @@ class TutorialScene(BattleScene):
             "JORNADA INICIADA  ·  TREINAMENTO RÚNICO CONCLUÍDO",
             self.asset_manager.small_font,
             card_rect.centerx,
-            card_rect.y + 28,
+            card_rect.y + 42,
             center=True,
         )
         draw_text(
@@ -422,11 +422,11 @@ class TutorialScene(BattleScene):
             self.asset_manager.title_font,
             GOLD,
             card_rect.centerx,
-            card_rect.y + 60,
+            card_rect.y + 90,
             center=True,
         )
         theme.divider(
-            surface, card_rect.x + 40, card_rect.right - 40, card_rect.y + 125
+            surface, card_rect.x + 60, card_rect.right - 60, card_rect.y + 188
         )
 
         lines = [
@@ -440,7 +440,7 @@ class TutorialScene(BattleScene):
             "Recompensa: +30 Moedas de Ouro pelo treinamento!",
         ]
 
-        text_y = card_rect.y + 145
+        text_y = card_rect.y + 218
         for line in lines:
             color = (
                 GOLD
@@ -453,7 +453,7 @@ class TutorialScene(BattleScene):
             draw_text(
                 surface, line, font, color, card_rect.centerx, text_y, center=True
             )
-            text_y += 24
+            text_y += 36
 
         # Botão para avançar para o mapa
         hover = self.finish_tutorial_button_rect.collidepoint(cursor)
@@ -472,7 +472,7 @@ class TutorialScene(BattleScene):
             self.asset_manager.small_font,
             GRAY,
             card_rect.centerx,
-            card_rect.bottom + 18,
+            card_rect.bottom + 27,
             center=True,
         )
 

@@ -33,8 +33,8 @@ from src.ui import dark_fantasy_theme as theme
 from src.systems.normal_enemy_catalog import biome_enemy_names
 
 
-MAP_AREA = pygame.Rect(30, 92, 879, 587)
-PANEL = pygame.Rect(929, 91, 321, 590)
+MAP_AREA = pygame.Rect(45, 138, 1319, 881)
+PANEL = pygame.Rect(1394, 137, 482, 885)
 
 
 class MapScene(BaseScene):
@@ -55,11 +55,11 @@ class MapScene(BaseScene):
         )
         self.selected_encounter = count if available and count < 3 else None
         self._map_art = None
-        self.back_button = pygame.Rect(38, 20, 155, 45)
-        self.play_button = pygame.Rect(956, 567, 267, 48)
-        self.shop_button = pygame.Rect(956, 627, 267, 39)
-        self.backpack_button = pygame.Rect(954, 20, 264, 44)
-        self.guide_button = pygame.Rect(510, 481, 260, 55)
+        self.back_button = pygame.Rect(57, 30, 233, 68)
+        self.play_button = pygame.Rect(1434, 851, 401, 72)
+        self.shop_button = pygame.Rect(1434, 941, 401, 59)
+        self.backpack_button = pygame.Rect(1431, 30, 396, 66)
+        self.guide_button = pygame.Rect(765, 722, 390, 83)
         self.guide_open = not save_data["progresso"].get("guia_mapa_visto", False)
         self.error = ""
         self.elapsed = 0
@@ -86,7 +86,7 @@ class MapScene(BaseScene):
         theme.panel(surface, MAP_AREA, fill=(12, 21, 20, 243))
         art = self.asset_manager.get_ui_image("world_map")
         if isinstance(art, pygame.Surface):
-            inner = MAP_AREA.inflate(-20, -20)
+            inner = MAP_AREA.inflate(-30, -30)
             if self._map_art is None:
                 self._map_art = pygame.transform.smoothscale(art, inner.size)
             surface.blit(self._map_art, inner)
@@ -97,96 +97,96 @@ class MapScene(BaseScene):
             land,
             (29, 54, 43, 173),
             [
-                (33, 117),
-                (187, 49),
-                (364, 106),
-                (524, 43),
-                (735, 69),
-                (849, 194),
-                (786, 353),
-                (829, 508),
-                (660, 551),
-                (506, 477),
-                (322, 542),
-                (145, 473),
-                (24, 511),
+                (50, 176),
+                (281, 74),
+                (546, 159),
+                (786, 65),
+                (1103, 104),
+                (1274, 291),
+                (1179, 530),
+                (1244, 762),
+                (990, 827),
+                (759, 716),
+                (483, 813),
+                (218, 710),
+                (36, 767),
             ],
         )
         pygame.draw.polygon(
             land,
             (51, 63, 48, 166),
             [
-                (42, 388),
-                (162, 291),
-                (262, 346),
-                (359, 201),
-                (480, 271),
-                (586, 202),
-                (800, 224),
-                (780, 464),
-                (616, 452),
-                (497, 506),
-                (345, 453),
-                (169, 505),
+                (63, 582),
+                (243, 437),
+                (393, 519),
+                (539, 302),
+                (720, 407),
+                (879, 303),
+                (1200, 336),
+                (1170, 696),
+                (924, 678),
+                (746, 759),
+                (518, 680),
+                (254, 758),
             ],
         )
-        for inset in (19, 37, 58, 78):
+        for inset in (29, 56, 87, 117):
             pts = [
-                (inset, 88 + inset // 4),
-                (212 + inset // 2, 77),
-                (418, 59 + inset),
-                (692 - inset // 4, 98 + inset // 3),
-                (814 - inset, 294),
-                (733 - inset // 2, 491 - inset // 4),
-                (404, 516 - inset // 4),
-                (105 + inset // 3, 460 - inset // 3),
+                (inset, 132 + inset // 4),
+                (318 + inset // 2, 116),
+                (627, 89 + inset),
+                (1038 - inset // 4, 147 + inset // 3),
+                (1221 - inset, 441),
+                (1100 - inset // 2, 737 - inset // 4),
+                (606, 774 - inset // 4),
+                (158 + inset // 3, 690 - inset // 3),
             ]
-            pygame.draw.lines(land, (84, 101, 74, 90), True, pts, 1)
+            pygame.draw.lines(land, (84, 101, 74, 90), True, pts, 2)
         surface.blit(land, MAP_AREA.topleft)
         # Montanhas talhadas em pedra e pinheiros escurecidos.
         for x, y, scale in [
-            (92, 207, 1.1),
-            (314, 114, 1.2),
-            (568, 144, 0.95),
-            (745, 438, 1.1),
-            (403, 514, 0.85),
-            (96, 432, 0.8),
+            (138, 311, 1.1),
+            (471, 171, 1.2),
+            (852, 216, 0.95),
+            (1118, 657, 1.1),
+            (605, 771, 0.85),
+            (144, 648, 0.8),
         ]:
-            x, y, s = x + MAP_AREA.x, y + MAP_AREA.y, int(31 * scale)
+            x, y, s = x + MAP_AREA.x, y + MAP_AREA.y, int(47 * scale)
             pygame.draw.polygon(
                 surface,
                 (47, 62, 57),
                 [(x - s, y + s // 2), (x, y - s), (x + s, y + s // 2)],
             )
-            pygame.draw.line(surface, (92, 104, 89), (x - s, y + s // 2), (x, y - s), 1)
-            pygame.draw.line(surface, (92, 104, 89), (x, y - s), (x + s, y + s // 2), 1)
+            pygame.draw.line(surface, (92, 104, 89), (x - s, y + s // 2), (x, y - s), 2)
+            pygame.draw.line(surface, (92, 104, 89), (x, y - s), (x + s, y + s // 2), 2)
         for x, y in [
-            (88, 390),
-            (188, 166),
-            (261, 580),
-            (450, 170),
-            (544, 527),
-            (728, 365),
-            (835, 502),
-            (65, 232),
-            (765, 106),
+            (132, 585),
+            (282, 249),
+            (392, 870),
+            (675, 255),
+            (816, 791),
+            (1092, 548),
+            (1253, 753),
+            (98, 348),
+            (1148, 159),
         ]:
-            cx, cy = x + 10, y + 55
+            cx, cy = x + 15, y + 83
             pygame.draw.polygon(
                 surface,
                 (29, 65, 50),
-                [(cx - 15, cy + 10), (cx, cy - 22), (cx + 15, cy + 10)],
+                [(cx - 23, cy + 15), (cx, cy - 33), (cx + 23, cy + 15)],
             )
             pygame.draw.polygon(
                 surface,
                 (43, 83, 58),
-                [(cx - 12, cy + 1), (cx, cy - 23), (cx + 12, cy + 1)],
-                1,
+                [(cx - 18, cy + 2), (cx, cy - 35), (cx + 18, cy + 2)],
+                2,
             )
-            pygame.draw.line(surface, (91, 74, 54), (cx, cy + 7), (cx, cy + 19), 2)
+            pygame.draw.line(surface, (91, 74, 54), (cx, cy + 11), (cx, cy + 29), 3)
 
     def _routes(self, surface):
-        previous = (45, 660)
+        previous = (68, 990)
         for territory in TERRITORIES:
             positions = (*encounter_positions(territory.id), territory.position)
             for index, position in enumerate(positions):
@@ -200,8 +200,8 @@ class MapScene(BaseScene):
                     if state == "available"
                     else (74, 83, 79)
                 )
-                pygame.draw.line(surface, (9, 18, 18), previous, position, 6)
-                pygame.draw.line(surface, color, previous, position, 2)
+                pygame.draw.line(surface, (9, 18, 18), previous, position, 9)
+                pygame.draw.line(surface, color, previous, position, 3)
                 previous = position
 
     def _encounters(self, surface):
@@ -212,7 +212,7 @@ class MapScene(BaseScene):
                 selected = (
                     self.selected == territory.id and self.selected_encounter == index
                 )
-                hovered = math.dist(cursor, (x, y)) <= 14
+                hovered = math.dist(cursor, (x, y)) <= 21
                 fill = (
                     (42, 91, 68)
                     if state == "completed"
@@ -228,11 +228,11 @@ class MapScene(BaseScene):
                     else (100, 114, 104)
                 )
                 if selected:
-                    radius = 17 + round(math.sin(self.elapsed * 0.004))
-                    pygame.draw.circle(surface, (234, 191, 112), (x, y), radius, 1)
-                pygame.draw.circle(surface, (5, 12, 12), (x + 1, y + 2), 13)
-                pygame.draw.circle(surface, fill, (x, y), 11)
-                pygame.draw.circle(surface, edge, (x, y), 11, 2)
+                    radius = 26 + round(1.5 * math.sin(self.elapsed * 0.004))
+                    pygame.draw.circle(surface, (234, 191, 112), (x, y), radius, 2)
+                pygame.draw.circle(surface, (5, 12, 12), (x + 2, y + 3), 20)
+                pygame.draw.circle(surface, fill, (x, y), 17)
+                pygame.draw.circle(surface, edge, (x, y), 17, 3)
                 draw_text(
                     surface,
                     str(index + 1),
@@ -250,11 +250,11 @@ class MapScene(BaseScene):
             x, y = territory.position
             state = encounter_status(self.save_data, territory.id)
             chosen = territory.id == self.selected and self.selected_encounter is None
-            hovered = math.dist(cursor, (x, y)) <= 32
-            radius = 27 if chosen else 24
+            hovered = math.dist(cursor, (x, y)) <= 48
+            radius = 41 if chosen else 36
             if chosen:
-                pygame.draw.circle(surface, (9, 16, 15), (x, y), 39)
-                pygame.draw.circle(surface, (174, 135, 71), (x, y), int(35 * pulse), 1)
+                pygame.draw.circle(surface, (9, 16, 15), (x, y), 59)
+                pygame.draw.circle(surface, (174, 135, 71), (x, y), int(53 * pulse), 2)
             fill = (
                 (35, 81, 57)
                 if state == "completed"
@@ -269,17 +269,17 @@ class MapScene(BaseScene):
                 if state == "completed"
                 else (76, 83, 78)
             )
-            pygame.draw.circle(surface, (5, 9, 9), (x + 3, y + 5), radius + 6)
+            pygame.draw.circle(surface, (5, 9, 9), (x + 5, y + 8), radius + 9)
             pts = [(x, y - radius), (x + radius, y), (x, y + radius), (x - radius, y)]
             pygame.draw.polygon(surface, fill, pts)
-            pygame.draw.lines(surface, border, True, pts, 2)
+            pygame.draw.lines(surface, border, True, pts, 3)
             inner = [
-                (x, y - radius + 7),
-                (x + radius - 7, y),
-                (x, y + radius - 7),
-                (x - radius + 7, y),
+                (x, y - radius + 11),
+                (x + radius - 11, y),
+                (x, y + radius - 11),
+                (x - radius + 11, y),
             ]
-            pygame.draw.lines(surface, (119, 111, 82), True, inner, 1)
+            pygame.draw.lines(surface, (119, 111, 82), True, inner, 2)
             symbol = (
                 "V"
                 if state == "completed"
@@ -297,26 +297,26 @@ class MapScene(BaseScene):
                 center=True,
             )
             font = self.asset_manager.small_font
-            label_width = min(192, font.size(territory.title)[0] + 26)
-            label_rect = pygame.Rect(0, 0, label_width, 30)
+            label_width = min(288, font.size(territory.title)[0] + 39)
+            label_rect = pygame.Rect(0, 0, label_width, 45)
             offsets = (
-                (110, 4),
-                (110, 5),
-                (-8, -58),
-                (0, -42),
-                (12, 44),
-                (110, 20),
-                (-30, -42),
+                (165, 6),
+                (165, 8),
+                (-12, -87),
+                (0, -63),
+                (18, 66),
+                (165, 30),
+                (-45, -63),
             )
             dx, dy = offsets[territory.level - 1]
             label_rect.center = (x + dx, y + dy)
-            pygame.draw.rect(surface, (12, 20, 19), label_rect, border_radius=2)
+            pygame.draw.rect(surface, (12, 20, 19), label_rect, border_radius=3)
             pygame.draw.rect(
                 surface,
                 (89, 77, 58) if state != "locked" else (48, 56, 53),
                 label_rect,
-                1,
-                border_radius=2,
+                2,
+                border_radius=3,
             )
             draw_text(
                 surface,
@@ -342,7 +342,7 @@ class MapScene(BaseScene):
             self.asset_manager.menu_font,
             GOLD,
             center,
-            127,
+            191,
             center=True,
         )
         draw_text(
@@ -351,30 +351,30 @@ class MapScene(BaseScene):
             self.asset_manager.small_font,
             GRAY,
             center,
-            161,
+            242,
             center=True,
         )
         if self.asset_manager.coin_icon is not None:
-            icon = pygame.transform.smoothscale(self.asset_manager.coin_icon, (28, 28))
-            surface.blit(icon, (center - 68, 183))
+            icon = pygame.transform.smoothscale(self.asset_manager.coin_icon, (42, 42))
+            surface.blit(icon, (center - 102, 275))
         draw_text(
             surface,
             f"{progress['moedas']} MOEDAS",
             self.asset_manager.font,
             WHITE,
-            center - 29,
-            183,
+            center - 44,
+            275,
         )
         completed = completed_count(self.save_data)
         pygame.draw.rect(
-            surface, (36, 46, 42), pygame.Rect(954, 226, 268, 12), border_radius=6
+            surface, (36, 46, 42), pygame.Rect(1431, 339, 402, 18), border_radius=9
         )
         if completed:
             pygame.draw.rect(
                 surface,
                 (69, 117, 80),
-                pygame.Rect(954, 226, int(268 * completed / len(TERRITORIES)), 12),
-                border_radius=6,
+                pygame.Rect(1431, 339, int(402 * completed / len(TERRITORIES)), 18),
+                border_radius=9,
             )
         draw_text(
             surface,
@@ -382,10 +382,10 @@ class MapScene(BaseScene):
             self.asset_manager.small_font,
             GRAY,
             center,
-            261,
+            392,
             center=True,
         )
-        pygame.draw.line(surface, (91, 76, 52), (956, 287), (1223, 287), 1)
+        pygame.draw.line(surface, (91, 76, 52), (1434, 431), (1835, 431), 2)
         ultimate_id = progress.get("ultimate_equipada", DEFAULT_ULTIMATE_ID)
         ultimate_name = ULTIMATE_METADATA.get(
             ultimate_id, ULTIMATE_METADATA[DEFAULT_ULTIMATE_ID]
@@ -396,7 +396,7 @@ class MapScene(BaseScene):
             self.asset_manager.small_font,
             (147, 164, 142),
             center,
-            312,
+            468,
             center=True,
         )
         draw_text(
@@ -405,7 +405,7 @@ class MapScene(BaseScene):
             self.asset_manager.small_font,
             WHITE,
             center,
-            337,
+            506,
             center=True,
         )
         draw_text(
@@ -414,7 +414,7 @@ class MapScene(BaseScene):
             self.asset_manager.small_font,
             GOLD,
             center,
-            372,
+            558,
             center=True,
         )
         draw_text(
@@ -423,7 +423,7 @@ class MapScene(BaseScene):
             self.asset_manager.font,
             WHITE,
             center,
-            406,
+            609,
             center=True,
         )
         subtitle = (
@@ -437,7 +437,7 @@ class MapScene(BaseScene):
             self.asset_manager.small_font,
             GRAY,
             center,
-            438,
+            657,
             center=True,
         )
         label, color = {
@@ -445,9 +445,9 @@ class MapScene(BaseScene):
             "available": ("DISPONÍVEL", (177, 143, 87)),
             "completed": ("CONCLUÍDA", (103, 159, 113)),
         }[state]
-        pill = pygame.Rect(center - 97, 462, 194, 33)
-        pygame.draw.rect(surface, (24, 34, 31), pill, border_radius=16)
-        pygame.draw.rect(surface, color, pill, 2, border_radius=16)
+        pill = pygame.Rect(center - 146, 693, 291, 50)
+        pygame.draw.rect(surface, (24, 34, 31), pill, border_radius=24)
+        pygame.draw.rect(surface, color, pill, 3, border_radius=24)
         draw_text(
             surface,
             label,
@@ -475,15 +475,15 @@ class MapScene(BaseScene):
                 + "."
             )
         for line_i, line in enumerate(
-            wrap_text(description, self.asset_manager.small_font, 252)[:2]
+            wrap_text(description, self.asset_manager.small_font, 378)[:2]
         ):
             draw_text(
                 surface,
                 line,
                 self.asset_manager.small_font,
                 WHITE,
-                964,
-                501 + 20 * line_i,
+                1446,
+                752 + 30 * line_i,
             )
         count = progress.get("encontros_por_territorio", {}).get(
             selected_territory.id, 0
@@ -497,20 +497,20 @@ class MapScene(BaseScene):
                 f"CAMINHO  {count}/3 ENCONTROS",
                 self.asset_manager.small_font,
                 GOLD,
-                968,
-                542,
+                1452,
+                813,
             )
             for j in range(3):
                 color = (109, 158, 115) if j < count else (88, 86, 74)
-                pygame.draw.circle(surface, color, (1197 + 9 * j, 550), 4)
+                pygame.draw.circle(surface, color, (1796 + 14 * j, 825), 6)
         if status(self.save_data, selected_territory.id) == "locked":
             draw_text(
                 surface,
                 "Conclua a fase anterior para liberar.",
                 self.asset_manager.small_font,
                 (188, 135, 122),
-                964,
-                543,
+                1446,
+                815,
             )
         play_label = (
             "PONTO BLOQUEADO"
@@ -530,7 +530,7 @@ class MapScene(BaseScene):
         shade = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         shade.fill((3, 9, 9, 218))
         surface.blit(shade, (0, 0))
-        rect = pygame.Rect(334, 166, 612, 398)
+        rect = pygame.Rect(501, 249, 918, 597)
         theme.panel(surface, rect, highlighted=True)
         draw_text(
             surface,
@@ -538,7 +538,7 @@ class MapScene(BaseScene):
             self.asset_manager.big_font,
             GOLD,
             WIDTH // 2,
-            217,
+            326,
             center=True,
         )
         steps = (
@@ -553,8 +553,8 @@ class MapScene(BaseScene):
                 line,
                 self.asset_manager.small_font,
                 WHITE,
-                rect.x + 31,
-                rect.y + 120 + i * 47,
+                rect.x + 47,
+                rect.y + 180 + i * 71,
             )
         self._button(surface, self.guide_button, "ENTENDI, CONTINUAR")
 
@@ -569,19 +569,19 @@ class MapScene(BaseScene):
             "TERRITÓRIOS ESQUECIDOS",
             self.asset_manager.big_font,
             WHITE,
-            224,
-            18,
+            336,
+            27,
         )
         self._button(surface, self.back_button, "< MENU")
         self._button(surface, self.backpack_button, "MOCHILA  /  DECK [B]")
         # Ícone de mochila/bolsa de couro estilizado, sem assets externos.
         bag = pygame.Rect(
-            self.backpack_button.x + 10, self.backpack_button.y + 12, 17, 20
+            self.backpack_button.x + 15, self.backpack_button.y + 18, 26, 30
         )
-        pygame.draw.rect(surface, (102, 76, 43), bag, border_radius=3)
-        pygame.draw.rect(surface, (185, 145, 82), bag, 2, border_radius=3)
+        pygame.draw.rect(surface, (102, 76, 43), bag, border_radius=5)
+        pygame.draw.rect(surface, (185, 145, 82), bag, 3, border_radius=5)
         pygame.draw.arc(
-            surface, (185, 145, 82), (bag.x + 4, bag.y - 8, 9, 14), 0, 3.14, 2
+            surface, (185, 145, 82), (bag.x + 6, bag.y - 12, 14, 21), 0, 3.14, 3
         )
         self.window_manager.draw_fullscreen_button(self.asset_manager.small_font)
         draw_text(
@@ -589,8 +589,8 @@ class MapScene(BaseScene):
             "CÍRCULOS · ENCONTROS     LOSANGOS · TERRITÓRIOS     VERDE · CONCLUÍDO     SETAS · NAVEGAR",
             self.asset_manager.small_font,
             GRAY,
-            62,
-            694,
+            93,
+            1041,
         )
         if self.error:
             draw_text(
@@ -598,8 +598,8 @@ class MapScene(BaseScene):
                 self.error[:100],
                 self.asset_manager.small_font,
                 (245, 126, 126),
-                45,
-                656,
+                68,
+                984,
             )
         if self.guide_open:
             self._guide(surface)
@@ -610,7 +610,7 @@ class MapScene(BaseScene):
                     self.asset_manager.small_font,
                     (245, 126, 126),
                     WIDTH // 2,
-                    576,
+                    864,
                     center=True,
                 )
 
@@ -722,7 +722,7 @@ class MapScene(BaseScene):
 
             for territory in TERRITORIES:
                 for index, position in enumerate(encounter_positions(territory.id)):
-                    if math.dist(point, position) <= 14:
+                    if math.dist(point, position) <= 21:
                         self.selected = territory.id
                         self.selected_encounter = index
                         self.error = ""
@@ -730,7 +730,7 @@ class MapScene(BaseScene):
                         return
 
             for territory in TERRITORIES:
-                if math.dist(point, territory.position) <= 34:
+                if math.dist(point, territory.position) <= 51:
                     self.selected = territory.id
                     self.selected_encounter = None
                     self.error = ""

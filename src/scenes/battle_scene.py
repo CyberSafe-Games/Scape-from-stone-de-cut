@@ -100,14 +100,14 @@ class BattleScene(BaseScene):
             )
 
         # Sistema de moedas (instanciado apos o engine para ter acesso ao player)
-        self.coin_hud = CoinHUD(self.engine.player, anchor_x=66, anchor_y=102)
+        self.coin_hud = CoinHUD(self.engine.player, anchor_x=99, anchor_y=153)
         self.energy_hud = EnergyHUD(self.engine.player)
 
         self.enemy_turn_timer = 0
-        self.menu_button_rect = pygame.Rect(WIDTH - 108, 18, 86, 28)
-        self.end_turn_rect = pygame.Rect(WIDTH - 120, HEIGHT - 132, 100, 100)
-        self.cemetery_button_rect = pygame.Rect(28, HEIGHT - 154, 92, 124)
-        self.skip_reward_rect = pygame.Rect(WIDTH // 2 - 60, HEIGHT - 100, 120, 40)
+        self.menu_button_rect = pygame.Rect(WIDTH - 162, 27, 129, 42)
+        self.end_turn_rect = pygame.Rect(WIDTH - 180, HEIGHT - 198, 150, 150)
+        self.cemetery_button_rect = pygame.Rect(42, HEIGHT - 231, 138, 186)
+        self.skip_reward_rect = pygame.Rect(WIDTH // 2 - 90, HEIGHT - 150, 180, 60)
         self.ultimate_button_rect = pygame.Rect(0, 0, 0, 0)
         self.ultimate_hand_rect = None
 
@@ -182,7 +182,7 @@ class BattleScene(BaseScene):
             if card is not None:
                 self.floating_texts.spawn(
                     PLAYER_X,
-                    HEIGHT - 220,
+                    HEIGHT - 330,
                     f"Carta trocada: {card.name}",
                     (176, 184, 146),
                 )
@@ -191,7 +191,7 @@ class BattleScene(BaseScene):
             card_name = card.name if card else "Carta"
             self.floating_texts.spawn(
                 PLAYER_X,
-                HEIGHT - 220,
+                HEIGHT - 330,
                 f"{card_name} Descartada",
                 (176, 153, 117),
             )
@@ -230,7 +230,7 @@ class BattleScene(BaseScene):
                 self.floating_texts.spawn(
                     kwargs["x"], kwargs["y"] - offset, kwargs["text"], kwargs["color"]
                 )
-                text_offsets[key] = offset + 23
+                text_offsets[key] = offset + 35
             else:
                 self.coin_hud.spawn_coins(kwargs["amount"], kwargs["x"], kwargs["y"])
         self._ultimate_events = pending
@@ -298,57 +298,57 @@ class BattleScene(BaseScene):
 
         ground = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         pygame.draw.ellipse(
-            ground, (0, 0, 0, 72), pygame.Rect(PLAYER_X - 92, 422, 180, 36)
+            ground, (0, 0, 0, 72), pygame.Rect(PLAYER_X - 138, 633, 270, 54)
         )
         pygame.draw.ellipse(
-            ground, (0, 0, 0, 72), pygame.Rect(ENEMY_X - 86, 422, 170, 34)
+            ground, (0, 0, 0, 72), pygame.Rect(ENEMY_X - 129, 633, 255, 51)
         )
         surface.blit(ground, (0, 0))
 
     def _draw_energy_gems(
         self, surface, x, y, current, maximum, accent=(212, 170, 75), left_to_right=True
     ):
-        step = 20
+        step = 30
         for i in range(maximum):
             draw_x = x + i * step if left_to_right else x - i * step
             points = [
-                (draw_x, y - 8),
-                (draw_x + 7, y),
-                (draw_x, y + 8),
-                (draw_x - 7, y),
+                (draw_x, y - 12),
+                (draw_x + 11, y),
+                (draw_x, y + 12),
+                (draw_x - 11, y),
             ]
             active = i < current
             fill = accent if active else (39, 42, 51)
             border = (245, 222, 152) if active else (92, 94, 106)
             pygame.draw.polygon(surface, fill, points)
-            pygame.draw.polygon(surface, border, points, 2)
+            pygame.draw.polygon(surface, border, points, 3)
             if active:
                 pygame.draw.polygon(
                     surface,
                     (255, 241, 193),
                     [
-                        (draw_x, y - 5),
-                        (draw_x + 4, y - 1),
-                        (draw_x, y + 3),
-                        (draw_x - 4, y - 1),
+                        (draw_x, y - 8),
+                        (draw_x + 6, y - 2),
+                        (draw_x, y + 5),
+                        (draw_x - 6, y - 2),
                     ],
                 )
 
     def _draw_energy_panel(self, surface, x, y, current, maximum, limit, align="left"):
-        rect = pygame.Rect(x, y, 170, 24)
+        rect = pygame.Rect(x, y, 255, 36)
         draw_panel(
             surface,
             rect,
             fill=(13, 19, 18, 190),
             border=(126, 102, 58),
-            radius=12,
+            radius=18,
             shadow=False,
         )
         if align == "left":
             self._draw_energy_gems(
                 surface,
-                rect.x + 16,
-                rect.y + 12,
+                rect.x + 24,
+                rect.y + 18,
                 current,
                 limit,
                 accent=(212, 170, 75),
@@ -357,8 +357,8 @@ class BattleScene(BaseScene):
         else:
             self._draw_energy_gems(
                 surface,
-                rect.right - 16,
-                rect.y + 12,
+                rect.right - 24,
+                rect.y + 18,
                 current,
                 limit,
                 accent=(212, 170, 75),
@@ -377,13 +377,13 @@ class BattleScene(BaseScene):
         return CardView.get_hand_rects(total)
 
     def _draw_ultimate_hand_card(self, surface, rect, hovered=False):
-        shadow = pygame.Surface((rect.width + 14, rect.height + 14), pygame.SRCALPHA)
+        shadow = pygame.Surface((rect.width + 21, rect.height + 21), pygame.SRCALPHA)
         pygame.draw.rect(
-            shadow, (0, 0, 0, 120), (7, 7, rect.width, rect.height), border_radius=14
+            shadow, (0, 0, 0, 120), (11, 11, rect.width, rect.height), border_radius=21
         )
-        surface.blit(shadow, (rect.x - 7, rect.y - 5))
+        surface.blit(shadow, (rect.x - 11, rect.y - 8))
         image = self.asset_manager.get_ultimate_image(self.engine.active_ultimate_id)
-        draw_rect = rect.move(0, -12 if hovered else 0)
+        draw_rect = rect.move(0, -18 if hovered else 0)
         if image is not None:
             scaled = pygame.transform.smoothscale(image, draw_rect.size)
             surface.blit(scaled, draw_rect)
@@ -393,7 +393,7 @@ class BattleScene(BaseScene):
                 draw_rect,
                 fill=(16, 18, 28, 232),
                 border=self.engine.active_ultimate_color,
-                radius=12,
+                radius=18,
                 shadow=False,
             )
             draw_text(
@@ -402,14 +402,14 @@ class BattleScene(BaseScene):
                 self.asset_manager.small_font,
                 self.engine.active_ultimate_color,
                 draw_rect.centerx,
-                draw_rect.centery - 10,
+                draw_rect.centery - 15,
                 center=True,
             )
             for i, line in enumerate(
                 wrap_text(
                     self.engine.active_ultimate_description,
                     self.asset_manager.small_font,
-                    draw_rect.width - 16,
+                    draw_rect.width - 24,
                 )[:3]
             ):
                 draw_text(
@@ -418,41 +418,41 @@ class BattleScene(BaseScene):
                     self.asset_manager.small_font,
                     WHITE,
                     draw_rect.centerx,
-                    draw_rect.centery + 10 + i * 14,
+                    draw_rect.centery + 15 + i * 21,
                     center=True,
                 )
         glow = pygame.Surface(
-            (draw_rect.width + 18, draw_rect.height + 18), pygame.SRCALPHA
+            (draw_rect.width + 27, draw_rect.height + 27), pygame.SRCALPHA
         )
         pygame.draw.rect(
             glow,
             (*self.engine.active_ultimate_color, 70),
-            (9, 9, draw_rect.width, draw_rect.height),
-            border_radius=16,
-            width=4,
+            (14, 14, draw_rect.width, draw_rect.height),
+            border_radius=24,
+            width=6,
         )
-        surface.blit(glow, (draw_rect.x - 9, draw_rect.y - 9))
+        surface.blit(glow, (draw_rect.x - 14, draw_rect.y - 14))
 
     def _draw_end_turn_button(self, surface, enabled=True):
         cx, cy = self.end_turn_rect.center
         radius = self.end_turn_rect.width // 2
-        shadow = pygame.Surface((radius * 2 + 24, radius * 2 + 24), pygame.SRCALPHA)
-        pygame.draw.circle(shadow, (0, 0, 0, 120), (radius + 12, radius + 12), radius)
-        surface.blit(shadow, (cx - radius - 12, cy - radius - 8))
+        shadow = pygame.Surface((radius * 2 + 36, radius * 2 + 36), pygame.SRCALPHA)
+        pygame.draw.circle(shadow, (0, 0, 0, 120), (radius + 18, radius + 18), radius)
+        surface.blit(shadow, (cx - radius - 18, cy - radius - 12))
         outer_fill = (58, 43, 32) if enabled else (34, 34, 40)
         ring = (180, 144, 84) if enabled else (84, 84, 94)
         inner_fill = (104, 76, 54) if enabled else (53, 53, 60)
         pygame.draw.circle(surface, outer_fill, (cx, cy), radius)
-        pygame.draw.circle(surface, ring, (cx, cy), radius, 3)
-        pygame.draw.circle(surface, inner_fill, (cx, cy), radius - 10)
-        pygame.draw.circle(surface, (229, 208, 162, 45), (cx, cy), radius - 17, 2)
+        pygame.draw.circle(surface, ring, (cx, cy), radius, 5)
+        pygame.draw.circle(surface, inner_fill, (cx, cy), radius - 15)
+        pygame.draw.circle(surface, (229, 208, 162, 45), (cx, cy), radius - 26, 3)
         draw_text(
             surface,
             "FIM",
             self.asset_manager.small_font,
             WHITE if enabled else GRAY,
             cx,
-            cy - 12,
+            cy - 18,
             center=True,
         )
         draw_text(
@@ -461,7 +461,7 @@ class BattleScene(BaseScene):
             self.asset_manager.small_font,
             WHITE if enabled else GRAY,
             cx,
-            cy + 10,
+            cy + 15,
             center=True,
         )
 
@@ -469,16 +469,16 @@ class BattleScene(BaseScene):
         rect = self.cemetery_button_rect
         if self.asset_manager.get_ui_image("hud_cemetery") is not None:
             art_rect = pygame.Rect(
-                rect.x - 3, rect.y - 15, rect.width + 6, rect.height - 12
+                rect.x - 5, rect.y - 23, rect.width + 9, rect.height - 18
             )
             self.battle_hud.art(surface, "hud_cemetery", art_rect)
-            caption = pygame.Rect(rect.x - 7, rect.bottom - 32, rect.width + 14, 40)
+            caption = pygame.Rect(rect.x - 11, rect.bottom - 48, rect.width + 21, 60)
             draw_panel(
                 surface,
                 caption,
                 fill=(10, 14, 13, 235),
                 border=(107, 83, 46),
-                radius=4,
+                radius=6,
                 shadow=False,
             )
             draw_text(
@@ -487,7 +487,7 @@ class BattleScene(BaseScene):
                 self.asset_manager.small_font,
                 WHITE if enabled else GRAY,
                 rect.centerx,
-                rect.bottom - 22,
+                rect.bottom - 33,
                 center=True,
             )
             draw_text(
@@ -496,10 +496,10 @@ class BattleScene(BaseScene):
                 self.asset_manager.small_font,
                 GOLD if enabled else GRAY,
                 rect.centerx,
-                rect.bottom - 5,
+                rect.bottom - 8,
                 center=True,
             )
-            badge = pygame.Rect(rect.right - 23, rect.y + 1, 25, 24)
+            badge = pygame.Rect(rect.right - 35, rect.y + 2, 38, 36)
             theme.panel(surface, badge, fill=(15, 17, 16, 245))
             draw_text(
                 surface,
@@ -512,14 +512,14 @@ class BattleScene(BaseScene):
             )
             return
         draw_panel(
-            surface, rect, fill=(18, 21, 18, 228), border=(113, 92, 62), radius=12
+            surface, rect, fill=(18, 21, 18, 228), border=(113, 92, 62), radius=18
         )
-        inner = pygame.Rect(rect.x + 8, rect.y + 8, rect.width - 16, rect.height - 28)
-        pygame.draw.rect(surface, (20, 18, 24), inner, border_radius=8)
-        pygame.draw.rect(surface, (137, 108, 58), inner, 2, border_radius=8)
+        inner = pygame.Rect(rect.x + 12, rect.y + 12, rect.width - 24, rect.height - 42)
+        pygame.draw.rect(surface, (20, 18, 24), inner, border_radius=12)
+        pygame.draw.rect(surface, (137, 108, 58), inner, 3, border_radius=12)
         line_x = inner.centerx
         pygame.draw.line(
-            surface, (92, 76, 52), (line_x, inner.y + 6), (line_x, inner.bottom - 6), 2
+            surface, (92, 76, 52), (line_x, inner.y + 9), (line_x, inner.bottom - 9), 3
         )
         draw_text(
             surface,
@@ -527,7 +527,7 @@ class BattleScene(BaseScene):
             self.asset_manager.small_font,
             WHITE if enabled else GRAY,
             rect.centerx,
-            rect.bottom - 28,
+            rect.bottom - 42,
             center=True,
         )
         draw_text(
@@ -536,12 +536,12 @@ class BattleScene(BaseScene):
             self.asset_manager.small_font,
             GOLD if not self.engine.cemetery_swap_used else GRAY,
             rect.centerx,
-            rect.bottom - 12,
+            rect.bottom - 18,
             center=True,
         )
-        badge = pygame.Rect(rect.right - 26, rect.y + 10, 18, 18)
-        pygame.draw.rect(surface, (56, 44, 34), badge, border_radius=4)
-        pygame.draw.rect(surface, (163, 132, 74), badge, 1, border_radius=4)
+        badge = pygame.Rect(rect.right - 39, rect.y + 15, 27, 27)
+        pygame.draw.rect(surface, (56, 44, 34), badge, border_radius=6)
+        pygame.draw.rect(surface, (163, 132, 74), badge, 2, border_radius=6)
         draw_text(
             surface,
             str(len(self.engine.discard_pile)),
@@ -559,19 +559,19 @@ class BattleScene(BaseScene):
             center_x = (left + right) // 2
         else:
             center_x = WIDTH // 2
-        panel = pygame.Rect(center_x - 170, HEIGHT - 26, 340, 18)
-        pygame.draw.rect(surface, (8, 10, 18), panel, border_radius=9)
-        pygame.draw.rect(surface, (100, 84, 56), panel, 2, border_radius=9)
+        panel = pygame.Rect(center_x - 255, HEIGHT - 39, 510, 27)
+        pygame.draw.rect(surface, (8, 10, 18), panel, border_radius=14)
+        pygame.draw.rect(surface, (100, 84, 56), panel, 3, border_radius=14)
         fill_width = int(
-            (panel.width - 4)
+            (panel.width - 6)
             * (self.engine.ultimate_charge / max(1, self.engine.ultimate_threshold))
         )
         if fill_width > 0:
             fill_rect = pygame.Rect(
-                panel.x + 2, panel.y + 2, fill_width, panel.height - 4
+                panel.x + 3, panel.y + 3, fill_width, panel.height - 6
             )
             pygame.draw.rect(
-                surface, self.engine.active_ultimate_color, fill_rect, border_radius=7
+                surface, self.engine.active_ultimate_color, fill_rect, border_radius=11
             )
         label = (
             f"Ultimate: {self.engine.ultimate_charge}/{self.engine.ultimate_threshold}"
@@ -589,13 +589,13 @@ class BattleScene(BaseScene):
         )
 
     def _draw_stat_chip(self, surface, x, y, label, value, color):
-        rect = pygame.Rect(x, y, 108, 24)
+        rect = pygame.Rect(x, y, 162, 36)
         draw_panel(
             surface,
             rect,
             fill=(15, 22, 20, 220),
             border=(62, 68, 84),
-            radius=10,
+            radius=15,
             shadow=False,
         )
         draw_text(
@@ -645,10 +645,10 @@ class BattleScene(BaseScene):
             )
             return
         draw_panel(
-            surface, rect, fill=(10, 17, 17, 228), border=(134, 112, 72), radius=18
+            surface, rect, fill=(10, 17, 17, 228), border=(134, 112, 72), radius=27
         )
-        title_y = rect.y + 10
-        title_x = rect.x + 18 if align == "left" else rect.right - 18
+        title_y = rect.y + 15
+        title_x = rect.x + 27 if align == "left" else rect.right - 27
         name_center = rect.x + rect.width // 2
         if subtitle:
             draw_text(
@@ -660,17 +660,17 @@ class BattleScene(BaseScene):
                 title_y,
                 center=True,
             )
-            title_y += 16
+            title_y += 24
         name_font = self.asset_manager.menu_font
         draw_text(
-            surface, name, name_font, title_color, name_center, title_y + 5, center=True
+            surface, name, name_font, title_color, name_center, title_y + 8, center=True
         )
         draw_health_bar(
             surface,
-            rect.x + 14,
-            rect.y + 40,
-            rect.width - 28,
-            16,
+            rect.x + 21,
+            rect.y + 60,
+            rect.width - 42,
+            24,
             hp,
             max_hp,
             bar_color,
@@ -681,48 +681,48 @@ class BattleScene(BaseScene):
             self.asset_manager.small_font,
             WHITE,
             rect.centerx,
-            rect.y + 48,
+            rect.y + 72,
             center=True,
         )
 
-        chip_y = rect.y + 62
+        chip_y = rect.y + 93
         if stats:
             if align == "left":
                 for index, (label, value, color) in enumerate(stats[:2]):
                     self._draw_stat_chip(
-                        surface, rect.x + 10 + index * 110, chip_y, label, value, color
+                        surface, rect.x + 15 + index * 165, chip_y, label, value, color
                     )
             else:
                 for index, (label, value, color) in enumerate(stats[:2]):
                     self._draw_stat_chip(
-                        surface, rect.x + 10 + index * 110, chip_y, label, value, color
+                        surface, rect.x + 15 + index * 165, chip_y, label, value, color
                     )
 
     def _draw_coin_badge(self, surface, x, y):
-        badge_rect = pygame.Rect(x, y, 78, 28)
+        badge_rect = pygame.Rect(x, y, 117, 42)
         draw_panel(
             surface,
             badge_rect,
             fill=(14, 16, 22, 210),
             border=(170, 138, 66),
-            radius=12,
+            radius=18,
             shadow=False,
         )
         if self.asset_manager.coin_icon is not None:
-            icon = pygame.transform.smoothscale(self.asset_manager.coin_icon, (16, 16))
-            surface.blit(icon, (x + 8, y + 6))
+            icon = pygame.transform.smoothscale(self.asset_manager.coin_icon, (24, 24))
+            surface.blit(icon, (x + 12, y + 9))
         draw_text(
             surface,
             str(self.engine.player.coins),
             self.asset_manager.font,
             (255, 231, 110),
-            x + 50,
-            y + 14,
+            x + 75,
+            y + 21,
             center=True,
         )
 
     def _draw_ultimate_card(self, surface):
-        card_rect = pygame.Rect(34, HEIGHT - 152, 96, 136)
+        card_rect = pygame.Rect(51, HEIGHT - 228, 144, 204)
         card_img = self.asset_manager.get_ultimate_image(self.engine.active_ultimate_id)
         if card_img is not None:
             scaled = pygame.transform.smoothscale(card_img, card_rect.size)
@@ -733,7 +733,7 @@ class BattleScene(BaseScene):
                 card_rect,
                 fill=(10, 12, 18, 235),
                 border=self.engine.active_ultimate_color,
-                radius=12,
+                radius=18,
                 shadow=False,
             )
             draw_text(
@@ -751,38 +751,38 @@ class BattleScene(BaseScene):
 
     def _draw_bottom_hud(self, surface):
         if self.battle_hud.art(
-            surface, "hud_hand_tray", pygame.Rect(8, HEIGHT - 216, WIDTH - 16, 216)
+            surface, "hud_hand_tray", pygame.Rect(12, HEIGHT - 324, WIDTH - 24, 324)
         ):
             return
         frame = self.asset_manager.get_ui_image(
             "battle_hud_frame"
         ) or self.asset_manager.get_ui_image("battle_hud_frame_alt")
-        base_y = HEIGHT - 162
-        base_rect = pygame.Rect(0, base_y + 24, WIDTH, 138)
+        base_y = HEIGHT - 243
+        base_rect = pygame.Rect(0, base_y + 36, WIDTH, 207)
         base = pygame.Surface(base_rect.size, pygame.SRCALPHA)
         base.fill((10, 14, 14, 206))
         surface.blit(base, base_rect.topleft)
         if frame is not None:
-            scaled = pygame.transform.scale(frame, (WIDTH, 142))
+            scaled = pygame.transform.scale(frame, (WIDTH, 213))
             surface.blit(scaled, (0, base_y))
-            darken = pygame.Surface((WIDTH, 142), pygame.SRCALPHA)
+            darken = pygame.Surface((WIDTH, 213), pygame.SRCALPHA)
             darken.fill((0, 0, 0, 18))
             surface.blit(darken, (0, base_y))
         pygame.draw.line(
-            surface, (114, 94, 58), (0, base_y + 30), (WIDTH, base_y + 30), 1
+            surface, (114, 94, 58), (0, base_y + 45), (WIDTH, base_y + 45), 2
         )
         pygame.draw.line(
-            surface, (52, 46, 36), (0, base_y + 31), (WIDTH, base_y + 31), 1
+            surface, (52, 46, 36), (0, base_y + 47), (WIDTH, base_y + 47), 2
         )
         mid = WIDTH // 2
         pygame.draw.polygon(
             surface,
             (156, 127, 78),
             [
-                (mid, base_y + 24),
-                (mid + 7, base_y + 30),
                 (mid, base_y + 36),
-                (mid - 7, base_y + 30),
+                (mid + 11, base_y + 45),
+                (mid, base_y + 54),
+                (mid - 11, base_y + 45),
             ],
         )
 
@@ -792,19 +792,19 @@ class BattleScene(BaseScene):
         hovered = enabled and rect.collidepoint(
             self.window_manager.get_virtual_mouse_pos()
         )
-        shadow = pygame.Surface((rect.width + 10, rect.height + 10), pygame.SRCALPHA)
+        shadow = pygame.Surface((rect.width + 15, rect.height + 15), pygame.SRCALPHA)
         pygame.draw.rect(
-            shadow, (0, 0, 0, 80), (6, 6, rect.width, rect.height), border_radius=12
+            shadow, (0, 0, 0, 80), (9, 9, rect.width, rect.height), border_radius=18
         )
-        surface.blit(shadow, (rect.x - 6, rect.y - 4))
+        surface.blit(shadow, (rect.x - 9, rect.y - 6))
         button_fill = tuple(min(255, c + 16) for c in fill) if hovered else fill
-        pygame.draw.rect(surface, button_fill, rect, border_radius=12)
-        pygame.draw.rect(surface, border, rect, 2, border_radius=12)
-        inner = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
-        pygame.draw.rect(surface, (255, 255, 255, 18), inner, 1, border_radius=10)
+        pygame.draw.rect(surface, button_fill, rect, border_radius=18)
+        pygame.draw.rect(surface, border, rect, 3, border_radius=18)
+        inner = pygame.Rect(rect.x + 5, rect.y + 5, rect.width - 9, rect.height - 9)
+        pygame.draw.rect(surface, (255, 255, 255, 18), inner, 2, border_radius=15)
         font = (
             self.asset_manager.menu_font
-            if rect.height <= 34
+            if rect.height <= 51
             else self.asset_manager.font
         )
         draw_text(
@@ -823,7 +823,7 @@ class BattleScene(BaseScene):
                 self.asset_manager.small_font,
                 GOLD,
                 WIDTH // 2,
-                29,
+                44,
                 center=True,
             )
         enemy_color = WHITE
@@ -849,8 +849,8 @@ class BattleScene(BaseScene):
         if not enemy_stats:
             enemy_stats.append(("Status", "Pronto", GRAY))
 
-        player_rect = pygame.Rect(22, 20, 390, 92)
-        enemy_rect = pygame.Rect(790, 20, 370, 92)
+        player_rect = pygame.Rect(33, 30, 585, 138)
+        enemy_rect = pygame.Rect(1185, 30, 555, 138)
         self._draw_combatant_panel(
             surface,
             player_rect,
@@ -863,14 +863,14 @@ class BattleScene(BaseScene):
         )
         self._draw_energy_panel(
             surface,
-            36,
-            156,
+            54,
+            234,
             self.engine.energy,
             self.engine.energy_max,
             self.engine.player.MAX_ENERGY_LIMIT,
             align="left",
         )
-        self._draw_coin_badge(surface, 36, 186)
+        self._draw_coin_badge(surface, 54, 279)
 
         self._draw_combatant_panel(
             surface,
@@ -977,8 +977,8 @@ class BattleScene(BaseScene):
                 GOLD,
                 fill=(18, 29, 15, 235),
                 border=(154, 172, 66),
-                radius=10,
-                top=118,
+                radius=15,
+                top=177,
             )
         elif self.entity_view.enemy_ultimate:
             special = self.entity_view.enemy_ultimate
@@ -988,7 +988,7 @@ class BattleScene(BaseScene):
                 special.color,
                 fill=(12, 14, 20, 235),
                 border=special.color,
-                radius=10,
+                radius=15,
             )
         elif self.engine.message:
             self._draw_message_box(
@@ -997,14 +997,14 @@ class BattleScene(BaseScene):
                 WHITE,
                 fill=(36, 14, 18, 235),
                 border=(168, 86, 86),
-                radius=12,
-                top=118 if getattr(enemy, "boss_id", None) == "alvaro_tex" else 26,
+                radius=18,
+                top=177 if getattr(enemy, "boss_id", None) == "alvaro_tex" else 39,
             )
 
-    def _draw_message_box(self, surface, text, color, fill, border, radius, top=26):
+    def _draw_message_box(self, surface, text, color, fill, border, radius, top=39):
         """Caixa de aviso no topo: quebra o texto na largura útil e cresce para baixo."""
         font = self.asset_manager.font
-        width, min_height, pad_x, pad_y = 460, 40, 18, 6
+        width, min_height, pad_x, pad_y = 690, 60, 27, 9
         lines = wrap_text(text, font, width - pad_x * 2) or [""]
         line_h = font.get_linesize()
         height = max(min_height, len(lines) * line_h + pad_y * 2)
@@ -1030,32 +1030,32 @@ class BattleScene(BaseScene):
 
     def _draw_ultimate_bar(self, surface):
         ready = self.engine.ultimate_ready
-        panel_rect = pygame.Rect(20, HEIGHT - 236, 214, 102)
+        panel_rect = pygame.Rect(30, HEIGHT - 354, 321, 153)
         accent = self.engine.active_ultimate_color
         draw_panel(
-            surface, panel_rect, fill=(16, 17, 28, 226), border=accent, radius=16
+            surface, panel_rect, fill=(16, 17, 28, 226), border=accent, radius=24
         )
         draw_text(
             surface,
             self.engine.active_ultimate_name.upper(),
             self.asset_manager.small_font,
             accent,
-            panel_rect.x + 16,
-            panel_rect.y + 12,
+            panel_rect.x + 24,
+            panel_rect.y + 18,
         )
         draw_text(
             surface,
             self.engine.active_ultimate_description,
             self.asset_manager.small_font,
             (167, 174, 187),
-            panel_rect.x + 16,
-            panel_rect.y + 34,
+            panel_rect.x + 24,
+            panel_rect.y + 51,
         )
         bar_x, bar_y, bar_w, bar_h = (
-            panel_rect.x + 16,
-            panel_rect.y + 58,
-            panel_rect.width - 32,
-            16,
+            panel_rect.x + 24,
+            panel_rect.y + 87,
+            panel_rect.width - 48,
+            24,
         )
         draw_health_bar(
             surface,
@@ -1073,7 +1073,7 @@ class BattleScene(BaseScene):
             self.asset_manager.small_font,
             WHITE,
             panel_rect.centerx,
-            bar_y + 30,
+            bar_y + 45,
             center=True,
         )
 
@@ -1124,7 +1124,7 @@ class BattleScene(BaseScene):
             self.asset_manager.big_font,
             RED,
             WIDTH // 2,
-            HEIGHT // 2 - 20,
+            HEIGHT // 2 - 30,
             center=True,
         )
         draw_text(
@@ -1133,7 +1133,7 @@ class BattleScene(BaseScene):
             self.asset_manager.font,
             WHITE,
             WIDTH // 2,
-            HEIGHT // 2 + 20,
+            HEIGHT // 2 + 30,
             center=True,
         )
         draw_text(
@@ -1144,7 +1144,7 @@ class BattleScene(BaseScene):
             self.asset_manager.font,
             WHITE,
             WIDTH // 2,
-            HEIGHT // 2 + 60,
+            HEIGHT // 2 + 90,
             center=True,
         )
 
@@ -1152,15 +1152,15 @@ class BattleScene(BaseScene):
         overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         overlay.fill((6, 7, 14, 228))
         surface.blit(overlay, (0, 0))
-        title_rect = pygame.Rect(WIDTH // 2 - 250, 46, 500, 76)
-        draw_panel(surface, title_rect, fill=(22, 18, 31, 235), border=GOLD, radius=18)
+        title_rect = pygame.Rect(WIDTH // 2 - 375, 69, 750, 114)
+        draw_panel(surface, title_rect, fill=(22, 18, 31, 235), border=GOLD, radius=27)
         draw_text(
             surface,
             "VITÓRIA! ESCOLHA UMA CARTA",
             self.asset_manager.big_font,
             GOLD,
             title_rect.centerx,
-            title_rect.y + 28,
+            title_rect.y + 42,
             center=True,
         )
         draw_text(
@@ -1169,7 +1169,7 @@ class BattleScene(BaseScene):
             self.asset_manager.small_font,
             WHITE,
             title_rect.centerx,
-            title_rect.y + 55,
+            title_rect.y + 83,
             center=True,
         )
 
@@ -1202,7 +1202,7 @@ class BattleScene(BaseScene):
             self.asset_manager.big_font,
             GOLD,
             WIDTH // 2,
-            HEIGHT // 2 - 65,
+            HEIGHT // 2 - 98,
             center=True,
         )
         draw_text(
@@ -1220,7 +1220,7 @@ class BattleScene(BaseScene):
             self.asset_manager.font,
             WHITE,
             WIDTH // 2,
-            HEIGHT // 2 + 52,
+            HEIGHT // 2 + 78,
             center=True,
         )
         if self.engine.message:
@@ -1230,7 +1230,7 @@ class BattleScene(BaseScene):
                 self.asset_manager.small_font,
                 RED,
                 WIDTH // 2,
-                HEIGHT // 2 + 102,
+                HEIGHT // 2 + 153,
                 center=True,
             )
 
@@ -1325,7 +1325,7 @@ class BattleScene(BaseScene):
                     except (OSError, SaveError) as exc:
                         # Falha explícita em vez de sobrescrever um save danificado.
                         self.engine.show_message(f"Não foi possível carregar: {exc}")
-                self.coin_hud = CoinHUD(self.engine.player, anchor_x=66, anchor_y=102)
+                self.coin_hud = CoinHUD(self.engine.player, anchor_x=99, anchor_y=153)
                 self.energy_hud = EnergyHUD(self.engine.player)
                 self.entity_view = EntityView(self.asset_manager)
                 self.floating_texts.clear()
