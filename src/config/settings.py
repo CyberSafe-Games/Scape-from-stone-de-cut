@@ -12,6 +12,11 @@ HEIGHT = 1080
 # arte (1280x720). Usado para ampliar sprites e quadros de animação carregados
 # no tamanho nativo dos arquivos, preservando a composição original.
 UI_SCALE = WIDTH / 1280
+
+# Tamanhos de janela disponíveis no modo janela. O jogo sempre renderiza em
+# WIDTH x HEIGHT; no modo 1280x720 a imagem é reduzida para caber na janela.
+FULL_HD_WINDOW_SIZE = (WIDTH, HEIGHT)
+LEGACY_WINDOW_SIZE = (1280, 720)
 FPS = 60
 
 TITLE = "Scape From Stone de Cut"

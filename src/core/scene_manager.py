@@ -34,7 +34,7 @@ class SceneManager:
         """Delega o evento para o modal ativo ou para a cena atual."""
         import pygame
 
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_F11:
+        if event.type == pygame.KEYDOWN and event.key in (pygame.K_F11, pygame.K_F10):
             if self.audio_manager is not None:
                 self.audio_manager.play_sfx("ui.click", volume=1.0)
 
