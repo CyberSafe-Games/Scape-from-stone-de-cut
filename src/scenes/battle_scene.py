@@ -1560,9 +1560,12 @@ class BattleScene(BaseScene):
         """Registra um checkpoint do andar atual sem modificar outro slot."""
         if self.save_manager is None or self.save_data is None:
             return True
-        # Se o herói morreu ou aguarda recompensa, mantém o último checkpoint:
-        # nunca grava HP zero nem concede duas vezes uma vitória ainda pendente.
-        if self.engine.state in ("game_over", "victory", "phase_complete"):
+        # Se o herói morreu, mantém o último checkpoint: nunca grava HP zero.
+        # Em phase_complete, "_finalize_map_phase"/"record_*" gravam a vitória;
+        # regravar aqui causaria desbloqueio duplicado. No estado de vitória,
+        # grava apenas a vida do fim do combate — nunca a recompensa nem o
+        # avanço de território (ainda pendente de escolha do jogador).
+        if self.engine.state in ("game_over", "phase_complete"):
             return True
         try:
             self.coin_hud.collect_pending_coins()

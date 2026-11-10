@@ -116,7 +116,7 @@ class TestTerritoryMap(unittest.TestCase):
         engine.choose_reward(0)
         self.assertEqual(engine.level, 1)
         self.assertEqual(engine.state, 'phase_complete')
-        self.assertEqual(engine.player.hp, 30)
+        self.assertEqual(engine.player.hp, 22)  # Combates comuns não curam; a vida persiste.
         self.assertEqual(len(engine.deck_manager.deck), deck_len + 1)
         self.assertEqual(events[-1], ('phase_complete', {'level': 1}))
         engine.choose_reward(0)
