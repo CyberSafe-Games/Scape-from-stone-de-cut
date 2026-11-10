@@ -413,6 +413,7 @@ class TestCardGameplayAudio(unittest.TestCase):
 
         engine = object.__new__(CombatEngine)
         engine.state = "player_turn"
+        engine.is_replay = False
         engine.enemy = MagicMock()
         engine.enemy.boss_id = None
         engine.enemy.is_miniboss = False

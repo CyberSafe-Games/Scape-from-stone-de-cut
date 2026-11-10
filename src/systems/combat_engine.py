@@ -3,8 +3,9 @@ import random
 from src.models.player import Player
 from src.models.deck import DeckManager
 from src.models.effects.ultimate_effect import create_ultimate, ULTIMATE_METADATA, DEFAULT_ULTIMATE_ID
-from src.systems.card_catalog import CARD_POOL, create_starting_deck
+from src.systems.card_catalog import CARD_BY_NAME, create_starting_deck
 from src.systems.boss_animation_kits import KITS
+from src.systems.territory_map import ROAD_FIGHTS, by_level, encounter_status
 from src.systems.common_animation_kits import COMMON_KITS
 from src.systems.enemy_factory import (
     create_enemy,
@@ -31,6 +32,8 @@ class CombatEngine:
         self.level = 1
         self.encounter_kind = "point"
         self.encounter_index = None
+        self.is_replay = False
+        self.owned_card_names = set()
         self.enemy_actions_remaining = 0
         self.cemetery_swap_used = False
 
@@ -44,7 +47,6 @@ class CombatEngine:
         self.state = "player_turn"
         self.message = ""
         self.message_timer = 0
-        self.reward_cards = []
 
         self.start_combat()
 
@@ -147,6 +149,7 @@ class CombatEngine:
         self.enemy_actions_remaining = 0
         self.cemetery_swap_used = False
         self.state = "player_turn"
+        self.reward_cards = []
 
     def play_card(self, index):
         """Executa a carta da mão especificada pelo índice."""
@@ -266,7 +269,7 @@ class CombatEngine:
 
     def _on_enemy_defeated(self):
         """Concede recompensa de moedas e avança para a tela de vitória."""
-        if self.state in ('boss_transition', 'victory'):
+        if self.state in ('boss_transition', 'victory', 'phase_complete'):
             return
         if getattr(self.enemy, 'boss_id', None) == 'alvaro_tex' and self.enemy.phase == 1:
             self._phase_ended_enemy_turn = self.state in ('enemy_turn', 'enemy_resolving')
@@ -275,16 +278,9 @@ class CombatEngine:
             self.on_event('boss_phase_transition')
             self.show_message('A dupla caiu... mas o pequeno ainda quer lutar!', duration=4000)
             return
-        if self.enemy.is_miniboss:
-            coin_amount = random.randint(50, 70)
-        else:
-            coin_amount = random.randint(30, 50)
-        self.on_event(
-            "coin_drop",
-            amount=coin_amount,
-            x=ENEMY_X,
-            y=ENEMY_Y,
-        )
+        if not self.is_replay:
+            low = 50 if self.enemy.is_miniboss else 30
+            self.on_event("coin_drop", amount=random.randint(low, low + 20), x=ENEMY_X, y=ENEMY_Y)
         self.state = "victory"
         self.generate_rewards()
         self.on_event("victory")
@@ -445,10 +441,13 @@ class CombatEngine:
     # ========================================================
 
     def generate_rewards(self):
-        """Gera 3 cartas aleatórias do catálogo para escolha."""
-        self.reward_cards = [
-            random.choice(CARD_POOL).copy() for _ in range(3)
-        ]
+        """Sorteia até três cartas novas para a coleção."""
+        self.reward_cards = []
+        if self.is_replay:
+            return
+        owned = self.owned_card_names | {card.name for card in self.deck_manager.deck}
+        available = [card for name, card in CARD_BY_NAME.items() if name not in owned]
+        self.reward_cards = [card.copy() for card in random.sample(available, min(3, len(available)))]
 
     def choose_reward(self, index):
         """Seleciona recompensa; no modo mapa, retorna ao mapa após a fase."""
@@ -514,6 +513,15 @@ class CombatEngine:
         self.level = data["progresso"]["andar"] if level is None else level
         self.encounter_kind = encounter_kind
         self.encounter_index = encounter_index
+        progress = data["progresso"]
+        self.owned_card_names = set(progress.get("cartas_colecao", ()))
+        self.is_replay = False
+        if self.map_mode:
+            territory = by_level(self.level)
+            if encounter_kind == "road" and self.encounter_index is None:
+                count = progress.get("encontros_por_territorio", {}).get(territory.id, 0)
+                self.encounter_index = min(count, ROAD_FIGHTS - 1)
+            self.is_replay = encounter_status(data, territory.id, self.encounter_index) == "completed"
         if encounter_kind == "road":
             self.enemy = create_road_enemy(self.level)
         elif encounter_kind == "point":

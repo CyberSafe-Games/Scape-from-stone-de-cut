@@ -6,6 +6,7 @@ os.environ.setdefault('SDL_AUDIODRIVER', 'dummy')
 import pygame
 from src.core.asset_manager import AssetManager
 from src.ui.entity_view import EntityView
+from src.config.layout import PLAYER_IDLE_FRAME_MS, VICTORY_FRAME_MS
 from src.ui.card_fx import projectile_pose
 from src.systems.card_definitions import CARD_SPECS
 from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS, cast_frame
@@ -19,7 +20,7 @@ class PlayerTwelveFramesTests(unittest.TestCase):
         pygame.display.set_mode((1, 1))
         cls.assets = AssetManager()
 
-    def test_every_interaction_has_twelve_complete_distinct_poses_and_ready_closure(self):
+    def test_idle_and_hurt_have_eight_poses_and_other_actions_have_twelve(self):
         groups = {g: self.assets.get_player_sprite_group(g) for g in ('idle', 'soco', 'dano', 'vitoria')}
         groups.update({s[1]: self.assets.get_card_action_sprites(s[1]) for s in CARD_SPECS})
         groups.update({name: self.assets.get_card_action_sprites(name) for name in ULTIMATE_ANIMATIONS})
@@ -27,8 +28,9 @@ class PlayerTwelveFramesTests(unittest.TestCase):
         ready = pygame.image.tobytes(groups['idle'][0], 'RGBA')
         for name, frames in groups.items():
             with self.subTest(name=name):
-                self.assertEqual(len(frames), 12)
-                self.assertGreaterEqual(len({pygame.image.tobytes(f, 'RGBA') for f in frames}), 10)
+                count = 8 if name in ('idle', 'dano') else 12
+                self.assertEqual(len(frames), count)
+                self.assertGreaterEqual(len({pygame.image.tobytes(f, 'RGBA') for f in frames}), count - 2)
                 self.assertEqual(pygame.image.tobytes(frames[-1], 'RGBA'), ready)
                 for frame in frames:
                     self.assertEqual(frame.get_size(), (320, 260))
@@ -50,7 +52,7 @@ class PlayerTwelveFramesTests(unittest.TestCase):
             frames = self.assets.get_card_action_sprites(name)
             seen = set()
             for i in range(1000):
-                view.player_action_timer = view.player_action_duration*i/1000
+                view.player_action_timer = (view.player_action_duration + view.player_recovery_ms) * i/1000
                 seen.add(next(j for j, f in enumerate(frames) if f is view.get_player_frame('player_turn')[1]))
             self.assertEqual(seen, set(range(12)), name)
             view.update(view.player_action_duration+1000)
@@ -75,29 +77,44 @@ class PlayerTwelveFramesTests(unittest.TestCase):
         self.assertIsNotNone(projectile_pose(view))
         self.assertIs(view.get_player_frame('player_turn')[1], self.assets.get_card_action_sprites('Disparo de Arco')[6])
 
-    def test_idle_damage_victory_and_basic_punch_play_all_twelve_poses(self):
+    def test_idle_victory_and_basic_punch_play_all_their_poses(self):
         view = EntityView(self.assets)
         for i, frame in enumerate(self.assets.get_player_sprite_group('idle')):
-            view.player_idle_timer = i*100
-            self.assertIs(view.get_player_frame('player_turn')[1], frame)
-        from src.config.layout import FLASH_DURATION
-        view.trigger_flash('player')
-        for i, frame in enumerate(self.assets.get_player_sprite_group('dano')):
-            view.player_flash = FLASH_DURATION*(1-(i+.1)/12)
+            view.player_idle_timer = i * PLAYER_IDLE_FRAME_MS
             self.assertIs(view.get_player_frame('player_turn')[1], frame)
         view=EntityView(self.assets)
         view.get_player_frame('victory')
         for i,frame in enumerate(self.assets.get_player_sprite_group('vitoria')):
-            view.player_victory_timer=(i+.1)*1120/12
+            view.player_victory_timer=(i+.1)*VICTORY_FRAME_MS
             self.assertIs(view.get_player_frame('victory')[1],frame)
         view=EntityView(self.assets)
         view.trigger_attack('player')
         frames=self.assets.get_player_sprite_group('soco')
         seen=set()
         for i in range(1000):
-            view.attack_timer=view.player_attack_duration*i/1000
+            view.attack_timer=(view.player_attack_duration + view.player_recovery_ms)*i/1000
             seen.add(next(j for j,f in enumerate(frames) if f is view.get_player_frame('player_turn')[1]))
         self.assertEqual(seen,set(range(12)))
+
+    def test_damage_plays_eight_poses_and_finishes_at_ready(self):
+        from src.config.layout import FLASH_DURATION
+        view = EntityView(self.assets)
+        def draw():
+            canvas = pygame.Surface((1920, 1080), pygame.SRCALPHA)
+            view.draw_player(canvas, 'player_turn')
+            return pygame.image.tobytes(canvas, 'RGBA')
+
+        ready = draw()
+        view.trigger_flash('player')
+        frames = self.assets.get_player_sprite_group('dano')
+        seen = []
+        for _ in range(0, FLASH_DURATION, 10):
+            frame = view.get_player_frame('player_turn')[1]
+            if not seen or frame is not seen[-1]:
+                seen.append(frame)
+            view.update(10)
+        self.assertEqual(seen, frames)
+        self.assertEqual(draw(), ready)
 
     def test_all_approved_eight_poses_and_ultimate_effects_remain_pixel_identical(self):
         from pathlib import Path
@@ -110,13 +127,15 @@ class PlayerTwelveFramesTests(unittest.TestCase):
         for group,frames in groups.items():
             with self.subTest(group=group):
                 old=[]
-                for i,index in enumerate(ORIGINAL_TWELVE_INDICES,1):
+                indices = range(8) if group in ('idle', 'dano') else ORIGINAL_TWELVE_INDICES
+                for i,index in enumerate(indices,1):
                     source=pygame.image.load(str(root/f'{group}_{i}.png')).convert_alpha()
                     old.append(pygame.image.tobytes(source,'RGBA'))
                     self.assertEqual(pygame.image.tobytes(frames[index],'RGBA'),old[-1])
-                added={pygame.image.tobytes(frames[i],'RGBA') for i in NEW_TWELVE_INDICES}
-                self.assertEqual(len(added),4)
-                self.assertFalse(added.intersection(old))
+                if len(frames) == 12:
+                    added={pygame.image.tobytes(frames[i],'RGBA') for i in NEW_TWELVE_INDICES}
+                    self.assertEqual(len(added),4)
+                    self.assertFalse(added.intersection(old))
 
     def test_palette_brightness_and_slim_idle_silhouette_remain_consistent(self):
         import json

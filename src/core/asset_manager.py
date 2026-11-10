@@ -1,11 +1,13 @@
 import os
 import pygame
+from src.systems.common_animation_kits import COMMON_KITS
 from src.ui.sprite_cleanup import remove_white_fringe, recolor_green_aura_red
 from src.systems.normal_enemy_catalog import NORMAL_SPRITES, NORMAL_RANGED
 
 from src.config.settings import (
     WIDTH,
     HEIGHT,
+    ASSETS_DIR,
     BACKGROUND_PATH,
     PLAYER_ASSETS_DIR,
     CARD_ASSETS_DIR,
@@ -55,6 +57,7 @@ class AssetManager:
         self._ui_images = {}
         self._status_icons = {}
         self._projectile_images = {}
+        self._intent_art = {}
         self._ultimate_images = {}
         self._ultimate_effect_sprites = {}
         self._boss_ultimate_sprites = {}
@@ -108,14 +111,29 @@ class AssetManager:
                 self._status_icons[name] = None
         return self._status_icons[name]
 
-    def get_projectile_image(self, name):
-        if name not in self._projectile_images:
-            path = os.path.join(os.path.dirname(BACKGROUND_PATH), 'projectiles', name + '.png')
+    def get_projectile_image(self, name, frame=None):
+        key = name if frame is None else f'{name}_{frame % 4}'
+        if key not in self._projectile_images:
+            path = os.path.join(ASSETS_DIR, 'projectiles', key + '.png')
             try:
-                self._projectile_images[name] = pygame.image.load(path).convert_alpha()
+                self._projectile_images[key] = pygame.image.load(path).convert_alpha()
             except (pygame.error, FileNotFoundError):
-                self._projectile_images[name] = None
-        return self._projectile_images[name]
+                self._projectile_images[key] = None
+        return self._projectile_images[key]
+
+    def get_intent_art(self, enemy_name, action):
+        kit = COMMON_KITS.get(enemy_name.strip().lower())
+        if kit is None or action not in kit[1]:
+            return None
+        key = (kit[0], action)
+        if key not in self._intent_art:
+            path = os.path.join(ASSETS_DIR, 'intent_art', key[0], action + '.png')
+            try:
+                art = pygame.image.load(path).convert()
+                self._intent_art[key] = pygame.transform.smoothscale(art, (88, 81))
+            except (pygame.error, FileNotFoundError):
+                self._intent_art[key] = None
+        return self._intent_art[key]
 
     @property
     def font(self):
@@ -344,17 +362,19 @@ class AssetManager:
     def _load_player_eight_frames(self):
         """Usa sequências completas com o mesmo desenho e a mesma paleta."""
         from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS
-        folder = os.path.join(PLAYER_ASSETS_DIR, 'eight_frames')
-        count = 8
+        original = os.path.join(PLAYER_ASSETS_DIR, 'eight_frames')
         expanded = os.path.join(PLAYER_ASSETS_DIR, 'twelve_frames')
-        if os.path.isfile(os.path.join(expanded,'manifest.json')):
-            folder,count = expanded,12
+        has_expanded = os.path.isfile(os.path.join(expanded, 'manifest.json'))
 
         def load(group):
-            paths = [os.path.join(folder, f'{group}_{i}.png') for i in range(1, count+1)]
-            if not all(os.path.isfile(path) for path in paths):
-                return None
-            return [pygame.image.load(path).convert_alpha() for path in paths]
+            versions = [(original, 8)]
+            if has_expanded and group not in ('idle', 'dano'):
+                versions.insert(0, (expanded, 12))
+            for folder, count in versions:
+                paths = [os.path.join(folder, f'{group}_{i}.png') for i in range(1, count + 1)]
+                if all(os.path.isfile(path) for path in paths):
+                    return [pygame.image.load(path).convert_alpha() for path in paths]
+            return None
 
         for group in ('idle', 'dano', 'soco', 'vitoria'):
             frames = load(group)
@@ -449,8 +469,9 @@ class AssetManager:
                 continue
             self._enemy_sprites.setdefault(name, {})
             for group in prepared[slug]:
-                frames = [pygame.image.load(os.path.join(root,slug,f'{group}_{i}.png')).convert_alpha()
-                          for i in range(1,count+1)]
+                folder, frame_count = (legacy_root, 8) if group in ('idle', 'dano') else (root, count)
+                frames = [pygame.image.load(os.path.join(folder, slug, f'{group}_{i}.png')).convert_alpha()
+                          for i in range(1, frame_count + 1)]
                 if name == 'carrasco da vigília' and group == 'healer2':
                     frames = [recolor_green_aura_red(frame) for frame in frames]
                 if group == 'ultimate':
@@ -649,6 +670,8 @@ class AssetManager:
 
         for name, (slug, action_groups, _, _) in NORMAL_SPRITES.items():
             folder = os.path.join(ASSETS_DIR, 'enemies', slug)
+            if not os.path.isdir(folder):
+                continue
             groups = {}
             for group in action_groups:
                 groups[group] = [pygame.image.load(os.path.join(folder, f'{group}_{i}.png')).convert_alpha()
@@ -660,7 +683,24 @@ class AssetManager:
                 self._enemy_projectiles[(name.lower(), action)] = pygame.image.load(path).convert_alpha()
 
     def get_enemy_projectile(self, enemy_name, action, frame=0):
-        projectile = self._enemy_projectiles.get((enemy_name.strip().lower(), action))
+        key = (enemy_name.strip().lower(), action)
+        imported = {
+            ('goblin nerd', 'atk1'): 'wrench', ('goblin nerd', 'atk2'): 'goblin_shot',
+            ('golem das ruínas', 'atk1'): 'stone_fist', ('putrefato do pântano', 'atk1'): 'parasite',
+            ('zanzara', 'atk2'): 'coins',
+        }.get(key)
+        if imported:
+            image = self.get_projectile_image(imported, frame)
+            if image is not None:
+                return image
+        if key == ('centauro vigia', 'atk1'):
+            image = self.get_projectile_image('arrow', frame)
+            if image is not None:
+                cache_key = f'arrow_left_{frame % 4}'
+                if cache_key not in self._projectile_images:
+                    self._projectile_images[cache_key] = pygame.transform.flip(image, True, False)
+                return self._projectile_images[cache_key]
+        projectile = self._enemy_projectiles.get(key)
         return projectile[frame % len(projectile)] if isinstance(projectile, list) else projectile
 
     def _load_common_eight_frames(self):
@@ -711,10 +751,11 @@ class AssetManager:
                                      round(w*source.get_width()), round(h*source.get_height())).clip(source.get_rect())
                 source = source.subsurface(bounds)
                 ratios = (size[0]/source.get_width(), size[1]/source.get_height())
-                scale = min(ratios) if mode == 'contain' else max(ratios)
+                scale = min(ratios) if mode in ('contain', 'framed') else max(ratios)
                 image = pygame.transform.smoothscale(source, (max(1, round(source.get_width()*scale)), max(1, round(source.get_height()*scale))))
                 result = pygame.Surface(size, pygame.SRCALPHA)
-                result.fill((9, 14, 15))
+                if mode != 'framed':
+                    result.fill((9, 14, 15))
                 result.blit(image, image.get_rect(center=result.get_rect().center))
             except (pygame.error, FileNotFoundError):
                 pass

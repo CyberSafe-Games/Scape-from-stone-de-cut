@@ -1,7 +1,7 @@
 """Bestiário dos encontros do caminho; chefes e tutorial têm pools próprios."""
 
 BIOME_ENEMIES = {
-    1: ('Slime',),
+    1: ('Slime', 'Viniurgo'),
     2: ('Macaco Selvagem', 'Guerreiro da Mata'),
     3: ('Golem das Ruínas', 'Lagarto Couraçado'),
     4: ('Putrefato do Pântano', 'Crocodilo Abissal'),
@@ -12,6 +12,7 @@ BIOME_ENEMIES = {
 
 # slug, grupos na ordem das linhas da referência, HP base, HP por nível.
 NORMAL_SPRITES = {
+    'Viniurgo': ('viniurgo', ('idle', 'dano', 'atk1', 'atk2'), 22, 5),
     'Esqueleto Saqueador': ('esqueleto', ('idle', 'dano', 'atk1', 'atk2'), 22, 5),
     'Golem das Ruínas': ('golem', ('idle', 'dano', 'atk1', 'def'), 30, 6),
     'Centauro Vigia': ('centauro', ('idle', 'dano', 'atk1', 'atk2'), 27, 6),
@@ -27,6 +28,9 @@ NORMAL_SPRITES = {
 
 # nome, tipo, valor base (+ nível para ataques/defesas), peso, animação, estado.
 NORMAL_ACTIONS = {
+    'Viniurgo': (
+        ('Soco Duplo Impulsivo', 'attack', 6, .60, 'atk1', None),
+        ('Chute Frontal', 'attack', 8, .40, 'atk2', None)),
     'Esqueleto Saqueador': (
         ('Corte Enferrujado', 'attack', 5, .55, 'atk1', ('bleed', 2, 2)),
         ('Estocada Óssea', 'attack', 9, .45, 'atk2', None)),

@@ -86,6 +86,10 @@ class SwampBossTests(unittest.TestCase):
         view.trigger_enemy_action('def', boss.name)
         frames = self.assets.get_enemy_sprite_group(boss.name, 'def')
         self.assertEqual(len(frames), 12)
-        for i, frame in enumerate(frames):
-            view.enemy_action_timer = view.enemy_action_duration*(i+.1)/12
-            self.assertIs(view.get_enemy_frame(boss), frame)
+        seen = []
+        for elapsed in range(0, view.enemy_action_duration + view.enemy_recovery_ms, 16):
+            view.enemy_action_timer = elapsed
+            frame = view.get_enemy_frame(boss)
+            if not seen or seen[-1] is not frame:
+                seen.append(frame)
+        self.assertEqual(seen, frames)

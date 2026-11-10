@@ -12,7 +12,8 @@ RANGED = {
     DUO: {'atk2': (1700, .30, .68)},
     SMALL: {'atk4': (1500, .38, .72)},
 }
+ATTACK_BOUNDARIES = tuple(i / 8 for i in range(8))
 
 
 def attack_frame(progress, count=8):
-    return timed_frame(progress,tuple(i/8 for i in range(8)),count)
+    return timed_frame(progress, ATTACK_BOUNDARIES, count)

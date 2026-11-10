@@ -6,6 +6,14 @@ from src.systems.card_definitions import SPECS_BY_NAME
 from src.ui.helpers import scale_to_display
 
 
+CARD_PROJECTILES = {
+    'Disparo de Arco': 'arrow', 'Zarabatana Venenosa': 'poison_darts',
+    'Bola de Fogo': 'fireball', 'Poção Venenosa': 'poison_potion',
+    'Poção Fragilizante': 'weakening_potion',
+}
+CONTACT_ART = {'Adaga Sangrenta': 'dagger', 'Lança Perfurante': 'spear'}
+
+
 def projectile_pose(view):
     spec = SPECS_BY_NAME.get(view.player_action)
     if view.attacker != 'player' or not spec or spec[6] != 'ranged':
@@ -25,9 +33,27 @@ def projectile_pose(view):
 def draw_player_projectile(surface, view):
     pose = projectile_pose(view)
     if pose is None:
+        contact = CONTACT_ART.get(view.player_action)
+        if view.attacker == 'player' and contact:
+            progress = view.attack_timer / max(1, view.player_attack_duration)
+            if .52 <= progress < .72:
+                phase = (progress - .52) / .20
+                sprite = scale_to_display(view.asset_manager.get_projectile_image(
+                    contact, min(3, int(phase * 4))
+                ))
+                if sprite is not None:
+                    sprite = sprite.copy()
+                    sprite.set_alpha(round(220 * (1 - phase)))
+                    surface.blit(sprite, sprite.get_rect(midright=(ENEMY_X, PLAYER_GROUND_Y - 108)))
         return
     x, y, t = pose
     name = view.player_action
+    imported = CARD_PROJECTILES.get(name)
+    if imported:
+        sprite = scale_to_display(view.asset_manager.get_projectile_image(imported, min(3, int(t * 4))))
+        if sprite is not None:
+            surface.blit(sprite, sprite.get_rect(center=(round(x), round(y))))
+            return
     if name in ('Disparo de Arco', 'Zarabatana Venenosa'):
         darts = name == 'Zarabatana Venenosa'
         for n in range(3 if darts else 1):

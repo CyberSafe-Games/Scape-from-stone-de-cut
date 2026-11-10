@@ -28,6 +28,7 @@ TERRITORIES = (
 
 TERRITORY_IDS = tuple(item.id for item in TERRITORIES)
 FIRST_TERRITORY_ID = TERRITORY_IDS[0]
+ROAD_FIGHTS = 2
 
 
 def by_id(territory_id):
@@ -79,9 +80,9 @@ def completed_count(data):
 
 
 def encounter_status(data, territory_id, index=None):
-    """Estado do ponto principal (None) ou de um dos três encontros (0–2)."""
+    """Estado do ponto principal (None) ou de um encontro da rota."""
     territory_state = status(data, territory_id)
-    if index is not None and (type(index) is not int or not 0 <= index < 3):
+    if index is not None and (type(index) is not int or not 0 <= index < ROAD_FIGHTS):
         raise ValueError('Encontro fora do caminho.')
     if territory_state == 'locked':
         return 'locked'
@@ -89,7 +90,7 @@ def encounter_status(data, territory_id, index=None):
         return 'completed'
     count = data['progresso'].get('encontros_por_territorio', {}).get(territory_id, 0)
     if index is None:
-        return 'available' if count >= 3 else 'locked'
+        return 'available' if count >= ROAD_FIGHTS else 'locked'
     return 'completed' if index < count else 'available' if index == count else 'locked'
 
 
@@ -97,5 +98,6 @@ def encounter_positions(territory_id):
     territory = by_id(territory_id)
     start = by_level(territory.level - 1).position if territory.level > 1 else (68, 990)
     end = territory.position
+    fractions = (step / (ROAD_FIGHTS + 1) for step in range(1, ROAD_FIGHTS + 1))
     return tuple((round(start[0] + (end[0] - start[0]) * t),
-                  round(start[1] + (end[1] - start[1]) * t)) for t in (.25, .5, .75))
+                  round(start[1] + (end[1] - start[1]) * t)) for t in fractions)

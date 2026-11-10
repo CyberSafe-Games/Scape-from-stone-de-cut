@@ -4,7 +4,6 @@ import pygame
 from src.config.colors import WHITE
 from src.config.layout import (
     PLAYER_X,
-    PLAYER_Y,
     ENEMY_X,
     ENEMY_Y,
     PLAYER_GROUND_Y,
@@ -13,22 +12,84 @@ from src.config.layout import (
     APPROACH_FRAC,
     STRIKE_FRAC,
     FLASH_DURATION,
+    MELEE_MIN_DURATION,
+    POSE_RECOVERY_MS,
+    PLAYER_IDLE_FRAME_MS,
+    BOSS_IDLE_FRAME_MS,
+    COMMON_IDLE_FRAME_MS,
+    VICTORY_FRAME_MS,
+    LEGACY_VICTORY_FRAME_MS,
 )
-from src.ui.helpers import ease, scale_to_display
+from src.ui.helpers import ARENA_ACTOR_LIGHT, ease, scale_to_display
+from src.ui.pose_playback import UNIFORM_TWELVE, align_stance, display_pose, loop_pose, sample_pose
 from src.systems.animation_timing import animation_duration, frame_index
+from src.systems.animation_inbetweens import action_boundaries, frame_boundaries, recovery_progress, timed_frame
 from src.systems.card_definitions import SPECS_BY_NAME
 from src.ui.guardian_spirit_fx import draw_guardian_spirit
 from src.ui.crimson_cast_fx import draw_crimson_cast
 from src.systems.normal_enemy_catalog import NORMAL_RANGED, NORMAL_SPRITES
 from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS, cast_frame
 from src.systems.boss_ultimate_animations import BOSS_ULTIMATE_ANIMATIONS, boss_cast_frame, boss_ultimate_pose
-from src.systems.alvaro_tex_animations import NAMES as DUO_NAMES, ATTACK_MS as DUO_ATTACK_MS, RANGED as DUO_RANGED, TRANSITION_MS, attack_frame
+from src.systems.alvaro_tex_animations import (
+    ATTACK_BOUNDARIES as DUO_BOUNDARIES,
+    ATTACK_MS as DUO_ATTACK_MS,
+    NAMES as DUO_NAMES,
+    RANGED as DUO_RANGED,
+    TRANSITION_MS,
+    attack_frame,
+)
+from src.systems.gordofera_animations import TREMOR_BOUNDARIES, tremor_frame
 from src.ui.alvaro_tex_fx import draw_alvaro_tex_fx
 from src.systems.boss_animation_kits import KITS, kit_frame
 from src.systems.player_animation_kits import player_frame
 from src.systems.common_animation_kits import COMMON_KITS, PROJECTILE_ORIGINS
 
 NORMAL_IDLE_NAMES = frozenset(name.lower() for name in NORMAL_SPRITES) - {'morcego sombrio'}
+MELEE_RETURN_FRACTION = APPROACH_FRAC + STRIKE_FRAC
+HURT_BOUNDARIES = (0, .07, .15, .25, .40, .54, .68, .84)
+BOSS_BODY_LIGHT = {
+    'goblin nerd': (189, 177, 164),
+    'corpo seco': (199, 184, 169),
+    'guardião da pedra': (186, 173, 160),
+    'carrasco da vigília': (188, 174, 163),
+    **dict.fromkeys(DUO_NAMES, (194, 181, 165)),
+}
+
+
+def hurt_pose(frames, ready, remaining, align):
+    if align and ready:
+        frames = align_stance(tuple(frames), ready[0])
+    return frames[timed_frame(1 - remaining / FLASH_DURATION, HURT_BOUNDARIES, 8)]
+
+
+def recoil_amount(remaining):
+    """Impacto curto e retorno longo, com velocidade zero nos extremos."""
+    progress = 1 - max(0, min(FLASH_DURATION, remaining)) / FLASH_DURATION
+    if progress < .23:
+        return ease(progress / .23)
+    return 1 - ease((progress - .23) / .77)
+
+
+def draw_recoiling_actor(surface, frame, rect, remaining, direction, blend_flags=0):
+    amount = recoil_amount(remaining)
+    if amount <= 0:
+        surface.blit(frame, rect, special_flags=blend_flags)
+        return
+
+    bounds = frame.get_bounding_rect()
+    if not bounds.width or not bounds.height:
+        return
+    body = frame.subsurface(bounds)
+    height = max(1, round(bounds.height * (1 - .04 * amount)))
+    body = pygame.transform.scale(body, (bounds.width, height))
+    angle = direction * -9 * amount
+    rotated = pygame.transform.rotate(body, angle)
+    rotated.fill((255, round(255 - 44 * amount), round(255 - 48 * amount)),
+                 special_flags=pygame.BLEND_RGB_MULT)
+    back_foot = direction * bounds.width / 4
+    pivot_offset = pygame.Vector2(back_foot, height / 2).rotate(-angle)
+    foot = pygame.Vector2(rect.x + bounds.centerx + back_foot, rect.y + bounds.bottom)
+    surface.blit(rotated, rotated.get_rect(center=foot - pivot_offset), special_flags=blend_flags)
 
 
 class EntityView:
@@ -90,7 +151,7 @@ class EntityView:
             self.player_action = action
             self.player_action_timer = 0
             spec = SPECS_BY_NAME.get(action)
-            self.player_attack_duration = 1200 if spec and spec[6] == 'ranged' else 900 if spec else ATTACK_DURATION
+            self.player_attack_duration = 1200 if spec and spec[6] == 'ranged' else 900 if spec else MELEE_MIN_DURATION
             self.player_action_duration = self.player_attack_duration
             self.pending_enemy_hit_at = None
         elif attacker == "enemy":
@@ -108,6 +169,8 @@ class EntityView:
             self.enemy_ranged_attack = self.RANGED_ATTACKS.get(self.enemy_attack_name, {}).get(action)
             if self.enemy_ranged_attack:
                 self.enemy_attack_duration = self.enemy_ranged_attack[0]
+            elif self.enemy_attack_name in KITS or self.enemy_attack_name in COMMON_KITS:
+                self.enemy_attack_duration = max(self.enemy_attack_duration, MELEE_MIN_DURATION)
             if self.enemy_ultimate:
                 spec = self.enemy_ultimate
                 self.enemy_attack_duration = spec.duration
@@ -141,17 +204,20 @@ class EntityView:
             return .58 if self.enemy_attack_name==DUO_NAMES[0] else .60
         return .52 if self.enemy_attack_name in KITS or self.enemy_attack_name in COMMON_KITS else .49
 
-    def trigger_flash(self, target):
+    def trigger_flash(self, target, enemy_name=None):
         if target == "player":
             if self.attacker == "enemy":
                 self.pending_player_hit_at = self.enemy_attack_duration * self.enemy_impact_fraction
             else:
                 self.player_flash = FLASH_DURATION
         elif target == "enemy":
+            if enemy_name:
+                self.enemy_attack_name = enemy_name.strip().lower()
             if self.player_action in ULTIMATE_ANIMATIONS:
                 self.pending_enemy_hit_at = self.player_action_duration * ULTIMATE_ANIMATIONS[self.player_action].impact
-            elif self.attacker == 'player' and self.player_action in SPECS_BY_NAME:
-                fraction = 0.90 if SPECS_BY_NAME[self.player_action][6] == 'ranged' else 0.52
+            elif self.attacker == 'player':
+                spec = SPECS_BY_NAME.get(self.player_action)
+                fraction = .90 if spec and spec[6] == 'ranged' else .52
                 self.pending_enemy_hit_at = self.player_attack_duration * fraction
             else:
                 self.enemy_flash = FLASH_DURATION
@@ -167,13 +233,22 @@ class EntityView:
             self.attacker = None
             self.attack_timer = 0
 
+    @property
+    def player_recovery_ms(self):
+        return 0 if self.player_action in ULTIMATE_ANIMATIONS else POSE_RECOVERY_MS
+
+    @property
+    def enemy_recovery_ms(self):
+        return POSE_RECOVERY_MS if self.enemy_attack_name in KITS and not self.enemy_ultimate else 0
+
     def update(self, dt):
         """Atualiza todos os timers de animação visual."""
-        player_was_busy = (self.attacker == 'player' or self.player_action is not None
-                           or self.player_flash > 0)
+        player_was_busy = self.attacker == 'player' or self.player_action is not None
+        player_was_hurt = self.player_flash > 0
         self.player_victory_timer += dt
         enemy_was_busy = (self.attacker == 'enemy' or self.enemy_action is not None
-                          or self.enemy_flash > 0 or self.phase_transition_timer is not None)
+                          or self.phase_transition_timer is not None)
+        enemy_was_hurt = self.enemy_flash > 0
         if self.phase_transition_timer is not None:
             self.phase_transition_timer += dt
         self.player_flash = max(0, self.player_flash - dt)
@@ -189,7 +264,8 @@ class EntityView:
                     and self.attack_timer >= self.pending_enemy_hit_at):
                 self.enemy_flash = max(0, FLASH_DURATION - (self.attack_timer - self.pending_enemy_hit_at))
                 self.pending_enemy_hit_at = None
-            duration = self.enemy_attack_duration if self.attacker == "enemy" else self.player_attack_duration
+            duration = (self.enemy_attack_duration + self.enemy_recovery_ms if self.attacker == "enemy"
+                        else self.player_attack_duration + self.player_recovery_ms)
             if self.attack_timer >= duration:
                 was_enemy = self.attacker == "enemy"
                 self.attacker = None
@@ -203,7 +279,7 @@ class EntityView:
 
         if self.enemy_action is not None and self.attacker != "enemy":
             self.enemy_action_timer += dt
-            if self.enemy_action_timer >= self.enemy_action_duration:
+            if self.enemy_action_timer >= self.enemy_action_duration + self.enemy_recovery_ms:
                 self.enemy_action = None
                 self.enemy_action_timer = 0
 
@@ -212,18 +288,18 @@ class EntityView:
             if self.player_action in ULTIMATE_ANIMATIONS and self.pending_enemy_hit_at is not None and self.player_action_timer >= self.pending_enemy_hit_at:
                 self.enemy_flash = max(0, FLASH_DURATION-(self.player_action_timer-self.pending_enemy_hit_at))
                 self.pending_enemy_hit_at = None
-            if self.player_action_timer >= self.player_action_duration:
+            if self.player_action_timer >= self.player_action_duration + self.player_recovery_ms:
                 self.player_action = None
                 self.player_action_timer = 0
 
         self.post_enemy_pause = max(0, self.post_enemy_pause - dt)
         if (enemy_was_busy or self.attacker == 'enemy' or self.enemy_action is not None
-                or self.enemy_flash > 0 or self.phase_transition_timer is not None):
+                or ((enemy_was_hurt or self.enemy_flash > 0) and self.enemy_attack_name in KITS)
+                or self.phase_transition_timer is not None):
             self.enemy_idle_timer = 0
-        else:
+        elif not (enemy_was_hurt or self.enemy_flash > 0):
             self.enemy_idle_timer += dt
-        if (player_was_busy or self.attacker == 'player' or self.player_action is not None
-                or self.player_flash > 0):
+        if player_was_busy or self.attacker == 'player' or self.player_action is not None or player_was_hurt or self.player_flash > 0:
             self.player_idle_timer = 0
         else:
             self.player_idle_timer += dt
@@ -247,7 +323,8 @@ class EntityView:
             return home_x, 0.0
 
         duration = self.enemy_attack_duration if attacker == "enemy" else self.player_attack_duration
-        progress = min(1.0, self.attack_timer / max(1, duration))
+        extension = self.enemy_recovery_ms if attacker == "enemy" else self.player_recovery_ms
+        progress = recovery_progress(self.attack_timer, duration, extension, MELEE_RETURN_FRACTION)
 
         # 1. Aproximação
         if progress < APPROACH_FRAC:
@@ -255,16 +332,14 @@ class EntityView:
             x = home_x + (target_x - home_x) * local
             return x, 0.0
 
-        strike_end = APPROACH_FRAC + STRIKE_FRAC
-
         # 2. Golpe
-        if progress < strike_end:
+        if progress < MELEE_RETURN_FRACTION:
             local = (progress - APPROACH_FRAC) / STRIKE_FRAC
             arm_extend = math.sin(local * math.pi)
             return target_x, arm_extend
 
         # 3. Retorno
-        local = (progress - strike_end) / (1 - APPROACH_FRAC - STRIKE_FRAC)
+        local = (progress - MELEE_RETURN_FRACTION) / (1 - MELEE_RETURN_FRACTION)
         local = ease(local)
         x = target_x + (home_x - target_x) * local
         return x, 0.0
@@ -327,11 +402,13 @@ class EntityView:
         if pose is None:
             return
         x, y, flight = pose
-        if self.enemy_attack_name != 'goblin nerd':
-            wave = scale_to_display(self.asset_manager.get_enemy_projectile(self.enemy_attack_name, self.enemy_action))
-            if wave is not None:
-                surface.blit(wave, wave.get_rect(center=(round(x), round(y))))
-                return
+        projectile = self.asset_manager.get_enemy_projectile(
+            self.enemy_attack_name, self.enemy_action, min(3, int(flight * 4))
+        )
+        projectile = scale_to_display(projectile)
+        if projectile is not None:
+            surface.blit(projectile, projectile.get_rect(center=(round(x), round(y))))
+            return
         if self.enemy_action == "atk1":
             if self._screwdriver_sprite is None:
                 # Sprite vetorial em resolução nativa: cabo, haste e ponta chata.
@@ -357,7 +434,7 @@ class EntityView:
             pygame.draw.circle(glow, (235, 253, 255), (12, 30), 6)
             surface.blit(glow, (round(x) - 12, round(y) - 30))
 
-    def get_player_frame(self, game_state):
+    def get_player_frame(self, game_state, *, interpolate=False):
         """Determina o sprite e a posição X exata do jogador com base no estado e nos timers."""
         victory = game_state == 'victory'
         if victory and not self._player_victory_active:
@@ -368,7 +445,8 @@ class EntityView:
         if game_state == "victory" and self.player_action is None and self.attacker != 'player':
             sprites = self.asset_manager.get_player_sprite_group("vitoria")
             if sprites:
-                frame = sprites[int(self.player_victory_timer*len(sprites)//1120) % len(sprites)]
+                frame_ms = VICTORY_FRAME_MS if len(sprites) == 12 else LEGACY_VICTORY_FRAME_MS
+                frame = loop_pose(sprites, self.player_victory_timer, frame_ms, interpolate)
                 return PLAYER_X, frame
 
         # Ação específica da carta
@@ -380,9 +458,15 @@ class EntityView:
                 )
                 spec = SPECS_BY_NAME.get(self.player_action)
                 if self.player_action in ULTIMATE_ANIMATIONS:
-                    index = cast_frame(progress, ULTIMATE_ANIMATIONS[self.player_action].release, len(sprites))
+                    release = ULTIMATE_ANIMATIONS[self.player_action].release
+                    index = cast_frame(progress, release, len(sprites))
                 elif len(sprites) in (8,12):
-                    index = player_frame(progress, spec[6] if spec else 'self', count=len(sprites))
+                    mode = spec[6] if spec else 'self'
+                    release = .64 if mode == 'ranged' else .52
+                    recovery_start = MELEE_RETURN_FRACTION if mode == 'melee' else release
+                    progress = recovery_progress(self.player_action_timer, self.player_action_duration,
+                                                 self.player_recovery_ms, recovery_start)
+                    index = player_frame(progress, mode, release, count=len(sprites))
                 elif spec and spec[6] == 'melee':
                     index = 0 if progress < 0.4 else 1 if progress < 0.5 else 2 if progress < 0.68 else 3
                 elif spec and spec[6] == 'ranged':
@@ -390,10 +474,11 @@ class EntityView:
                 else:
                     index = min(len(sprites) - 1, int(progress * len(sprites)))
                 frame = sprites[min(len(sprites) - 1, index)]
+                if interpolate and len(sprites) == 12:
+                    frame = sample_pose(sprites, index, progress, action_boundaries(12, release), True, cuts=(6,))
             else:
                 idle = self.asset_manager.get_player_sprite_group('idle')
-                frame = (idle[int(self.player_idle_timer*len(idle)//1200) % len(idle)] if idle
-                         else self.asset_manager.get_fallback_sprite())
+                frame = self._player_idle_pose(idle, interpolate)
 
             if self.attacker == "player":
                 x, _ = self.get_attack_pose("player", PLAYER_X, ENEMY_X - APPROACH_GAP)
@@ -407,12 +492,14 @@ class EntityView:
             progress = min(1.0, self.attack_timer / ATTACK_DURATION)
             punches = self.asset_manager.get_player_sprite_group('soco')
             if punches and len(punches) in (8,12):
-                progress = self.attack_timer/max(1,self.player_attack_duration)
-                return x,punches[player_frame(progress,'melee',count=len(punches))]
+                progress = recovery_progress(self.attack_timer, self.player_attack_duration,
+                                             self.player_recovery_ms, MELEE_RETURN_FRACTION)
+                index = player_frame(progress, 'melee', count=len(punches))
+                return x, sample_pose(punches, index, progress, action_boundaries(12, .52), interpolate, cuts=(6,))
 
             if progress < APPROACH_FRAC:
                 sprites = self.asset_manager.get_player_sprite_group("idle")
-                frame = sprites[int(self.player_idle_timer*len(sprites)//1200) % len(sprites)] if sprites else self.asset_manager.get_fallback_sprite()
+                frame = self._player_idle_pose(sprites, interpolate)
             elif progress < (APPROACH_FRAC + STRIKE_FRAC):
                 sprites = self.asset_manager.get_player_sprite_group("soco")
                 if sprites:
@@ -427,48 +514,40 @@ class EntityView:
 
             return x, frame
 
-        # Dano sofrido
-        if self.player_flash > 0:
-            sprites = self.asset_manager.get_player_sprite_group("dano")
-            if sprites:
-                progress = 1 - (self.player_flash / FLASH_DURATION)
-                index = min(len(sprites) - 1, int(progress * len(sprites)))
-                return PLAYER_X, sprites[index]
-
-        # Idle normal
         sprites = self.asset_manager.get_player_sprite_group("idle")
-        if sprites:
-            frame = sprites[int(self.player_idle_timer*len(sprites)//1200) % len(sprites)]
-            return PLAYER_X, frame
+        if self.player_flash > 0:
+            damage = self.asset_manager.get_player_sprite_group("dano")
+            if len(damage) == 8:
+                return PLAYER_X, hurt_pose(damage, sprites, self.player_flash, interpolate)
+        return PLAYER_X, self._player_idle_pose(sprites, interpolate)
 
-        return PLAYER_X, self.asset_manager.get_fallback_sprite()
+    def _player_idle_pose(self, sprites, interpolate):
+        if sprites:
+            if interpolate and len(sprites) == 8:
+                sprites = align_stance(tuple(sprites), sprites[0])
+            return loop_pose(sprites, self.player_idle_timer, PLAYER_IDLE_FRAME_MS, interpolate)
+        return self.asset_manager.get_fallback_sprite()
 
     def draw_player(self, surface, game_state):
         """Renderiza o jogador e seu efeito de impacto (flash)."""
-        player_x, player_frame = self.get_player_frame(game_state)
-        player_frame = scale_to_display(player_frame)
+        player_x, pose = self.get_player_frame(game_state, interpolate=True)
+        player_frame, blend_flags = display_pose(pose)
         player_rect = player_frame.get_rect(midbottom=(int(player_x), PLAYER_GROUND_Y))
-        surface.blit(player_frame, player_rect)
+        hurt = self.player_flash if game_state != "victory" else 0
+        if hurt and len(self.asset_manager.get_player_sprite_group("dano")) == 8:
+            hurt = 0
+        draw_recoiling_actor(surface, player_frame, player_rect, hurt, -1, blend_flags)
 
-        if self.player_flash > 0:
-            alpha = self.player_flash / FLASH_DURATION
-            pygame.draw.circle(
-                surface,
-                WHITE,
-                (int(player_x), PLAYER_Y - 23),
-                105 + int(12 * alpha),
-                5,
-            )
-
-    def get_enemy_frame(self, enemy):
+    def get_enemy_frame(self, enemy, *, interpolate=False):
         """Retorna o frame animado do inimigo com base em seu estado atual (atk, def, idle)."""
-        now = pygame.time.get_ticks()
         enemy_name = getattr(enemy, "name", "").lower()
 
         if self.phase_transition_timer is not None and enemy_name == DUO_NAMES[0]:
             frames = self.asset_manager.get_enemy_sprite_group(enemy_name, 'transition')
             if frames:
-                return frames[attack_frame(self.phase_transition_timer/TRANSITION_MS, len(frames))]
+                p = self.phase_transition_timer / TRANSITION_MS
+                return sample_pose(frames, attack_frame(p, len(frames)), p,
+                                   frame_boundaries(DUO_BOUNDARIES, len(frames)), interpolate)
 
         # 1. Ataque físico
         if self.attacker == "enemy":
@@ -477,13 +556,15 @@ class EntityView:
                 if sprites:
                     p = self.attack_timer/max(1, self.enemy_attack_duration)
                     if self.enemy_ultimate.mode == 'tremor':
-                        from src.systems.gordofera_animations import tremor_frame
-                        return sprites[tremor_frame(p,len(sprites))]
+                        index = tremor_frame(p, len(sprites))
+                        return sample_pose(sprites, index, p, frame_boundaries(TREMOR_BOUNDARIES, len(sprites)),
+                                           interpolate, cuts=(8,))
                     release = (self.enemy_ultimate.release if self.enemy_ultimate.mode in ('bear','plasma','sovereign')
                                else self.enemy_ultimate.impact)
                     index = (kit_frame(p,len(sprites),release) if len(sprites) in (8,12)
                              else boss_cast_frame(p,self.enemy_ultimate))
-                    return sprites[min(index, len(sprites)-1)]
+                    return sample_pose(sprites, min(index, len(sprites) - 1), p,
+                                       action_boundaries(12, release), interpolate, cuts=(6,))
             preferred_group = self.enemy_action if self.enemy_action else "atk"
             sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, preferred_group)
             attack_group = preferred_group
@@ -492,11 +573,19 @@ class EntityView:
                 sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, attack_group)
             if sprites:
                 if enemy_name in DUO_NAMES:
-                    return sprites[attack_frame(self.attack_timer/max(1, self.enemy_attack_duration), len(sprites))]
+                    accent = self.enemy_ranged_attack[1] if self.enemy_ranged_attack else MELEE_RETURN_FRACTION
+                    p = recovery_progress(self.attack_timer, self.enemy_attack_duration, self.enemy_recovery_ms, accent)
+                    cue = self.enemy_ranged_attack[1] if self.enemy_ranged_attack else self.enemy_impact_fraction
+                    return sample_pose(sprites, attack_frame(p, len(sprites)), p,
+                                       frame_boundaries(DUO_BOUNDARIES, len(sprites)), interpolate,
+                                       cuts=(attack_frame(cue, len(sprites)),))
                 if (enemy_name in KITS or enemy_name in COMMON_KITS) and len(sprites) in (8,12):
-                    p = self.attack_timer/max(1,self.enemy_attack_duration)
-                    release = self.enemy_ranged_attack[1] if self.enemy_ranged_attack else (.52 if enemy_name in COMMON_KITS else None)
-                    return sprites[kit_frame(p,len(sprites),release)]
+                    release = self.enemy_ranged_attack[1] if self.enemy_ranged_attack else self.enemy_impact_fraction
+                    recovery_start = release if self.enemy_ranged_attack else MELEE_RETURN_FRACTION
+                    p = recovery_progress(self.attack_timer, self.enemy_attack_duration,
+                                          self.enemy_recovery_ms, recovery_start)
+                    return sample_pose(sprites, kit_frame(p, len(sprites), release), p,
+                                       action_boundaries(12, release), interpolate, cuts=(6,))
                 if enemy_name in NORMAL_RANGED and attack_group in NORMAL_RANGED[enemy_name]:
                     progress = self.attack_timer / max(1, self.enemy_attack_duration)
                     index = 0 if progress < .22 else 1 if progress < .44 else 2 if progress < .80 else 3
@@ -535,24 +624,27 @@ class EntityView:
             group = "healer2" if self.enemy_action == "healer2" else "def"
             sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, group)
             if sprites:
-                index = frame_index(group, self.enemy_action_timer,
-                                    self.enemy_action_duration, len(sprites))
-                return sprites[index]
-
-        # 3. Reação de dano exclusiva quando o sprite fornece a animação.
-        if self.enemy_flash > 0:
-            sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "dano")
-            if sprites:
-                progress = max(0.0, min(0.999, 1 - self.enemy_flash / FLASH_DURATION))
-                return sprites[int(progress * len(sprites))]
+                p = recovery_progress(self.enemy_action_timer, self.enemy_action_duration, self.enemy_recovery_ms, .50)
+                index = frame_index(group, p, 1, len(sprites))
+                return sample_pose(sprites, index, p, UNIFORM_TWELVE, interpolate)
 
         sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "idle")
+        if self.enemy_flash > 0 and enemy_name in KITS:
+            damage = self.asset_manager.get_enemy_sprite_group(enemy_name, "dano")
+            if len(damage) == 8:
+                return hurt_pose(damage, sprites, self.enemy_flash, interpolate)
         if sprites:
+            now = self.enemy_idle_timer
             if (enemy_name in KITS or enemy_name in COMMON_KITS) and len(sprites) in (8,12):
-                return sprites[int(self.enemy_idle_timer*len(sprites)//1440) % len(sprites)]
+                frame_ms = COMMON_IDLE_FRAME_MS
+                if enemy_name in KITS:
+                    frame_ms = BOSS_IDLE_FRAME_MS
+                    if interpolate and len(sprites) == 8:
+                        sprites = align_stance(tuple(sprites), sprites[0])
+                return loop_pose(sprites, now, frame_ms, interpolate)
             if enemy_name in DUO_NAMES:
                 sequence = (0, 1, 2, 3, 2, 1)
-                return sprites[sequence[(now//260) % len(sequence)] % len(sprites)]
+                return sprites[sequence[int(now // 260) % len(sequence)] % len(sprites)]
             if enemy_name in ('vinimuth', 'carrasco da vigília') or enemy_name in NORMAL_IDLE_NAMES:
                 # Respiração lenta sobre uma pose estável: evita alternar
                 # bruscamente braços e cabeça a cada 220 ms. Os pés mantêm o pivô.
@@ -561,9 +653,9 @@ class EntityView:
                 width, height = frame.get_size()
                 return pygame.transform.smoothscale(frame, (width, height + round(2 * breath)))
             idle_ms = {"corpo seco": 800, "goblin nerd": 320, 'guardião da pedra': 400}.get(enemy_name, 360)
-            index = (now // idle_ms) % len(sprites)
+            index = int(now // idle_ms) % len(sprites)
             if enemy_name == 'guardião da pedra' and len(sprites) == 4:
-                index = (0, 1, 2, 3, 2, 1)[(now // idle_ms) % 6]
+                index = (0, 1, 2, 3, 2, 1)[int(now // idle_ms) % 6]
             return sprites[index]
 
         return None
@@ -583,7 +675,9 @@ class EntityView:
 
         # Se houver sprite para o inimigo, renderiza o sprite animado
         if enemy is not None and self.asset_manager.has_enemy_sprites(enemy.name):
-            frame = scale_to_display(self.get_enemy_frame(enemy))
+            name = enemy.name.lower()
+            light = BOSS_BODY_LIGHT.get(name, ARENA_ACTOR_LIGHT)
+            frame, blend_flags = display_pose(self.get_enemy_frame(enemy, interpolate=True), light)
             if frame is not None:
                 hover = 42 + round(4.5 * math.sin(pygame.time.get_ticks() / 300)) if enemy.name == 'Morcego Sombrio' else 0
                 if self.enemy_ultimate:
@@ -592,23 +686,17 @@ class EntityView:
                 # Eco visual discreto acompanha o giro, sem piscar frames nem
                 # trocar artificialmente a posição do personagem.
                 if is_corpo and self.attacker == "enemy" and self.enemy_action == "atk4":
-                    trail = frame.copy()
-                    trail.set_alpha(48)
-                    surface.blit(trail, rect.move(27, -5))
-                    trail.set_alpha(28)
-                    surface.blit(trail, rect.move(-26, 5))
-                surface.blit(frame, rect)
-
-                # Efeito de flash de dano
-                if self.enemy_flash > 0:
-                    alpha = self.enemy_flash / FLASH_DURATION
-                    pygame.draw.circle(
-                        surface,
-                        WHITE,
-                        (int(enemy_x), ENEMY_Y - 23),
-                        83 + int(12 * alpha),
-                        5,
-                    )
+                    for opacity, offset in ((48, (27, -5)), (28, (-26, 5))):
+                        trail = frame.copy()
+                        if blend_flags:
+                            trail.fill((opacity,) * 4, special_flags=pygame.BLEND_RGBA_MULT)
+                        else:
+                            trail.set_alpha(opacity)
+                        surface.blit(trail, rect.move(offset), special_flags=blend_flags)
+                hurt = self.enemy_flash if self.phase_transition_timer is None else 0
+                if hurt and name in KITS and len(self.asset_manager.get_enemy_sprite_group(name, "dano")) == 8:
+                    hurt = 0
+                draw_recoiling_actor(surface, frame, rect, hurt, 1, blend_flags)
                 return
 
         # Fallback procedural: boneco palito

@@ -13,7 +13,7 @@ from src.systems.common_animation_kits import COMMON_KITS
 from src.systems.normal_enemy_catalog import BIOME_ENEMIES
 from src.systems.enemy_factory import create_road_enemy, choose_next_action
 from src.ui.entity_view import EntityView
-from src.config.layout import FLASH_DURATION
+from src.config.layout import COMMON_IDLE_FRAME_MS
 
 
 class CommonEightFramesTests(unittest.TestCase):
@@ -23,8 +23,8 @@ class CommonEightFramesTests(unittest.TestCase):
         pygame.display.set_mode((1, 1))
         cls.assets = AssetManager()
 
-    def test_all_13_kits_have_distinct_transparent_poses_and_close_on_idle(self):
-        self.assertEqual(len(COMMON_KITS), 13)
+    def test_all_14_kits_have_distinct_transparent_poses_and_close_on_idle(self):
+        self.assertEqual(len(COMMON_KITS), 14)
         for name, (_, groups) in COMMON_KITS.items():
             idle = self.assets.get_enemy_sprite_group(name, 'idle')[0]
             for group in groups:
@@ -46,6 +46,8 @@ class CommonEightFramesTests(unittest.TestCase):
         for name, (_, groups) in COMMON_KITS.items():
             enemy = SimpleNamespace(name=name)
             for group in groups:
+                if group == 'dano':
+                    continue
                 with self.subTest(name=name, group=group):
                     view = EntityView(self.assets)
                     frames = self.assets.get_enemy_sprite_group(name, group)
@@ -56,8 +58,7 @@ class CommonEightFramesTests(unittest.TestCase):
                     seen = set()
                     for i in range(1000):
                         p = i / 1000
-                        if group == 'idle': view.enemy_idle_timer = p * 8 * 180
-                        elif group == 'dano': view.enemy_flash = FLASH_DURATION * (1-p)
+                        if group == 'idle': view.enemy_idle_timer = p * 8 * COMMON_IDLE_FRAME_MS
                         elif group.startswith('atk'): view.attack_timer = p * view.enemy_attack_duration
                         else: view.enemy_action_timer = p * view.enemy_action_duration
                         frame = view.get_enemy_frame(enemy)

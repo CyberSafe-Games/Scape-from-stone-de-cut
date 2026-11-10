@@ -16,10 +16,11 @@ from src.config.layout import ENEMY_X, PLAYER_X
 
 
 class NormalBestiaryTests(unittest.TestCase):
-    def test_thirteen_unique_types_follow_the_requested_biome_distribution(self):
-        self.assertEqual([len(pool) for pool in BIOME_ENEMIES.values()], [1, 2, 2, 2, 2, 2, 2])
+    def test_fourteen_unique_types_follow_the_requested_biome_distribution(self):
+        self.assertEqual(BIOME_ENEMIES[1], ('Slime', 'Viniurgo'))
+        self.assertEqual([len(pool) for pool in BIOME_ENEMIES.values()], [2] * 7)
         names = [name for pool in BIOME_ENEMIES.values() for name in pool]
-        self.assertEqual(len(set(names)), 13)
+        self.assertEqual(len(set(names)), 14)
         self.assertEqual(set(names), set(NORMAL_SPRITES) | {'Slime', 'Vinimuth'})
         for level, pool in BIOME_ENEMIES.items():
             for name in pool:

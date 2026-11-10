@@ -1,5 +1,5 @@
 """Coordena a gravação de vitórias de fases sem depender de interface gráfica."""
-from src.systems.territory_map import TERRITORIES, by_level, complete, status, encounter_status
+from src.systems.territory_map import ROAD_FIGHTS, TERRITORIES, by_level, complete, status, encounter_status
 
 
 def record_victory(save_manager, save_data, engine, collect_pending_coins):
@@ -13,8 +13,8 @@ def record_victory(save_manager, save_data, engine, collect_pending_coins):
     territory = by_level(engine.level)
     if status(save_data, territory.id) == "locked":
         raise ValueError("Esta fase ainda não está disponível.")
-    if save_data["progresso"].get("encontros_por_territorio", {}).get(territory.id, 0) < 3:
-        raise ValueError("É preciso concluir os três encontros anteriores ao ponto de interesse.")
+    if encounter_status(save_data, territory.id) == "locked":
+        raise ValueError("É preciso concluir os dois encontros anteriores ao chefe.")
     from copy import deepcopy
     original = deepcopy(save_data["progresso"])
     collect_pending_coins()
@@ -32,9 +32,9 @@ def record_victory(save_manager, save_data, engine, collect_pending_coins):
 
 
 def record_road_victory(save_manager, save_data, engine, collect_pending_coins):
-    """Registra um encontro comum, sem avançar território; máximo de 3.
+    """Registra um encontro comum sem avançar território.
 
-    Valida estágio e evita aumentar além de três. A cena sai somente após
+    Valida o estágio e limita a contagem ao tamanho da rota. A cena sai após
     confirmação da gravação do progresso e da recompensa.
     """
     if engine.state != "phase_complete" or engine.encounter_kind != "road":
@@ -45,16 +45,16 @@ def record_road_victory(save_manager, save_data, engine, collect_pending_coins):
     progress = save_data["progresso"]
     current = progress.setdefault("encontros_por_territorio", {}).get(territory.id, 0)
     if status(save_data, territory.id) == 'completed':
-        current = 3
+        current = ROAD_FIGHTS
     index = getattr(engine, 'encounter_index', None)
     # Sem índice mantém o fluxo sequencial dos chamadores antigos.
     if index is None:
-        if current >= 3 or status(save_data, territory.id) == 'completed':
-            raise ValueError("Os três encontros já foram concluídos.")
+        if current >= ROAD_FIGHTS:
+            raise ValueError("Os encontros da rota já foram concluídos.")
         index = current
     if encounter_status(save_data, territory.id, index) == 'locked':
         raise ValueError('Este encontro ainda está bloqueado.')
-    next_count = max(current, index + 1)
+    next_count = min(ROAD_FIGHTS, max(current, index + 1))
     # O motor já possui o prêmio selecionado. Preserva o JSON em caso de falha.
     from copy import deepcopy
     snapshot = deepcopy(progress)

@@ -1,4 +1,4 @@
-"""Regressões da campanha 3 encontros/ponto, Corpo Seco e deck 3x fixo."""
+"""Regressões da campanha, Corpo Seco e deck 3x fixo."""
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -9,7 +9,7 @@ from src.systems.save_manager import SaveManager, SaveCorruptedError
 from src.systems.combat_engine import CombatEngine
 from src.systems.enemy_factory import create_corpo_seco, create_road_enemy
 from src.systems.campaign_progress import record_road_victory, record_victory
-from src.systems.territory_map import TERRITORY_IDS, status
+from src.systems.territory_map import TERRITORY_IDS, encounter_status, status
 from src.systems.deck_loadout import equip_card_type, COPIES_PER_SLOT, SLOT_COUNT
 from src.systems.shop_system import purchase_card
 
@@ -36,8 +36,8 @@ class RouteBossDeckTests(unittest.TestCase):
         self.assertEqual(self.data['progresso']['encontros_por_territorio'], {})
         self.assertEqual(status(self.data, TERRITORY_IDS[0]), 'available')
 
-    def test_three_road_encounters_then_point_fight_unlock(self):
-        for i in range(3):
+    def test_two_road_encounters_then_point_fight_unlock(self):
+        for i in range(2):
             self._road_victory()
             self.assertEqual(self.saves.load_save('slot_1')['progresso']['encontros_por_territorio'][TERRITORY_IDS[0]], i+1)
             self.assertEqual(status(self.data, TERRITORY_IDS[1]), 'locked')
@@ -57,17 +57,28 @@ class RouteBossDeckTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             record_victory(self.saves, self.data, engine, lambda: None)
 
-    def test_road_cannot_be_counted_four_times(self):
+    def test_road_cannot_be_counted_three_times(self):
         for _ in range(3):
             self._road_victory()
-        with self.assertRaises(ValueError):
-            self._road_victory()
+        progress = self.saves.load_save('slot_1')['progresso']
+        self.assertEqual(progress['encontros_por_territorio'][TERRITORY_IDS[0]], 2)
 
     def test_legacy_save_preserves_open_point_battles(self):
         old = self.saves.create_save('slot_2')
         old['progresso'].pop('encontros_por_territorio', None)
         self.saves.save(old)
-        self.assertEqual(self.saves.load_save('slot_2')['progresso']['encontros_por_territorio'][TERRITORY_IDS[0]], 3)
+        self.assertEqual(self.saves.load_save('slot_2')['progresso']['encontros_por_territorio'][TERRITORY_IDS[0]], 2)
+
+    def test_old_three_win_counter_is_migrated_without_relocking_the_boss(self):
+        from pathlib import Path
+        import json
+        slot = Path(self.folder.name) / 'slot_1.json'
+        old = json.loads(slot.read_text(encoding='utf-8'))
+        old['progresso']['encontros_por_territorio'][TERRITORY_IDS[0]] = 3
+        slot.write_text(json.dumps(old), encoding='utf-8')
+        loaded = self.saves.load_save('slot_1')
+        self.assertEqual(loaded['progresso']['encontros_por_territorio'][TERRITORY_IDS[0]], 2)
+        self.assertEqual(encounter_status(loaded, TERRITORY_IDS[0]), 'available')
 
     def test_fortress_boss_and_other_road_enemies(self):
         self.assertEqual(create_corpo_seco(5).name, 'Corpo Seco')
