@@ -3,15 +3,27 @@ from src.ui.helpers import draw_text, draw_panel, wrap_text
 
 INFO = {
  'fire': ('Fogo', '3 de dano por intensidade ao fim do turno; atinge Escudo. Máximo: 3 intensidades.'),
- 'poison': ('Veneno', 'Dano direto à vida no fim do turno; ignora Escudo e Totem. Reaplicar renova a duração.'),
- 'bleed': ('Sangramento', '4 de dano direto à vida no primeiro ataque de cada turno. Não repete em ações adicionais do chefe.'),
+ 'poison': ('Veneno', 'Dano direto à vida no fim do turno; ignora Escudo. As aplicações das novas cartas acumulam acúmulos.'),
+ 'bleed': ('Sangramento', 'Dano direto igual aos acúmulos no primeiro ataque de cada turno. Não repete em ações adicionais do chefe.'),
+ 'burn': ('Queimadura', 'Cada acúmulo causa 1 de dano direto à vida ao fim do turno; dura 3 turnos por aplicação.'),
  'vulnerable': ('Fragilidade', 'Recebe 25% a mais de dano de ataques; não amplifica efeitos de dano contínuo.'),
+ 'weak': ('Fraqueza', 'Causa 25% a menos de dano; a duração é contada em turnos do afetado.'),
  'aura': ('Aura Rubra', 'Dano adicional por ataque. Reaplicar renova a duração, sem acumular bônus.'),
  'totem': ('Totem Protetor', 'Anula o próximo ataque completo. Dano de efeitos não consome o Totem.'),
  'shield': ('Escudo', 'Absorve dano. Cada aplicação dura 2 turnos do dono; receber mais não renova o Escudo antigo.'),
  'weakness': ('Fraqueza', 'Causa 25% a menos de dano. Mantém a duração original da ultimate.'),
  'strength': ('Força', 'Bônus de dano durante o combate.'),
  'energy': ('Energia futura', 'Energia extra no próximo turno. O total de energia disponível não ultrapassa 8.'),
+ 'stun': ('Atordoamento', 'Pula o próximo turno inteiro do afetado.'),
+ 'debuff_immunity': ('Imunidade', 'Impede a aplicação de novos efeitos negativos enquanto durar.'),
+ 'no_heal': ('Sem cura', 'Impede o afetado de recuperar vida durante o próximo turno.'),
+ 'no_block': ('Sem escudo', 'Impede o afetado de receber Escudo enquanto durar.'),
+ 'attack_burn': ('Chuva de Faíscas', 'Cada ataque do usuário aplica Queimadura ao alvo neste turno.'),
+ 'burn_on_action': ('Armadilha de Brasa', 'Cada ação do afetado aplica Queimadura nele mesmo.'),
+ 'poison_on_damage': ('Sangue Tóxico', 'Cada dano à vida sofrido aplica Veneno ao afetado neste turno.'),
+ 'poison_multiplier': ('Veneno dobrado', 'O dano de Veneno do próximo turno é duplicado.'),
+ 'double_bleed': ('Dança da Lâmina Rubra', 'As cartas do usuário aplicam o dobro de Sangramento neste turno.'),
+ 'attack_lock': ('Ataques bloqueados', 'Você não pode jogar cartas de ataque durante o turno indicado.'),
 }
 
 
@@ -20,7 +32,10 @@ def draw_status_badges(surface, combatant, x, y, width, assets, mouse):
     if combatant.block:
         states.insert(0, ('shield', combatant.block, combatant.block_turns))
     if combatant.strength: states.append(('strength', combatant.strength, 0))
-    if combatant.weak_turns: states.append(('weakness', combatant.weak_turns, 0))
+    if combatant.weak_turns and 'weak' not in combatant.statuses:
+        states.append(('weakness', combatant.weak_turns, 0))
+    if combatant.attack_lock_turns or combatant.attack_lock_pending:
+        states.append(('attack_lock', combatant.attack_lock_turns or combatant.attack_lock_pending, 0))
     if combatant.next_turn_energy: states.append(('energy', combatant.next_turn_energy, 0))
     per_row = max(1, width // 66)
     for i, (name, count, potency) in enumerate(states):

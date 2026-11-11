@@ -81,7 +81,7 @@ class TestLaboratorySave(unittest.TestCase):
         self.assertEqual(loaded['progresso']['deck_slots'][0], 'Poção Venenosa')
         self.assertEqual(loaded['progresso']['ultimate_equipada'], 'rugido_da_floresta')
         self.assertEqual(loaded['progresso']['moedas'], 1234)
-        self.assertEqual(len(loaded['progresso']['cartas_colecao']), 20)
+        self.assertEqual(len(loaded['progresso']['cartas_colecao']), len(CARD_POOL))
 
     def test_never_overwrites_non_test_file_with_reserved_name(self):
         self.saves.create_save(TEST_SAVE_ID)

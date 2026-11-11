@@ -1,4 +1,4 @@
-"""Todas as 20 cartas ficam alcançáveis na loja e na mochila."""
+"""Todas as cartas do catálogo ficam alcançáveis na loja e na mochila."""
 import os
 import unittest
 from unittest.mock import MagicMock
@@ -9,7 +9,7 @@ import pygame
 from src.scenes.shop_scene import ShopScene
 from src.scenes.backpack_scene import BackpackScene
 from src.systems.save_manager import SaveManager
-from src.systems.card_catalog import CARD_BY_NAME
+from src.systems.card_catalog import CARD_BY_NAME, CARD_POOL
 
 
 class CardCollectionPageTests(unittest.TestCase):
@@ -36,8 +36,9 @@ class CardCollectionPageTests(unittest.TestCase):
             self.click(scene, scene.next_page_rect)
         self.assertEqual(found, set(CARD_BY_NAME))
         self.assertEqual(set(self.data['progresso']['cartas_colecao']), set(CARD_BY_NAME))
+        page_count = scene.page_count
         self.click(scene, scene.previous_page_rect)
-        self.assertEqual(scene.page, 2)
+        self.assertEqual(scene.page, page_count - 2)
 
     def test_last_page_card_can_be_equipped_and_persists_slot(self):
         self.data['progresso']['cartas_colecao'] = list(CARD_BY_NAME)
@@ -47,12 +48,13 @@ class CardCollectionPageTests(unittest.TestCase):
             self.click(scene, scene.next_page_rect)
             found.update(scene.cards)
         self.assertEqual(found, set(CARD_BY_NAME))
+        last_card_name = CARD_POOL[-1].name
         scene.selected_slot = 2
-        self.click(scene, scene.cards['Poção Venenosa'])
+        self.click(scene, scene.cards[last_card_name])
         self.assertIsNone(self.data['progresso']['deck_slots'][2])
         self.click(scene, scene.equip_rect)
-        self.assertEqual(self.data['progresso']['deck_slots'][2], 'Poção Venenosa')
-        self.assertEqual(self.data['progresso']['cartas'].count('Poção Venenosa'), 3)
+        self.assertEqual(self.data['progresso']['deck_slots'][2], last_card_name)
+        self.assertEqual(self.data['progresso']['cartas'].count(last_card_name), 3)
 
     def test_every_visible_card_can_be_selected_without_equipping(self):
         self.data['progresso']['cartas_colecao'] = list(CARD_BY_NAME)
