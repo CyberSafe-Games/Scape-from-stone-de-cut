@@ -163,5 +163,19 @@ class NecromancerTests(unittest.TestCase):
         self.assertEqual(actor_x("atk2", .78, 5), PLAYER_X + APPROACH_GAP)
         self.assertEqual(actor_x("atk3", .8, 5), ENEMY_X)
 
+    def test_damage_reaction_uses_all_frames_across_shared_flash_duration(self):
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        from src.config.layout import FLASH_DURATION
+        import src.ui.zanzara_necromancer as module
+        frames = module.state_frames('dano')
+        screen = pygame.Surface((1,1), pygame.SRCALPHA)
+        for index in range(8):
+            elapsed = FLASH_DURATION * (index + .5) / 8
+            view = SimpleNamespace(enemy_flash=FLASH_DURATION-elapsed)
+            with self.subTest(index=index), patch.object(module, '_blit') as draw:
+                module.draw_hit_reaction(screen, view)
+                self.assertIs(draw.call_args.args[1], frames[index])
+
 if __name__ == "__main__":
     unittest.main()

@@ -42,3 +42,15 @@ class CharacterPortraitTests(unittest.TestCase):
             self.assertIsInstance(hud._portraits[(name.lower(),(58,61))],pygame.Surface)
         hud.portrait(surface,pygame.Rect(20,20,88,96),'Jaum Manel',player=True)
         self.assertIn(('jaum manel',(88,96)),hud._portraits)
+
+    def test_zanzara_keeps_approved_face_inside_protagonist_frame(self):
+        from pathlib import Path
+        from src.systems.character_portraits import FRAMED_PORTRAITS
+        root = Path(__file__).resolve().parents[1]
+        frame = pygame.image.load(str(root/'assets/portraits/source/framed/manel.png')).convert_alpha()
+        portrait = self.assets.get_character_portrait('Zanzara', frame.get_size())
+        self.assertIn('zanzara', FRAMED_PORTRAITS)
+        for point in ((5, 200), (294, 200), (150, 3), (150, 397), (14, 8)):
+            self.assertEqual(portrait.get_at(point), frame.get_at(point), point)
+        self.assertNotEqual(pygame.image.tobytes(portrait, 'RGBA'), pygame.image.tobytes(frame, 'RGBA'))
+        self.assertEqual(PORTRAITS['zanzara'][0], 'bosses/zanzara-necromante-v8.png')

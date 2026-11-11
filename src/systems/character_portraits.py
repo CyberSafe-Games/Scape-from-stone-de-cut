@@ -25,9 +25,12 @@ FRAMED_PORTRAITS = {
     'álvaro e tex': 'alvaro_tex', 'álvaro e tex · pequeno': 'tex',
     'goblin nerd': 'goblin_nerd', 'gordofera': 'gordofera',
     'corpo seco': 'corpo_seco', 'carrasco da vigília': 'carrasco',
-    'zanzara': 'zanzara', 'viniurgo': 'viniurgo',
+    'zanzara': 'manel', 'viniurgo': 'viniurgo',
 }
 PORTRAITS.update({
     name: (f'framed/{file}.png', (0, 0, 1, 1), 'framed')
     for name, file in FRAMED_PORTRAITS.items()
 })
+
+# Preserva o rosto aprovado usando a mesma moldura do protagonista.
+PORTRAITS['zanzara'] = ('bosses/zanzara-necromante-v8.png', (0, 0, 1, 1), 'framed-content')

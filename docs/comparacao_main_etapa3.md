@@ -47,3 +47,21 @@ Nenhum arquivo foi substituído integralmente pela versão de um dos lados. O `A
 - Novos testes confirmam que Totens de cura/veneno preservam seus gatilhos e bloqueiam corretamente os debuffs de Zanzara; sem proteção, Sangramento e Veneno continuam aplicados.
 - O teste da âncora do portal foi atualizado para a posição dos pés produzida pelo renderizador novo da main (382, 627 no cenário de teste), preservando a exigência de ignorar margens transparentes.
 - Registros: `docs/validacao_main_por_modulo.json` e `docs/audio_mix_audit.json`.
+
+## Retrato e colisões — revisão após conferir a main
+
+- Retrato de Zanzara corrigido para voltar ao rosto aprovado em `bosses/zanzara-necromante-v8.png`. O mapa de retratos emoldurados recebido da main estava sobrescrevendo essa escolha com `framed/zanzara.png`, uma imagem diferente. Os outros retratos permanecem no mapa emoldurado.
+- As reações gerais de impacto (inclinação, compressão, tonalidade avermelhada e recuperação de postura) vieram da main, assim como FLASH_DURATION alterado de 220 para 560 ms.
+- A reação de dano dedicada do Zanzara, feita no nosso kit, ainda divide o tempo por 220 ms; combinada ao valor global novo, isso segura o primeiro quadro e encurta a parte animada. Diagnóstico identificado para o próximo refinamento, sem alterar as animações nesta troca de retrato.
+
+## Moldura do retrato de Zanzara
+
+O rosto aprovado agora é composto dentro da mesma moldura do protagonista, com proporções e renderização iguais na HUD. A composição reutiliza a arte existente da borda e mantém intactos os PNGs originais. Três testes de retrato aprovados, incluindo comparação de pixels da moldura e conferência da fonte do rosto. Prévia: docs/retratos_moldura_compartilhada.png. Animações de colisão permanecem como diagnóstico pendente.
+
+## Reação de dano de Zanzara — ajuste de compatibilidade
+
+Após aprovação do rosto e moldura, a sequência de dano passou a usar FLASH_DURATION do jogo em vez do valor fixo de 220 ms. Os oito quadros existentes agora avançam por toda a janela atual de 560 ms, eliminando a espera artificial no primeiro quadro causada pela conciliação com a main. Nenhum sprite, escala, golpe ou efeito de áudio foi recriado. Foram aprovados 27 testes direcionados, incluindo uma regressão que verifica a passagem pelos oito quadros. A avaliação perceptual fica com o usuário no piloto: H para receber um golpe; 1–4 para atacar.
+
+## Aprovação e preparação para publicação
+
+O usuário aprovou os refinamentos de rosto, moldura e reação de dano no piloto. A reação dedicada de Zanzara agora acompanha FLASH_DURATION global, preservando a arte. A publicação da PR foi autorizada após essa revisão; merge na main continua dependendo da aprovação do grupo. Verificações pertinentes aos ajustes finais: 30 testes aprovados.

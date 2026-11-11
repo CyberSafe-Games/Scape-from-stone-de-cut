@@ -9,7 +9,7 @@ from functools import lru_cache
 from pathlib import Path
 import pygame
 from src.config.settings import ASSETS_DIR
-from src.config.layout import ENEMY_X, PLAYER_X, APPROACH_GAP, PLAYER_GROUND_Y
+from src.config.layout import ENEMY_X, PLAYER_X, APPROACH_GAP, PLAYER_GROUND_Y, FLASH_DURATION
 
 DEFEAT_DURATION = 1800
 
@@ -223,7 +223,7 @@ def state_frames(name):
 
 
 def draw_hit_reaction(surface,view):
-    p = max(0,min(1,1-view.enemy_flash/220))
+    p = max(0,min(1,1-view.enemy_flash/FLASH_DURATION))
     frame = state_frames('dano')[min(7,int(p*8))]
     _blit(surface,frame,ENEMY_X,4,48,69.5)
 

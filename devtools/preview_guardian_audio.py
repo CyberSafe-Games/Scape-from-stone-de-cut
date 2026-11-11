@@ -124,6 +124,10 @@ def main():
                     scene.engine.player.hp = 0
                     scene.engine.state = "game_over"
                     scene._handle_combat_event("game_over")
+                elif zanzara and event.type == pygame.KEYDOWN and event.key == pygame.K_h:
+                    scene = start(0)
+                    scene._handle_combat_event("attack", attacker="player", action="Soco Simples")
+                    scene._handle_combat_event("flash", target="enemy")
                 elif event.type == pygame.KEYDOWN and pygame.K_1 <= event.key <= pygame.K_0 + count:
                     scene = start(event.key - pygame.K_0)
                 else:
@@ -131,7 +135,7 @@ def main():
             scene.update(dt)
             scene.draw(window.screen)
             caption = assets.small_font.render(
-                ("ZANZARA | 1 Foice Sombria | 2 Passo | 3 Grilhoes | 4 Travessia | G Game Over | Esc Sair" if zanzara else
+                ("ZANZARA | 1 Foice Sombria | 2 Passo | 3 Grilhoes | 4 Travessia | H Receber golpe | G Game Over | Esc Sair" if zanzara else
                  "CARRASCO | 1 Corte | 2 Varredura | 3 Vigor | 4 Execução | Esc Sair" if carrasco else
                  "CORPO SECO | 1 Corte | 2 Cruzadas | 3 Defesa | 4 Giratório | Esc Sair" if corpo else
                  "GORDOFERA | 1 Garras | 2 Rugido | 3 Cabeçada | 4 Guarda | 5 Abalo | Esc Sair" if gordofera else
