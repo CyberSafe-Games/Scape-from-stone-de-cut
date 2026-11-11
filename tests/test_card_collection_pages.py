@@ -10,7 +10,7 @@ from src.scenes.shop_scene import ShopScene
 from src.scenes.backpack_scene import BackpackScene
 from src.systems.save_manager import SaveManager
 from src.systems.card_catalog import AVAILABLE_CARD_NAMES, AVAILABLE_CARD_POOL, CARD_BY_NAME, UNAVAILABLE_CARD_NAMES
-from src.systems.deck_loadout import equip_card_type
+from src.systems.deck_loadout import DECK_SLOT_LIMIT, add_card_to_deck
 from src.systems.shop_system import purchase_card
 
 
@@ -42,7 +42,7 @@ class CardCollectionPageTests(unittest.TestCase):
         self.click(scene, scene.previous_page_rect)
         self.assertEqual(scene.page, page_count - 2)
 
-    def test_last_page_card_can_be_equipped_and_persists_slot(self):
+    def test_last_page_card_adds_copies_and_persists_slots(self):
         self.data['progresso']['cartas_colecao'] = list(CARD_BY_NAME)
         scene = BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, self.data)
         found = set(scene.cards)
@@ -52,40 +52,46 @@ class CardCollectionPageTests(unittest.TestCase):
         self.assertEqual(found, set(CARD_BY_NAME))
         last_card_name = AVAILABLE_CARD_POOL[-1].name
         scene._set_page((len(AVAILABLE_CARD_POOL) - 1) // scene.PAGE_SIZE)
-        scene.selected_slot = 2
-        self.click(scene, scene.cards[last_card_name])
-        self.assertIsNone(self.data['progresso']['deck_slots'][2])
-        self.click(scene, scene.equip_rect)
-        self.assertEqual(self.data['progresso']['deck_slots'][2], last_card_name)
+        for _ in range(3):
+            self.click(scene, scene.cards[last_card_name])
+        self.assertEqual(self.data['progresso']['deck_slots'].count(last_card_name), 3)
         self.assertEqual(self.data['progresso']['cartas'].count(last_card_name), 3)
 
-    def test_only_available_cards_can_be_selected_without_equipping(self):
+    def test_only_available_cards_can_be_added_to_the_deck(self):
         self.data['progresso']['cartas_colecao'] = list(CARD_BY_NAME)
         scene = BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, self.data)
-        original_slots = list(self.data['progresso']['deck_slots'])
         selected = set()
         for page in range(scene.page_count):
             scene._set_page(page)
             for name, rect in scene.cards.items():
                 with self.subTest(page=page, card=name):
                     scene.selected_card = None
+                    # Parte de um deck determinístico com um único espaço livre.
+                    self.data['progresso']['deck_slots'] = ['Soco Simples'] + [None] * (DECK_SLOT_LIMIT - 1)
+                    self.data['progresso']['cartas'] = ['Soco Simples']
                     self.click(scene, rect)
-                    self.assertEqual(scene.selected_card, name if name in AVAILABLE_CARD_NAMES else None)
-                    self.assertEqual(self.data['progresso']['deck_slots'], original_slots)
+                    if name in AVAILABLE_CARD_NAMES:
+                        # O baralho começa com uma Soco Simples; o clique adiciona mais uma.
+                        expected = 2 if name == 'Soco Simples' else 1
+                        self.assertEqual(scene.selected_card, name)
+                        self.assertEqual(self.data['progresso']['cartas'].count(name), expected)
+                    else:
+                        self.assertIsNone(scene.selected_card)
+                        self.assertEqual(self.data['progresso']['cartas'], ['Soco Simples'])
                     if scene.selected_card:
                         selected.add(scene.selected_card)
         self.assertEqual(selected, AVAILABLE_CARD_NAMES)
 
-    def test_unavailable_card_cannot_be_bought_or_equipped_from_an_old_save(self):
+    def test_unavailable_card_cannot_be_bought_or_added_to_the_deck_from_an_old_save(self):
         name = sorted(UNAVAILABLE_CARD_NAMES)[0]
         progress = self.data['progresso']
         progress['cartas_colecao'] = [name]
-        progress['deck_slots'] = [name]
+        progress['deck_slots'] = [name] + [None] * (DECK_SLOT_LIMIT - 1)
         progress['cartas'] = [name] * 3
         coins = progress['moedas']
 
         self.assertFalse(purchase_card(self.saves, self.data, name).success)
-        self.assertFalse(equip_card_type(self.saves, self.data, 0, name)[0])
+        self.assertFalse(add_card_to_deck(self.saves, self.data, name)[0])
         self.assertEqual(progress['moedas'], coins)
         self.saves.save.assert_not_called()
 

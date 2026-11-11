@@ -8,9 +8,12 @@ from src.systems.card_catalog import AVAILABLE_CARD_POOL, create_starting_deck
 from src.systems.card_definitions import migrate_card_name
 from src.systems.territory_map import TERRITORY_IDS, FIRST_TERRITORY_ID, ROAD_FIGHTS
 from src.models.effects.ultimate_effect import DEFAULT_ULTIMATE_ID, known_ultimate_ids
-from src.systems.deck_loadout import INITIAL_SLOTS, normalize_collection_and_slots, expand_slots, SLOT_COUNT
+from src.systems.deck_loadout import INITIAL_SLOTS, normalize_collection_and_slots, deck_cards, COPIES_PER_CARD
 
-SAVE_VERSION = 8
+# v9: deck equipado passa a ser uma cópia por espaço (DECK_SLOT_LIMIT).
+# Saves v8 (e anteriores) migram em normalize_collection_and_slots: cada
+# tipo equipado (3 cópias) vira três espaços individuais.
+SAVE_VERSION = 9
 SLOT_COUNT = 3
 
 # Território disponível em um save novo (ids de território definidos pelo jogo).
@@ -71,7 +74,7 @@ class SaveManager:
                 "tutorial_concluido": False,
                 "moedas": INITIAL_COINS,
                 "curas_compradas_run": 0,
-                "cartas": expand_slots(INITIAL_SLOTS),
+                "cartas": deck_cards(INITIAL_SLOTS),
                 "cartas_colecao": ["Soco Simples", "Esfera Protetora"],
                 "deck_slots": list(INITIAL_SLOTS),
                 "encontros_por_territorio": {},
@@ -176,6 +179,8 @@ class SaveManager:
                     for tid in TERRITORY_IDS[:previous_floor]:
                         if tid not in unlocked:
                             unlocked.append(tid)
+        # v9: a migração de saves antigos acontece em normalize_collection_and_slots
+        # (6 espaços de tipos -> 18 espaços individuais).
         normalize_collection_and_slots(progress)
         # Saves anteriores (sem rota) preservam o acesso aos confrontos que
         # já estavam disponíveis.
@@ -299,9 +304,12 @@ class SaveManager:
         self._unlock_test_progress(progress)
         progress['andar'] = 7
         progress['moedas'] = 9999
-        progress['deck_slots'] = ['Soco Simples', 'Esfera Protetora', 'Disparo de Arco',
-                                  'Bola de Fogo', 'Adaga Sangrenta', 'Surto de Energia']
-        progress['cartas'] = expand_slots(progress['deck_slots'])
+        test_deck_types = ['Soco Simples', 'Esfera Protetora', 'Disparo de Arco',
+                           'Bola de Fogo', 'Adaga Sangrenta', 'Surto de Energia']
+        progress['deck_slots'] = [
+            name for name in test_deck_types for _ in range(COPIES_PER_CARD)
+        ]  # Um espaço por cópia: 18 espaços, 3 de cada tipo.
+        progress['cartas'] = list(progress['deck_slots'])
         self.save(data)
         return data
 
@@ -370,8 +378,8 @@ class SaveManager:
             if card.name in self._card_catalog and card.name not in progress["cartas_colecao"]:
                 progress["cartas_colecao"].append(card.name)
         # O deck é configurado na mochila. Recompensas entram na coleção, não
-        # entram automaticamente na seleção de três cópias por tipo.
-        progress["cartas"] = expand_slots(progress["deck_slots"])
+        # entram automaticamente nos espaços individuais.
+        progress["cartas"] = deck_cards(progress["deck_slots"])
         if level is not None:
             progress["andar"] = level
         progress["vida"] = player.hp
