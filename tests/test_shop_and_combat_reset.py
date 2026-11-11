@@ -131,7 +131,7 @@ class ShopAndCombatTests(unittest.TestCase):
         self.assertEqual(engine.player.strength, 0)
         self.assertEqual(engine.player.coins, 99)
         self.assertEqual(engine.player.ultimate_charge, 7)
-        self.assertEqual(engine.player.hp, 40)  # Cura da transição permanece.
+        self.assertEqual(engine.player.hp, 32)  # Combates comuns não curam; a vida persiste.
 
     def test_loading_legacy_progress_starts_at_fight_baseline(self):
         self.data["progresso"].update(energia_maxima=8, turnos=30, andar=3)

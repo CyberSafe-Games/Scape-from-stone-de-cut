@@ -40,6 +40,8 @@ class GoblinRangedAttackTests(unittest.TestCase):
                 self.assertAlmostEqual(view.player_flash, FLASH_DURATION - 1)
                 self.assertFalse(view.is_enemy_resolving_done())
                 view.update(duration - arrival)
+                self.assertFalse(view.is_enemy_resolving_done())
+                view.update(max(view.enemy_recovery_ms, view.player_flash))
                 self.assertTrue(view.is_enemy_resolving_done())
                 self.assertIsNone(view.get_enemy_projectile_pose())
 

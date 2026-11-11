@@ -573,6 +573,8 @@ class TutorialScene(BattleScene):
             try:
                 if not self.save_data["progresso"].get("tutorial_concluido", False):
                     self.engine.player.add_coins(30)
+                    # A campanha começa com vida cheia; o treino não penaliza o jogador.
+                    self.engine.player.hp = self.engine.player.max_hp
                     self.save_data["progresso"]["tutorial_concluido"] = True
                     self.save_manager.update_from_game(
                         self.save_data,

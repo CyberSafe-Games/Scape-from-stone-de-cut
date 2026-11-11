@@ -4,11 +4,11 @@ import re
 from datetime import datetime
 
 from src.config.settings import SAVES_DIR
-from src.systems.card_catalog import CARD_POOL, create_starting_deck
+from src.systems.card_catalog import AVAILABLE_CARD_POOL, create_starting_deck
 from src.systems.card_definitions import migrate_card_name
-from src.systems.territory_map import TERRITORY_IDS, FIRST_TERRITORY_ID
+from src.systems.territory_map import TERRITORY_IDS, FIRST_TERRITORY_ID, ROAD_FIGHTS
 from src.models.effects.ultimate_effect import DEFAULT_ULTIMATE_ID, known_ultimate_ids
-from src.systems.deck_loadout import INITIAL_SLOTS, normalize_collection_and_slots, expand_slots, SLOT_COUNT, CARD_NAMES
+from src.systems.deck_loadout import INITIAL_SLOTS, normalize_collection_and_slots, expand_slots, SLOT_COUNT
 
 SAVE_VERSION = 8
 SLOT_COUNT = 3
@@ -49,7 +49,7 @@ class SaveManager:
 
     def __init__(self, saves_dir=SAVES_DIR):
         self.saves_dir = saves_dir
-        self._card_catalog = {card.name: card for card in CARD_POOL}
+        self._card_catalog = {card.name: card for card in AVAILABLE_CARD_POOL}
 
     # ========================================================
     # ESTRUTURA DE DADOS
@@ -178,10 +178,10 @@ class SaveManager:
                             unlocked.append(tid)
         normalize_collection_and_slots(progress)
         # Saves anteriores (sem rota) preservam o acesso aos confrontos que
-        # já estavam disponíveis; novas jornadas começam com 0/3 encontros.
+        # já estavam disponíveis.
         if "encontros_por_territorio" not in progress:
             progress["encontros_por_territorio"] = {
-                tid: 3 for tid in progress.get("territorios_desbloqueados", [])
+                tid: ROAD_FIGHTS for tid in progress.get("territorios_desbloqueados", [])
                 if tid in TERRITORY_IDS
             }
         for key, default in base["progresso"].items():
@@ -217,6 +217,10 @@ class SaveManager:
             for key, value in steps.items()
         )):
             raise SaveCorruptedError("Contador de encontros inválido.")
+        # A rota antiga aceitava três vitórias. Duas mantêm o chefe liberado.
+        progress["encontros_por_territorio"] = {
+            territory: min(wins, ROAD_FIGHTS) for territory, wins in steps.items()
+        }
 
         if not isinstance(progress["territorios_desbloqueados"], list):
             raise SaveCorruptedError("Lista de territórios inválida.")
@@ -273,8 +277,10 @@ class SaveManager:
     def _unlock_test_progress(progress):
         progress['territorios_desbloqueados'] = list(TERRITORY_IDS)
         progress['territorios_concluidos'] = list(TERRITORY_IDS)
-        progress['encontros_por_territorio'] = {tid: 3 for tid in TERRITORY_IDS}
-        progress['cartas_colecao'] = [card.name for card in CARD_POOL]
+        progress['encontros_por_territorio'] = {tid: ROAD_FIGHTS for tid in TERRITORY_IDS}
+        progress['cartas_colecao'] = list(dict.fromkeys(
+            progress['cartas_colecao'] + [card.name for card in AVAILABLE_CARD_POOL]
+        ))
         progress['ultimates_desbloqueadas'] = known_ultimate_ids()
         progress['tutorial_concluido'] = True
         progress['guia_mapa_visto'] = True
@@ -333,7 +339,6 @@ class SaveManager:
         player.invulnerable = is_test_save(data)
         player.coins = progress["moedas"]
 
-        # Cartas desconhecidas (ex: removidas do catálogo) são ignoradas.
         player.hp = min(player.max_hp, progress["vida"] or player.max_hp)
         if player.invulnerable:
             player.hp = player.max_hp
@@ -347,11 +352,14 @@ class SaveManager:
         player.equip_ultimate(progress.get("ultimate_equipada", DEFAULT_ULTIMATE_ID))
         # start_combat inicia a mão/energia do primeiro turno do novo combate.
         player.turn_count = 0
+        # Apenas cartas disponíveis entram no combate, inclusive em saves antigos.
         deck_manager.deck = [
             self._card_catalog[migrate_card_name(name)].copy()
             for name in progress["cartas"]
             if migrate_card_name(name) in self._card_catalog
         ]
+        if not deck_manager.deck:
+            deck_manager.deck = create_starting_deck()
 
     def update_from_game(self, data, player, deck_manager, level=None):
         """Copia o estado atual do jogador e do baralho para os dados do save."""
@@ -359,7 +367,7 @@ class SaveManager:
         progress["moedas"] = player.coins
         normalize_collection_and_slots(progress)
         for card in deck_manager.deck:
-            if card.name in CARD_NAMES and card.name not in progress["cartas_colecao"]:
+            if card.name in self._card_catalog and card.name not in progress["cartas_colecao"]:
                 progress["cartas_colecao"].append(card.name)
         # O deck é configurado na mochila. Recompensas entram na coleção, não
         # entram automaticamente na seleção de três cópias por tipo.

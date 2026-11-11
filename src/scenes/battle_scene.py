@@ -234,7 +234,7 @@ class BattleScene(BaseScene):
                 if kwargs.get("action") == "Amuleto Dissipador":
                     self._attack_latest_start_ms = self.entity_view.player_attack_duration
         elif event_name == "flash":
-            self.entity_view.trigger_flash(kwargs.get("target"))
+            self.entity_view.trigger_flash(kwargs.get("target"), getattr(self.engine.enemy, "name", None))
         elif event_name == "player_action":
             self._attack_latest_start_ms = None
             self.entity_view.trigger_player_action(kwargs.get("action"))
@@ -1492,6 +1492,14 @@ class BattleScene(BaseScene):
         )
 
     def _draw_victory(self, surface):
+        has_rewards = bool(self.engine.reward_cards)
+        if self.engine.is_replay:
+            description = "Fase já concluída. Sem recompensas nesta revanche."
+        elif has_rewards:
+            description = "Recompensa da fase concluída"
+        else:
+            description = "Sua coleção já tem todas as cartas disponíveis."
+
         overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         overlay.fill((6, 7, 14, 228))
         surface.blit(overlay, (0, 0))
@@ -1499,7 +1507,7 @@ class BattleScene(BaseScene):
         draw_panel(surface, title_rect, fill=(22, 18, 31, 235), border=GOLD, radius=27)
         draw_text(
             surface,
-            "VITÓRIA! ESCOLHA UMA CARTA",
+            "VITÓRIA! ESCOLHA UMA CARTA" if has_rewards else "VITÓRIA!",
             self.asset_manager.big_font,
             GOLD,
             title_rect.centerx,
@@ -1508,7 +1516,7 @@ class BattleScene(BaseScene):
         )
         draw_text(
             surface,
-            "Recompensa da fase concluída",
+            description,
             self.asset_manager.small_font,
             WHITE,
             title_rect.centerx,
@@ -1528,7 +1536,7 @@ class BattleScene(BaseScene):
         self._draw_action_button(
             surface,
             self.skip_reward_rect,
-            "Pular",
+            "Pular" if has_rewards else "Continuar",
             (55, 57, 63),
             (148, 148, 148),
             text_color=WHITE,
@@ -1752,9 +1760,12 @@ class BattleScene(BaseScene):
         """Registra um checkpoint do andar atual sem modificar outro slot."""
         if self.save_manager is None or self.save_data is None:
             return True
-        # Se o herói morreu ou aguarda recompensa, mantém o último checkpoint:
-        # nunca grava HP zero nem concede duas vezes uma vitória ainda pendente.
-        if self.engine.state in ("game_over", "victory", "phase_complete"):
+        # Se o herói morreu, mantém o último checkpoint: nunca grava HP zero.
+        # Em phase_complete, "_finalize_map_phase"/"record_*" gravam a vitória;
+        # regravar aqui causaria desbloqueio duplicado. No estado de vitória,
+        # grava apenas a vida do fim do combate — nunca a recompensa nem o
+        # avanço de território (ainda pendente de escolha do jogador).
+        if self.engine.state in ("game_over", "phase_complete"):
             return True
         try:
             self.coin_hud.collect_pending_coins()

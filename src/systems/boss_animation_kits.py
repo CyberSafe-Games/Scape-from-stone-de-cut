@@ -1,5 +1,5 @@
 """Kits territoriais com doze poses e os instantes de impacto preservados."""
-from src.systems.animation_inbetweens import timed_frame
+from src.systems.animation_inbetweens import action_pose, timed_frame
 
 KITS = {
     'guardião da pedra': ('guardiao_da_pedra', ('idle','atk1','atk2','def','healer2','dano','ultimate')),
@@ -21,5 +21,6 @@ def kit_frame(progress, count=8, release=None):
     """Oito ou doze desenhos, mantendo preparação, golpe e recuperação."""
     if count not in (8,12):
         return min(max(0,count-1),max(0,int(progress*count)))
-    boundaries = (0,.12,.22,(.22+release)/2,release,(release+.80)/2,.80,.92) if release else STRIKE_BOUNDARIES
-    return timed_frame(progress,boundaries,count)
+    if count == 12 or release is not None:
+        return action_pose(progress, count, .50 if release is None else release)
+    return timed_frame(progress, STRIKE_BOUNDARIES, count)

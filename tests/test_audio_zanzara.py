@@ -1,5 +1,5 @@
 import unittest
-import test_audio_enemies
+from tests import test_audio_enemies
 from src.systems.enemy_factory import create_zanzara
 
 class TestZanzaraAudio(unittest.TestCase):

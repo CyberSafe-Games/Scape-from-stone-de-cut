@@ -6,7 +6,7 @@ incluídas futuramente no catálogo e em CARD_PRICES sem alterar a loja.
 from copy import deepcopy
 from dataclasses import dataclass
 
-from src.systems.card_catalog import CARD_POOL
+from src.systems.card_catalog import AVAILABLE_CARD_POOL
 from src.systems.save_manager import SaveError
 
 HEAL_PRICE = 50  # Saldo em moedas. Ajustável para balanceamento.
@@ -15,7 +15,7 @@ HEAL_PURCHASE_LIMIT = 3  # Por RUN/save, NÃO por território.
 MAX_PLAYER_HP = 60
 
 # Preços iniciais, editáveis; não criam novas cartas nem dependem de novas artes.
-CARD_PRICES = {card.name: 25 + card.cost * 15 for card in CARD_POOL}
+CARD_PRICES = {card.name: 25 + card.cost * 15 for card in AVAILABLE_CARD_POOL}
 
 @dataclass(frozen=True)
 class ShopResult:
@@ -25,7 +25,7 @@ class ShopResult:
 
 
 # Fonte única de nomes, tipos e descrições: modelo real do jogo.
-CARD_OFFERS = {card.name: card for card in CARD_POOL if card.name in CARD_PRICES}
+CARD_OFFERS = {card.name: card for card in AVAILABLE_CARD_POOL if card.name in CARD_PRICES}
 
 
 def _commit_progress(save_manager, data, mutate):

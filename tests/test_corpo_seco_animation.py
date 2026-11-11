@@ -46,11 +46,13 @@ class CorpoSecoAnimationTests(unittest.TestCase):
             with self.subTest(group=group):
                 view=EntityView(assets)
                 view.trigger_attack('enemy',group,enemy.name)
-                for progress,expected in ((0,ENEMY_X),(.52,PLAYER_X+APPROACH_GAP),(1,ENEMY_X)):
-                    view.attack_timer=progress*view.enemy_attack_duration
+                for elapsed, expected in ((0, ENEMY_X),
+                                          (.52 * view.enemy_attack_duration, PLAYER_X + APPROACH_GAP),
+                                          (view.enemy_attack_duration + view.enemy_recovery_ms, ENEMY_X)):
+                    view.attack_timer = elapsed
                     screen=pygame.Surface((1920,1080),pygame.SRCALPHA)
                     view.draw_enemy(screen,enemy)
-                    self.assertEqual(screen.get_at((expected,PLAYER_GROUND_Y-12)),marker.get_at((10,12)))
+                    self.assertEqual(screen.get_at((expected,PLAYER_GROUND_Y-12)).a,255)
                     self.assertLess(abs(screen.get_bounding_rect().centerx-expected),3)
 
     def test_pngs_use_alpha_channel(self):

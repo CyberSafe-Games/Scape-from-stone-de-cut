@@ -1,6 +1,7 @@
 """Efeitos dos inimigos comuns e exceções físicas básicas dos chefes."""
 
 COMMON_ATTACK_SOUNDS = {
+    "viniurgo": {"atk1": "gameplay.attack.punch", "atk2": "gameplay.attack.punch"},
     "slime": {"atk": "gameplay.enemy.slime"},
     "vinimuth": {"atk1": "gameplay.attack.punch", "atk2": "gameplay.skill.energy"},
     "esqueleto saqueador": {"atk1": "gameplay.enemy.blade", "atk2": "gameplay.attack.spear"},

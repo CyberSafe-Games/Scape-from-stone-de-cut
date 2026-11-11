@@ -106,9 +106,10 @@ class EnemyIntentView:
             hover = rect.collidepoint(mouse)
             border = (255, 214, 118) if hover or intent.special else (169, 124, 67) if intent.state == 'active' else (103, 96, 67)
             draw_panel(surface, rect, fill=(10, 22, 23, 242), border=border, radius=11, shadow=False)
-            art = self.icon(intent.family).copy()
+            illustration = self.assets.get_intent_art(engine.enemy.name, intent.action.visual_effect)
+            art = (illustration or self.icon(intent.family)).copy()
             if intent.state == 'done': art.set_alpha(65)
-            surface.blit(art, (rect.x+15, rect.y+11))
+            surface.blit(art, art.get_rect(center=rect.center))
             draw_text(surface, str(intent.order), self.assets.small_font, (227, 195, 121), rect.x+12, rect.y+9)
             if intent.special:
                 pygame.draw.polygon(surface, (255, 218, 118), [(rect.right-12, rect.y+5), (rect.right-5, rect.y+12), (rect.right-12, rect.y+20), (rect.right-20, rect.y+12)])

@@ -21,6 +21,7 @@ from src.config.colors import (
 from src.scenes.base_scene import BaseScene
 from src.systems.save_manager import SaveError
 from src.systems.territory_map import (
+    ROAD_FIGHTS,
     TERRITORIES,
     status,
     completed_count,
@@ -53,7 +54,7 @@ class MapScene(BaseScene):
             .get("encontros_por_territorio", {})
             .get(self.selected, 0)
         )
-        self.selected_encounter = count if available and count < 3 else None
+        self.selected_encounter = count if available and count < ROAD_FIGHTS else None
         self._map_art = None
         self.back_button = pygame.Rect(57, 30, 233, 68)
         self.play_button = pygame.Rect(1434, 851, 401, 72)
@@ -191,7 +192,7 @@ class MapScene(BaseScene):
             positions = (*encounter_positions(territory.id), territory.position)
             for index, position in enumerate(positions):
                 state = encounter_status(
-                    self.save_data, territory.id, index if index < 3 else None
+                    self.save_data, territory.id, index if index < ROAD_FIGHTS else None
                 )
                 color = (
                     (133, 156, 112)
@@ -427,7 +428,7 @@ class MapScene(BaseScene):
             center=True,
         )
         subtitle = (
-            f"ENCONTRO {self.selected_encounter + 1} / 3 · CAMINHO"
+            f"ENCONTRO {self.selected_encounter + 1} / {ROAD_FIGHTS} · CAMINHO"
             if self.selected_encounter is not None
             else selected_territory.subtitle.upper()
         )
@@ -458,7 +459,7 @@ class MapScene(BaseScene):
             center=True,
         )
         description = (
-            "Conclua os três encontros para liberar este território."
+            "Conclua os dois encontros para liberar o chefe."
             if state == "locked" and self.selected_encounter is None
             else "Conclua o ponto anterior para liberar este encontro."
             if state == "locked"
@@ -489,18 +490,19 @@ class MapScene(BaseScene):
             selected_territory.id, 0
         )
         count = (
-            3 if status(self.save_data, selected_territory.id) == "completed" else count
+            ROAD_FIGHTS if status(self.save_data, selected_territory.id) == "completed"
+            else min(count, ROAD_FIGHTS)
         )
         if status(self.save_data, selected_territory.id) != "locked":
             draw_text(
                 surface,
-                f"CAMINHO  {count}/3 ENCONTROS",
+                f"CAMINHO  {count}/{ROAD_FIGHTS} ENCONTROS",
                 self.asset_manager.small_font,
                 GOLD,
                 1452,
                 813,
             )
-            for j in range(3):
+            for j in range(ROAD_FIGHTS):
                 color = (109, 158, 115) if j < count else (88, 86, 74)
                 pygame.draw.circle(surface, color, (1796 + 14 * j, 825), 6)
         if status(self.save_data, selected_territory.id) == "locked":
@@ -543,7 +545,7 @@ class MapScene(BaseScene):
         )
         steps = (
             "01  Círculos são encontros; losangos são territórios.",
-            "02  Vença os encontros 1, 2 e 3 para liberar o losango.",
+            "02  Vença os dois encontros para liberar o losango.",
             "03  Após o confronto principal, abra o próximo caminho.",
             "04  Volte e repita qualquer ponto verde já concluído.",
         )
@@ -635,7 +637,8 @@ class MapScene(BaseScene):
         if event.type == pygame.KEYDOWN:
             if event.key in (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN):
                 points = [
-                    (t.id, index) for t in TERRITORIES for index in (0, 1, 2, None)
+                    (t.id, index) for t in TERRITORIES
+                    for index in (*range(ROAD_FIGHTS), None)
                 ]
                 current = points.index((self.selected, self.selected_encounter))
                 delta = -1 if event.key in (pygame.K_LEFT, pygame.K_UP) else 1
@@ -665,7 +668,7 @@ class MapScene(BaseScene):
                 )
                 self.selected_encounter = (
                     count
-                    if count < 3
+                    if count < ROAD_FIGHTS
                     and status(self.save_data, self.selected) != "completed"
                     else None
                 )

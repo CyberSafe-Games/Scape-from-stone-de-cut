@@ -7,8 +7,8 @@ from src.models.entity import Combatant
 from src.models.action import Action
 from src.models.enemy import Enemy
 from src.systems.combat_engine import CombatEngine
-from src.systems.card_catalog import CARD_POOL, CARD_BY_NAME
-from src.systems.card_definitions import CARD_SPECS, LEGACY_CARD_NAMES
+from src.systems.card_catalog import AVAILABLE_CARD_NAMES, CARD_POOL, CARD_BY_NAME
+from src.systems.card_definitions import ADDITIONAL_CARD_SPECS, CARD_SPECS, LEGACY_CARD_NAMES
 from src.systems.deck_loadout import normalize_collection_and_slots
 from src.systems.shop_system import CARD_OFFERS
 from src.ui.entity_view import EntityView
@@ -37,12 +37,13 @@ class TacticalCardTests(unittest.TestCase):
             else: engine.finish_enemy_turn()
 
     def test_only_new_catalog_in_rewards_shop_and_starter(self):
-        self.assertEqual(len(CARD_POOL), 20)
-        self.assertEqual(len(CARD_OFFERS), 20)
+        expected_cards = len(CARD_SPECS) + len(ADDITIONAL_CARD_SPECS)
+        self.assertEqual(len(CARD_POOL), expected_cards)
+        self.assertEqual(set(CARD_OFFERS), {spec[1] for spec in CARD_SPECS})
         engine = self.engine()
         self.assertEqual({c.name for c in engine.deck}, {'Soco Simples', 'Esfera Protetora'})
         engine.generate_rewards()
-        self.assertTrue(all(c.name in CARD_BY_NAME for c in engine.reward_cards))
+        self.assertTrue(all(c.name in AVAILABLE_CARD_NAMES for c in engine.reward_cards))
         self.assertFalse(set(LEGACY_CARD_NAMES) & set(CARD_BY_NAME))
 
     def test_every_card_consumes_its_cost_and_has_a_valid_effect(self):
@@ -51,7 +52,12 @@ class TacticalCardTests(unittest.TestCase):
                 engine = self.engine()
                 engine.player.hp = 20
                 self.play(engine, card.name)
-                self.assertEqual(engine.energy, 8 - card.cost)
+                expected_energy = 8 - card.cost
+                if card.name == 'Sem Dor, Sem Ganho':
+                    expected_energy += 1
+                elif card.name == 'Pacto Doloroso':
+                    expected_energy += 2
+                self.assertEqual(engine.energy, min(8, expected_energy))
                 self.assertEqual(len(engine.discard_pile), 1)
                 self.assertLessEqual(engine.player.hp, engine.player.max_hp)
 

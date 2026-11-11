@@ -16,3 +16,7 @@ A validação acima é técnica, sem escuta crítica. Não foi jogada uma campan
 
 A implementação da etapa 3 está concluída para o repertório integrado. Em 11/11/2026, o usuário confirmou que verificou a campanha e autorizou registrar a aprovação final: "já verifiquei ta certo". Etapa 3 concluída e aprovada. A revisão ampliada para a PR também passou em 152 testes. A aprovação é do estado local avaliado; repetir as verificações após conciliar com a main remota.
 
+
+## Atualização após integrar a main
+
+Main remota ae383f5 conciliada na branch feature/audio-enemies, preservando as implementações aprovadas. Validação ampliada: 472 testes aprovados em 51 módulos isolados e auditoria de 79 sons aprovada. Comparação das mudanças do grupo em docs/comparacao_main_etapa3.md. Essa validação técnica não atribui aprovação manual do usuário às alterações novas recebidas do grupo.

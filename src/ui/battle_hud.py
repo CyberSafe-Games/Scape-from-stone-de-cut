@@ -5,6 +5,7 @@ from src.config.colors import WHITE, GOLD
 from src.ui.helpers import draw_text
 from src.ui.status_badges import draw_status_badges
 from src.systems.normal_enemy_catalog import NORMAL_PORTRAITS
+from src.systems.character_portraits import FRAMED_PORTRAITS
 
 
 class BattleHUD:
@@ -24,6 +25,13 @@ class BattleHUD:
         return True
 
     def portrait(self, surface, rect, name, player=False):
+        portrait_name = 'jaum manel' if player else name.strip().lower()
+        if portrait_name in FRAMED_PORTRAITS:
+            portrait = self.assets.get_character_portrait(portrait_name, rect.size)
+            if portrait is not None:
+                self._portraits[(portrait_name, rect.size)] = portrait
+                surface.blit(portrait, rect)
+                return
         inner = pygame.Rect(rect.x + round(rect.width * 0.17),
                             rect.y + round(rect.height * 0.18),
                             round(rect.width * 0.66), round(rect.height * 0.64))

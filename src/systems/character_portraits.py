@@ -19,3 +19,15 @@ for name, file in (
     ('Centauro Vigia', '11.png'),
 ):
     PORTRAITS[name.lower()] = ('enemies/'+file, (.09, .32, .82, .64), 'cover')
+
+FRAMED_PORTRAITS = {
+    'jaum manel': 'manel', 'guardião da pedra': 'guardiao',
+    'álvaro e tex': 'alvaro_tex', 'álvaro e tex · pequeno': 'tex',
+    'goblin nerd': 'goblin_nerd', 'gordofera': 'gordofera',
+    'corpo seco': 'corpo_seco', 'carrasco da vigília': 'carrasco',
+    'zanzara': 'zanzara', 'viniurgo': 'viniurgo',
+}
+PORTRAITS.update({
+    name: (f'framed/{file}.png', (0, 0, 1, 1), 'framed')
+    for name, file in FRAMED_PORTRAITS.items()
+})

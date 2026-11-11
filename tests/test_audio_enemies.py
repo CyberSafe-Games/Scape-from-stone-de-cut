@@ -438,6 +438,8 @@ class TestCommonEnemyAudio(unittest.TestCase):
     def test_common_attacks_use_matching_sound_once_at_visual_contact(self):
         for name, action, sound_id in (
             ("Slime", "atk", "gameplay.enemy.slime"),
+            ("Viniurgo", "atk1", "gameplay.attack.punch"),
+            ("Viniurgo", "atk2", "gameplay.attack.punch"),
             ("Vinimuth", "atk1", "gameplay.attack.punch"),
             ("Vinimuth", "atk2", "gameplay.skill.energy"),
             ("Esqueleto Saqueador", "atk1", "gameplay.enemy.blade"),

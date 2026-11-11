@@ -224,7 +224,7 @@ class BossUltimateAnimationTests(unittest.TestCase):
         canvas=pygame.Surface((1920,1080))
         scene.draw(canvas)
         scene._draw_game_over.assert_not_called()
-        scene.update(scene.entity_view.enemy_attack_duration+1)
+        scene.update(scene.entity_view.enemy_attack_duration + scene.entity_view.enemy_recovery_ms + 1)
         scene.draw(canvas)
         scene._draw_game_over.assert_called_once()
 

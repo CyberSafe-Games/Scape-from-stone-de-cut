@@ -1,3 +1,4 @@
+from functools import lru_cache
 import weakref
 
 import pygame
@@ -6,6 +7,18 @@ from src.config.settings import UI_SCALE
 
 # Cache das versões ampliadas; as entradas somem junto com a imagem original.
 _display_cache = weakref.WeakKeyDictionary()
+ARENA_ACTOR_LIGHT = (218, 210, 202)
+
+
+@lru_cache(maxsize=128)
+def scale_actor_to_display(image, light=ARENA_ACTOR_LIGHT):
+    """Preserva os pixels da silhueta e aplica a iluminação da arena."""
+    if image is None:
+        return None
+    size = tuple(max(1, round(value * UI_SCALE)) for value in image.get_size())
+    result = pygame.transform.scale(image, size)
+    result.fill(light, special_flags=pygame.BLEND_RGB_MULT)
+    return result
 
 
 def scale_to_display(image):

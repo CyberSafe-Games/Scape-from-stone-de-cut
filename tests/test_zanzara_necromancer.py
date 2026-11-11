@@ -88,7 +88,7 @@ class NecromancerTests(unittest.TestCase):
         pygame.draw.rect(image,(255,255,255,255),(132,129,46,129))
         view.get_player_frame = MagicMock(return_value=(390,image))
         view.draw_player(pygame.Surface((1920,1080)), 'player_turn')
-        self.assertEqual(view.player_ground_anchor,(383,629))
+        self.assertEqual(view.player_ground_anchor,(382,627))
 
     def test_portal_is_centered_on_actual_opponent_feet(self):
         rect, alpha = portal_pose(.8, (382, 627))

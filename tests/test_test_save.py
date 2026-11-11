@@ -7,7 +7,7 @@ import pygame
 from src.models.player import Player
 from src.models.deck import DeckManager
 from src.systems.save_manager import SaveManager, TEST_SAVE_ID, is_test_save, SaveError
-from src.systems.card_catalog import CARD_POOL
+from src.systems.card_catalog import AVAILABLE_CARD_NAMES
 from src.systems.territory_map import TERRITORY_IDS, encounter_status
 from src.systems.combat_engine import CombatEngine
 from src.models.effects.ultimate_effect import known_ultimate_ids
@@ -36,10 +36,10 @@ class TestLaboratorySave(unittest.TestCase):
         data = self.saves.load_or_create_test_save()
         p = data['progresso']
         self.assertEqual(p['territorios_concluidos'], list(TERRITORY_IDS))
-        self.assertEqual(set(p['cartas_colecao']), {c.name for c in CARD_POOL})
+        self.assertEqual(set(p['cartas_colecao']), AVAILABLE_CARD_NAMES)
         self.assertEqual(set(p['ultimates_desbloqueadas']), set(known_ultimate_ids()))
         for tid in TERRITORY_IDS:
-            for index in (0, 1, 2, None):
+            for index in (0, 1, None):
                 self.assertEqual(encounter_status(data, tid, index), 'completed')
 
     def test_invulnerability_includes_all_damage_and_preserves_shield_consumption(self):
@@ -81,7 +81,7 @@ class TestLaboratorySave(unittest.TestCase):
         self.assertEqual(loaded['progresso']['deck_slots'][0], 'Poção Venenosa')
         self.assertEqual(loaded['progresso']['ultimate_equipada'], 'rugido_da_floresta')
         self.assertEqual(loaded['progresso']['moedas'], 1234)
-        self.assertEqual(len(loaded['progresso']['cartas_colecao']), 20)
+        self.assertEqual(len(loaded['progresso']['cartas_colecao']), len(AVAILABLE_CARD_NAMES))
 
     def test_never_overwrites_non_test_file_with_reserved_name(self):
         self.saves.create_save(TEST_SAVE_ID)

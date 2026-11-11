@@ -1,11 +1,13 @@
 import random
 from src.models.action import action_status_effects
 
+from src.config.settings import MINIBOSS_HEAL_PERCENT
 from src.models.player import Player
 from src.models.deck import DeckManager
 from src.models.effects.ultimate_effect import create_ultimate, ULTIMATE_METADATA, DEFAULT_ULTIMATE_ID
-from src.systems.card_catalog import CARD_POOL, create_starting_deck
+from src.systems.card_catalog import AVAILABLE_CARD_POOL, create_starting_deck
 from src.systems.boss_animation_kits import KITS
+from src.systems.territory_map import ROAD_FIGHTS, by_level, encounter_status
 from src.systems.common_animation_kits import COMMON_KITS
 from src.systems.enemy_factory import (
     create_enemy,
@@ -32,6 +34,8 @@ class CombatEngine:
         self.level = 1
         self.encounter_kind = "point"
         self.encounter_index = None
+        self.is_replay = False
+        self.owned_card_names = set()
         self.enemy_actions_remaining = 0
         self.cemetery_swap_used = False
 
@@ -45,7 +49,6 @@ class CombatEngine:
         self.state = "player_turn"
         self.message = ""
         self.message_timer = 0
-        self.reward_cards = []
 
         self.start_combat()
 
@@ -148,6 +151,7 @@ class CombatEngine:
         self.enemy_actions_remaining = 0
         self.cemetery_swap_used = False
         self.state = "player_turn"
+        self.reward_cards = []
 
     def play_card(self, index):
         """Executa a carta da mão especificada pelo índice."""
@@ -158,6 +162,10 @@ class CombatEngine:
             return False
 
         card = self.deck_manager.hand[index]
+
+        if card.card_type == 'attack' and self.player.attack_lock_turns > 0:
+            self.show_message("Você não pode jogar cartas de ataque neste turno!")
+            return False
 
         if not self.player.use_energy(card.cost):
             self.show_message("Energia insuficiente!")
@@ -174,11 +182,16 @@ class CombatEngine:
                 self.on_event('game_over')
                 return True
 
+        # A carta sai antes do efeito para que descarte/compra não altere seu índice.
+        self.deck_manager.discard_card(index)
+
         # Aplica o efeito polimórfico da carta (Open/Closed Principle)
         card.execute(self.player, self.enemy, context=self)
 
-        # Move a carta da mão para o descarte
-        self.deck_manager.discard_card(index)
+        if not self.player.is_alive():
+            self.state = 'game_over'
+            self.on_event('game_over')
+            return True
 
         # Verifica condição de vitória imediata
         if not self.enemy.is_alive():
@@ -267,7 +280,7 @@ class CombatEngine:
 
     def _on_enemy_defeated(self):
         """Concede recompensa de moedas e avança para a tela de vitória."""
-        if self.state in ('boss_transition', 'victory'):
+        if self.state in ('boss_transition', 'victory', 'phase_complete'):
             return
         if getattr(self.enemy, 'boss_id', None) == 'alvaro_tex' and self.enemy.phase == 1:
             self._phase_ended_enemy_turn = self.state in ('enemy_turn', 'enemy_resolving')
@@ -276,16 +289,9 @@ class CombatEngine:
             self.on_event('boss_phase_transition')
             self.show_message('A dupla caiu... mas o pequeno ainda quer lutar!', duration=4000)
             return
-        if self.enemy.is_miniboss:
-            coin_amount = random.randint(50, 70)
-        else:
-            coin_amount = random.randint(30, 50)
-        self.on_event(
-            "coin_drop",
-            amount=coin_amount,
-            x=ENEMY_X,
-            y=ENEMY_Y,
-        )
+        if not self.is_replay:
+            low = 50 if self.enemy.is_miniboss else 30
+            self.on_event("coin_drop", amount=random.randint(low, low + 20), x=ENEMY_X, y=ENEMY_Y)
         self.state = "victory"
         self.generate_rewards()
         self.on_event("victory")
@@ -325,6 +331,10 @@ class CombatEngine:
         """Executa a ação calculada da inteligência artificial do inimigo."""
         if self.state != 'enemy_turn':
             return
+        if 'stun' in self.enemy.statuses:
+            self.enemy_actions_remaining = 0
+            self.state = 'enemy_resolving'
+            return
         action = getattr(self.enemy, "current_action", None)
         if (action is not None and action.action_type == 'attack') or (action is None and self.enemy.intent == 'attack'):
             self._bleed_on_attack(self.enemy)
@@ -335,10 +345,11 @@ class CombatEngine:
         if action is not None:
             self.enemy.use_energy(action.energy_cost)
             if action.action_type == "heal":
-                amount = min(action.defense, self.enemy.max_hp - self.enemy.hp)
-                self.enemy.hp += amount
+                if 'no_heal' not in self.enemy.statuses:
+                    amount = min(action.defense, self.enemy.max_hp - self.enemy.hp)
+                    self.enemy.hp += amount
+                    self.spawn_enemy_text(f"+{amount} vida", BLUE)
                 self.trigger_enemy_action(action.visual_effect or "healer2")
-                self.spawn_enemy_text(f"+{amount} vida", BLUE)
             elif hasattr(action, "execute") and callable(action.execute) and action.action_type != "attack":
                 action.execute(self.enemy, self.player, context=self)
             elif action.action_type == "attack":
@@ -349,6 +360,7 @@ class CombatEngine:
                 damage = self._apply_weakness_modifier(action.damage)
                 protected = 'totem' in self.player.statuses
                 actual_damage = self.player.receive_attack(damage + self.enemy.attack_bonus)
+                self._resolve_totem_trigger(self.player, self.enemy)
                 if not protected and self.player.is_alive():
                     for key,turns,potency in action_status_effects(action):
                         # Renovar o efeito sem somar nem enfraquecer um DOT maior.
@@ -369,6 +381,7 @@ class CombatEngine:
             if self.enemy.intent == "attack":
                 damage = self._apply_weakness_modifier(self.enemy.intent_value)
                 actual_damage = self.player.receive_attack(damage + self.enemy.attack_bonus)
+                self._resolve_totem_trigger(self.player, self.enemy)
 
                 self.trigger_attack("enemy", action="atk")
                 self.trigger_flash("player")
@@ -382,6 +395,8 @@ class CombatEngine:
 
         if getattr(self.enemy, "special_interval", 0):
             self.enemy.action_counter += 1
+        if 'burn_on_action' in self.enemy.statuses:
+            self.enemy.add_stacks('burn', self.enemy.statuses['burn_on_action']['potency'])
         self.enemy_actions_remaining = max(0, self.enemy_actions_remaining - 1)
 
         if not self.player.is_alive():
@@ -400,7 +415,6 @@ class CombatEngine:
                 choose_next_action(self.enemy, count=self.enemy_actions_remaining)
             self.state = "enemy_turn"
             return
-        self._advance_status_effects()
         self._tick_statuses(self.enemy)
         if not self.enemy.is_alive():
             self._on_enemy_defeated()
@@ -412,6 +426,11 @@ class CombatEngine:
     def _begin_player_turn(self):
         """Abre uma rodada do jogador, inclusive após uma transição por veneno."""
         self.player.begin_turn()
+        if self.player.attack_lock_pending:
+            self.player.attack_lock_turns = max(
+                self.player.attack_lock_turns, self.player.attack_lock_pending
+            )
+            self.player.attack_lock_pending = 0
         self.player.increase_max_energy(1)
         self.player.reset_energy()
         self.player.energy = min(self.player.MAX_ENERGY_LIMIT, self.player.energy + self.player.next_turn_energy)
@@ -431,10 +450,18 @@ class CombatEngine:
             return weakened
         return damage
 
-    def _advance_status_effects(self):
-        """Fraqueza dura rodadas completas, incluindo todos os atos de chefes."""
-        if getattr(self.enemy, "weak_turns", 0) > 0:
-            self.enemy.weak_turns = max(0, self.enemy.weak_turns - 1)
+    def _resolve_totem_trigger(self, defender, attacker):
+        trigger = defender.last_totem_trigger
+        if trigger == 'poison':
+            attacker.add_stacks('poison', 5)
+        elif trigger == 'heal':
+            healed = min(8, defender.max_hp - defender.hp)
+            defender.hp += healed
+            message = f'+{healed} vida'
+            if defender.is_player:
+                self.spawn_player_text(message, (102, 210, 137))
+            else:
+                self.spawn_enemy_text(message, (102, 210, 137))
 
     def _bleed_on_attack(self, combatant):
         damage = combatant.on_attack()
@@ -443,17 +470,21 @@ class CombatEngine:
 
     def _tick_statuses(self, combatant):
         for name, damage in combatant.end_turn_statuses():
-            self.spawn_damage_text(combatant, f'{"Fogo" if name == "fire" else "Veneno"} -{damage}', RED)
+            labels = {'fire': 'Fogo', 'poison': 'Veneno', 'burn': 'Queimadura'}
+            self.spawn_damage_text(combatant, f'{labels.get(name, name)} -{damage}', RED)
 
     # ========================================================
     # PROGRESSÃO E RECOMPENSAS
     # ========================================================
 
     def generate_rewards(self):
-        """Gera 3 cartas aleatórias do catálogo para escolha."""
-        self.reward_cards = [
-            random.choice(CARD_POOL).copy() for _ in range(3)
-        ]
+        """Sorteia até três cartas novas para a coleção."""
+        self.reward_cards = []
+        if self.is_replay:
+            return
+        owned = self.owned_card_names | {card.name for card in self.deck_manager.deck}
+        available = [card for card in AVAILABLE_CARD_POOL if card.name not in owned]
+        self.reward_cards = [card.copy() for card in random.sample(available, min(3, len(available)))]
 
     def choose_reward(self, index):
         """Seleciona recompensa; no modo mapa, retorna ao mapa após a fase."""
@@ -475,6 +506,14 @@ class CombatEngine:
         else:
             self.next_level()
 
+    def _apply_miniboss_heal(self):
+        """Recupera MINIBOSS_HEAL_PERCENT da vida máxima atual (nunca excede a vida máxima).
+
+        Arredondado para o inteiro mais próximo (+0.5, truncado); ex.: 18 com vida máxima 60.
+        """
+        heal = int(self.player.max_hp * MINIBOSS_HEAL_PERCENT + 0.5)
+        self.player.hp = min(self.player.max_hp, self.player.hp + heal)
+
     def finish_map_phase(self):
         """Fecha a fase uma única vez, depois da recompensa.
 
@@ -483,26 +522,24 @@ class CombatEngine:
         """
         if not self.map_mode or self.state != "victory":
             return
+        # Regra de cura: só lutas contra miniboss recuperam 30% da vida máxima;
+        # combates comuns preservam a vida exatamente como terminou.
         if self.enemy.is_miniboss:
-            self.player.hp = self.player.max_hp
-        else:
-            self.player.hp = min(self.player.max_hp, self.player.hp + 8)
+            self._apply_miniboss_heal()
         self.player.reset_energy()
         self.state = "phase_complete"
         self.on_event("phase_complete", level=self.level)
 
     def next_level(self):
-        """Avança de andar com balanceamento e cura."""
+        """Avança de andar. A cura é concedida apenas em lutas contra miniboss."""
         self.level += 1
         miniboss = is_miniboss_level(self.level)
         self.enemy = create_enemy(self.level, miniboss)
         choose_next_action(self.enemy)
 
-        if miniboss:
-            self.player.hp = self.player.max_hp
+        if self.enemy.is_miniboss:
+            self._apply_miniboss_heal()
             self.show_message(f"MINIBOSS: {self.enemy.name}!")
-        else:
-            self.player.hp = min(self.player.max_hp, self.player.hp + 8)
 
         self.start_combat()
         self.state = "player_turn"
@@ -519,6 +556,15 @@ class CombatEngine:
         self.level = data["progresso"]["andar"] if level is None else level
         self.encounter_kind = encounter_kind
         self.encounter_index = encounter_index
+        progress = data["progresso"]
+        self.owned_card_names = set(progress.get("cartas_colecao", ()))
+        self.is_replay = False
+        if self.map_mode:
+            territory = by_level(self.level)
+            if encounter_kind == "road" and self.encounter_index is None:
+                count = progress.get("encontros_por_territorio", {}).get(territory.id, 0)
+                self.encounter_index = min(count, ROAD_FIGHTS - 1)
+            self.is_replay = encounter_status(data, territory.id, self.encounter_index) == "completed"
         if encounter_kind == "road":
             self.enemy = create_road_enemy(self.level)
         elif encounter_kind == "point":

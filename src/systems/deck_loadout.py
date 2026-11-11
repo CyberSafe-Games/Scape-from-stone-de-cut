@@ -5,10 +5,10 @@ O desbloqueio pertence à RUN. A ultimate é independente do deck.
 """
 
 from collections import Counter
-from src.systems.card_catalog import CARD_POOL
+from src.systems.card_catalog import AVAILABLE_CARD_NAMES, CARD_BY_NAME, UNAVAILABLE_CARD_NAMES
 from src.systems.card_definitions import migrate_card_name
 
-CARD_NAMES = frozenset(card.name for card in CARD_POOL)
+CARD_NAMES = frozenset(CARD_BY_NAME)
 SLOT_COUNT = 6
 COPIES_PER_SLOT = 3
 INITIAL_SLOTS = ["Soco Simples", "Esfera Protetora", None, None, None, None]
@@ -24,8 +24,11 @@ def normalize_collection_and_slots(progress):
     if not isinstance(owned, list):
         owned = list(dict.fromkeys(legacy))
     owned = list(dict.fromkeys(name for name in owned if isinstance(name, str) and name in CARD_NAMES))
-    if not owned:
-        owned = ['Soco Simples', 'Esfera Protetora']
+    playable_owned = set(owned).intersection(AVAILABLE_CARD_NAMES)
+    if not playable_owned:
+        starters = [name for name in INITIAL_SLOTS if name in AVAILABLE_CARD_NAMES]
+        owned.extend(starters)
+        playable_owned.update(starters)
     slots = progress.get('deck_slots')
     if not isinstance(slots, list):
         slots = list(dict.fromkeys(legacy))[:SLOT_COUNT]
@@ -33,12 +36,12 @@ def normalize_collection_and_slots(progress):
     slots = (slots + [None]*SLOT_COUNT)[:SLOT_COUNT]
     seen = set()
     for i, name in enumerate(slots):
-        if name not in owned or name in seen:
+        if not isinstance(name, str) or name not in playable_owned or name in seen:
             slots[i] = None
         else:
             seen.add(name)
     if not seen:
-        slots[0] = owned[0]
+        slots[0] = next(name for name in owned if name in playable_owned)
     progress['cartas_colecao'] = owned
     progress['deck_slots'] = slots
     progress['cartas'] = expand_slots(slots)
@@ -57,6 +60,8 @@ def equip_card_type(save_manager, data, slot_index, name):
     from copy import deepcopy
     if type(slot_index) is not int or not 0 <= slot_index < SLOT_COUNT:
         return False, "Espaço inválido."
+    if isinstance(name, str) and name in UNAVAILABLE_CARD_NAMES:
+        return False, "Carta indisponível no momento."
     p = data['progresso']
     normalize_collection_and_slots(p)
     slots = list(p['deck_slots'])

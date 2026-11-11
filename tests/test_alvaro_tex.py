@@ -121,7 +121,8 @@ class AlvaroTexCombatTests(TestCase):
 
     def test_resume_starts_both_phases_again_without_touching_save_format(self):
         e = self.engine
-        e.resume_from_save({'progresso': {'andar': 2}},
+        e.resume_from_save({'progresso': {'andar': 2, 'territorios_concluidos': [],
+                                        'territorios_desbloqueados': ['mata_sombria']}},
                            SimpleNamespace(apply_to_game=lambda *_: None), level=2)
         self.assertEqual(e.enemy.phase, 1)
         self.assertEqual(e.enemy.hp, 76)
@@ -200,9 +201,12 @@ class AlvaroTexVisualTests(TestCase):
                 self.assertEqual(len({pygame.image.tobytes(f,'RGBA') for f in frames}),8)
                 view = EntityView(self.assets)
                 view.trigger_attack('enemy',group,enemy_name=name)
-                for i in range(8):
-                    view.attack_timer = (i+.5)*ATTACK_MS[name][group]/8
-                    self.assertIs(view.get_enemy_frame(SimpleNamespace(name=name)),frames[i])
+                duration = ATTACK_MS[name][group] + view.enemy_recovery_ms
+                seen = set()
+                for ms in range(0, duration, 16):
+                    view.attack_timer = ms
+                    seen.add(view.get_enemy_frame(SimpleNamespace(name=name)))
+                self.assertEqual(seen, set(frames))
                 for f in frames:
                     self.assertEqual(f.get_at((0,0)).a,0)
                     self.assertLess(f.get_bounding_rect().width, f.get_width())
@@ -232,9 +236,11 @@ class AlvaroTexVisualTests(TestCase):
         self.assertIsNone(view.attacker)
         self.assertIsNone(view.get_enemy_projectile_pose())
         self.assertEqual(view.enemy_action_duration,1800)
-        for i in range(8):
-            view.enemy_action_timer = (i+.5)*1800/8
-            self.assertIs(view.get_enemy_frame(SimpleNamespace(name=NAMES[0])), self.groups[NAMES[0],'healer2'][i])
+        seen = set()
+        for ms in range(0, 1800 + view.enemy_recovery_ms, 16):
+            view.enemy_action_timer = ms
+            seen.add(view.get_enemy_frame(SimpleNamespace(name=NAMES[0])))
+        self.assertEqual(seen, set(self.groups[NAMES[0], 'healer2']))
         canvas = pygame.Surface((1920,1080),pygame.SRCALPHA)
         view.enemy_action_timer = 900
         view.draw_enemy_projectile(canvas)
