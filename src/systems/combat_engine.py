@@ -161,6 +161,10 @@ class CombatEngine:
 
         card = self.deck_manager.hand[index]
 
+        if card.card_type == 'attack' and self.player.attack_lock_turns > 0:
+            self.show_message("Você não pode jogar cartas de ataque neste turno!")
+            return False
+
         if not self.player.use_energy(card.cost):
             self.show_message("Energia insuficiente!")
             return False
@@ -176,11 +180,16 @@ class CombatEngine:
                 self.on_event('game_over')
                 return True
 
+        # A carta sai antes do efeito para que descarte/compra não altere seu índice.
+        self.deck_manager.discard_card(index)
+
         # Aplica o efeito polimórfico da carta (Open/Closed Principle)
         card.execute(self.player, self.enemy, context=self)
 
-        # Move a carta da mão para o descarte
-        self.deck_manager.discard_card(index)
+        if not self.player.is_alive():
+            self.state = 'game_over'
+            self.on_event('game_over')
+            return True
 
         # Verifica condição de vitória imediata
         if not self.enemy.is_alive():
@@ -320,6 +329,10 @@ class CombatEngine:
         """Executa a ação calculada da inteligência artificial do inimigo."""
         if self.state != 'enemy_turn':
             return
+        if 'stun' in self.enemy.statuses:
+            self.enemy_actions_remaining = 0
+            self.state = 'enemy_resolving'
+            return
         action = getattr(self.enemy, "current_action", None)
         if (action is not None and action.action_type == 'attack') or (action is None and self.enemy.intent == 'attack'):
             self._bleed_on_attack(self.enemy)
@@ -330,10 +343,11 @@ class CombatEngine:
         if action is not None:
             self.enemy.use_energy(action.energy_cost)
             if action.action_type == "heal":
-                amount = min(action.defense, self.enemy.max_hp - self.enemy.hp)
-                self.enemy.hp += amount
+                if 'no_heal' not in self.enemy.statuses:
+                    amount = min(action.defense, self.enemy.max_hp - self.enemy.hp)
+                    self.enemy.hp += amount
+                    self.spawn_enemy_text(f"+{amount} vida", BLUE)
                 self.trigger_enemy_action(action.visual_effect or "healer2")
-                self.spawn_enemy_text(f"+{amount} vida", BLUE)
             elif hasattr(action, "execute") and callable(action.execute) and action.action_type != "attack":
                 action.execute(self.enemy, self.player, context=self)
             elif action.action_type == "attack":
@@ -344,6 +358,7 @@ class CombatEngine:
                 damage = self._apply_weakness_modifier(action.damage)
                 protected = 'totem' in self.player.statuses
                 actual_damage = self.player.receive_attack(damage + self.enemy.attack_bonus)
+                self._resolve_totem_trigger(self.player, self.enemy)
                 if getattr(action, 'status_effect', None) and not protected and self.player.is_alive():
                     self.player.apply_status(*action.status_effect)
                 if not ultimate and not animated_boss:
@@ -360,6 +375,7 @@ class CombatEngine:
             if self.enemy.intent == "attack":
                 damage = self._apply_weakness_modifier(self.enemy.intent_value)
                 actual_damage = self.player.receive_attack(damage + self.enemy.attack_bonus)
+                self._resolve_totem_trigger(self.player, self.enemy)
 
                 self.trigger_attack("enemy", action="atk")
                 self.trigger_flash("player")
@@ -373,6 +389,8 @@ class CombatEngine:
 
         if getattr(self.enemy, "special_interval", 0):
             self.enemy.action_counter += 1
+        if 'burn_on_action' in self.enemy.statuses:
+            self.enemy.add_stacks('burn', self.enemy.statuses['burn_on_action']['potency'])
         self.enemy_actions_remaining = max(0, self.enemy_actions_remaining - 1)
 
         if not self.player.is_alive():
@@ -391,7 +409,6 @@ class CombatEngine:
                 choose_next_action(self.enemy, count=self.enemy_actions_remaining)
             self.state = "enemy_turn"
             return
-        self._advance_status_effects()
         self._tick_statuses(self.enemy)
         if not self.enemy.is_alive():
             self._on_enemy_defeated()
@@ -403,6 +420,11 @@ class CombatEngine:
     def _begin_player_turn(self):
         """Abre uma rodada do jogador, inclusive após uma transição por veneno."""
         self.player.begin_turn()
+        if self.player.attack_lock_pending:
+            self.player.attack_lock_turns = max(
+                self.player.attack_lock_turns, self.player.attack_lock_pending
+            )
+            self.player.attack_lock_pending = 0
         self.player.increase_max_energy(1)
         self.player.reset_energy()
         self.player.energy = min(self.player.MAX_ENERGY_LIMIT, self.player.energy + self.player.next_turn_energy)
@@ -422,10 +444,18 @@ class CombatEngine:
             return weakened
         return damage
 
-    def _advance_status_effects(self):
-        """Fraqueza dura rodadas completas, incluindo todos os atos de chefes."""
-        if getattr(self.enemy, "weak_turns", 0) > 0:
-            self.enemy.weak_turns = max(0, self.enemy.weak_turns - 1)
+    def _resolve_totem_trigger(self, defender, attacker):
+        trigger = defender.last_totem_trigger
+        if trigger == 'poison':
+            attacker.add_stacks('poison', 5)
+        elif trigger == 'heal':
+            healed = min(8, defender.max_hp - defender.hp)
+            defender.hp += healed
+            message = f'+{healed} vida'
+            if defender.is_player:
+                self.spawn_player_text(message, (102, 210, 137))
+            else:
+                self.spawn_enemy_text(message, (102, 210, 137))
 
     def _bleed_on_attack(self, combatant):
         damage = combatant.on_attack()
@@ -434,7 +464,8 @@ class CombatEngine:
 
     def _tick_statuses(self, combatant):
         for name, damage in combatant.end_turn_statuses():
-            self.spawn_damage_text(combatant, f'{"Fogo" if name == "fire" else "Veneno"} -{damage}', RED)
+            labels = {'fire': 'Fogo', 'poison': 'Veneno', 'burn': 'Queimadura'}
+            self.spawn_damage_text(combatant, f'{labels.get(name, name)} -{damage}', RED)
 
     # ========================================================
     # PROGRESSÃO E RECOMPENSAS
