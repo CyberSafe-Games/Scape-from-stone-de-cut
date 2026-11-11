@@ -17,6 +17,15 @@ from src.config.settings import (
     ULTIMATE_ASSETS_DIR,
 )
 from src.config.colors import WHITE
+from src.config.typography import (
+    FONT_FILES,
+    FONT_STYLES,
+    LINE_HEIGHT,
+    SYMBOL_FALLBACK_FONTS,
+    SYSTEM_FALLBACK_FONTS,
+    scaled_font_size,
+)
+from src.core.game_font import GameFont
 
 # Escala visual do Corpo Seco: 0.74 * ~170 px de corpo = ~126 px no jogo.
 # Mantém o miniboss proporcional ao Jaum Manel (~130 px) e ao cenário.
@@ -89,15 +98,20 @@ class AssetManager:
                 return font
         return pygame.font.SysFont(None, size, bold=bold)
 
+    def _load_game_font(self, weight, size):
+        """Carrega a fonte autoral; símbolos ausentes nela usam fonte de símbolos."""
+        fallback = self._pick_font(SYMBOL_FALLBACK_FONTS, size)
+        path = FONT_FILES.get(weight)
+        try:
+            return GameFont(path, size, fallback=fallback, line_height=LINE_HEIGHT)
+        except (pygame.error, FileNotFoundError, OSError, TypeError):
+            print(f"[AVISO] Fonte do jogo não encontrada: {path}")
+            return self._pick_font(SYSTEM_FALLBACK_FONTS, size, bold=(weight == "bold"))
+
     def _init_fonts(self):
-        """Serifa só nos títulos, legibilidade neutra em controles e informações."""
-        headings = ["cinzel", "constantia", "georgia", "liberationserif", "dejavuserif"]
-        body = ["segoeui", "trebuchetms", "liberationsans", "dejavusans"]
-        self._fonts["default"] = self._pick_font(body, 30)
-        self._fonts["big"] = self._pick_font(headings, 50, bold=True)
-        self._fonts["title"] = self._pick_font(headings, 84, bold=True)
-        self._fonts["menu"] = self._pick_font(headings, 35, bold=True)
-        self._fonts["small"] = self._pick_font(body, 24)
+        """Tipografia autoral (Igarape Pixel) definida em src/config/typography.py."""
+        for name, (weight, size) in FONT_STYLES.items():
+            self._fonts[name] = self._load_game_font(weight, scaled_font_size(size))
 
     def get_font(self, name="default"):
         return self._fonts.get(name, self._fonts["default"])
