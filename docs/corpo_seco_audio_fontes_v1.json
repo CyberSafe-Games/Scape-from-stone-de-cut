@@ -1,0 +1,62 @@
+{
+  "escopo": "Quatro a??es do Corpo Seco, com repert?rio existente. Sem novos downloads.",
+  "movimento": "L?mina curta, duas passagens no cruzado e giro da base de espada aprovada.",
+  "contato": "Reutiliza alvaro_tex_corte_corporal_contato_v2.ogg no contato real, sem metal contra o jogador.",
+  "defesa": "Posicionamento breve de l?mina com aura discreta e cauda.",
+  "recursos": [
+    {
+      "destino": "corpo_seco_corte_movimento_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "alvaro_tex_estocada_base_retomada_v6.ogg",
+          "sha256": "69fd5f2c6236c2b4094817c41ae80c24d427b0fc50359d4c9fc562ac85529852"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=duration=0.3,asetpts=PTS-STARTPTS,atempo=1.4,highpass=f=120,lowpass=f=8500,apad,atrim=duration=0.22,afade=t=in:d=0.004,afade=t=out:st=0.17:d=0.05[out]",
+      "ganho": 1,
+      "sha256_ogg": "296b8e780eb4379db92385b82b353f69f29134136fa7f529864e40b01eea0008"
+    },
+    {
+      "destino": "corpo_seco_laminas_cruzadas_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "alvaro_tex_estocada_base_retomada_v6.ogg",
+          "sha256": "69fd5f2c6236c2b4094817c41ae80c24d427b0fc50359d4c9fc562ac85529852"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=duration=0.25,asetpts=PTS-STARTPTS,atempo=1.8,asplit=2[a][b];[b]adelay=110|110,volume=0.85[b1];[a][b1]amix=inputs=2:normalize=0:duration=longest,highpass=f=120,lowpass=f=8500,apad,atrim=duration=0.26,afade=t=in:d=0.004,afade=t=out:st=0.21:d=0.05[out]",
+      "ganho": 0.9020738276484013,
+      "sha256_ogg": "b8870ded21de9e1c882711390dd3ee4ad817b0ea94ed03f84ec20e71e136e3df"
+    },
+    {
+      "destino": "corpo_seco_giro_laminas_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "alvaro_tex_vendaval_espada_combinada_v5.ogg",
+          "sha256": "dd64ac06d991eba28c463229d3ddea5b1449b87aa2fc98e40cb7b33b29fbf46b"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=duration=0.55,asetpts=PTS-STARTPTS,highpass=f=100,lowpass=f=8500,afade=t=in:d=0.005,afade=t=out:st=0.45:d=0.1[out]",
+      "ganho": 1,
+      "sha256_ogg": "d05345af562462a95e217a2c362495a55bdc924ac99a0f41aa7731c685f3edfe"
+    },
+    {
+      "destino": "corpo_seco_postura_defensiva_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "alvaro_tex_estocada_base_retomada_v6.ogg",
+          "sha256": "69fd5f2c6236c2b4094817c41ae80c24d427b0fc50359d4c9fc562ac85529852"
+        },
+        {
+          "arquivo": "gordofera_guarda_aura_v2.ogg",
+          "sha256": "c8dda807c3a346106166e914fb67b5df39ca8a224a6bbb3a902d6ffee14d0d2c"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=duration=0.2,asetpts=PTS-STARTPTS,volume=0.2,afade=t=out:st=0.13:d=0.07[a];[1:a]atrim=duration=1.1,asetpts=PTS-STARTPTS,volume=0.65[b];[a][b]amix=inputs=2:normalize=0:duration=longest,highpass=f=75,lowpass=f=6500,apad,atrim=duration=1.1,afade=t=in:d=0.008,afade=t=out:st=0.7:d=0.4[out]",
+      "ganho": 1,
+      "sha256_ogg": "e6653239f5e6f5dd69939ebb03dc085cb9c14d5e95e8bd1219e27ed42efdb585"
+    }
+  ],
+  "preservacao": "Originais, arquivos anteriores e bosses j? aprovados preservados.",
+  "escuta": "Pendente de avalia??o do jogador."
+}

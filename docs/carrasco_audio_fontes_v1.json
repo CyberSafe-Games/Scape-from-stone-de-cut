@@ -1,0 +1,77 @@
+{
+  "escopo": "Quatro a??es do Carrasco da Vig?lia; derivados do repert?rio existente, sem novos downloads.",
+  "contato_normal": "Reutiliza alvaro_tex_espada_contato_sangramento_v2.ogg.",
+  "direcao": "Machado em movimento separado de contato corporal; Execu??o mais pesada com final de sangramento; Vigor com aura e cauda.",
+  "recursos": [
+    {
+      "destino": "carrasco_corte_machado_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "alvaro_tex_estocada_base_retomada_v6.ogg",
+          "sha256": "69fd5f2c6236c2b4094817c41ae80c24d427b0fc50359d4c9fc562ac85529852"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atempo=1.38,highpass=f=65,lowpass=f=7500,apad,atrim=duration=0.29,afade=t=in:d=0.004,afade=t=out:st=0.23:d=0.06[out]",
+      "ganho": 1,
+      "sha256_ogg": "26e648dbd89e1e6392aa408b55b9b6997414f4686a4920c3ee97e03e47c994a8"
+    },
+    {
+      "destino": "carrasco_varredura_machado_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "alvaro_tex_estocada_pesada_v5.ogg",
+          "sha256": "3bfbdf88ac829488e8ed2e736a83a71d52e5c84364345bde68e2bf43aaf32f30"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atempo=1.25,highpass=f=65,lowpass=f=8000,apad,atrim=duration=0.32,afade=t=in:d=0.004,afade=t=out:st=0.25:d=0.07[out]",
+      "ganho": 1,
+      "sha256_ogg": "4565b46ab5bdc9ba56a4fd342be6b13589f486d65ed93afc0b7c740390c28be5"
+    },
+    {
+      "destino": "carrasco_execucao_movimento_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "alvaro_tex_estocada_pesada_v5.ogg",
+          "sha256": "3bfbdf88ac829488e8ed2e736a83a71d52e5c84364345bde68e2bf43aaf32f30"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]aresample=44100,asetrate=35280,aresample=44100,highpass=f=55,lowpass=f=7500,apad,atrim=duration=0.67,afade=t=in:d=0.008,afade=t=out:st=0.45:d=0.22[out]",
+      "ganho": 1,
+      "sha256_ogg": "b6b9dd841653bb3d09cf0b46303412c40f2c83f8000ddc13d598e25d4f23e198"
+    },
+    {
+      "destino": "carrasco_execucao_impacto_sangramento_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "alvaro_tex_espada_contato_sangramento_v2.ogg",
+          "sha256": "10d8f31e29f3e8c5ee62e87c4f2d7fcb9a2732554f439887e39cb7dc3278cd10"
+        },
+        {
+          "arquivo": "investida_impacto_corporal.ogg",
+          "sha256": "2c34e20f7315d1a0472ded3408055834bb9f64251181a0b91be84b7c0f81768e"
+        },
+        {
+          "arquivo": "adaga_corte_sangramento.ogg",
+          "sha256": "1cb26bd79515f02cf3d78fcbe07ea0cf96deaeafd8e02c3d6dd94b359de590d5"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]volume=1[a];[1:a]atrim=duration=0.2,asetpts=PTS-STARTPTS,highpass=f=45,lowpass=f=1400,volume=0.14,afade=t=out:st=0.10:d=0.10[b];[2:a]atrim=start=0.55:duration=0.85,asetpts=PTS-STARTPTS,highpass=f=90,lowpass=f=6000,volume=0.22,adelay=60|60[c];[a][b][c]amix=inputs=3:normalize=0:duration=longest,apad,atrim=duration=1.4,afade=t=in:d=0.003,afade=t=out:st=0.9:d=0.5[out]",
+      "ganho": 0.7640261331853045,
+      "sha256_ogg": "7e128423bde46ec80add5c6b1ed8758681b9b8a7f7e38d2a147550a5b236ea44"
+    },
+    {
+      "destino": "carrasco_vigor_aura_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "gordofera_guarda_aura_v2.ogg",
+          "sha256": "c8dda807c3a346106166e914fb67b5df39ca8a224a6bbb3a902d6ffee14d0d2c"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atempo=0.85,highpass=f=65,lowpass=f=7000,apad,atrim=duration=1.5,afade=t=in:d=0.008,afade=t=out:st=1.0:d=0.5[out]",
+      "ganho": 1,
+      "sha256_ogg": "34e568b149d93f49b94570bb9106d4f8e3566f8c5f65db7ce00f0804c773d19a"
+    }
+  ],
+  "preservacao": "Sem sobrescrever originais ou modificar bosses aprovados, mec?nicas e anima??es.",
+  "escuta": "Aguardando avalia??o pelo jogador."
+}

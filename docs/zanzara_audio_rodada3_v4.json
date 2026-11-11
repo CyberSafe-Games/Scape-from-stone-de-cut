@@ -1,0 +1,62 @@
+{
+  "escuta_critica": false,
+  "pedido": "Nova risada e labareda de desaparecimento do Passo; demais sons e animações preservados.",
+  "alternativas_preservadas": [
+    "Villain Laugh 431491",
+    "Fire Torch Whoosh 5 190301"
+  ],
+  "recursos": [
+    {
+      "cue": "laugh",
+      "fonte": {
+        "tipo": "Travessia Final",
+        "titulo": "Evil Laugh",
+        "autor": "ckvoiceover (Freesound)",
+        "perfil_pixabay": "freesound_community",
+        "url_pagina": "https://pixabay.com/sound-effects/musical-evil-laugh-81648/",
+        "licenca_indicada": "Free for use under the Pixabay Content License",
+        "url_licenca": "https://pixabay.com/service/license-summary/",
+        "nome_local": "freesound_community-evil-laugh-81648.mp3",
+        "caminho_local": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\zanzara\\audio\\originais\\freesound_community-evil-laugh-81648.mp3",
+        "duracao_segundos": 3.192,
+        "metodo_duracao": "Soma das durações dos quadros MPEG Layer III do original; inclui padding do encoder.",
+        "bytes": 63840,
+        "sha256": "1266d7d1aa3ca2b1ae62734dcd05c8034ded701e2e7c7e75613554da4cfa6ce4",
+        "escuta_realizada": false,
+        "selecao": "Apenas por metadados; candidato provisório",
+        "observacoes": "Primeiro candidato para avaliar: descrição diz deep and sinister. Curto. Categoria Musical na busca; presença de música, palavras, voz masculina e efeito robótico não confirmada por escuta."
+      },
+      "arquivo": "assets\\audio\\zanzara_laugh_piloto_v4.ogg",
+      "filtros": "silenceremove=start_periods=1:start_duration=0.01:start_threshold=-50dB,apad,atrim=duration=3.2,asetpts=PTS-STARTPTS,highpass=f=65,afade=t=in:d=0.008,afade=t=out:st=3.0500000000000003:d=0.15",
+      "ganho": 0.24347008629283057,
+      "duracao": 3.2,
+      "sha256": "dac455e743f63c2a5976b6baa37f05aa1b4cc74e378f03587e85a61aae87d7a4"
+    },
+    {
+      "cue": "smoke",
+      "fonte": {
+        "tipo": "Ataque 2 — desaparecimento na chama verde",
+        "titulo": "Fireball Whoosh 1",
+        "autor": "floraphonic",
+        "perfil_pixabay": "floraphonic",
+        "url_pagina": "https://pixabay.com/sound-effects/film-special-effects-fireball-whoosh-1-179125/",
+        "licenca_indicada": "Free for use under the Pixabay Content License",
+        "url_licenca": "https://pixabay.com/service/license-summary/",
+        "nome_local": "floraphonic-fireball-whoosh-1-179125.mp3",
+        "caminho_local": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\zanzara\\audio\\originais\\floraphonic-fireball-whoosh-1-179125.mp3",
+        "duracao_segundos": 1.536,
+        "metodo_duracao": "Soma das durações dos quadros MPEG Layer III do original; inclui padding do encoder.",
+        "bytes": 49152,
+        "sha256": "a6025edaef13359f9b80cf3eb985166e1ea4864302e2c9f8edb0b94ef76f97f4",
+        "escuta_realizada": false,
+        "selecao": "Apenas por metadados; candidato provisório",
+        "observacoes": "Descrição de labareda cinematográfica para jogo de fantasia; candidato para o instante do desaparecimento. Sem alteração da animação."
+      },
+      "arquivo": "assets\\audio\\zanzara_smoke_piloto_v4.ogg",
+      "filtros": "silenceremove=start_periods=1:start_duration=0.01:start_threshold=-50dB,apad,atrim=duration=0.9,asetpts=PTS-STARTPTS,highpass=f=65,afade=t=in:d=0.008,afade=t=out:st=0.65:d=0.25",
+      "ganho": 0.2722290473321783,
+      "duracao": 0.9,
+      "sha256": "64e581511ba2bd8bed78fd49aa75dab293c86c2aa3fcd26400b4214aac3df76b"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "pedido": "Retomar espada anterior; contato pesado com sangramento na finaliza??o; combinar passagens de espada no Vendaval; sincronizar sa?da da fuma?a.",
+  "shuriken": "Aprovada e preservada: alvaro_tex_shuriken_giro_v5.ogg",
+  "fumaca": "In?cio antecipado de 52% para 20% (936 para 360 ms), com cauda prolongada.",
+  "recursos": [
+    {
+      "destino": "alvaro_tex_estocada_base_retomada_v6.ogg",
+      "fontes": [
+        {
+          "arquivo": "alvaro_tex_espada_pixabay_v2.ogg",
+          "sha256": "bdd9e05f5d59f4a7d90528aeadaaf17e8a5203f5f9e9069ca042bf72bd45757f"
+        },
+        {
+          "arquivo": "alvaro_tex_espada_pesada_r2_v4.ogg",
+          "sha256": "34b86a1c7ebde8b9e44300ea7fd35178b02dc614d57dad69f85249e3d19198e5"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]volume=1[a];[1:a]volume=0.16[b];[a][b]amix=inputs=2:normalize=0:duration=longest,apad,atrim=duration=0.4,afade=t=out:st=0.30:d=0.10[out]",
+      "ganho": 1,
+      "sha256_ogg": "69fd5f2c6236c2b4094817c41ae80c24d427b0fc50359d4c9fc562ac85529852"
+    },
+    {
+      "destino": "alvaro_tex_vendaval_espada_combinada_v5.ogg",
+      "fontes": [
+        {
+          "arquivo": "alvaro_tex_espada_pixabay_v2.ogg",
+          "sha256": "bdd9e05f5d59f4a7d90528aeadaaf17e8a5203f5f9e9069ca042bf72bd45757f"
+        },
+        {
+          "arquivo": "alvaro_tex_vendaval_giro_v1.ogg",
+          "sha256": "f0f094892cdba31caaca6061d6a830650b86fb130b6b5a72cb59a6708d2d9911"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]asplit=3[a][b][c];[b]adelay=140|140,volume=0.85[b1];[c]adelay=280|280,volume=0.7[c1];[1:a]volume=0.28[d];[a][b1][c1][d]amix=inputs=4:normalize=0:duration=longest,highpass=f=65,lowpass=f=8500,apad,atrim=duration=0.7,afade=t=in:d=0.005,afade=t=out:st=0.6:d=0.1[out]",
+      "ganho": 1,
+      "sha256_ogg": "dd64ac06d991eba28c463229d3ddea5b1449b87aa2fc98e40cb7b33b29fbf46b"
+    },
+    {
+      "destino": "alvaro_tex_espada_contato_sangramento_v2.ogg",
+      "fontes": [
+        {
+          "arquivo": "alvaro_tex_corte_corporal_contato_v2.ogg",
+          "sha256": "037bf42ebd7911493b79fecf2bf1f99fe9d03dcad9b03414d9074054b8431423"
+        },
+        {
+          "arquivo": "investida_impacto_corporal.ogg",
+          "sha256": "2c34e20f7315d1a0472ded3408055834bb9f64251181a0b91be84b7c0f81768e"
+        },
+        {
+          "arquivo": "adaga_corte_sangramento.ogg",
+          "sha256": "1cb26bd79515f02cf3d78fcbe07ea0cf96deaeafd8e02c3d6dd94b359de590d5"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=duration=0.10,asetpts=PTS-STARTPTS,afade=t=out:st=0.06:d=0.04,volume=1.1[a];[1:a]atrim=duration=0.13,asetpts=PTS-STARTPTS,highpass=f=55,lowpass=f=1200,volume=0.16,afade=t=out:st=0.06:d=0.07[b];[2:a]atrim=start=0.45:duration=0.75,asetpts=PTS-STARTPTS,highpass=f=90,lowpass=f=6500,volume=0.4,adelay=70|70[c];[a][b][c]amix=inputs=3:normalize=0:duration=longest,apad,atrim=duration=1.1,afade=t=in:d=0.003,afade=t=out:st=0.75:d=0.35[out]",
+      "ganho": 0.6936325843169844,
+      "sha256_ogg": "10d8f31e29f3e8c5ee62e87c4f2d7fcb9a2732554f439887e39cb7dc3278cd10"
+    },
+    {
+      "destino": "alvaro_tex_fumaca_inicio_cauda_v3.ogg",
+      "fontes": [
+        {
+          "arquivo": "alvaro_tex_fumaca_poof_cauda_v2.ogg",
+          "sha256": "191220a19c34403ef08b78d546b7306cc990004f2cc21bafe5f40176659aca6d"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atempo=0.714286,apad,atrim=duration=2.1,afade=t=in:d=0.003,afade=t=out:st=1.6:d=0.5[out]",
+      "ganho": 1,
+      "sha256_ogg": "00cb2202168de7f6c70d7815d78c235761ef858b21bd4f5391b842c2545e0a3d"
+    }
+  ],
+  "escuta": "Aguardando avalia??o do jogador."
+}

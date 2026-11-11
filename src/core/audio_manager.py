@@ -24,6 +24,7 @@ class AudioManager:
         self.assets_dir = Path(assets_dir) if assets_dir else project_root / "assets" / "audio"
         self._sound_paths = {}
         self._sounds = {}
+        self._sound_volumes = {}
         self._failed_sounds = set()
         self._mixer_available = False
         self._music_path = None
@@ -96,7 +97,10 @@ class AudioManager:
         sound = self._get_sound(sound_id)
         if sound is None:
             return None
-        effective_volume = self._clamp_volume(self.master_volume * self.sfx_volume * volume)
+        effective_volume = self._clamp_volume(
+            self.master_volume * self.sfx_volume * volume
+            * self._sound_volumes.get(sound_id, 1.0)
+        )
         sound.set_volume(effective_volume)
         try:
             if maxtime is not None:
@@ -141,6 +145,10 @@ class AudioManager:
 
     def set_sfx_volume(self, volume):
         self.sfx_volume = self._clamp_volume(volume)
+
+    def set_sound_volume(self, sound_id, volume):
+        """Ajusta o ganho de um efeito nas próximas reproduções (0.0 a 1.0)."""
+        self._sound_volumes[str(sound_id)] = self._clamp_volume(volume)
 
     def set_music_volume(self, volume):
         self.music_volume = self._clamp_volume(volume)

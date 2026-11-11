@@ -1,0 +1,24 @@
+{
+  "sequencia": "?nsia curta, sem camada de expuls?o l?quida; ?cido e borbulhamento a partir de 160 ms, com cauda suave at? 1400 ms.",
+  "fontes": [
+    {
+      "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\goblin-nerd\\originais\\toxico-r2-01-dragon-studio-vomiting-sound-effect-382720.mp3",
+      "sha256": "d407e819efc94bad8db62148cf2b0bba7fbe0d59bcabd786dc2e09ec7bf33dd3"
+    },
+    {
+      "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\goblin-nerd\\originais\\toxico-acid-bubbling-105397.mp3",
+      "sha256": "4e3c7e2a01731ac0e404d48e51fa556bd12b31a008acdb44114ae00450a61534"
+    },
+    {
+      "arquivo": "C:\\Users\\marco\\OneDrive\\Desktop\\Scape-from-stone-de-cut-git\\assets\\audio\\pocao_venenosa_corrosao.ogg",
+      "sha256": "b988fdd323c188a96d959341db83a71e533f82c6ee731cb062f46aa22cb44810"
+    }
+  ],
+  "filtros_ffmpeg": "[0:a]atrim=start=0.28:end=0.48,asetpts=PTS-STARTPTS,atempo=1.3,volume=0.65,afade=t=out:st=0.12:d=0.03[g];[1:a]atrim=start=0.65:duration=1.2,asetpts=PTS-STARTPTS,volume=0.5,afade=t=in:d=0.008,adelay=160|160[a];[2:a]atrim=duration=1.1,asetpts=PTS-STARTPTS,lowpass=f=4500,volume=0.20,afade=t=in:d=0.008,adelay=160|160[c];[g][a][c]amix=inputs=3:normalize=0:duration=longest,highpass=f=65,lowpass=f=6500,apad,atrim=duration=1.4,afade=t=in:d=0.005,afade=t=out:st=0.90:d=0.5[out]",
+  "ganho": 1,
+  "destino": "goblin_ansia_acido_cauda_v3.ogg",
+  "sha256_ogg": "db3c46f7dca001f2de9d5f86fc2581f23b48288c34dc3e07f3b5c65fb0ccb7a5",
+  "cauda_apos_animacao_ms": 789,
+  "preservacao": "Demais efeitos mantidos; originais e variantes anteriores preservados.",
+  "escuta": "Pendente de avalia??o do jogador."
+}

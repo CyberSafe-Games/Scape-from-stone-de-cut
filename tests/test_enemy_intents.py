@@ -94,7 +94,7 @@ class IntentPlanningTests(unittest.TestCase):
         self.assertEqual(hp-e.player.hp, forecast)
 
     def test_preview_includes_strength_weakness_vulnerability_and_prior_buff(self):
-        e = self.engine()
+        e = self.engine(6)  # Carrasco mantém buff; Zanzara agora é necromante.
         buff = next(a for a in e.enemy.actions if a.action_type == 'buff')
         attack = e.enemy.actions[0]
         e.enemy.action_plan = [buff, attack]
@@ -106,7 +106,7 @@ class IntentPlanningTests(unittest.TestCase):
         expected = ( (int(round(attack.damage*.75))+2+4)*125+99)//100
         self.assertEqual(intents[1].value, expected)
         self.assertIn('Não causa dano', intents[0].description)
-        self.assertEqual(e.enemy.hp, 190)
+        self.assertEqual(e.enemy.hp, e.enemy.max_hp)
         self.assertEqual(e.enemy.statuses, {})
         self.assertEqual(e.enemy.energy, 4)
         hp = e.player.hp

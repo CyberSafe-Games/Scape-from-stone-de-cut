@@ -1,0 +1,26 @@
+{
+  "objetivo": "Garra cortante na prepara??o; corte e sangramento da adaga no contato. Sem as camadas de impacto seco e estilha?os.",
+  "disparos": {
+    "cortante": "24% da anima??o; at? antes do contato",
+    "sangramento": "contato real via enemy_impact_fraction"
+  },
+  "recursos": [
+    {
+      "fonte": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\guardiao-da-pedra\\originais\\audio_3f3ff2c34f.mp3",
+      "sha256_fonte": "b7099e5497e94ed9b5cac231d61370234c422e1d41a12ec3d94e96a95a800ce1",
+      "destino": "guardiao_garra_cortante_v4.ogg",
+      "filtros_ffmpeg": "atrim=duration=0.30,asetpts=PTS-STARTPTS,atempo=1.3,highpass=f=100,lowpass=f=6500,apad,atrim=duration=0.226,afade=t=in:d=0.004,afade=t=out:st=0.18:d=0.046",
+      "ganho": 0.911621422391346,
+      "sha256_ogg": "d221d0a99848979638a544fb9cb9c6e3f5bd953176c1ff9ae543dae056ec7982"
+    },
+    {
+      "fonte": "C:\\Users\\marco\\OneDrive\\Desktop\\Scape-from-stone-de-cut-git\\assets\\audio\\adaga_corte_sangramento.ogg",
+      "sha256_fonte": "1cb26bd79515f02cf3d78fcbe07ea0cf96deaeafd8e02c3d6dd94b359de590d5",
+      "destino": "guardiao_garra_sangramento_v4.ogg",
+      "filtros_ffmpeg": "atrim=start=0.08:duration=1.1,asetpts=PTS-STARTPTS,highpass=f=65,lowpass=f=6500,afade=t=in:d=0.004,afade=t=out:st=0.8:d=0.3",
+      "ganho": 0.40811408929918724,
+      "sha256_ogg": "59e0a8ddd69c2612266cb364dee55846de9b5c66cc1f4f3e8a0f26821134a01b"
+    }
+  ],
+  "escuta": "Aguardando aprova??o do jogador; demais efeitos aprovados preservados."
+}

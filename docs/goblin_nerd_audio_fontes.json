@@ -1,0 +1,305 @@
+{
+  "escuta": "Seleção por metadados e medidas; avaliação crítica pelo jogador pendente.",
+  "preservacao": "Originais externos e variantes anteriores preservados.",
+  "impacto_chave": "Reutiliza alvaro_tex_pequeno_impacto_corporal_v1.ogg.",
+  "sons": [
+    {
+      "destino": "goblin_chave_voo_v1.ogg",
+      "fontes": [
+        {
+          "id": "233426",
+          "categoria": "Chave Arremessada",
+          "titulo": "Near Miss Swing Whoosh 3",
+          "autor": "floraphonic",
+          "pagina": "https://pixabay.com/sound-effects/film-special-effects-near-miss-swing-whoosh-3-233426/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "texto_exibido": "Free for use under the Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "chave-near-miss-swing-whoosh-3-233426.mp3",
+          "caminho_relativo": "originais/chave-near-miss-swing-whoosh-3-233426.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2024/08/18/audio_24d8e1c54a.mp3",
+          "funcao_no_repertorio": "opcao",
+          "motivo_da_escolha": "Passagem próxima e curta com tags Air, Throw e Projectile. Prioriza deslocamento no ar; o contato corporal fica separado.",
+          "base_da_selecao": "Somente metadados: título, descrição, tags e duração do player; sem escuta crítica.",
+          "bytes": 8448,
+          "sha256": "b5355e39c8c612a3f5b12a17a148b097b180c68cb9399dd5398d6842c0098664",
+          "tipo_conteudo": "audio/mpeg",
+          "validacao": "MP3 não vazio com cabeçalho MPEG identificado. Sem validação perceptual."
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.03:duration=0.23,asetpts=PTS-STARTPTS,atempo=0.65,highpass=f=120,lowpass=f=8000,apad,atrim=duration=0.48,afade=t=in:d=0.004,afade=t=out:st=0.32:d=0.16[out]",
+      "ganho": 0.3517671530729043,
+      "sha256_ogg": "e586b9421333641212f07e6f556f4623b060835908253b93e789d7739d6c97fe"
+    },
+    {
+      "destino": "goblin_descarga_improvisada_v1.ogg",
+      "fontes": [
+        {
+          "id": "46304",
+          "categoria": "Descarga Improvisada",
+          "titulo": "plasmapistol_shot",
+          "autor": "Stugs (Freesound), via freesound_community",
+          "pagina": "https://pixabay.com/sound-effects/film-special-effects-plasmapistol-shot-46304/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "texto_exibido": "Free for use under the Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "improvisada-plasmapistol-shot-46304.mp3",
+          "caminho_relativo": "originais/improvisada-plasmapistol-shot-46304.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2022/03/10/audio_be7cc20538.mp3",
+          "funcao_no_repertorio": "opcao",
+          "motivo_da_escolha": "Disparo de pistola de plasma de cerca de um segundo; alternativa energética ao laser. Não é tiro convencional descrito. Instabilidade ainda depende de audição.",
+          "base_da_selecao": "Somente metadados: título, descrição, tags e duração do player; sem escuta crítica.",
+          "bytes": 24480,
+          "sha256": "f6097a4e1424600c9becb8eaf3f79d86feccc2b30fe2f2237dbe7254b0c3d206",
+          "tipo_conteudo": "audio/mpeg",
+          "validacao": "MP3 não vazio com cabeçalho MPEG identificado. Sem validação perceptual."
+        },
+        {
+          "id": "90575",
+          "categoria": "Descarga Improvisada",
+          "titulo": "Laser zap",
+          "autor": "Hoscalegeek (Freesound), via freesound_community",
+          "pagina": "https://pixabay.com/sound-effects/film-special-effects-laser-zap-90575/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "texto_exibido": "Free for use under the Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "improvisada-laser-zap-90575.mp3",
+          "caminho_relativo": "originais/improvisada-laser-zap-90575.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2022/03/15/audio_96350f990d.mp3",
+          "funcao_no_repertorio": "opcao",
+          "motivo_da_escolha": "Zap laser curto de ficção científica, sem arma convencional descrita. Caráter elétrico e instável deve ser conferido por escuta.",
+          "base_da_selecao": "Somente metadados: título, descrição, tags e duração do player; sem escuta crítica.",
+          "bytes": 30240,
+          "sha256": "1cbc4c7d162fa3ad60fca787587b7ddc8b59026a43bedcf24517d021aab0cd00",
+          "tipo_conteudo": "audio/mpeg",
+          "validacao": "MP3 não vazio com cabeçalho MPEG identificado. Sem validação perceptual."
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.04:duration=0.42,asetpts=PTS-STARTPTS,atempo=1.8,volume=0.65[a];[1:a]atrim=start=0.11:duration=0.4,asetpts=PTS-STARTPTS,atempo=1.8,volume=0.18[b];[a][b]amix=inputs=2:normalize=0:duration=longest,highpass=f=90,lowpass=f=9000,apad,atrim=duration=0.24,afade=t=in:d=0.003,afade=t=out:st=0.18:d=0.06[out]",
+      "ganho": 0.38957198261793263,
+      "sha256_ogg": "c9e2b087bb9578b47d73563e14b6de6e9bc2a3479de3b9a368b6b7b355a686b2"
+    },
+    {
+      "destino": "goblin_impacto_energia_v1.ogg",
+      "fontes": [
+        {
+          "id": "601137",
+          "categoria": "Descarga Sobrecarregada",
+          "titulo": "Impact • Plasma Sci-Fi Energy Hit",
+          "autor": "Vadim_Makes_Sound",
+          "pagina": "https://pixabay.com/sound-effects/film-special-effects-impact-plasma-sci-fi-energy-hit-601137/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "texto_exibido": "Free for use under the Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "sobrecarga-impact-plasma-sci-fi-energy-hit-601137.mp3",
+          "caminho_relativo": "originais/sobrecarga-impact-plasma-sci-fi-energy-hit-601137.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2026/09/11/audio_183ce763f7.mp3",
+          "funcao_no_repertorio": "apoio_impacto",
+          "motivo_da_escolha": "Impacto explícito de plasma com tag Electric, preservado separado para contato energético posterior ao lançamento.",
+          "base_da_selecao": "Somente metadados: título, descrição, tags e duração do player; sem escuta crítica.",
+          "bytes": 5015,
+          "sha256": "577e6354cb77a1a6e0a5b590f49354e04ad3fc0a6fadb09de73b31afb5995276",
+          "tipo_conteudo": "audio/mpeg",
+          "validacao": "MP3 não vazio com cabeçalho MPEG identificado. Sem validação perceptual."
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.02,asetpts=PTS-STARTPTS,highpass=f=65,lowpass=f=8500,aecho=1:1:35|70:0.15|0.06,apad,atrim=duration=0.45,afade=t=in:d=0.003,afade=t=out:st=0.25:d=0.2[out]",
+      "ganho": 1,
+      "sha256_ogg": "3e100caac7c83c1b269587ed163be6d2048b80d6698f1ff2983b382a3d8aed1b"
+    },
+    {
+      "destino": "goblin_baforada_toxica_v1.ogg",
+      "fontes": [
+        {
+          "id": "252656",
+          "categoria": "Baforada Tóxica",
+          "titulo": "Angry Hissing Cockroach",
+          "autor": "Kuzu420",
+          "pagina": "https://pixabay.com/sound-effects/nature-angry-hissing-cockroach-252656/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "texto_exibido": "Free for use under the Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "toxico-angry-hissing-cockroach-252656.mp3",
+          "caminho_relativo": "originais/toxico-angry-hissing-cockroach-252656.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2024/10/19/audio_0ce404f2b2.mp3",
+          "funcao_no_repertorio": "opcao",
+          "motivo_da_escolha": "Sopro orgânico de criatura, cerca de dois segundos, sem explosão ou aerossol doméstico descrito. Pode receber Acid Bubbling em volume discreto na integração.",
+          "base_da_selecao": "Somente metadados: título, descrição, tags e duração do player; sem escuta crítica.",
+          "bytes": 73728,
+          "sha256": "ca5eb764198d50017b2a669e22ac4af067f3b14c19711280670bc8a0e4d6e2d2",
+          "tipo_conteudo": "audio/mpeg",
+          "validacao": "MP3 não vazio com cabeçalho MPEG identificado. Sem validação perceptual."
+        },
+        {
+          "id": "98286",
+          "categoria": "Baforada Tóxica",
+          "titulo": "short-gas-leak",
+          "autor": "Astounded (Freesound), via freesound_community",
+          "pagina": "https://pixabay.com/sound-effects/film-special-effects-short-gas-leak-98286/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "texto_exibido": "Free for use under the Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "toxico-short-gas-leak-98286.mp3",
+          "caminho_relativo": "originais/toxico-short-gas-leak-98286.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2022/03/20/audio_4c4126766b.mp3",
+          "funcao_no_repertorio": "opcao",
+          "motivo_da_escolha": "Jato curto de gás ou ar pressurizado; sem spray doméstico identificado. Opção mais mecânica, pode receber Acid Bubbling discretamente depois; não contém organicidade e bolhas confirmadas.",
+          "base_da_selecao": "Somente metadados: título, descrição, tags e duração do player; sem escuta crítica.",
+          "bytes": 79104,
+          "sha256": "c900e7dc000c08be4e9ddd7cb437baa4cc8bd22e01edb3cb881e0e7efa6a37c0",
+          "tipo_conteudo": "audio/mpeg",
+          "validacao": "MP3 não vazio com cabeçalho MPEG identificado. Sem validação perceptual."
+        },
+        {
+          "id": "105397",
+          "categoria": "Baforada Tóxica",
+          "titulo": "Acid Bubbling",
+          "autor": "spookymodem (Freesound), via freesound_community",
+          "pagina": "https://pixabay.com/sound-effects/film-special-effects-acid-bubbling-105397/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "texto_exibido": "Free for use under the Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "toxico-acid-bubbling-105397.mp3",
+          "caminho_relativo": "originais/toxico-acid-bubbling-105397.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2022/03/24/audio_4bb48fdb08.mp3",
+          "funcao_no_repertorio": "apoio_borbulhamento",
+          "motivo_da_escolha": "Bolhas ácidas e sizzle, curta textura química para apoiar ambas as baforadas. Não é sopro completo; nenhum volume foi alterado.",
+          "base_da_selecao": "Somente metadados: título, descrição, tags e duração do player; sem escuta crítica.",
+          "bytes": 45120,
+          "sha256": "4e3c7e2a01731ac0e404d48e51fa556bd12b31a008acdb44114ae00450a61534",
+          "tipo_conteudo": "audio/mpeg",
+          "validacao": "MP3 não vazio com cabeçalho MPEG identificado. Sem validação perceptual."
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.68:duration=0.8,asetpts=PTS-STARTPTS,volume=0.4[a];[1:a]atrim=start=0.73:duration=0.8,asetpts=PTS-STARTPTS,volume=0.3[b];[2:a]atrim=start=0.23:duration=0.8,asetpts=PTS-STARTPTS,volume=0.2[c];[a][b][c]amix=inputs=3:normalize=0:duration=longest,highpass=f=65,lowpass=f=5000,apad,atrim=duration=0.8,afade=t=in:d=0.008,afade=t=out:st=0.56:d=0.24[out]",
+      "ganho": 1,
+      "sha256_ogg": "eb41567d9be02b166e26b9e77b826d5b77937ce64d00253de47575930404169b"
+    },
+    {
+      "destino": "goblin_escudo_runico_v1.ogg",
+      "fontes": [
+        {
+          "id": "566095",
+          "categoria": "Escudo Rúnico",
+          "titulo": "Sci Fi Energy Shield Activation",
+          "autor": "Vadim_Makes_Sound",
+          "pagina": "https://pixabay.com/sound-effects/film-special-effects-sci-fi-energy-shield-activation-566095/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "texto_exibido": "Free for use under the Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "escudo-sci-fi-energy-shield-activation-566095.mp3",
+          "caminho_relativo": "originais/escudo-sci-fi-energy-shield-activation-566095.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2026/07/12/audio_8767e3d53c.mp3",
+          "funcao_no_repertorio": "opcao",
+          "motivo_da_escolha": "Ativação explícita de proteção e campo energético; alternativa a choque de escudo metálico. Pulso mágico e cauda suave devem ser confirmados por escuta.",
+          "base_da_selecao": "Somente metadados: título, descrição, tags e duração do player; sem escuta crítica.",
+          "bytes": 64365,
+          "sha256": "cfa136125ca87a070333955272362c2c8cc4b0d5e431c7107fc349feef87bcaf",
+          "tipo_conteudo": "audio/mpeg",
+          "validacao": "MP3 não vazio com cabeçalho MPEG identificado. Sem validação perceptual."
+        },
+        {
+          "id": "536458",
+          "categoria": "Escudo Rúnico",
+          "titulo": "Sacred Rune Lock 02 - Arcane Seal Activation",
+          "autor": "Coghezzi",
+          "pagina": "https://pixabay.com/sound-effects/film-special-effects-sacred-rune-lock-02-arcane-seal-activation-536458/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "texto_exibido": "Free for use under the Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "escudo-sacred-rune-lock-02-arcane-seal-activation-536458.mp3",
+          "caminho_relativo": "originais/escudo-sacred-rune-lock-02-arcane-seal-activation-536458.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2026/05/19/audio_64beabe7f4.mp3",
+          "funcao_no_repertorio": "opcao",
+          "motivo_da_escolha": "Ativação de selo arcano, com tags Rune, Magic, Energy e Ambient, para uma barreira mais rúnica. Não descrita como colisão metálica.",
+          "base_da_selecao": "Somente metadados: título, descrição, tags e duração do player; sem escuta crítica.",
+          "bytes": 129567,
+          "sha256": "d572d435ca656e341c27cb38974e51b45a86a43284a18ce268e900d918198e64",
+          "tipo_conteudo": "audio/mpeg",
+          "validacao": "MP3 não vazio com cabeçalho MPEG identificado. Sem validação perceptual."
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.02:duration=1.3,asetpts=PTS-STARTPTS,volume=0.75[a];[1:a]atrim=start=0.19:duration=1.3,asetpts=PTS-STARTPTS,volume=0.24[b];[a][b]amix=inputs=2:normalize=0:duration=longest,highpass=f=60,lowpass=f=8500,apad,atrim=duration=1.3,afade=t=in:d=0.008,afade=t=out:st=0.85:d=0.45[out]",
+      "ganho": 0.38531564726155976,
+      "sha256_ogg": "aecfb78f6bddb8904abc792801be0844e7a904efec1a7fb2a4fa137fc2670124"
+    },
+    {
+      "destino": "goblin_sobrecarga_carga_v1.ogg",
+      "fontes": [
+        {
+          "id": "452848",
+          "categoria": "Descarga Sobrecarregada",
+          "titulo": "Energy Charge-Up Full Power",
+          "autor": "humordome",
+          "pagina": "https://pixabay.com/sound-effects/film-special-effects-energy-charge-up-full-power-452848/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "texto_exibido": "Free for use under the Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "sobrecarga-energy-charge-up-full-power-452848.mp3",
+          "caminho_relativo": "originais/sobrecarga-energy-charge-up-full-power-452848.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2025/12/17/audio_6c509d310d.mp3",
+          "funcao_no_repertorio": "apoio_preparacao",
+          "motivo_da_escolha": "Descrição de energia crescendo até potência máxima; tags Electric, Buildup e Rise. Preparação compartilhada proposta para as três opções, mantida separada.",
+          "base_da_selecao": "Somente metadados: título, descrição, tags e duração do player; sem escuta crítica.",
+          "bytes": 161332,
+          "sha256": "6cd95675034d4e9cb0567ea855de5ddcff8cbe60fa7c61c68686e671e6b4dc9e",
+          "tipo_conteudo": "audio/mpeg",
+          "validacao": "MP3 não vazio com cabeçalho MPEG identificado. Sem validação perceptual."
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=duration=1.25,asetpts=PTS-STARTPTS,atempo=1.53186,highpass=f=65,lowpass=f=8500,apad,atrim=duration=0.816,afade=t=in:d=0.65,afade=t=out:st=0.736:d=0.08[out]",
+      "ganho": 0.2674861854217194,
+      "sha256_ogg": "d82abd3124c4eaba6aa5e499ae24fdfa358861bf7f68c3ad580bf10f731d629c"
+    },
+    {
+      "destino": "goblin_sobrecarga_feixe_v1.ogg",
+      "fontes": [
+        {
+          "id": "482509",
+          "categoria": "Descarga Sobrecarregada",
+          "titulo": "Energy Beam Blast (5)",
+          "autor": "Yodguard",
+          "pagina": "https://pixabay.com/sound-effects/film-special-effects-energy-beam-blast-5-482509/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "texto_exibido": "Free for use under the Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "sobrecarga-energy-beam-blast-5-482509.mp3",
+          "caminho_relativo": "originais/sobrecarga-energy-beam-blast-5-482509.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2026/02/10/audio_45c43233d1.mp3",
+          "funcao_no_repertorio": "opcao_lancamento",
+          "motivo_da_escolha": "Feixe de plasma com tags Power Attack e Charged Shot; primeiro lançamento proposto após a carga crescente. Há tag Impact Blast: isolamento interno não garantido sem escuta.",
+          "base_da_selecao": "Somente metadados: título, descrição, tags e duração do player; sem escuta crítica.",
+          "bytes": 96768,
+          "sha256": "926be488ffc0a15b99d7ff9334558a476d2477e0cfc337f58ce531da02d4116c",
+          "tipo_conteudo": "audio/mpeg",
+          "validacao": "MP3 não vazio com cabeçalho MPEG identificado. Sem validação perceptual."
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.18:duration=0.95,asetpts=PTS-STARTPTS,atempo=1.2,highpass=f=60,lowpass=f=9000,apad,atrim=duration=0.792,afade=t=in:d=0.005,afade=t=out:st=0.702:d=0.09[out]",
+      "ganho": 0.48070579723745693,
+      "sha256_ogg": "0e06311713201f77405ca1203fa7c509c6387d504bb19ea5b991935ab22ef6cb"
+    }
+  ]
+}

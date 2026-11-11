@@ -7,7 +7,7 @@ PORTRAITS = {
     'gordofera': ('bosses/04.jpeg', (.06, .10, .88, .88), 'cover'),
     'corpo seco': ('bosses/05.jpeg', (0, 0, 1, 1), 'cover'),
     'carrasco da vigília': ('bosses/06.jpeg', (0, 0, 1, 1), 'cover'),
-    'zanzara': ('bosses/07.jpeg', (.12, .01, .76, .98), 'cover'),
+    'zanzara': ('bosses/zanzara-necromante-v8.png', (0, 0, 1, 1), 'cover'),
 }
 
 for name, file in (

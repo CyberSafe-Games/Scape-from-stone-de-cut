@@ -1,0 +1,24 @@
+{
+  "dano": {
+    "anchor": [
+      229.03,
+      278
+    ],
+    "source": "dano-original.png",
+    "size": [
+      384,
+      280
+    ]
+  },
+  "derrota": {
+    "anchor": [
+      226.1,
+      278
+    ],
+    "source": "derrota-original.png",
+    "size": [
+      384,
+      280
+    ]
+  }
+}

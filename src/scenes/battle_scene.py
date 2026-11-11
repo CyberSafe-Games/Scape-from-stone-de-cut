@@ -21,6 +21,10 @@ from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS
 from src.systems.alvaro_tex_animations import TRANSITION_MS
 from src.systems.boss_animation_kits import KITS
 from src.systems.common_animation_kits import COMMON_KITS
+from src.systems.common_enemy_audio import (
+    BASIC_BOSS_ATTACK_SOUNDS, COMMON_ATTACK_SOUNDS, COMMON_SUPPORT_SOUNDS, SOUND_WINDOWS_MS,
+    BOSS_ATTACK_SOUNDS, BOSS_SUPPORT_SOUNDS, BOSS_ULTIMATE_SOUNDS,
+)
 from src.ui.helpers import (
     draw_text,
     draw_health_bar,
@@ -85,6 +89,7 @@ class BattleScene(BaseScene):
         self._boss_player_snapshot = None
         self._phase_transition_pending = False
         self._pending_attack_sound = None
+        self._pending_enemy_audio = []
 
         # Inicializa o motor puro de combate com callbacks para efeitos visuais
         self.engine = CombatEngine(
@@ -157,12 +162,16 @@ class BattleScene(BaseScene):
                 enemy_name=getattr(self.engine.enemy, "name", None),
                 ultimate=kwargs.get("ultimate", False),
             )
+            if kwargs.get("attacker") == "enemy":
+                self._queue_common_enemy_audio(
+                    kwargs.get("action"), is_attack=True,
+                    is_ultimate=kwargs.get("ultimate", False),
+                )
             if kwargs.get("attacker") == "player":
                 sound_cue = {
                     "Soco Simples": ("gameplay.attack.punch", 0.24),
                     "Adaga Sangrenta": ("gameplay.attack.dagger", 0.24),
                     "Zarabatana Venenosa": ("gameplay.attack.blowgun", 0.64),
-                    "Disparo de Arco": ("gameplay.attack.arrow_impact", 0.64),
                     "Investida": ("gameplay.attack.charge", 0.24),
                     "Lança Perfurante": ("gameplay.attack.spear", 0.24),
                     "Machados Gêmeos": ("gameplay.attack.twin_axes", 0.24),
@@ -181,6 +190,7 @@ class BattleScene(BaseScene):
                     else None
                 )
                 revised = {
+                    "Disparo de Arco": (768, "gameplay.attack.arrow_launch", 1368),
                     "Adaga Sangrenta": (216, "gameplay.attack.dagger", 1982),
                     "Investida": (0, "gameplay.attack.charge", 1500),
                     "Lança Perfurante": (308, "gameplay.attack.spear", 900),
@@ -195,7 +205,8 @@ class BattleScene(BaseScene):
                     start, sound_id, end = revised
                     reference_duration = (
                         1200 if kwargs.get("action") in (
-                            "Bola de Fogo", "Poção Venenosa", "Poção Fragilizante", "Amuleto Dissipador"
+                            "Bola de Fogo", "Poção Venenosa", "Poção Fragilizante", "Amuleto Dissipador",
+                            "Disparo de Arco"
                         )
                         else 900
                     )
@@ -204,8 +215,14 @@ class BattleScene(BaseScene):
                         kwargs.get("action"), start * scale, sound_id, end * scale,
                     )
                 self._pending_contact_sound = (
-                    (kwargs.get("action"), self.entity_view.player_attack_duration * 0.52)
-                    if kwargs.get("action") in ("Lança Perfurante", "Machados Gêmeos", "Investida")
+                    (
+                        kwargs.get("action"),
+                        self.entity_view.player_attack_duration
+                        * (0.90 if kwargs.get("action") == "Disparo de Arco" else 0.52),
+                    )
+                    if kwargs.get("action") in (
+                        "Lança Perfurante", "Machados Gêmeos", "Investida", "Disparo de Arco"
+                    )
                     else None
                 )
                 self._attack_latest_start_ms = self.entity_view.player_attack_duration * (
@@ -271,6 +288,7 @@ class BattleScene(BaseScene):
                 kwargs.get("action"),
                 enemy_name=getattr(self.engine.enemy, "name", None),
             )
+            self._queue_common_enemy_audio(kwargs.get("action"), is_attack=False)
         elif event_name == "floating_text":
             self.floating_texts.spawn(
                 kwargs["x"], kwargs["y"], kwargs["text"], kwargs["color"]
@@ -302,6 +320,151 @@ class BattleScene(BaseScene):
                 (176, 153, 117),
             )
 
+    def _queue_common_enemy_audio(self, action, is_attack, is_ultimate=False):
+        self._pending_enemy_audio = []
+        enemy = self.engine.enemy
+        name = enemy.name.lower()
+        is_boss = (
+            getattr(enemy, "is_miniboss", False)
+            or getattr(enemy, "is_final_boss", False)
+            or getattr(enemy, "boss_id", None) is not None
+            or name in KITS
+        )
+        if getattr(self, "overlay", None) is not None and self.overlay.is_active:
+            return
+        if is_ultimate:
+            if not is_boss or not is_attack:
+                return
+            mapping = BOSS_ULTIMATE_SOUNDS
+        elif is_boss:
+            mapping = (
+                {name: {**BASIC_BOSS_ATTACK_SOUNDS.get(name, {}), **BOSS_ATTACK_SOUNDS.get(name, {})}}
+                if is_attack else BOSS_SUPPORT_SOUNDS
+            )
+        else:
+            mapping = COMMON_ATTACK_SOUNDS if is_attack else COMMON_SUPPORT_SOUNDS
+        sound_id = mapping.get(name, {}).get(action)
+        if sound_id is None:
+            return
+        view = self.entity_view
+        duration = view.enemy_attack_duration if is_attack else view.enemy_action_duration
+        fraction = view.enemy_impact_fraction if is_attack else 0.52
+        if name == "zanzara" and is_attack:
+            prefix = "gameplay.boss.zanzara."
+            if is_ultimate:
+                spec = view.enemy_ultimate
+                if spec is None:
+                    return
+                cues = ((.08, "aura"), (.12, "laugh"), (spec.release, "summon"), (spec.impact, "ferry"))
+            elif action == "atk1":
+                cues = ((max(0, fraction-400/duration), "swing"), (fraction, "flesh"))
+            elif action == "atk2":
+                cues = ((.24, "smoke"), (max(.24, fraction-400/duration), "swing"), (fraction, "flesh"), (.91, "smoke"))
+            else:
+                cues = ((.08, "aura"), (.12, "portal"), (.42, "souls"))
+            self._pending_enemy_audio.extend(
+                (name, action, is_attack, duration * at, prefix + cue) for at, cue in cues
+            )
+            return
+        if name == "carrasco da vigília" and is_attack:
+            launch = view.enemy_ultimate.release if is_ultimate and view.enemy_ultimate else 0.24
+            impact_sound = "gameplay.boss.carrasco.execution_hit" if is_ultimate else "gameplay.boss.duo.heavy_hit"
+            self._pending_enemy_audio.extend((
+                (name, action, is_attack, duration * launch, sound_id),
+                (name, action, is_attack, duration * fraction, impact_sound),
+            ))
+            return
+        if name == "corpo seco" and is_attack:
+            launch = view.enemy_ultimate.release if is_ultimate and view.enemy_ultimate else 0.24
+            self._pending_enemy_audio.extend((
+                (name, action, is_attack, duration * launch, sound_id),
+                (name, action, is_attack, duration * fraction, "gameplay.boss.duo.flesh_hit"),
+            ))
+            return
+        if name == "gordofera" and is_attack:
+            if is_ultimate:
+                self._pending_enemy_audio.extend((
+                    (name, action, is_attack, duration * 0.25, sound_id),
+                    (name, action, is_attack, duration * fraction, "gameplay.boss.gordofera.tremor"),
+                ))
+                return
+            if action == "atk1":
+                self._pending_enemy_audio.extend((
+                    (name, action, is_attack, duration * 0.24, sound_id),
+                    (name, action, is_attack, duration * fraction, "gameplay.boss.guardian.claw_hit"),
+                ))
+                return
+            if action == "atk2":
+                fraction = 0.35
+        if name == "goblin nerd" and is_attack:
+            if is_ultimate:
+                spec = view.enemy_ultimate
+                if spec is None:
+                    return
+                cues = (
+                    (duration * 0.10, "gameplay.boss.goblin.charge"),
+                    (duration * spec.release, sound_id),
+                    (duration * spec.impact, "gameplay.boss.goblin.energy_hit"),
+                )
+            elif view.enemy_ranged_attack:
+                cues = (
+                    (duration * view.enemy_ranged_attack[1], sound_id),
+                    (duration * fraction, "gameplay.boss.small.body_hit" if action == "atk1"
+                     else "gameplay.boss.goblin.energy_hit"),
+                )
+            else:
+                # Preparação e primeiro quadro com jato são momentos distintos.
+                cues = (
+                    (duration * 0.18, "gameplay.boss.goblin.retch"),
+                    (duration * 0.43, sound_id),
+                )
+            self._pending_enemy_audio.extend(
+                (name, action, is_attack, when, cue) for when, cue in cues
+            )
+            return
+        if name == "álvaro e tex" and not is_attack and action == "healer2":
+            # A fumaça visual surge aos 20%, antes da ativação do buff.
+            fraction = 0.20
+        if name == "álvaro e tex · pequeno" and is_attack and action != "atk1":
+            launch = view.enemy_ranged_attack[1] if view.enemy_ranged_attack else 0.24
+            impact_sound = (
+                "gameplay.boss.duo.flesh_hit" if action == "atk4"
+                else "gameplay.boss.small.fury_hit" if is_ultimate
+                else "gameplay.boss.small.body_hit"
+            )
+            self._pending_enemy_audio.extend((
+                (name, action, is_attack, duration * launch, sound_id),
+                (name, action, is_attack, duration * fraction, impact_sound),
+            ))
+            return
+        if name == "álvaro e tex" and is_attack:
+            launch = view.enemy_ranged_attack[1] if view.enemy_ranged_attack else 0.24
+            impact_sound = (
+                "gameplay.boss.duo.flesh_hit" if action == "atk2"
+                else "gameplay.boss.duo.heavy_hit"
+            )
+            self._pending_enemy_audio.extend((
+                (name, action, is_attack, duration * launch, sound_id),
+                (name, action, is_attack, duration * fraction, impact_sound),
+            ))
+            return
+        if is_ultimate:
+            if view.enemy_ultimate is None:
+                return
+            fraction = view.enemy_ultimate.release
+        if name == "guardião da pedra" and is_attack and not is_ultimate and action == "atk1":
+            self._pending_enemy_audio.append((
+                name, action, is_attack, duration * 0.24,
+                "gameplay.boss.guardian.claw",
+            ))
+            sound_id = "gameplay.boss.guardian.claw_hit"
+        if is_attack and name == "centauro vigia" and action == "atk1":
+            self._pending_enemy_audio.append((
+                name, action, is_attack, duration * view.enemy_ranged_attack[1],
+                "gameplay.attack.arrow_launch",
+            ))
+        self._pending_enemy_audio.append((name, action, is_attack, duration * fraction, sound_id))
+
     def update(self, dt):
         pending_attack = getattr(self, "_pending_attack_sound", None)
         if pending_attack is not None:
@@ -318,23 +481,58 @@ class BattleScene(BaseScene):
                     self.play_ui_sound(sound_id)
                 elif collision_ms > animation_ms:
                     self.play_ui_sound(sound_id, maxtime=collision_ms - animation_ms)
+        arrow_impact_duration = None
         pending_contact = getattr(self, "_pending_contact_sound", None)
         if pending_contact is not None:
             action, contact_ms = pending_contact
-            animation_ms = self.entity_view.player_action_timer + dt
+            is_arrow = action == "Disparo de Arco"
+            animation_ms = (
+                self.entity_view.attack_timer if is_arrow
+                else self.entity_view.player_action_timer
+            ) + dt
+            if is_arrow and self.entity_view.pending_enemy_hit_at is not None:
+                contact_ms = self.entity_view.pending_enemy_hit_at
             if self.entity_view.player_action != action:
                 self._pending_contact_sound = None
             elif animation_ms >= contact_ms:
                 self._pending_contact_sound = None
                 is_charge = action == "Investida"
-                remaining = contact_ms + (450 if is_charge else 160) - animation_ms
+                remaining = contact_ms + (350 if is_arrow else 450 if is_charge else 160) - animation_ms
                 if remaining > 0:
-                    self.play_ui_sound(
-                        "gameplay.attack.charge_impact" if is_charge else "gameplay.attack.punch",
-                        volume=1.0 if is_charge else 0.6, maxtime=remaining,
-                    )
+                    if is_arrow:
+                        arrow_impact_duration = remaining
+                    else:
+                        self.play_ui_sound(
+                            "gameplay.attack.charge_impact" if is_charge else "gameplay.attack.punch",
+                            volume=1.0 if is_charge else 0.6, maxtime=remaining,
+                        )
+        ready_enemy_audio = []
+        pending_enemy_audio = []
+        for name, action, is_attack, when, sound_id in getattr(self, "_pending_enemy_audio", []):
+            view = self.entity_view
+            active = (
+                self.engine.enemy.name.lower() == name
+                and view.enemy_attack_name == name
+                and view.enemy_action == action
+                and (view.attacker == "enemy" if is_attack else view.attacker != "enemy")
+            )
+            if not active:
+                continue
+            elapsed = (view.attack_timer if is_attack else view.enemy_action_timer) + dt
+            duration = view.enemy_attack_duration if is_attack else view.enemy_action_duration
+            if elapsed < when:
+                pending_enemy_audio.append((name, action, is_attack, when, sound_id))
+            else:
+                remaining = when + SOUND_WINDOWS_MS.get(sound_id, 450) - elapsed
+                if remaining > 0 and elapsed <= duration:
+                    ready_enemy_audio.append((sound_id, remaining))
+        self._pending_enemy_audio = pending_enemy_audio
         self.engine.update_message(dt)
         self.entity_view.update(dt)
+        for sound_id, remaining in ready_enemy_audio:
+            self.play_ui_sound(sound_id, volume=0.85, maxtime=remaining)
+        if arrow_impact_duration is not None:
+            self.play_ui_sound("gameplay.attack.arrow_impact", maxtime=arrow_impact_duration)
         self.floating_texts.update(dt)
         self.coin_hud.update(dt)
         self.energy_hud.update(dt)
@@ -428,7 +626,7 @@ class BattleScene(BaseScene):
             surface.fill(BG)
 
         shade = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        shade.fill((5, 11, 10, 135))
+        shade.fill((5, 11, 10, 35 if (self.selected_level or self.engine.level) == 7 else 135))
         surface.blit(shade, (0, 0))
         draw_vignette(surface, WIDTH, HEIGHT, alpha=88)
 
@@ -1102,6 +1300,7 @@ class BattleScene(BaseScene):
             self.engine.state == "victory"
             and self.entity_view.player_action is None
             and self.entity_view.attacker is None
+            and self.entity_view.is_enemy_defeat_done(self.engine.enemy)
         ):
             self._draw_victory(surface)
         if self.engine.state == "phase_complete":
@@ -1456,6 +1655,7 @@ class BattleScene(BaseScene):
                 self.engine.state == "victory"
                 and self.entity_view.player_action is None
                 and self.entity_view.attacker is None
+                and self.entity_view.is_enemy_defeat_done(self.engine.enemy)
             ):
                 reward_rects = CardView.get_reward_rects(len(self.engine.reward_cards))
                 for index, rect in enumerate(reward_rects):

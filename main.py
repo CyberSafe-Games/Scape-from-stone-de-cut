@@ -6,6 +6,7 @@ from src.core.window import WindowManager
 from src.core.asset_manager import AssetManager
 from src.core.scene_manager import SceneManager
 from src.core.audio_manager import AudioManager
+from src.config.audio_mix import SOUND_VOLUMES
 from src.scenes.menu_scene import MenuScene
 
 
@@ -30,12 +31,13 @@ def main():
             "gameplay.card_hover": "card-place-2.ogg",
             "gameplay.turn_end": "chip-lay-1.ogg",
             "gameplay.ultimate_activate": "ultimate_xamanico_opcao_2.ogg",
-            "gameplay.game_over": "game_over_fogueira_sombria_v2.ogg",
+            "gameplay.game_over": "game_over_risada_apos_fala_v4.ogg",
             "gameplay.victory": "victory_fanfare_2_curta.ogg",
             "gameplay.attack.punch": "dragon-studio-hard-punch-sfx-515251_sync.ogg",
             "gameplay.attack.dagger": "adaga_corte_sangramento.ogg",
             "gameplay.attack.blowgun": "freesound_community-052708_blowgun-39165_sync.ogg",
-            "gameplay.attack.arrow_impact": "dennish18-arrow-body-impact-146419_sync.ogg",
+            "gameplay.attack.arrow_launch": "dennish18-arrow-body-impact-146419_sync.ogg",
+            "gameplay.attack.arrow_impact": "flecha_acerto_corporal.ogg",
             "gameplay.attack.charge": "investida_passos_isolados.ogg",
             "gameplay.attack.charge_impact": "investida_impacto_corporal.ogg",
             "gameplay.attack.spear": "lanca_perfurante_sync_v2.ogg",
@@ -53,8 +55,60 @@ def main():
             "gameplay.skill.dispel": "amuleto_dissipador_ativacao.ogg",
             "gameplay.skill.mask": "mascara_ancestral_canto_curto.ogg",
             "gameplay.skill.energy": "surto_energia_continuacao_curta.ogg",
+            "gameplay.enemy.acid": "inimigo_acido.ogg",
+            "gameplay.enemy.slime": "slime_corpo_fragilizante.ogg",
+            "gameplay.enemy.heal": "inimigo_cura.ogg",
+            "gameplay.enemy.blade": "inimigo_corte_lamina.ogg",
+            "gameplay.boss.zanzara.souls": "zanzara_souls_piloto_v3.ogg",
+            "gameplay.boss.zanzara.laugh": "zanzara_laugh_enviada_v5.ogg",
+            "gameplay.boss.zanzara.swing": "alvaro_tex_estocada_base_retomada_v6.ogg",
+            "gameplay.boss.zanzara.flesh": "alvaro_tex_espada_contato_sangramento_v2.ogg",
+            "gameplay.boss.zanzara.smoke": "zanzara_smoke_piloto_v4.ogg",
+            "gameplay.boss.zanzara.aura": "zanzara_aura_piloto_v1.ogg",
+            "gameplay.boss.zanzara.portal": "zanzara_portal_piloto_v1.ogg",
+            "gameplay.boss.zanzara.summon": "zanzara_summon_piloto_v1.ogg",
+            "gameplay.boss.zanzara.ferry": "zanzara_ferry_piloto_v1.ogg",
+            "gameplay.boss.guardian.claw": "guardiao_garra_cortante_v4.ogg",
+            "gameplay.boss.guardian.claw_hit": "guardiao_garra_sangramento_v4.ogg",
+            "gameplay.boss.guardian.stone": "guardiao_pele_rochosa_cauda_v2.ogg",
+            "gameplay.boss.guardian.heal": "guardiao_vigor_selvagem_cauda_v2.ogg",
+            "gameplay.boss.guardian.roar": "guardiao_rugido_urso_v3.ogg",
+            "gameplay.boss.duo.stab": "alvaro_tex_estocada_base_retomada_v6.ogg",
+            "gameplay.boss.duo.star": "alvaro_tex_shuriken_giro_v5.ogg",
+            "gameplay.boss.duo.whirl": "alvaro_tex_vendaval_espada_combinada_v5.ogg",
+            "gameplay.boss.duo.heavy_hit": "alvaro_tex_espada_contato_sangramento_v2.ogg",
+            "gameplay.boss.duo.flesh_hit": "alvaro_tex_corte_corporal_contato_v2.ogg",
+            "gameplay.boss.duo.smoke": "alvaro_tex_fumaca_inicio_cauda_v3.ogg",
+            "gameplay.boss.small.club": "alvaro_tex_pequeno_porrete_movimento_v1.ogg",
+            "gameplay.boss.small.body_hit": "alvaro_tex_pequeno_impacto_corporal_v1.ogg",
+            "gameplay.boss.small.fury": "alvaro_tex_pequeno_furia_movimento_v1.ogg",
+            "gameplay.boss.small.fury_hit": "alvaro_tex_pequeno_furia_impactos_v1.ogg",
+            "gameplay.boss.goblin.throw": "goblin_chave_metal_arremesso_v2.ogg",
+            "gameplay.boss.goblin.zap": "goblin_descarga_improvisada_v1.ogg",
+            "gameplay.boss.goblin.energy_hit": "goblin_laser_queima_sem_repeticao_v4.ogg",
+            "gameplay.boss.goblin.toxic": "goblin_acido_jato_corrosao_sincronizado_v6.ogg",
+            "gameplay.boss.goblin.retch": "goblin_ansia_final_natural_v7.ogg",
+            "gameplay.boss.goblin.shield": "goblin_escudo_runico_v1.ogg",
+            "gameplay.boss.goblin.charge": "goblin_sobrecarga_carga_v1.ogg",
+            "gameplay.boss.goblin.beam": "goblin_sobrecarga_feixe_v1.ogg",
+            "gameplay.boss.gordofera.roar": "gordofera_rugido_tigre_v2.ogg",
+            "gameplay.boss.gordofera.guard": "gordofera_guarda_aura_v2.ogg",
+            "gameplay.boss.gordofera.jump": "gordofera_salto_impulso_ar_v2.ogg",
+            "gameplay.boss.gordofera.tremor": "gordofera_abalo_pedras_fragmentos_v2.ogg",
+            "gameplay.boss.corpo.slash": "corpo_seco_corte_movimento_v1.ogg",
+            "gameplay.boss.corpo.cross": "corpo_seco_laminas_cruzadas_v1.ogg",
+            "gameplay.boss.corpo.spin": "corpo_seco_giro_laminas_v1.ogg",
+            "gameplay.boss.corpo.guard": "corpo_seco_postura_defensiva_v1.ogg",
+            "gameplay.boss.carrasco.cut": "carrasco_corte_machado_v1.ogg",
+            "gameplay.boss.carrasco.sweep": "carrasco_varredura_machado_v1.ogg",
+            "gameplay.boss.carrasco.execution": "carrasco_execucao_movimento_v1.ogg",
+            "gameplay.boss.carrasco.execution_hit": "carrasco_execucao_impacto_sangramento_v1.ogg",
+            "gameplay.boss.carrasco.vigor": "carrasco_vigor_aura_v1.ogg",
         }
     )
+    # Ganho por efeito, multiplicado pelos volumes geral, de SFX e da chamada.
+    for sound_id, gain in SOUND_VOLUMES.items():
+        audio_manager.set_sound_volume(sound_id, gain)
     scene_manager = SceneManager(audio_manager=audio_manager)
     clock = pygame.time.Clock()
 

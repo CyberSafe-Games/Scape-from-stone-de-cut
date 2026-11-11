@@ -179,7 +179,7 @@ class AssetManager:
     def _load_territory_backgrounds(self):
         """Carrega fundos opcionais específicos de território."""
         mapping = {1: 'background_pedra_do_corte.png', 2: "background_mata_sombria.png", 3: 'background_ruinas_ancestrais.png',
-                   5: 'background_fortaleza_caida.png', 6: 'background_pico_da_vigilia.png'}
+                   5: 'background_fortaleza_caida.png', 6: 'background_pico_da_vigilia.png', 7: 'background_masmorra_final_v1.png'}
         for level, filename in mapping.items():
             path = os.path.join(os.path.dirname(BACKGROUND_PATH), filename)
             try:

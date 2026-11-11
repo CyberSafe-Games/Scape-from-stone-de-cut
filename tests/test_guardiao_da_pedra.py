@@ -113,7 +113,7 @@ class GuardiaoDaPedraTests(unittest.TestCase):
             self.assertIsNot(bg, assets.background)
         self.assertNotEqual(pygame.image.tobytes(assets.get_battle_background(1), 'RGB'),
                             pygame.image.tobytes(assets.get_battle_background(5), 'RGB'))
-        self.assertIs(assets.get_battle_background(7), assets.background)
+        self.assertIsNot(assets.get_battle_background(7), assets.background)
         boss = create_guardiao_da_pedra()
         view = EntityView(assets)
         screen = pygame.Surface((1920, 1080), pygame.SRCALPHA)

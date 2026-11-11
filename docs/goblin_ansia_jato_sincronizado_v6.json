@@ -1,0 +1,31 @@
+{
+  "inspecao": "Quadros atk3_3 a atk3_8 de bosses/twelve_frames/goblin_nerd: prepara??o precede jato; primeiro quadro com l?quido ? atk3_6.",
+  "sincronia": {
+    "duracao_animacao_ms": 940,
+    "ansia_fracao": 0.18,
+    "ansia_ms": 169.2,
+    "primeiro_jato_fracao": 0.43,
+    "acido_ms": 404.2,
+    "contato_ms": 488.8
+  },
+  "recursos": [
+    {
+      "destino": "goblin_ansia_preparacao_v6.ogg",
+      "fonte": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\goblin-nerd\\originais\\toxico-r2-01-dragon-studio-vomiting-sound-effect-382720.mp3",
+      "sha256_fonte": "d407e819efc94bad8db62148cf2b0bba7fbe0d59bcabd786dc2e09ec7bf33dd3",
+      "filtros_ffmpeg": "atrim=start=0.30:end=0.50,asetpts=PTS-STARTPTS,highpass=f=65,lowpass=f=6500,afade=t=in:d=0.004,afade=t=out:st=0.16:d=0.04",
+      "ganho": 1,
+      "sha256_ogg": "45159d26c6d0a53d30cd51c73d7484fdd12535c56b38a3d9c14716828183d72a"
+    },
+    {
+      "destino": "goblin_acido_jato_corrosao_sincronizado_v6.ogg",
+      "fonte": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\goblin-nerd\\originais\\toxico-acid-bubbling-105397.mp3",
+      "sha256_fonte": "4e3c7e2a01731ac0e404d48e51fa556bd12b31a008acdb44114ae00450a61534",
+      "filtros_ffmpeg": "atrim=start=0.25:duration=1.8,asetpts=PTS-STARTPTS,highpass=f=65,lowpass=f=5500,afade=t=in:d=0.005,afade=t=out:st=1.25:d=0.55",
+      "ganho": 0.6797149239664619,
+      "sha256_ogg": "92472db0bf2ad115c295b0dd67335b0c6dc576c44f9d4386942488ab11a75c0f"
+    }
+  ],
+  "preservacao": "Somente ?nsia e Acid Bubbling; sem po??o, vidro, ecos ou repeti??es. Demais efeitos e originais preservados.",
+  "escuta": "Pendente de avalia??o pelo jogador."
+}

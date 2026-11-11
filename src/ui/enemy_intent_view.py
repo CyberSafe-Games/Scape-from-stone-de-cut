@@ -31,6 +31,19 @@ class EnemyIntentView:
             else:
                 pygame.draw.polygon(s, gold, [(22, 3), (27, 15), (40, 20), (29, 26), (32, 40), (22, 32), (12, 40), (15, 26), (4, 20), (17, 15)])
                 pygame.draw.circle(s, (255, 242, 173), (22, 22), 5)
+        elif family == 'scythe':
+            line([(46,10),(27,59)],gold,5)
+            pygame.draw.polygon(s,(164,224,184),[(46,10),(30,5),(15,10),(5,28),(19,18),(34,16)])
+            line([(8,29),(16,12),(30,7)],light,2)
+        elif family == 'chains':
+            for x,y in ((18,17),(30,31),(42,45)):
+                pygame.draw.ellipse(s,(112,216,143),(x-9,y-13,20,29),5)
+            line([(10,58),(56,58)],gold,3)
+        elif family == 'ferry':
+            pygame.draw.polygon(s,(104,190,129),[(5,41),(60,41),(50,57),(18,57)])
+            line([(34,11),(34,42)],gold,3)
+            pygame.draw.polygon(s,(154,218,161),[(31,10),(11,36),(31,34)])
+            line([(8,61),(58,61)],light,2)
         elif family == 'coins':
             for x, y in ((18, 41), (33, 20), (48, 44)):
                 pygame.draw.circle(s, (197, 125, 38), (x, y), 14)

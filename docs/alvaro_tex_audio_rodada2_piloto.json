@@ -1,0 +1,142 @@
+{
+  "base_da_selecao": "Metadados e análise de duração/envelope; escuta crítica pendente.",
+  "preservacao": "Originais e variantes anteriores preservados. Corte corporal sincronizado mantido.",
+  "candidatos_nao_usados": [
+    {
+      "categoria": "Estocada",
+      "titulo": "Heavy greatsword slash in the air (2)",
+      "autor": "Yodguard",
+      "pagina": "https://pixabay.com/sound-effects/heavy-greatsword-slash-in-the-air-2-450243/",
+      "licenca_indicada": {
+        "nome": "Pixabay Content License",
+        "url": "https://pixabay.com/service/license-summary/"
+      },
+      "nome_local": "estocada-r2-02-yodguard-heavy-greatsword-450243.mp3",
+      "caminho_relativo": "originais/estocada-r2-02-yodguard-heavy-greatsword-450243.mp3",
+      "url_midia": "https://cdn.pixabay.com/audio/2025/12/11/audio_0cf1a5c773.mp3",
+      "motivo_da_escolha": "Segunda variação de espada grande rasgando o ar, cerca de 2 segundos; permite comparar peso e cauda com a opção mais curta. Sem impacto corporal acrescentado.",
+      "base_da_selecao": "Somente metadados, sem escuta crítica.",
+      "bytes": 65280,
+      "sha256": "91a53384eb58af1083b0d2739795c970fc124eeb479f706d93cf41e8ed7dbdae"
+    }
+  ],
+  "sons": [
+    {
+      "destino": "alvaro_tex_espada_pesada_r2_v4.ogg",
+      "fontes": [
+        {
+          "categoria": "Estocada",
+          "titulo": "Heavy greatsword slash in the air (1)",
+          "autor": "Yodguard",
+          "pagina": "https://pixabay.com/sound-effects/heavy-greatsword-slash-in-the-air-1-450242/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "estocada-r2-01-yodguard-heavy-greatsword-450242.mp3",
+          "caminho_relativo": "originais/estocada-r2-01-yodguard-heavy-greatsword-450242.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2025/12/11/audio_83b94bc0d6.mp3",
+          "motivo_da_escolha": "Espada pesada cortando o ar; título e tags Giant Sword, Heavy Whoosh e Blade Whoosh correspondem ao peso e deslocamento de vento pedidos. Aproximadamente 1 segundo. Marcado AI generated.",
+          "base_da_selecao": "Somente metadados, sem escuta crítica.",
+          "bytes": 33024,
+          "sha256": "d8988ba8ead8584a0e712e210f43530c22992c57d88913d908de6703f294e382"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.06:duration=0.4,asetpts=PTS-STARTPTS,highpass=f=65,lowpass=f=8500,afade=t=in:d=0.005,afade=t=out:st=0.28:d=0.12[out]",
+      "ganho": 0.2439235553786469,
+      "sha256_ogg": "34b86a1c7ebde8b9e44300ea7fd35178b02dc614d57dad69f85249e3d19198e5"
+    },
+    {
+      "destino": "alvaro_tex_shuriken_lamina_r2_v4.ogg",
+      "fontes": [
+        {
+          "categoria": "Shuriken",
+          "titulo": "Small Knife Whoosh",
+          "autor": "meggiepie (Freesound), via freesound_community",
+          "pagina": "https://pixabay.com/sound-effects/film-special-effects-small-knife-whoosh-101795/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "shuriken-r2-01-meggiepie-small-knife-whoosh-101795.mp3",
+          "caminho_relativo": "originais/shuriken-r2-01-meggiepie-small-knife-whoosh-101795.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2022/03/24/audio_1a5c910b10.mp3",
+          "motivo_da_escolha": "Descrição de passagem rápida e afiada de lâmina pequena, cerca de 1 segundo. Candidato para emissão curta; a rotação é menos explícita que em Flying Blade. Não é o áudio original de Naruto.",
+          "base_da_selecao": "Somente metadados, sem escuta crítica.",
+          "bytes": 43776,
+          "sha256": "b359333fd7e28d4affe20f933a602f636d3fcee49f0d6f37f9b9dbecb9b5bc7d"
+        },
+        {
+          "categoria": "Shuriken",
+          "titulo": "Flying Blade",
+          "autor": "loudernoises (Freesound), via freesound_community",
+          "pagina": "https://pixabay.com/sound-effects/film-special-effects-flying-blade-103343/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "shuriken-r2-02-loudernoises-flying-blade-103343.mp3",
+          "caminho_relativo": "originais/shuriken-r2-02-loudernoises-flying-blade-103343.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2022/03/24/audio_fb341837fc.mp3",
+          "motivo_da_escolha": "Descrição explícita de lâmina girando e voando, próxima da referência de shuriken de anime. Arquivo completo tem cerca de 7 segundos e foi preservado integralmente; duração útil deve ser avaliada na escuta. Não é o áudio original de Naruto.",
+          "base_da_selecao": "Somente metadados, sem escuta crítica.",
+          "bytes": 132480,
+          "sha256": "3d031ac40d910a2e40ff74e034ff4b199104b23b931ba30ac688ff34077b6061"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.50:duration=0.20,asetpts=PTS-STARTPTS,volume=3[a];[1:a]atrim=start=0.20:duration=0.60,asetpts=PTS-STARTPTS,volume=0.18[b];[a][b]amix=inputs=2:normalize=0:duration=longest,highpass=f=150,lowpass=f=8500,apad,atrim=duration=0.6,afade=t=in:d=0.005,afade=t=out:st=0.46:d=0.14[out]",
+      "ganho": 1,
+      "sha256_ogg": "d697282b1728330500ff10f8a39a49a83cadd786eef57852a7b5e9858c84f7b4"
+    },
+    {
+      "destino": "alvaro_tex_fumaca_bomba_r2_v4.ogg",
+      "fontes": [
+        {
+          "categoria": "Fumaça Restauradora",
+          "titulo": "Smoke Bomb",
+          "autor": "vckhaze (Freesound), via freesound_community",
+          "pagina": "https://pixabay.com/sound-effects/film-special-effects-smoke-bomb-6761/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "fumaca-r2-01-vckhaze-smoke-bomb-6761.mp3",
+          "caminho_relativo": "originais/fumaca-r2-01-vckhaze-smoke-bomb-6761.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2021/08/09/audio_c7e98fcec4.mp3",
+          "motivo_da_escolha": "Bomba de fumaça com puff e burst curtos, cerca de 1 segundo, descrita para animações ninja. A nova direção permite bomba de fumaça; contém tags Explosion, Blast e Soft e exige conferir a intensidade na escuta.",
+          "base_da_selecao": "Somente metadados, sem escuta crítica.",
+          "bytes": 28800,
+          "sha256": "e2effc4350993274396cc16a2abb72c0b2d92ce79a9dfe66939b77cf04ba12e1"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.18:duration=1.20,asetpts=PTS-STARTPTS,highpass=f=65,lowpass=f=4000,aecho=1:1:100|250:0.15|0.07,apad,atrim=duration=1.5,afade=t=in:d=0.008,afade=t=out:st=0.85:d=0.65[out]",
+      "ganho": 0.30165926715398034,
+      "sha256_ogg": "018b24a9775836670d4feafb1f9a79074e01ac49dc2d51c83d4a62118b02f316"
+    },
+    {
+      "destino": "alvaro_tex_vendaval_vento_r2_v3.ogg",
+      "fontes": [
+        {
+          "categoria": "Vendaval",
+          "titulo": "Spin Whoosh 1",
+          "autor": "floraphonic",
+          "pagina": "https://pixabay.com/sound-effects/film-special-effects-spin-whoosh-1-186596/",
+          "licenca_indicada": {
+            "nome": "Pixabay Content License",
+            "url": "https://pixabay.com/service/license-summary/"
+          },
+          "nome_local": "vendaval-r2-01-floraphonic-spin-whoosh-1-186596.mp3",
+          "caminho_relativo": "originais/vendaval-r2-01-floraphonic-spin-whoosh-1-186596.mp3",
+          "url_midia": "https://cdn.pixabay.com/audio/2024/01/17/audio_0ac1db0a03.mp3",
+          "motivo_da_escolha": "Whoosh de giro rápido, cerca de 7 segundos; tags Spin, Rotate, Spiral, Weapon e Anime. Candidato para espada girando e deslocando vento; a força do vento não foi validada por escuta.",
+          "base_da_selecao": "Somente metadados, sem escuta crítica.",
+          "bytes": 238848,
+          "sha256": "df1e914afbc3711afa325b8f08788f8ef7fa97667d30625da64f4b7088461927"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=2.2:duration=0.70,asetpts=PTS-STARTPTS,highpass=f=80,lowpass=f=8500,afade=t=in:d=0.02,afade=t=out:st=0.56:d=0.14[out]",
+      "ganho": 0.4573068129606229,
+      "sha256_ogg": "df6b48fff60aecb47ffd0ae057da3dbb3f77fef0706e2aa99d4f5e3ea304e8d1"
+    }
+  ]
+}
