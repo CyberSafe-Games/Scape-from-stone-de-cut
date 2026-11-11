@@ -8,7 +8,7 @@ from src.systems.territory_map import TERRITORIES, TERRITORY_IDS, encounter_stat
 from src.systems.save_manager import SaveManager
 from src.systems.combat_engine import CombatEngine
 from src.systems.campaign_progress import record_road_victory, record_victory
-from src.systems.card_catalog import CARD_BY_NAME
+from src.systems.card_catalog import AVAILABLE_CARD_NAMES
 from src.scenes.map_scene import MapScene, MAP_AREA
 
 
@@ -62,7 +62,7 @@ class MapEncounterTests(unittest.TestCase):
         self.assertIn(names[0], self.saves.load_save('slot_1')['progresso']['cartas_colecao'])
 
     def test_full_collection_still_allows_a_first_win_and_coin_drop(self):
-        self.data['progresso']['cartas_colecao'] = list(CARD_BY_NAME)
+        self.data['progresso']['cartas_colecao'] = list(AVAILABLE_CARD_NAMES)
         events = []
         engine = CombatEngine(lambda event, **_: events.append(event), map_mode=True)
         engine.resume_from_save(self.data, self.saves, level=1, encounter_kind='road', encounter_index=0)

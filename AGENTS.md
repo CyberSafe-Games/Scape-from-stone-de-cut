@@ -25,6 +25,7 @@ python3 -m pip install -r requirements.txt
 python3 main.py
 
 # Teste único / arquivo específico (testes usam stdlib unittest, não pytest)
+python3 -m pip install -r requirements-dev.txt
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python3 -m unittest tests.test_window_modes -v
 
 # Suíte inteira (pesada por causa dos assets; pode passar de 5 minutos)
@@ -32,7 +33,7 @@ SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python3 -m unittest discover -s test
 ```
 
 - Neste workspace não existe `python`, apenas `python3`.
-- Devtools (`devtools/prepare_*.py`, `preview_*.py`) exigem **Pillow e NumPy**, não declarados em `requirements.txt`. Prévias não leem/gravam saves; prepares regeneram assets e docs.
+- Os testes de sprites e os scripts em `devtools/` usam **Pillow e NumPy**, declarados em `requirements-dev.txt`. Prévias não leem/gravam saves; prepares regeneram assets e docs.
 - A suíte é unittest; pytest não está em `requirements.txt` (há uma referência desatualizada a `pytest` em `docs/bosses_oito_frames.md`).
 - Saída esperada de ruído: aviso de AVX2 do pygame, "Hello from pygame" e avisos de som ausente — não são falhas.
 

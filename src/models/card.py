@@ -15,6 +15,8 @@ class Card:
         description,
         color,
         effect=None,
+        *,
+        available=True,
     ):
         self.name = name
         self.cost = cost
@@ -23,6 +25,7 @@ class Card:
         self.description = description
         self.color = color
         self.effect = effect or self._create_default_effect()
+        self.available = available
 
     def _create_default_effect(self):
         """Atribui o efeito padrão adequado caso nenhum tenha sido explicitado."""
@@ -50,4 +53,5 @@ class Card:
             self.description,
             self.color,
             self.effect,
+            available=self.available,
         )

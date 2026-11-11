@@ -92,6 +92,8 @@ O jogo abre em uma janela de 1280×720 com renderização interna de 1920×1080.
 A suíte usa `unittest` (não pytest). Como há muitos assets, os testes headless pedem os drivers dummy do SDL:
 
 ```bash
+python3 -m pip install -r requirements-dev.txt
+
 # Suíte completa (pesada, pode passar de 5 minutos)
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python3 -m unittest discover -s tests -t .
 

@@ -4,7 +4,7 @@ from src.config.settings import MINIBOSS_HEAL_PERCENT
 from src.models.player import Player
 from src.models.deck import DeckManager
 from src.models.effects.ultimate_effect import create_ultimate, ULTIMATE_METADATA, DEFAULT_ULTIMATE_ID
-from src.systems.card_catalog import CARD_BY_NAME, create_starting_deck
+from src.systems.card_catalog import AVAILABLE_CARD_POOL, create_starting_deck
 from src.systems.boss_animation_kits import KITS
 from src.systems.territory_map import ROAD_FIGHTS, by_level, encounter_status
 from src.systems.common_animation_kits import COMMON_KITS
@@ -478,7 +478,7 @@ class CombatEngine:
         if self.is_replay:
             return
         owned = self.owned_card_names | {card.name for card in self.deck_manager.deck}
-        available = [card for name, card in CARD_BY_NAME.items() if name not in owned]
+        available = [card for card in AVAILABLE_CARD_POOL if card.name not in owned]
         self.reward_cards = [card.copy() for card in random.sample(available, min(3, len(available)))]
 
     def choose_reward(self, index):

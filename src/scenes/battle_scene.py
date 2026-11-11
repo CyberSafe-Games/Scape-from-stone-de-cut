@@ -1299,7 +1299,7 @@ class BattleScene(BaseScene):
         elif has_rewards:
             description = "Recompensa da fase concluída"
         else:
-            description = "Sua coleção já tem todas as cartas."
+            description = "Sua coleção já tem todas as cartas disponíveis."
 
         overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         overlay.fill((6, 7, 14, 228))

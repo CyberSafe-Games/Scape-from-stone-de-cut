@@ -10,7 +10,7 @@ from src.systems.deck_loadout import (
     equip_card_type,
     equip_ultimate,
 )
-from src.systems.card_catalog import CARD_POOL, CARD_BY_NAME
+from src.systems.card_catalog import AVAILABLE_CARD_NAMES, CARD_POOL, CARD_BY_NAME
 from src.models.effects.ultimate_effect import ULTIMATE_METADATA, DEFAULT_ULTIMATE_ID
 from src.ui import dark_fantasy_theme as theme
 from src.ui.helpers import draw_text, wrap_text
@@ -153,9 +153,10 @@ class BackpackScene(BaseScene):
             99,
             290,
         )
+        owned_count = len(AVAILABLE_CARD_NAMES.intersection(p["cartas_colecao"]))
         draw_text(
             surface,
-            f"COLEÇÃO  ·  {len(p['cartas_colecao'])}/{len(CARD_POOL)}",
+            f"COLEÇÃO  ·  {owned_count}/{len(AVAILABLE_CARD_NAMES)}",
             a.small_font,
             GOLD,
             557,
@@ -211,6 +212,16 @@ class BackpackScene(BaseScene):
                     rect.y + 32,
                 )
         for name, rect in self.cards.items():
+            if name not in AVAILABLE_CARD_NAMES:
+                theme.panel(surface, rect)
+                for row, line in enumerate(wrap_text(name, a.small_font, rect.width - 20)):
+                    draw_text(surface, line, a.small_font, WHITE,
+                              rect.centerx, rect.y + 45 + row * 26, center=True)
+                draw_text(surface, "Indisponível", a.small_font, GRAY,
+                          rect.centerx, rect.bottom - 66, center=True)
+                draw_text(surface, "no momento", a.small_font, GRAY,
+                          rect.centerx, rect.bottom - 40, center=True)
+                continue
             owned = name in p["cartas_colecao"]
             self._image(surface, name, rect, dim=not owned)
             if self.selected_card == name:
@@ -447,6 +458,9 @@ class BackpackScene(BaseScene):
                     return
             for name, rect in self.cards.items():
                 if rect.collidepoint(point):
+                    if name not in AVAILABLE_CARD_NAMES:
+                        self._notice(False, "Carta indisponível no momento.")
+                        return
                     self.selected_card = name
                     self.play_ui_sound("ui.click")
                     return

@@ -76,7 +76,9 @@ class GameFont(pygame.font.Font):
         text = "" if text is None else str(text)
         runs = self._runs(text)
         if len(runs) <= 1 and (not runs or runs[0][0] is self):
-            return super().render(text, antialias, color, bgcolor, wraplength)
+            if wraplength:
+                return super().render(text, antialias, color, bgcolor, wraplength)
+            return super().render(text, antialias, color, bgcolor)
 
         # Mantém a altura da fonte principal (centralização idêntica aos demais
         # textos) e alinha os símbolos substitutos pela linha de base.
