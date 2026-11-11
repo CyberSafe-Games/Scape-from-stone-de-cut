@@ -1,5 +1,6 @@
 import random
 
+from src.config.settings import MINIBOSS_HEAL_PERCENT
 from src.models.player import Player
 from src.models.deck import DeckManager
 from src.models.effects.ultimate_effect import create_ultimate, ULTIMATE_METADATA, DEFAULT_ULTIMATE_ID
@@ -469,6 +470,14 @@ class CombatEngine:
         else:
             self.next_level()
 
+    def _apply_miniboss_heal(self):
+        """Recupera MINIBOSS_HEAL_PERCENT da vida máxima atual (nunca excede a vida máxima).
+
+        Arredondado para o inteiro mais próximo (+0.5, truncado); ex.: 18 com vida máxima 60.
+        """
+        heal = int(self.player.max_hp * MINIBOSS_HEAL_PERCENT + 0.5)
+        self.player.hp = min(self.player.max_hp, self.player.hp + heal)
+
     def finish_map_phase(self):
         """Fecha a fase uma única vez, depois da recompensa.
 
@@ -477,26 +486,24 @@ class CombatEngine:
         """
         if not self.map_mode or self.state != "victory":
             return
+        # Regra de cura: só lutas contra miniboss recuperam 30% da vida máxima;
+        # combates comuns preservam a vida exatamente como terminou.
         if self.enemy.is_miniboss:
-            self.player.hp = self.player.max_hp
-        else:
-            self.player.hp = min(self.player.max_hp, self.player.hp + 8)
+            self._apply_miniboss_heal()
         self.player.reset_energy()
         self.state = "phase_complete"
         self.on_event("phase_complete", level=self.level)
 
     def next_level(self):
-        """Avança de andar com balanceamento e cura."""
+        """Avança de andar. A cura é concedida apenas em lutas contra miniboss."""
         self.level += 1
         miniboss = is_miniboss_level(self.level)
         self.enemy = create_enemy(self.level, miniboss)
         choose_next_action(self.enemy)
 
-        if miniboss:
-            self.player.hp = self.player.max_hp
+        if self.enemy.is_miniboss:
+            self._apply_miniboss_heal()
             self.show_message(f"MINIBOSS: {self.enemy.name}!")
-        else:
-            self.player.hp = min(self.player.max_hp, self.player.hp + 8)
 
         self.start_combat()
         self.state = "player_turn"
