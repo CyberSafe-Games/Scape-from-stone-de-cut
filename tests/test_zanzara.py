@@ -11,7 +11,6 @@ from src.core.asset_manager import AssetManager
 from src.ui.entity_view import EntityView
 from src.config.layout import ENEMY_X, PLAYER_X
 from src.systems.boss_ultimate_animations import BOSS_ULTIMATE_ANIMATIONS
-from src.ui.zanzara_fx import draw_zanzara_fx
 
 
 class ZanzaraTests(unittest.TestCase):
@@ -33,39 +32,27 @@ class ZanzaraTests(unittest.TestCase):
             self.assertNotEqual(create_point_enemy(level).name, 'Zanzara')
         self.assertNotEqual(create_road_enemy(7).name, 'Zanzara')
 
-    def test_amulet_heals_and_refreshes_temporary_power_without_hitting_player(self):
+    def test_no_old_amulet_and_current_skill_names(self):
         boss = create_zanzara()
-        boss.hp -= 10
-        action = next(a for a in boss.actions if a.action_type == 'buff')
-        target = MagicMock()
-        context = MagicMock()
-        result = action.effect.apply(action, boss, target, context)
-        self.assertEqual(result['heal'], 10)
-        self.assertEqual(boss.hp, boss.max_hp)
-        self.assertEqual(boss.statuses['aura']['potency'], 4)
-        action.effect.apply(action, boss, target, context)
-        self.assertEqual(boss.statuses['aura']['potency'], 4)
-        self.assertEqual(boss.statuses['aura']['turns'], 2)
-        target.take_damage.assert_not_called()
-        context.trigger_attack.assert_not_called()
-        context.trigger_enemy_action.assert_called_with('healer2')
+        self.assertEqual(len(boss.actions),3)
+        self.assertEqual(boss.actions[2].status_effect,('vulnerable',2,25))
+        self.assertFalse(any(a.action_type == 'buff' for a in boss.actions))
 
-    def test_two_ranged_attacks_stay_home_and_fly_left(self):
-        for action in ('atk2', 'atk3'):
+    def test_passo_teleports_and_chains_use_target_effect(self):
+        from unittest.mock import patch
+        from src.config.layout import APPROACH_GAP
+        from src.ui.zanzara_necromancer import actor_x
+        for action in ('atk2','atk3'):
             view = EntityView(self.assets)
-            view.trigger_attack('enemy', action, 'Zanzara')
-            duration, release, impact = view.enemy_ranged_attack
-            view.attack_timer = duration*(release+(impact-release)*.25)
-            first = view.get_enemy_projectile_pose()
-            self.assertEqual(view.get_attack_pose('enemy', ENEMY_X, PLAYER_X)[0], ENEMY_X)
-            view.attack_timer += 50
-            self.assertLess(view.get_enemy_projectile_pose()[0], first[0])
-            images = [self.assets.get_enemy_projectile('Zanzara', action, i) for i in range(4)]
-            self.assertTrue(all(im is not None for im in images))
-            self.assertEqual(len({pygame.image.tobytes(im, 'RGBA') for im in images}), 4)
-            screen = pygame.Surface((1920, 1080), pygame.SRCALPHA)
-            draw_zanzara_fx(screen, view)
-            self.assertGreater(screen.get_bounding_rect().width, 20)
+            view.trigger_attack('enemy',action,'Zanzara')
+            view.attack_timer=view.enemy_attack_duration*view.enemy_impact_fraction
+            target = PLAYER_X+APPROACH_GAP if action == 'atk2' else ENEMY_X
+            self.assertEqual(actor_x(action,view.enemy_impact_fraction,5),target)
+            screen=pygame.Surface((1920,1080),pygame.SRCALPHA)
+            with patch.object(self.assets,'get_enemy_projectile',side_effect=AssertionError('efeito antigo')):
+                view.draw_enemy(screen,create_zanzara())
+                view.draw_enemy_projectile(screen)
+            self.assertGreater(screen.get_bounding_rect().width,20)
 
     def test_special_uses_dedicated_poses_and_ends_with_final_victory(self):
         boss = create_zanzara()
@@ -75,8 +62,9 @@ class ZanzaraTests(unittest.TestCase):
         view = EntityView(self.assets)
         view.trigger_attack('enemy', 'atk3', boss.name, ultimate=True)
         self.assertIs(view.enemy_ultimate, BOSS_ULTIMATE_ANIMATIONS['zanzara'])
-        self.assertEqual(len(self.assets.get_boss_ultimate_sprites('Zanzara')), 12)
-        self.assertEqual(len(self.assets.get_boss_ultimate_sprites('Zanzara', effects=True)), 12)
+        from src.ui.zanzara_necromancer import load_kit
+        self.assertEqual(len(load_kit()['ultimate']),8)
+        self.assertEqual(view.enemy_ultimate.title,'Travessia Final')
         engine = CombatEngine()
         engine.enemy = boss
         boss.hp = 0

@@ -1,0 +1,72 @@
+{
+  "escopo": "Piloto das cinco a??es da Gordofera, com repert?rio existente e sem novos downloads.",
+  "creditos_externos": [
+    {
+      "titulo": "Bear Growl",
+      "autor": "Universfield",
+      "pagina": "https://pixabay.com/sound-effects/nature-bear-growl-191995/"
+    },
+    {
+      "titulo": "Earth Spell",
+      "autor": "DRAGON-STUDIO",
+      "pagina": "https://pixabay.com/sound-effects/film-special-effects-earth-spell-393923/"
+    }
+  ],
+  "licenca_indicada": "Pixabay Content License; registros originais preservados.",
+  "reuso": "Garras e sangramento do Guardi?o aprovados; cabe?ada j? integrada preservada.",
+  "recursos": [
+    {
+      "destino": "gordofera_rugido_grave_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\guardiao-da-pedra\\originais\\universfield-bear-growl-191995.mp3",
+          "sha256": "982e0ea6697f6d2d2e83ee6186c2b2853e93c1156f534a9cf375dd1f391e2b91"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.08:end=1.05,asetpts=PTS-STARTPTS,aresample=44100,asetrate=39690,aresample=44100,highpass=f=55,lowpass=f=8500,apad,atrim=duration=1.2,afade=t=in:d=0.008,afade=t=out:st=0.98:d=0.22[out]",
+      "ganho": 0.6781105919110597,
+      "sha256_ogg": "a75399efac29ee8ee2d95de640d8a8a2323474f5fc9660175b27a95deed9754d"
+    },
+    {
+      "destino": "gordofera_guarda_ferrenha_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\guardiao-da-pedra\\originais\\audio_6fde8cd005.mp3",
+          "sha256": "cde36cc7eba20611388b06b104175dfd5056e78b12734e588fb324f203cd4e2f"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.30:duration=1.3,asetpts=PTS-STARTPTS,highpass=f=60,lowpass=f=6500,apad,atrim=duration=1.3,afade=t=in:d=0.008,afade=t=out:st=0.9:d=0.4[out]",
+      "ganho": 0.3282062091966744,
+      "sha256_ogg": "a6eca6b834445076a083cb6f8ef84b42ae46404256891871a9df23ed19cde5f8"
+    },
+    {
+      "destino": "gordofera_abalo_salto_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "C:\\Users\\marco\\OneDrive\\Desktop\\Scape-from-stone-de-cut-git\\assets\\audio\\alvaro_tex_pequeno_furia_movimento_v1.ogg",
+          "sha256": "204291a5a0b80c0fa901fbe0e519ef665ed62e15aa00ebe38cd9a37ae360be14"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]aresample=44100,asetrate=35280,aresample=44100,highpass=f=65,lowpass=f=1800,apad,atrim=duration=0.95,afade=t=in:d=0.01,afade=t=out:st=0.68:d=0.27[out]",
+      "ganho": 0.9325785486172545,
+      "sha256_ogg": "c99357d56453b19fef2a5c1b9f49c5dcfeb6ffb40e59726437a8f58520672fb6"
+    },
+    {
+      "destino": "gordofera_abalo_impacto_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "C:\\Users\\marco\\OneDrive\\Desktop\\Scape-from-stone-de-cut-git\\assets\\audio\\investida_impacto_corporal.ogg",
+          "sha256": "2c34e20f7315d1a0472ded3408055834bb9f64251181a0b91be84b7c0f81768e"
+        },
+        {
+          "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\guardiao-da-pedra\\originais\\audio_6fde8cd005.mp3",
+          "sha256": "cde36cc7eba20611388b06b104175dfd5056e78b12734e588fb324f203cd4e2f"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=duration=0.25,asetpts=PTS-STARTPTS,highpass=f=45,lowpass=f=1800,volume=0.35,afade=t=out:st=0.14:d=0.11[a];[1:a]atrim=start=0.30:duration=1.3,asetpts=PTS-STARTPTS,aresample=44100,asetrate=37485,aresample=44100,highpass=f=45,lowpass=f=2600,volume=0.35[b];[a][b]amix=inputs=2:normalize=0:duration=longest,apad,atrim=duration=1.6,afade=t=in:d=0.003,afade=t=out:st=1.1:d=0.5[out]",
+      "ganho": 0.5979091750898515,
+      "sha256_ogg": "eaa59bf231179ab5efd38df00c643036a7052bd250098750d33db69b5a244889"
+    }
+  ],
+  "escuta": "Pendente de avalia??o do jogador. Originais e arquivos anteriores preservados."
+}

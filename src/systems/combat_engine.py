@@ -1,4 +1,5 @@
 import random
+from src.models.action import action_status_effects
 
 from src.config.settings import MINIBOSS_HEAL_PERCENT
 from src.models.player import Player
@@ -360,8 +361,12 @@ class CombatEngine:
                 protected = 'totem' in self.player.statuses
                 actual_damage = self.player.receive_attack(damage + self.enemy.attack_bonus)
                 self._resolve_totem_trigger(self.player, self.enemy)
-                if getattr(action, 'status_effect', None) and not protected and self.player.is_alive():
-                    self.player.apply_status(*action.status_effect)
+                if not protected and self.player.is_alive():
+                    for key,turns,potency in action_status_effects(action):
+                        # Renovar o efeito sem somar nem enfraquecer um DOT maior.
+                        if key in ('bleed','poison'):
+                            potency = max(potency,self.player.statuses.get(key,{}).get('potency',0))
+                        self.player.apply_status(key,turns,potency)
                 if not ultimate and not animated_boss:
                     self.trigger_attack("enemy", action=action.visual_effect or "atk")
                 self.trigger_flash("player")

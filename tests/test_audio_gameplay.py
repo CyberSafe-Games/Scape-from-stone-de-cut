@@ -11,13 +11,64 @@ from src.ui.entity_view import EntityView
 
 
 class TestNamedCardAudio(unittest.TestCase):
+    def test_arrow_impact_follows_projectile_clock_and_flash_frame(self):
+        scene = self.make_scene()
+        scene._handle_combat_event(
+            "attack", attacker="player", action="Disparo de Arco"
+        )
+        scene._handle_combat_event("flash", target="enemy")
+        scene.update(768)
+        scene.scene_manager.audio_manager.play_sfx.reset_mock()
+        scene.entity_view.attack_timer = 1079
+        scene.entity_view.player_action_timer = 1000
+        flashes_at_playback = []
+        scene.scene_manager.audio_manager.play_sfx.side_effect = (
+            lambda *args, **kwargs: flashes_at_playback.append(
+                scene.entity_view.enemy_flash
+            )
+        )
+        scene.update(1)
+        scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
+            "gameplay.attack.arrow_impact",
+            volume=1.0,
+            maxtime=350,
+        )
+        self.assertGreater(flashes_at_playback[0], 0)
+
+    def test_arrow_plays_distinct_launch_and_body_impact_once(self):
+        scene = self.make_scene()
+        scene._handle_combat_event(
+            "attack", attacker="player", action="Disparo de Arco"
+        )
+        scene.update(768)
+        scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
+            "gameplay.attack.arrow_launch",
+            volume=1.0,
+            maxtime=600,
+        )
+        scene.update(311)
+        self.assertEqual(scene.scene_manager.audio_manager.play_sfx.call_count, 1)
+        scene.update(1)
+        self.assertEqual(
+            scene.scene_manager.audio_manager.play_sfx.call_args,
+            call("gameplay.attack.arrow_impact", volume=1.0, maxtime=350),
+        )
+        scene.update(1000)
+        self.assertEqual(scene.scene_manager.audio_manager.play_sfx.call_count, 2)
+
     def test_remaining_player_cards_are_synchronized_and_bounded(self):
         for name, event, sound_id, start, limit in (
             ("Poção Fragilizante", "attack", "gameplay.potion.weaken", 768, 1692),
             ("Amuleto Dissipador", "attack", "gameplay.skill.dispel", 768, 720),
             ("Máscara Ancestral", "player_action", "gameplay.skill.mask", 0, 1700),
             ("Surto de Energia", "player_action", "gameplay.skill.energy", 0, 1900),
-            ("Esfera Escudo", "player_action", "gameplay.skill.shield_heavy", 572, 1728),
+            (
+                "Esfera Escudo",
+                "player_action",
+                "gameplay.skill.shield_heavy",
+                572,
+                1728,
+            ),
         ):
             with self.subTest(card=name):
                 scene = self.make_scene()
@@ -28,28 +79,40 @@ class TestNamedCardAudio(unittest.TestCase):
                     scene.update(1)
                 else:
                     scene.update(0)
-                scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(sound_id, volume=1.0, maxtime=limit)
+                scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
+                    sound_id, volume=1.0, maxtime=limit
+                )
                 scene.update(3000)
-                self.assertEqual(scene.scene_manager.audio_manager.play_sfx.call_count, 1)
+                self.assertEqual(
+                    scene.scene_manager.audio_manager.play_sfx.call_count, 1
+                )
 
     def test_amulet_plays_when_frame_crosses_launch(self):
         scene = self.make_scene()
-        scene._handle_combat_event("attack", attacker="player", action="Amuleto Dissipador")
+        scene._handle_combat_event(
+            "attack", attacker="player", action="Amuleto Dissipador"
+        )
         scene.update(760)
         scene.scene_manager.audio_manager.play_sfx.assert_not_called()
         scene.update(16)
         scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "gameplay.skill.dispel", volume=1.0, maxtime=712,
+            "gameplay.skill.dispel",
+            volume=1.0,
+            maxtime=712,
         )
 
-    def test_poison_potion_starts_composition_at_throw_and_keeps_glass_and_acid_tail(self):
+    def test_poison_potion_starts_composition_at_throw_and_keeps_glass_and_acid_tail(
+        self,
+    ):
         scene = self.make_scene()
         scene._handle_combat_event("attack", attacker="player", action="Poção Venenosa")
         scene.update(767)
         scene.scene_manager.audio_manager.play_sfx.assert_not_called()
         scene.update(1)
         scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "gameplay.potion.poison", volume=1.0, maxtime=2407,
+            "gameplay.potion.poison",
+            volume=1.0,
+            maxtime=2407,
         )
         scene.update(312)
         scene.update(1000)
@@ -84,27 +147,35 @@ class TestNamedCardAudio(unittest.TestCase):
                 scene.update(start - 1)
                 scene.scene_manager.audio_manager.play_sfx.assert_not_called()
                 scene.update(1)
-                scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(sound_id, volume=1.0, maxtime=limit)
+                scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
+                    sound_id, volume=1.0, maxtime=limit
+                )
                 if name in ("Lança Perfurante", "Machados Gêmeos"):
                     scene.update(468 - start)
-                    self.assertEqual(scene.scene_manager.audio_manager.play_sfx.call_args,
-                                     call("gameplay.attack.punch", volume=0.6, maxtime=160))
+                    self.assertEqual(
+                        scene.scene_manager.audio_manager.play_sfx.call_args,
+                        call("gameplay.attack.punch", volume=0.6, maxtime=160),
+                    )
                     scene.update(1000)
-                    self.assertEqual(scene.scene_manager.audio_manager.play_sfx.call_count, 2)
+                    self.assertEqual(
+                        scene.scene_manager.audio_manager.play_sfx.call_count, 2
+                    )
 
     def test_aura_and_totem_begin_with_visual_preparation(self):
-        for name, sound_id in (("Aura Rubra", "gameplay.skill.aura"), ("Totem Protetor", "gameplay.skill.totem")):
+        for name, sound_id in (
+            ("Aura Rubra", "gameplay.skill.aura"),
+            ("Totem Protetor", "gameplay.skill.totem"),
+        ):
             with self.subTest(card=name):
                 scene = self.make_scene()
                 scene._handle_combat_event("player_action", action=name)
                 scene.update(0)
-                scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(sound_id, volume=1.0, maxtime=1100)
+                scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
+                    sound_id, volume=1.0, maxtime=1100
+                )
 
     def test_ranged_audio_runs_only_between_launch_and_collision(self):
-        for name, sound_id in (
-            ("Zarabatana Venenosa", "gameplay.attack.blowgun"),
-            ("Disparo de Arco", "gameplay.attack.arrow_impact"),
-        ):
+        for name, sound_id in (("Zarabatana Venenosa", "gameplay.attack.blowgun"),):
             with self.subTest(card=name):
                 scene = self.make_scene()
                 scene._handle_combat_event("attack", attacker="player", action=name)
@@ -112,10 +183,14 @@ class TestNamedCardAudio(unittest.TestCase):
                 scene.scene_manager.audio_manager.play_sfx.assert_not_called()
                 scene.update(1)
                 scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-                    sound_id, volume=1.0, maxtime=312,
+                    sound_id,
+                    volume=1.0,
+                    maxtime=312,
                 )
                 scene.update(500)
-                self.assertEqual(scene.scene_manager.audio_manager.play_sfx.call_count, 1)
+                self.assertEqual(
+                    scene.scene_manager.audio_manager.play_sfx.call_count, 1
+                )
 
     def test_ranged_audio_skips_missed_collision_after_long_frame(self):
         scene = self.make_scene()
@@ -128,13 +203,17 @@ class TestNamedCardAudio(unittest.TestCase):
         scene._handle_combat_event("attack", attacker="player", action="Investida")
         scene.update(0)
         scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "gameplay.attack.charge", volume=1.0, maxtime=1500,
+            "gameplay.attack.charge",
+            volume=1.0,
+            maxtime=1500,
         )
         scene.update(467)
         self.assertEqual(scene.scene_manager.audio_manager.play_sfx.call_count, 1)
         scene.update(1)
-        self.assertEqual(scene.scene_manager.audio_manager.play_sfx.call_args,
-                         call("gameplay.attack.charge_impact", volume=1.0, maxtime=450))
+        self.assertEqual(
+            scene.scene_manager.audio_manager.play_sfx.call_args,
+            call("gameplay.attack.charge_impact", volume=1.0, maxtime=450),
+        )
         scene.update(500)
         self.assertEqual(scene.scene_manager.audio_manager.play_sfx.call_count, 2)
 
@@ -151,9 +230,13 @@ class TestNamedCardAudio(unittest.TestCase):
                 scene.update(571)
                 scene.scene_manager.audio_manager.play_sfx.assert_not_called()
                 scene.update(1)
-                scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(sound_id, volume=1.0)
+                scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
+                    sound_id, volume=1.0
+                )
                 scene.update(1500)
-                scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(sound_id, volume=1.0)
+                scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
+                    sound_id, volume=1.0
+                )
 
     def test_audio_uses_current_animation_position(self):
         scene = self.make_scene()
@@ -162,12 +245,14 @@ class TestNamedCardAudio(unittest.TestCase):
         scene.entity_view.player_action_timer = 300
         scene.update(0)
         scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "gameplay.attack.punch", volume=1.0, maxtime=168,
+            "gameplay.attack.punch",
+            volume=1.0,
+            maxtime=168,
         )
 
 
 class TestPunchImpactAudio(unittest.TestCase):
-    def test_arrow_plays_sound_once_at_launch_until_impact(self):
+    def test_arrow_impact_is_not_duplicated_when_frame_crosses_contact(self):
         scene = object.__new__(BattleScene)
         scene.scene_manager = MagicMock()
         scene.engine = MagicMock()
@@ -183,7 +268,9 @@ class TestPunchImpactAudio(unittest.TestCase):
         scene._boss_events = []
 
         scene._handle_combat_event(
-            "attack", attacker="player", action="Disparo de Arco",
+            "attack",
+            attacker="player",
+            action="Disparo de Arco",
         )
         scene.scene_manager.audio_manager.play_sfx.assert_not_called()
 
@@ -192,12 +279,18 @@ class TestPunchImpactAudio(unittest.TestCase):
 
         scene.update(1)
         scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "gameplay.attack.arrow_impact", volume=1.0, maxtime=312,
+            "gameplay.attack.arrow_launch",
+            volume=1.0,
+            maxtime=600,
         )
 
         scene.update(500)
-        scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "gameplay.attack.arrow_impact", volume=1.0, maxtime=312,
+        self.assertEqual(
+            scene.scene_manager.audio_manager.play_sfx.call_args_list,
+            [
+                call("gameplay.attack.arrow_launch", volume=1.0, maxtime=600),
+                call("gameplay.attack.arrow_impact", volume=1.0, maxtime=162),
+            ],
         )
 
     def test_blowgun_plays_sound_once_at_launch(self):
@@ -216,7 +309,9 @@ class TestPunchImpactAudio(unittest.TestCase):
         scene._boss_events = []
 
         scene._handle_combat_event(
-            "attack", attacker="player", action="Zarabatana Venenosa",
+            "attack",
+            attacker="player",
+            action="Zarabatana Venenosa",
         )
         scene.scene_manager.audio_manager.play_sfx.assert_not_called()
 
@@ -225,13 +320,17 @@ class TestPunchImpactAudio(unittest.TestCase):
 
         scene.update(1)
         scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "gameplay.attack.blowgun", volume=1.0, maxtime=312,
+            "gameplay.attack.blowgun",
+            volume=1.0,
+            maxtime=312,
         )
 
         scene.update(100)
         scene.update(500)
         scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "gameplay.attack.blowgun", volume=1.0, maxtime=312,
+            "gameplay.attack.blowgun",
+            volume=1.0,
+            maxtime=312,
         )
 
     def test_bloody_dagger_preserves_composed_contact_impact(self):
@@ -250,7 +349,9 @@ class TestPunchImpactAudio(unittest.TestCase):
         scene._boss_events = []
 
         scene._handle_combat_event(
-            "attack", attacker="player", action="Adaga Sangrenta",
+            "attack",
+            attacker="player",
+            action="Adaga Sangrenta",
         )
         scene.scene_manager.audio_manager.play_sfx.assert_not_called()
 
@@ -259,13 +360,17 @@ class TestPunchImpactAudio(unittest.TestCase):
 
         scene.update(1)
         scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "gameplay.attack.dagger", volume=1.0, maxtime=1766,
+            "gameplay.attack.dagger",
+            volume=1.0,
+            maxtime=1766,
         )
 
         scene.update(100)
         scene.update(500)
         scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "gameplay.attack.dagger", volume=1.0, maxtime=1766,
+            "gameplay.attack.dagger",
+            volume=1.0,
+            maxtime=1766,
         )
 
     def test_simple_punch_sound_runs_during_motion_until_contact(self):
@@ -284,7 +389,9 @@ class TestPunchImpactAudio(unittest.TestCase):
         scene._boss_events = []
 
         scene._handle_combat_event(
-            "attack", attacker="player", action="Soco Simples",
+            "attack",
+            attacker="player",
+            action="Soco Simples",
         )
         scene.scene_manager.audio_manager.play_sfx.assert_not_called()
 
@@ -293,13 +400,17 @@ class TestPunchImpactAudio(unittest.TestCase):
 
         scene.update(1)
         scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "gameplay.attack.punch", volume=1.0, maxtime=252,
+            "gameplay.attack.punch",
+            volume=1.0,
+            maxtime=252,
         )
 
         scene.update(100)
         scene.update(500)
         scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "gameplay.attack.punch", volume=1.0, maxtime=252,
+            "gameplay.attack.punch",
+            volume=1.0,
+            maxtime=252,
         )
 
 
@@ -325,26 +436,38 @@ class TestTutorialGuideAudio(unittest.TestCase):
         scene.engine.hand = [MagicMock()]
         scene.entity_view = MagicMock()
         scene.entity_view.player_action = None
-        scene.overlay = TutorialOverlay([
-            TutorialStep(id="intro", title="Introdução", subtitle="Guia", lines=["Dica"]),
-        ])
+        scene.overlay = TutorialOverlay(
+            [
+                TutorialStep(
+                    id="intro", title="Introdução", subtitle="Guia", lines=["Dica"]
+                ),
+            ]
+        )
         scene.overlay.update(300)
 
         with patch.object(
-            BattleScene, "_get_battle_hand_rects",
+            BattleScene,
+            "_get_battle_hand_rects",
             return_value=[pygame.Rect(50, 50, 100, 100)],
         ):
-            scene.handle_event(pygame.event.Event(
-                pygame.MOUSEMOTION, {"pos": (100, 100)},
-            ))
+            scene.handle_event(
+                pygame.event.Event(
+                    pygame.MOUSEMOTION,
+                    {"pos": (100, 100)},
+                )
+            )
         scene.scene_manager.audio_manager.play_sfx.assert_not_called()
         scene.engine.play_card.assert_not_called()
 
-        scene.handle_event(pygame.event.Event(
-            pygame.MOUSEBUTTONDOWN, {"button": 1, "pos": (100, 100)},
-        ))
+        scene.handle_event(
+            pygame.event.Event(
+                pygame.MOUSEBUTTONDOWN,
+                {"button": 1, "pos": (100, 100)},
+            )
+        )
         scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "ui.click", volume=1.0,
+            "ui.click",
+            volume=1.0,
         )
         scene.engine.play_card.assert_not_called()
 
@@ -356,7 +479,9 @@ class TestCardHoverTiming(unittest.TestCase):
         self.scene.window_manager = MagicMock()
         self.scene.window_manager.handle_window_event.return_value = False
         self.scene.window_manager.map_to_virtual.side_effect = lambda pos: pos
-        self.scene.window_manager.get_fullscreen_button_rect.return_value = pygame.Rect(0, 0, 0, 0)
+        self.scene.window_manager.get_fullscreen_button_rect.return_value = pygame.Rect(
+            0, 0, 0, 0
+        )
         self.scene.engine = MagicMock()
         self.scene.engine.state = "player_turn"
         self.scene.engine.hand = [MagicMock(), MagicMock()]
@@ -367,7 +492,9 @@ class TestCardHoverTiming(unittest.TestCase):
         self.scene.end_turn_rect = pygame.Rect(0, 0, 0, 0)
         self.rects = [pygame.Rect(50, 50, 100, 100), pygame.Rect(160, 50, 100, 100)]
         self.addCleanup(patch.stopall)
-        patch.object(BattleScene, "_get_battle_hand_rects", side_effect=lambda: self.rects).start()
+        patch.object(
+            BattleScene, "_get_battle_hand_rects", side_effect=lambda: self.rects
+        ).start()
         patch.object(BattleScene, "_ultimate_in_hand", return_value=False).start()
         self.clock = patch("pygame.time.get_ticks", return_value=1000).start()
 
@@ -385,15 +512,23 @@ class TestCardHoverTiming(unittest.TestCase):
             with self.subTest(time_ms=time_ms):
                 self.clock.return_value = time_ms
                 self.move(pos)
-                self.assertEqual(self.scene.scene_manager.audio_manager.play_sfx.call_count, expected_calls)
+                self.assertEqual(
+                    self.scene.scene_manager.audio_manager.play_sfx.call_count,
+                    expected_calls,
+                )
 
     def test_card_hover_ignores_hand_rearrangement_after_play(self):
         self.move((100, 100))
         self.clock.return_value = 1500
-        self.scene.engine.play_card.side_effect = lambda index: self.scene.engine.hand.pop(index)
-        self.scene.handle_event(pygame.event.Event(
-            pygame.MOUSEBUTTONDOWN, {"button": 1, "pos": (100, 100)},
-        ))
+        self.scene.engine.play_card.side_effect = lambda index: (
+            self.scene.engine.hand.pop(index)
+        )
+        self.scene.handle_event(
+            pygame.event.Event(
+                pygame.MOUSEBUTTONDOWN,
+                {"button": 1, "pos": (100, 100)},
+            )
+        )
         self.rects = [pygame.Rect(50, 50, 100, 100)]
         self.clock.return_value = 1700
         self.move((100, 100))
@@ -458,7 +593,10 @@ class TestCardGameplayAudio(unittest.TestCase):
             patch.object(
                 BattleScene,
                 "_get_battle_hand_rects",
-                return_value=[pygame.Rect(50, 50, 100, 100), pygame.Rect(160, 50, 100, 100)],
+                return_value=[
+                    pygame.Rect(50, 50, 100, 100),
+                    pygame.Rect(160, 50, 100, 100),
+                ],
             ),
             patch("pygame.time.get_ticks", side_effect=[1000, 1200, 1400]),
         ):
@@ -470,13 +608,16 @@ class TestCardGameplayAudio(unittest.TestCase):
                 ((200, 100), 3),
             ):
                 with self.subTest(pos=pos):
-                    scene.handle_event(pygame.event.Event(pygame.MOUSEMOTION, {"pos": pos}))
+                    scene.handle_event(
+                        pygame.event.Event(pygame.MOUSEMOTION, {"pos": pos})
+                    )
                     self.assertEqual(
                         scene.scene_manager.audio_manager.play_sfx.call_count,
                         expected_calls,
                     )
                     scene.scene_manager.audio_manager.play_sfx.assert_called_with(
-                        "gameplay.card_hover", volume=1.0,
+                        "gameplay.card_hover",
+                        volume=1.0,
                     )
         scene.engine.play_card.assert_not_called()
 

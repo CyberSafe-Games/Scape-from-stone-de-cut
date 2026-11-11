@@ -5,7 +5,6 @@ from src.models.enemy import Enemy
 from src.config.layout import MINIBOSS_INTERVAL
 from src.models.effects.crimson_vigor_effect import CrimsonVigorEffect
 from src.models.effects.forest_smoke_effect import ForestSmokeEffect
-from src.models.effects.golden_amulet_effect import GoldenAmuletEffect
 from src.systems.normal_enemy_catalog import biome_enemy_names, NORMAL_SPRITES, NORMAL_ACTIONS
 
 # Configuração de inimigos comuns: (Nome, HP Base, HP por Andar)
@@ -191,21 +190,21 @@ def create_point_enemy(level):
 
 
 def create_zanzara(level=7):
-    """Boss final do Santuário: investida, moedas, energia e amuleto restaurador."""
+    """Necromante final: foice, travessia espectral e grilhões debilitantes."""
     actions = [
-        Action('Investida Soberana', 'attack', damage=15, energy_cost=1,
-               weight=.35, visual_effect='atk1'),
-        Action('Chuva de Moedas', 'attack', damage=17, energy_cost=1,
-               weight=.25, visual_effect='atk2'),
-        Action('Onda Imperial', 'attack', damage=20, energy_cost=2,
-               weight=.25, visual_effect='atk3'),
-        Action('Amuleto Dourado', 'buff', defense=16, energy_cost=1,
-               weight=.15, visual_effect='healer2', effect=GoldenAmuletEffect()),
+        Action('Foice Sombria','attack',damage=20,energy_cost=1,weight=.40,visual_effect='atk1',
+               status_effects=(('bleed',2,5),('poison',2,3))),
+        Action('Passo do Barqueiro','attack',damage=24,energy_cost=1,weight=.35,visual_effect='atk2',
+               status_effects=(('bleed',2,5),('poison',2,3))),
+        Action('Grilhões das Almas','attack',damage=20,energy_cost=2,weight=.25,
+               visual_effect='atk3',status_effect=('vulnerable',2,25)),
     ]
-    boss = Enemy('Zanzara', hp=190, energy=4, max_energy=4, actions=actions, is_miniboss=True)
+    boss = Enemy('Zanzara',hp=190,energy=4,max_energy=4,actions=actions,is_miniboss=True)
     boss.boss_id = 'zanzara'
     boss.is_final_boss = True
-    return _configure_boss(boss, 'Maré Soberana', 32, 'atk3')
+    _configure_boss(boss,'Travessia Final',45,'atk3')
+    boss.special_action.status_effect = ('poison',3,6)
+    return boss
 
 
 def create_gordofera(level=4):

@@ -138,6 +138,7 @@ class EntityView:
         self.player_idle_timer = 0
         self.player_victory_timer = 0
         self._player_victory_active = False
+        self._zanzara_defeat_timer = None
 
     def trigger_attack(self, attacker, action=None, enemy_name=None, ultimate=False):
         self.attacker = attacker
@@ -233,6 +234,12 @@ class EntityView:
             self.attacker = None
             self.attack_timer = 0
 
+    def is_enemy_defeat_done(self,enemy):
+        if enemy.name.lower() != 'zanzara':
+            return True
+        from src.ui.zanzara_necromancer import DEFEAT_DURATION
+        return self._zanzara_defeat_timer is not None and self._zanzara_defeat_timer >= DEFEAT_DURATION
+
     @property
     def player_recovery_ms(self):
         return 0 if self.player_action in ULTIMATE_ANIMATIONS else POSE_RECOVERY_MS
@@ -243,6 +250,8 @@ class EntityView:
 
     def update(self, dt):
         """Atualiza todos os timers de animação visual."""
+        if self._zanzara_defeat_timer is not None:
+            self._zanzara_defeat_timer += dt
         player_was_busy = self.attacker == 'player' or self.player_action is not None
         player_was_hurt = self.player_flash > 0
         self.player_victory_timer += dt
@@ -380,6 +389,11 @@ class EntityView:
         return x, y, flight
 
     def draw_enemy_projectile(self, surface):
+        if self.enemy_attack_name == 'zanzara':
+            from src.ui.zanzara_necromancer import available, draw_target_effect
+            if available():
+                draw_target_effect(surface, self)
+                return  # Efeitos novos são renderizados junto ao kit, sem moedas/onda antiga.
         if self.enemy_attack_name == 'zanzara' and not self.enemy_ultimate:
             from src.ui.zanzara_fx import draw_zanzara_fx
             draw_zanzara_fx(surface, self)
@@ -537,6 +551,8 @@ class EntityView:
         if hurt and len(self.asset_manager.get_player_sprite_group("dano")) == 8:
             hurt = 0
         draw_recoiling_actor(surface, player_frame, player_rect, hurt, -1, blend_flags)
+        ink = player_frame.get_bounding_rect(min_alpha=50).move(player_rect.topleft)
+        self.player_ground_anchor = (ink.centerx, ink.bottom)
 
     def get_enemy_frame(self, enemy, *, interpolate=False):
         """Retorna o frame animado do inimigo com base em seu estado atual (atk, def, idle)."""
@@ -668,6 +684,18 @@ class EntityView:
         else:
             enemy = None
             color = enemy_or_color
+
+        if enemy is not None and enemy.name.lower() == 'zanzara':
+            from src.ui.zanzara_necromancer import available, draw
+            if available():
+                if getattr(enemy,'hp',1) <= 0:
+                    # Não cair antes de o golpe do jogador chegar ao contato.
+                    if self._zanzara_defeat_timer is None and self.pending_enemy_hit_at is None:
+                        self._zanzara_defeat_timer = 0
+                else:
+                    self._zanzara_defeat_timer = None
+                draw(surface, self)
+                return
 
         enemy_target_x = PLAYER_X + APPROACH_GAP
         is_corpo = enemy is not None and enemy.name.lower() == "corpo seco"

@@ -1,0 +1,80 @@
+{
+  "escuta_critica": false,
+  "observacao": "Mistura e escolha provisórias para escuta no piloto. Risada alternativa 107079 preservada para comparação futura.",
+  "recursos": [
+    {
+      "cue": "souls",
+      "fontes": [
+        {
+          "tipo": "Grilhões das Almas",
+          "titulo": "whispers and screams",
+          "autor": "Fyodore (Freesound)",
+          "perfil_pixabay": "freesound_community",
+          "url_pagina": "https://pixabay.com/sound-effects/horror-whispers-and-screams-87177/",
+          "licenca_indicada": "Free for use under the Pixabay Content License",
+          "url_licenca": "https://pixabay.com/service/license-summary/",
+          "nome_local": "freesound_community-whispers-and-screams-87177.mp3",
+          "caminho_local": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\zanzara\\audio\\originais\\freesound_community-whispers-and-screams-87177.mp3",
+          "duracao_segundos": 3.866,
+          "metodo_duracao": "Soma das durações dos quadros MPEG Layer III do original; inclui padding do encoder.",
+          "bytes": 123715,
+          "sha256": "3065547c05b497cb3dfde2f7451be30f397c7fb08f85da0b7fc306c1019f646f",
+          "escuta_realizada": false,
+          "selecao": "Apenas por metadados; candidato provisório",
+          "observacoes": "Descrição menciona vozes fantasmagóricas, sussurros e gritos. Sobreposição, ausência de palavras e de susto estridente não confirmadas."
+        },
+        {
+          "tipo": "Grilhões das Almas",
+          "titulo": "Ghostly Wail 2",
+          "autor": "DRAGON-STUDIO",
+          "perfil_pixabay": "DRAGON-STUDIO",
+          "url_pagina": "https://pixabay.com/sound-effects/horror-ghostly-wail-2-511321/",
+          "licenca_indicada": "Free for use under the Pixabay Content License",
+          "url_licenca": "https://pixabay.com/service/license-summary/",
+          "nome_local": "dragon-studio-ghostly-wail-2-511321.mp3",
+          "caminho_local": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\zanzara\\audio\\originais\\dragon-studio-ghostly-wail-2-511321.mp3",
+          "duracao_segundos": 7.704,
+          "metodo_duracao": "Soma das durações dos quadros MPEG Layer III do original; inclui padding do encoder.",
+          "bytes": 246528,
+          "sha256": "e48ce76b2b5599460943872401d7e08a6bb528d125172db7fd139945876724fe",
+          "escuta_realizada": false,
+          "selecao": "Apenas por metadados; candidato provisório",
+          "observacoes": "Tags incluem lamento espectral, choro e grito fantasmagórico. Coro de várias almas e sobreposição não confirmados; pode ser voz isolada."
+        }
+      ],
+      "arquivo": "assets\\audio\\zanzara_souls_piloto_v3.ogg",
+      "filtros": "[0:a]atrim=duration=2.2,asetpts=PTS-STARTPTS,volume=0.7[a];[1:a]atrim=start=0.3:duration=1.9,asetpts=PTS-STARTPTS,volume=0.35,adelay=200|200[b];[a][b]amix=inputs=2:normalize=0,highpass=f=100,lowpass=f=6500,apad,atrim=duration=2.2,afade=t=in:d=0.12,afade=t=out:st=1.4:d=0.8[out]",
+      "ganho": 0.7148135390211363,
+      "duracao": 2.2,
+      "sha256": "8f051749c45663f30a1deb93e068a42c947c29b8ca848d9defe2d86a5ba0ed0a"
+    },
+    {
+      "cue": "laugh",
+      "fontes": [
+        {
+          "tipo": "Travessia Final",
+          "titulo": "evil laugh",
+          "autor": "kintana24 (Freesound)",
+          "perfil_pixabay": "freesound_community",
+          "url_pagina": "https://pixabay.com/sound-effects/people-evil-laugh-6125/",
+          "licenca_indicada": "Free for use under the Pixabay Content License",
+          "url_licenca": "https://pixabay.com/service/license-summary/",
+          "nome_local": "freesound_community-evil-laugh-6125.mp3",
+          "caminho_local": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\zanzara\\audio\\originais\\freesound_community-evil-laugh-6125.mp3",
+          "duracao_segundos": 2.328,
+          "metodo_duracao": "Soma das durações dos quadros MPEG Layer III do original; inclui padding do encoder.",
+          "bytes": 74496,
+          "sha256": "ee5e1e9df6a31f5516d6a5d566c40c3cc763ead8f24f5f0ab51b310bf092493c",
+          "escuta_realizada": false,
+          "selecao": "Apenas por metadados; candidato provisório",
+          "observacoes": "Tags Evil, Male, Laugh e descrição sinistra. Gravidade, ausência de palavras, música e efeito robótico não confirmadas."
+        }
+      ],
+      "arquivo": "assets\\audio\\zanzara_laugh_piloto_v3.ogg",
+      "filtros": "[0:a]atrim=duration=2.3,asetpts=PTS-STARTPTS,highpass=f=65,lowpass=f=8000,apad,atrim=duration=2.3,afade=t=in:d=0.008,afade=t=out:st=2.1:d=0.2[out]",
+      "ganho": 0.27381120948358956,
+      "duracao": 2.3,
+      "sha256": "d9d598fe84d107dc5726e88ec51ebd1ad0561e70d5a67d3b773d858f1a08b6e1"
+    }
+  ]
+}

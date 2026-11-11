@@ -1,3 +1,11 @@
+def action_status_effects(action):
+    """Normaliza ações antigas de um efeito e ações com múltiplos debuffs."""
+    single = getattr(action,'status_effect',None)
+    effects = [tuple(single)] if single else []
+    effects.extend(tuple(effect) for effect in (getattr(action,'status_effects',()) or ()))
+    return tuple(dict.fromkeys(effects))
+
+
 class Action:
     """Representa uma ação ou habilidade de um combatente/inimigo.
     
@@ -16,6 +24,7 @@ class Action:
         visual_effect: str | None = None,
         effect=None,
         status_effect=None,
+        status_effects=None,
     ):
         self.name = name
         self.action_type = action_type  # "attack", "defend", etc.
@@ -26,6 +35,7 @@ class Action:
         self.visual_effect = visual_effect
         self.effect = effect
         self.status_effect = status_effect
+        self.status_effects = tuple(status_effects or ())
 
     @property
     def value(self) -> int:

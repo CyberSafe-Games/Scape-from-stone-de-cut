@@ -211,7 +211,7 @@ class AssetManager:
     def _load_territory_backgrounds(self):
         """Carrega fundos opcionais específicos de território."""
         mapping = {1: 'background_pedra_do_corte.png', 2: "background_mata_sombria.png", 3: 'background_ruinas_ancestrais.png',
-                   5: 'background_fortaleza_caida.png', 6: 'background_pico_da_vigilia.png'}
+                   5: 'background_fortaleza_caida.png', 6: 'background_pico_da_vigilia.png', 7: 'background_masmorra_final_v1.png'}
         for level, filename in mapping.items():
             path = os.path.join(os.path.dirname(BACKGROUND_PATH), filename)
             try:
@@ -747,6 +747,27 @@ class AssetManager:
         groups = self._enemy_sprites.get(key, {})
         return any(bool(frames) for frames in groups.values())
 
+    def _portrait_with_protagonist_frame(self, source):
+        from src.systems.character_portraits import FRAMED_PORTRAITS
+        path = os.path.join(os.path.dirname(PLAYER_ASSETS_DIR), 'portraits', 'source',
+                            'framed', FRAMED_PORTRAITS['jaum manel'] + '.png')
+        frame = pygame.image.load(path).convert_alpha().copy()
+        w, h = frame.get_size()
+        panel = pygame.Surface((w, h), pygame.SRCALPHA)
+        panel.fill((9, 14, 15, 255))
+        scale = max(w * .933 / source.get_width(), h * .96 / source.get_height())
+        image = pygame.transform.smoothscale(source, (round(source.get_width()*scale),
+                                                      round(source.get_height()*scale)))
+        panel.blit(image, image.get_rect(center=(w//2, h//2)))
+        mask = pygame.Surface((w, h), pygame.SRCALPHA)
+        points = ((.08,.02),(.92,.02),(.967,.055),(.967,.945),
+                  (.92,.98),(.08,.98),(.033,.945),(.033,.055))
+        pygame.draw.polygon(mask, (255,255,255,255),
+                            [(round(x*w),round(y*h)) for x,y in points])
+        panel.blit(mask, (0,0), special_flags=pygame.BLEND_RGBA_MULT)
+        frame.blit(panel, (0,0))
+        return frame
+
     def get_character_portrait(self, name, size):
         """Enquadra o retrato sem distorcer; ausências usam o recorte de sprite da HUD."""
         from src.systems.character_portraits import PORTRAITS
@@ -764,6 +785,9 @@ class AssetManager:
                 bounds = pygame.Rect(round(x*source.get_width()), round(y*source.get_height()),
                                      round(w*source.get_width()), round(h*source.get_height())).clip(source.get_rect())
                 source = source.subsurface(bounds)
+                if mode == 'framed-content':
+                    source = self._portrait_with_protagonist_frame(source)
+                    mode = 'framed'
                 ratios = (size[0]/source.get_width(), size[1]/source.get_height())
                 scale = min(ratios) if mode in ('contain', 'framed') else max(ratios)
                 image = pygame.transform.smoothscale(source, (max(1, round(source.get_width()*scale)), max(1, round(source.get_height()*scale))))

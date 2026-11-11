@@ -1,0 +1,326 @@
+{
+  "modulos": [
+    {
+      "modulo": "tests.test_alvaro_tex",
+      "exit_code": 0,
+      "testes": 13,
+      "segundos": 1.0
+    },
+    {
+      "modulo": "tests.test_audio_enemies",
+      "exit_code": 0,
+      "testes": 28,
+      "segundos": 1.28
+    },
+    {
+      "modulo": "tests.test_audio_gameplay",
+      "exit_code": 0,
+      "testes": 26,
+      "segundos": 0.58
+    },
+    {
+      "modulo": "tests.test_audio_manager",
+      "exit_code": 0,
+      "testes": 9,
+      "segundos": 0.51
+    },
+    {
+      "modulo": "tests.test_audio_mix",
+      "exit_code": 0,
+      "testes": 1,
+      "segundos": 0.15
+    },
+    {
+      "modulo": "tests.test_audio_ui",
+      "exit_code": 0,
+      "testes": 36,
+      "segundos": 0.62
+    },
+    {
+      "modulo": "tests.test_audio_zanzara",
+      "exit_code": 0,
+      "testes": 2,
+      "segundos": 0.47
+    },
+    {
+      "modulo": "tests.test_backpack_ultimates",
+      "exit_code": 0,
+      "testes": 12,
+      "segundos": 10.11
+    },
+    {
+      "modulo": "tests.test_boss_twelve_frames",
+      "exit_code": 0,
+      "testes": 12,
+      "segundos": 20.19
+    },
+    {
+      "modulo": "tests.test_boss_ultimate_animations",
+      "exit_code": 0,
+      "testes": 12,
+      "segundos": 11.49
+    },
+    {
+      "modulo": "tests.test_boss_ultimate_twelve_effects",
+      "exit_code": 0,
+      "testes": 3,
+      "segundos": 11.48,
+      "resultado_inicial": {
+        "exit_code": 1,
+        "erro": "======================================================================\nFAIL: test_all_twelve_effects_render_in_arena_and_disappear_at_end (tests.test_boss_ultimate_twelve_effects.BossTwelveEffectTests.test_all_twelve_effects_render_in_arena_and_disappear_at_end)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\marco\\OneDrive\\Desktop\\Scape-from-stone-de-cut-git\\tests\\test_boss_ultimate_twelve_effects.py\", line 65, in test_all_twelve_effects_render_in_arena_and_disappear_at_end\n    self.assertGreater(b.width,0)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^\nAssertionError: 0 not greater than 0\n\n----------------------------------------------------------------------\nRan 3 tests in 11.076s\n\nFAILED (failures=1)\npygame 2.6.1 (SDL 2.28.4, Python 3.13.17)\nHello from the pygame community. https://www.pygame.org/contribute.html\n"
+      },
+      "reteste_segundos": 19.97,
+      "reteste_apos_ajuste": true
+    },
+    {
+      "modulo": "tests.test_card_collection_pages",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 0.37
+    },
+    {
+      "modulo": "tests.test_carrasco_da_vigilia",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 9.72
+    },
+    {
+      "modulo": "tests.test_cemetery_system",
+      "exit_code": 0,
+      "testes": 13,
+      "segundos": 90.15
+    },
+    {
+      "modulo": "tests.test_character_portraits",
+      "exit_code": 0,
+      "testes": 2,
+      "segundos": 10.46
+    },
+    {
+      "modulo": "tests.test_common_eight_frames",
+      "exit_code": 0,
+      "testes": 3,
+      "segundos": 10.56
+    },
+    {
+      "modulo": "tests.test_corpo_seco_animation",
+      "exit_code": 0,
+      "testes": 7,
+      "segundos": 0.51
+    },
+    {
+      "modulo": "tests.test_corpo_seco_visual_scale",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 0.23
+    },
+    {
+      "modulo": "tests.test_enemy_intents",
+      "exit_code": 0,
+      "testes": 9,
+      "segundos": 10.21
+    },
+    {
+      "modulo": "tests.test_energy_system",
+      "exit_code": 0,
+      "testes": 11,
+      "segundos": 9.66
+    },
+    {
+      "modulo": "tests.test_extended_cards",
+      "exit_code": 0,
+      "testes": 10,
+      "segundos": 0.37
+    },
+    {
+      "modulo": "tests.test_goblin_monge",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 9.82
+    },
+    {
+      "modulo": "tests.test_goblin_ranged_attacks",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 0.29
+    },
+    {
+      "modulo": "tests.test_guardian_visual_polish",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 0.67
+    },
+    {
+      "modulo": "tests.test_guardiao_da_pedra",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 9.96
+    },
+    {
+      "modulo": "tests.test_hand_and_cemetery_flow",
+      "exit_code": 0,
+      "testes": 13,
+      "segundos": 0.15
+    },
+    {
+      "modulo": "tests.test_life_recovery_after_combat",
+      "exit_code": 0,
+      "testes": 7,
+      "segundos": 10.18
+    },
+    {
+      "modulo": "tests.test_map_encounters",
+      "exit_code": 0,
+      "testes": 12,
+      "segundos": 0.52
+    },
+    {
+      "modulo": "tests.test_mata_sombria_boss",
+      "exit_code": 0,
+      "testes": 5,
+      "segundos": 0.23
+    },
+    {
+      "modulo": "tests.test_normal_bestiary",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 10.15
+    },
+    {
+      "modulo": "tests.test_player_twelve_frames",
+      "exit_code": 0,
+      "testes": 8,
+      "segundos": 12.23
+    },
+    {
+      "modulo": "tests.test_pose_playback",
+      "exit_code": 0,
+      "testes": 5,
+      "segundos": 0.29
+    },
+    {
+      "modulo": "tests.test_route_boss_and_backpack",
+      "exit_code": 0,
+      "testes": 13,
+      "segundos": 0.26
+    },
+    {
+      "modulo": "tests.test_save_integration",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 0.17
+    },
+    {
+      "modulo": "tests.test_save_system",
+      "exit_code": 0,
+      "testes": 13,
+      "segundos": 0.17
+    },
+    {
+      "modulo": "tests.test_shop_and_combat_reset",
+      "exit_code": 0,
+      "testes": 12,
+      "segundos": 0.27
+    },
+    {
+      "modulo": "tests.test_swamp_boss",
+      "exit_code": 0,
+      "testes": 5,
+      "segundos": 9.74
+    },
+    {
+      "modulo": "tests.test_tactical_cards",
+      "exit_code": 0,
+      "testes": 18,
+      "segundos": 0.48
+    },
+    {
+      "modulo": "tests.test_territory_map",
+      "exit_code": 0,
+      "testes": 15,
+      "segundos": 0.2
+    },
+    {
+      "modulo": "tests.test_test_save",
+      "exit_code": 0,
+      "testes": 7,
+      "segundos": 0.44
+    },
+    {
+      "modulo": "tests.test_text_wrap",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 0.4
+    },
+    {
+      "modulo": "tests.test_tutorial_save_flow",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 0.16
+    },
+    {
+      "modulo": "tests.test_tutorial_scene",
+      "exit_code": 0,
+      "testes": 19,
+      "segundos": 169.07
+    },
+    {
+      "modulo": "tests.test_ultimate_animations",
+      "exit_code": 0,
+      "testes": 7,
+      "segundos": 11.51
+    },
+    {
+      "modulo": "tests.test_ultimates",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 0.22
+    },
+    {
+      "modulo": "tests.test_window_modes",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 0.77
+    },
+    {
+      "modulo": "tests.test_zanzara",
+      "exit_code": 0,
+      "testes": 5,
+      "segundos": 11.77
+    },
+    {
+      "modulo": "tests.test_zanzara_difficulty",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 0.3
+    },
+    {
+      "modulo": "tests.test_zanzara_final",
+      "exit_code": 0,
+      "testes": 9,
+      "segundos": 12.02
+    },
+    {
+      "modulo": "tests.test_zanzara_main_integration",
+      "exit_code": 0,
+      "testes": 3,
+      "segundos": 0.18
+    },
+    {
+      "modulo": "tests.test_zanzara_necromancer",
+      "exit_code": 0,
+      "testes": 15,
+      "segundos": 4.13,
+      "resultado_inicial": {
+        "exit_code": 1,
+        "erro": "======================================================================\nFAIL: test_player_anchor_ignores_transparent_canvas_padding (tests.test_zanzara_necromancer.NecromancerTests.test_player_anchor_ignores_transparent_canvas_padding)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\marco\\OneDrive\\Desktop\\Scape-from-stone-de-cut-git\\tests\\test_zanzara_necromancer.py\", line 91, in test_player_anchor_ignores_transparent_canvas_padding\n    self.assertEqual(view.player_ground_anchor,(383,629))\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Tuples differ: (382, 627) != (383, 629)\n\nFirst differing element 0:\n382\n383\n\n- (382, 627)\n?    ^    ^\n\n+ (383, 629)\n?    ^    ^\n\n\n----------------------------------------------------------------------\nRan 15 tests in 3.644s\n\nFAILED (failures=1)\npygame 2.6.1 (SDL 2.28.4, Python 3.13.17)\nHello from the pygame community. https://www.pygame.org/contribute.html\n"
+      },
+      "reteste_segundos": 3.69,
+      "reteste_apos_ajuste": true
+    }
+  ],
+  "total_testes": 472,
+  "falhas": 0,
+  "concluido": true,
+  "segundos": 476.95
+}

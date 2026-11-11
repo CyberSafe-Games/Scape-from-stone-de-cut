@@ -1,0 +1,18 @@
+{
+  "objetivo": "Impacto corporal para garras contra o jogador; remove scorpion claw e estilha?os de madeira da composi??o anterior.",
+  "fontes": [
+    {
+      "arquivo": "assets\\audio\\investida_impacto_corporal.ogg",
+      "sha256": "2c34e20f7315d1a0472ded3408055834bb9f64251181a0b91be84b7c0f81768e"
+    },
+    {
+      "arquivo": "assets\\audio\\flecha_acerto_corporal.ogg",
+      "sha256": "4e4294128fe967c53988727eb6e191de9c804215013b818061486b146e8a633d"
+    }
+  ],
+  "filtros_ffmpeg": "[0:a]atrim=duration=0.32,asetpts=PTS-STARTPTS,highpass=f=65,lowpass=f=1800,volume=0.5[a];[1:a]atrim=duration=0.48,asetpts=PTS-STARTPTS,highpass=f=180,lowpass=f=4200,volume=0.65,adelay=15|15[b];[a][b]amix=inputs=2:normalize=0:duration=longest,apad,atrim=duration=0.7,afade=t=in:d=0.004,afade=t=out:st=0.32:d=0.38[out]",
+  "ganho": 0.6144761750969916,
+  "destino": "assets\\audio\\guardiao_garras_impacto_corporal_v3.ogg",
+  "sha256_ogg": "1a6147ff0d00bcfa9baddada23aecd8abc23aecb2ec12e3509190c4c83ddc2b2",
+  "escuta": "Pendente de aprova??o pelo jogador. Demais sons aprovados pelo jogador e preservados."
+}

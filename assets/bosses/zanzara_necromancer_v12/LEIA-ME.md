@@ -1,0 +1,1 @@
+Recursos e prompts registrados em docs/zanzara_revisao12.md. Originais preservados; faixas de estado com oito quadros 384x280, pivô (192,278).
