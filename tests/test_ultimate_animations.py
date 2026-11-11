@@ -36,12 +36,12 @@ class UltimateAnimationTests(unittest.TestCase):
         scene.engine.enemy.hp = scene.engine.enemy.max_hp = 200
         return scene
 
-    def test_every_ultimate_has_four_cast_poses_and_four_independent_alpha_effects(self):
+    def test_every_ultimate_has_twelve_cast_poses_and_twelve_independent_alpha_effects(self):
         for name in ULTIMATE_ANIMATIONS:
             casts = self.assets.get_card_action_sprites(name)
             effects = self.assets.get_ultimate_effect_sprites(name)
-            self.assertEqual(len(casts), 4, name)
-            self.assertEqual(len(effects), 4, name)
+            self.assertEqual(len(casts), 12, name)
+            self.assertEqual(len(effects), 12, name)
             for frame in casts:
                 self.assertEqual(frame.get_size(), (320, 260))
                 bounds = frame.get_bounding_rect(min_alpha=50)
@@ -62,7 +62,7 @@ class UltimateAnimationTests(unittest.TestCase):
                     view.update(spec.duration*progress)
                     x, frame = view.get_player_frame('player_turn')
                     self.assertEqual(x, PLAYER_X)
-                    self.assertIs(frame, self.assets.get_card_action_sprites(name)[cast_frame(progress)])
+                    self.assertIs(frame, self.assets.get_card_action_sprites(name)[cast_frame(progress, spec.release, 12)])
                     self.assertIsNone(view.attacker)
             view.update(spec.duration)
             self.assertIsNone(view.player_action)
@@ -74,14 +74,14 @@ class UltimateAnimationTests(unittest.TestCase):
             view.trigger_player_action(name)
             view.update(spec.duration*.6)
             for behind in (True, False):
-                screen = pygame.Surface((1280, 720), pygame.SRCALPHA)
+                screen = pygame.Surface((1920, 1080), pygame.SRCALPHA)
                 clip = screen.get_clip()
                 draw_ultimate_fx(screen, view, behind)
                 self.assertEqual(screen.get_clip(), clip)
                 bounds = screen.get_bounding_rect()
                 self.assertGreater(bounds.width, 5)
-                self.assertGreaterEqual(bounds.top, 116)
-                self.assertLessEqual(bounds.bottom, 516)
+                self.assertGreaterEqual(bounds.top, 174)
+                self.assertLessEqual(bounds.bottom, 774)
             view.update(spec.duration)
             screen.fill((0, 0, 0, 0))
             draw_ultimate_fx(screen, view)
@@ -118,7 +118,7 @@ class UltimateAnimationTests(unittest.TestCase):
         self.assertEqual(scene._visible_enemy().hp, 140)
         self.assertGreater(len(scene.floating_texts.texts), 0)
         self.assertFalse(scene._ultimate_events)
-        scene.draw(pygame.Surface((1280, 720)))
+        scene.draw(pygame.Surface((1920, 1080)))
 
     def test_self_cast_feedback_appears_at_peak_without_overlapping_text(self):
         for name in ('Mana Ancestral', 'Forças Ancestrais'):
@@ -134,7 +134,7 @@ class UltimateAnimationTests(unittest.TestCase):
             texts = scene.floating_texts.texts
             self.assertEqual(len(texts), 2)
             self.assertNotEqual(texts[0].y, texts[1].y)
-            scene.draw(pygame.Surface((1280, 720)))
+            scene.draw(pygame.Surface((1920, 1080)))
 
     def test_lethal_roar_keeps_victory_effects_until_hit_and_cast_ends(self):
         scene = self.scene()
@@ -151,4 +151,4 @@ class UltimateAnimationTests(unittest.TestCase):
         self.assertEqual(scene.entity_view.player_action, 'Rugido da Floresta')
         scene.update(600)
         self.assertIsNone(scene.entity_view.player_action)
-        scene.draw(pygame.Surface((1280, 720)))
+        scene.draw(pygame.Surface((1920, 1080)))

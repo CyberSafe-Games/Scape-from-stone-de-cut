@@ -12,7 +12,7 @@ from src.config.colors import (
 from src.ui.helpers import draw_text
 
 
-def _bevel_polygon(rect, bevel=10):
+def _bevel_polygon(rect, bevel=15):
     r = pygame.Rect(rect)
     b = min(bevel, r.height // 4, r.width // 4)
     return [(r.left+b, r.top), (r.right-b, r.top),
@@ -31,47 +31,47 @@ def backdrop(surface, background=None, opacity=196, focal_side="left"):
     veil.fill((4, 11, 11, opacity))
     # Mais profundidade nas laterais, preservando um pouco do cenário original.
     for n in range(12):
-        span = 32
+        span = 48
         a = max(1, 19 - n)
         pygame.draw.rect(veil, (0, 0, 0, a), (n * span, 0, span, HEIGHT))
         pygame.draw.rect(veil, (0, 0, 0, a), (WIDTH - (n + 1) * span, 0, span, HEIGHT))
     surface.blit(veil, (0, 0))
     # Ornamentação arquitetônica sutil, sem competir com a interface.
     color = (75, 68, 52)
-    pygame.draw.line(surface, color, (33, 28), (33, HEIGHT - 27), 1)
-    pygame.draw.line(surface, color, (WIDTH-33, 28), (WIDTH-33, HEIGHT-27), 1)
-    pygame.draw.line(surface, (52, 51, 43), (38, HEIGHT-27), (WIDTH-38, HEIGHT-27), 1)
+    pygame.draw.line(surface, color, (50, 42), (50, HEIGHT - 41), 2)
+    pygame.draw.line(surface, color, (WIDTH-50, 42), (WIDTH-50, HEIGHT-41), 2)
+    pygame.draw.line(surface, (52, 51, 43), (57, HEIGHT-41), (WIDTH-57, HEIGHT-41), 2)
 
 
 def panel(surface, rect, highlighted=False, fill=None, border=None):
     """Moldura octogonal de pedra/ferro, com bronze discreto e cantos esculpidos."""
     rect = pygame.Rect(rect)
-    shadow = rect.move(4, 6)
-    pygame.draw.polygon(surface, (3, 6, 6), _bevel_polygon(shadow, 11))
+    shadow = rect.move(6, 9)
+    pygame.draw.polygon(surface, (3, 6, 6), _bevel_polygon(shadow, 17))
     layer = pygame.Surface(rect.size, pygame.SRCALPHA)
     local = pygame.Rect(0, 0, rect.width, rect.height)
     bg = fill if fill is not None else (14, 21, 21, 238)
     edge = border or (BRONZE_LIGHT if highlighted else BRONZE_DARK)
-    pygame.draw.polygon(layer, bg, _bevel_polygon(local, 10))
-    pygame.draw.lines(layer, edge, True, _bevel_polygon(local, 10), 2 if highlighted else 1)
-    inset = local.inflate(-10, -10)
-    pygame.draw.lines(layer, (61, 65, 56, 130), True, _bevel_polygon(inset, 7), 1)
-    pygame.draw.line(layer, (*edge, 180), (22, 6), (min(rect.width-22, 92), 6), 2)
+    pygame.draw.polygon(layer, bg, _bevel_polygon(local, 15))
+    pygame.draw.lines(layer, edge, True, _bevel_polygon(local, 15), 3 if highlighted else 2)
+    inset = local.inflate(-15, -15)
+    pygame.draw.lines(layer, (61, 65, 56, 130), True, _bevel_polygon(inset, 11), 2)
+    pygame.draw.line(layer, (*edge, 180), (33, 9), (min(rect.width-33, 138), 9), 3)
     surface.blit(layer, rect.topleft)
     for cx, cy, xs, ys in [
-        (rect.left+14, rect.top+14, 1, 1),
-        (rect.right-14, rect.top+14, -1, 1),
-        (rect.left+14, rect.bottom-14, 1, -1),
-        (rect.right-14, rect.bottom-14, -1, -1),
+        (rect.left+21, rect.top+21, 1, 1),
+        (rect.right-21, rect.top+21, -1, 1),
+        (rect.left+21, rect.bottom-21, 1, -1),
+        (rect.right-21, rect.bottom-21, -1, -1),
     ]:
-        pygame.draw.line(surface, edge, (cx, cy), (cx+xs*9, cy), 1)
-        pygame.draw.line(surface, edge, (cx, cy), (cx, cy+ys*9), 1)
+        pygame.draw.line(surface, edge, (cx, cy), (cx+xs*14, cy), 2)
+        pygame.draw.line(surface, edge, (cx, cy), (cx, cy+ys*14), 2)
 
 
 def divider(surface, x1, x2, y, color=BRONZE_DARK):
-    pygame.draw.line(surface, color, (x1, y), (x2, y), 1)
+    pygame.draw.line(surface, color, (x1, y), (x2, y), 2)
     mid = (x1 + x2) // 2
-    pygame.draw.polygon(surface, GOLD, [(mid, y-4), (mid+5, y), (mid, y+4), (mid-5, y)])
+    pygame.draw.polygon(surface, GOLD, [(mid, y-6), (mid+8, y), (mid, y+6), (mid-8, y)])
 
 
 def button(surface, rect, label, font, hover=False, prominent=False, enabled=True, danger=False):
@@ -86,16 +86,16 @@ def button(surface, rect, label, font, hover=False, prominent=False, enabled=Tru
     else:
         bg = BUTTON_HOVER if hover else BUTTON_BG
         edge, fg = BRONZE_LIGHT if hover else BRONZE_DARK, WHITE
-    pygame.draw.rect(surface, (2, 5, 5), rect.move(2, 4), border_radius=3)
-    pygame.draw.polygon(surface, bg, _bevel_polygon(rect, 7))
-    pygame.draw.lines(surface, edge, True, _bevel_polygon(rect, 7), 2 if hover else 1)
-    pygame.draw.line(surface, edge, (rect.left + 9, rect.top + 11),
-                     (rect.left + 9, rect.bottom - 11), 2)
+    pygame.draw.rect(surface, (2, 5, 5), rect.move(3, 6), border_radius=5)
+    pygame.draw.polygon(surface, bg, _bevel_polygon(rect, 11))
+    pygame.draw.lines(surface, edge, True, _bevel_polygon(rect, 11), 3 if hover else 2)
+    pygame.draw.line(surface, edge, (rect.left + 14, rect.top + 17),
+                     (rect.left + 14, rect.bottom - 17), 3)
     if prominent:
-        x = rect.right - 19
+        x = rect.right - 29
         pygame.draw.polygon(surface, BRONZE_LIGHT,
-                            [(x, rect.centery-4), (x+5, rect.centery),
-                             (x, rect.centery+4), (x-5, rect.centery)])
+                            [(x, rect.centery-6), (x+8, rect.centery),
+                             (x, rect.centery+6), (x-8, rect.centery)])
     draw_text(surface, label, font, fg, rect.centerx, rect.centery, center=True)
 
 
@@ -104,4 +104,4 @@ def eyebrow(surface, text, font, x, y, center=False):
 
 
 def footer(surface, text, font):
-    draw_text(surface, text, font, (133, 139, 128), WIDTH // 2, HEIGHT-31, center=True)
+    draw_text(surface, text, font, (133, 139, 128), WIDTH // 2, HEIGHT-47, center=True)

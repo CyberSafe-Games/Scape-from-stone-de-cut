@@ -1,5 +1,6 @@
 import os
 import unittest
+from unittest.mock import MagicMock
 
 # Configura driver dummy do SDL para execução de testes em ambiente headless/CLI
 os.environ["SDL_VIDEODRIVER"] = "dummy"
@@ -37,7 +38,9 @@ class TestPlayerCemeteryRules(unittest.TestCase):
 class TestCombatEngineCemeteryIntegration(unittest.TestCase):
     def test_discard_repeats_only_while_energy_remains(self):
         events = []
-        engine = CombatEngine(on_event_callback=lambda event, **kw: events.append((event, kw)))
+        engine = CombatEngine(
+            on_event_callback=lambda event, **kw: events.append((event, kw))
+        )
         start = len(engine.hand)
         self.assertTrue(engine.use_cemetery(0))
         self.assertTrue(engine.use_cemetery(0))
@@ -45,7 +48,7 @@ class TestCombatEngineCemeteryIntegration(unittest.TestCase):
         self.assertEqual(engine.energy, 0)
         self.assertEqual(len(engine.hand), start - 2)
         self.assertEqual(len(engine.discard_pile), 2)
-        self.assertEqual(len([ev for ev, _ in events if ev == 'cemetery_discard']), 2)
+        self.assertEqual(len([ev for ev, _ in events if ev == "cemetery_discard"]), 2)
 
     def test_swap_once_per_turn(self):
         engine = CombatEngine()
@@ -59,7 +62,7 @@ class TestCombatEngineCemeteryIntegration(unittest.TestCase):
 
     def test_cemetery_blocked_outside_player_turn(self):
         engine = CombatEngine()
-        engine.state = 'enemy_turn'
+        engine.state = "enemy_turn"
         self.assertFalse(engine.use_cemetery(0))
         self.assertFalse(engine.swap_cemetery(0))
 
@@ -74,7 +77,7 @@ class TestCemeteryModalUI(unittest.TestCase):
     """Testes de interface, renderização e seleção do modal do Cemitério."""
 
     def setUp(self):
-        self.wm = WindowManager(WIDTH, HEIGHT, TITLE)
+        self.wm = WindowManager(WIDTH, HEIGHT, TITLE, window_size=(WIDTH, HEIGHT))
         self.am = AssetManager()
         self.sm = SceneManager()
         self.engine = CombatEngine()
@@ -88,6 +91,9 @@ class TestCemeteryModalUI(unittest.TestCase):
 
     def test_modal_card_selection_and_discard_flow(self):
         """Simula seleção de carta e clique no botão de descarte dentro do modal."""
+        from unittest.mock import MagicMock
+
+        self.sm.audio_manager = MagicMock()
         self.sm.push_modal(self.modal)
         self.assertTrue(self.sm.has_modal)
 
@@ -104,6 +110,7 @@ class TestCemeteryModalUI(unittest.TestCase):
         )
         self.modal.handle_event(click_event)
         self.assertEqual(self.modal.selected_index, 0)
+        self.sm.audio_manager.play_sfx.assert_called_with("ui.click", volume=1.0)
 
         # 2. Simula clique no botão de descarte
         discard_btn_center = self.modal.discard_button_rect.center
@@ -119,31 +126,67 @@ class TestCemeteryModalUI(unittest.TestCase):
         self.assertEqual(len(self.engine.discard_pile), 1)
         self.assertTrue(self.sm.has_modal)
         self.assertIsNone(self.modal.selected_index)
+        self.sm.audio_manager.play_sfx.assert_any_call("ui.click", volume=1.0)
+        self.sm.audio_manager.play_sfx.assert_any_call("ui.confirm", volume=1.0)
+
+    def test_discard_without_selection_does_not_play_confirm(self):
+        """Descarte sem carta selecionada não reproduz confirmação."""
+        from unittest.mock import MagicMock
+
+        self.sm.audio_manager = MagicMock()
+        self.sm.push_modal(self.modal)
+
+        discard_event = pygame.event.Event(
+            pygame.MOUSEBUTTONDOWN,
+            pos=self.modal.discard_button_rect.center,
+            button=1,
+        )
+        self.modal.handle_event(discard_event)
+
+        self.assertIsNone(self.modal.selected_index)
+        self.assertTrue(self.sm.has_modal)
+        self.sm.audio_manager.play_sfx.assert_not_called()
 
     def test_modal_swap_once_and_stays_open(self):
+        from unittest.mock import MagicMock
+
+        self.sm.audio_manager = MagicMock()
         self.sm.push_modal(self.modal)
         first = self.modal._get_card_rects(len(self.engine.hand))[0]
-        self.modal.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN,
-                                                   pos=first.center, button=1))
+        self.modal.handle_event(
+            pygame.event.Event(pygame.MOUSEBUTTONDOWN, pos=first.center, button=1)
+        )
+        self.sm.audio_manager.play_sfx.assert_called_with("ui.click", volume=1.0)
         start = len(self.engine.hand)
-        self.modal.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN,
-                                                   pos=self.modal.swap_button_rect.center, button=1))
+        self.modal.handle_event(
+            pygame.event.Event(
+                pygame.MOUSEBUTTONDOWN, pos=self.modal.swap_button_rect.center, button=1
+            )
+        )
         self.assertTrue(self.engine.cemetery_swap_used)
         self.assertEqual(len(self.engine.hand), start)
         self.assertTrue(self.sm.has_modal)
         self.assertIsNone(self.modal.selected_index)
+        self.sm.audio_manager.play_sfx.assert_any_call("ui.confirm", volume=1.0)
 
     def test_modal_close_via_esc(self):
         """Pressionar ESC dentro do modal deve fechar o modal."""
+        from unittest.mock import MagicMock
+
+        self.sm.audio_manager = MagicMock()
         self.sm.push_modal(self.modal)
         self.assertTrue(self.sm.has_modal)
 
         esc_event = pygame.event.Event(pygame.KEYDOWN, key=pygame.K_ESCAPE)
         self.modal.handle_event(esc_event)
         self.assertFalse(self.sm.has_modal)
+        self.sm.audio_manager.play_sfx.assert_called_with("ui.navigate", volume=1.0)
 
     def test_modal_close_via_button(self):
         """Clicar no botão Fechar deve fechar o modal."""
+        from unittest.mock import MagicMock
+
+        self.sm.audio_manager = MagicMock()
         self.sm.push_modal(self.modal)
         self.assertTrue(self.sm.has_modal)
 
@@ -155,6 +198,7 @@ class TestCemeteryModalUI(unittest.TestCase):
         )
         self.modal.handle_event(click_event)
         self.assertFalse(self.sm.has_modal)
+        self.sm.audio_manager.play_sfx.assert_called_with("ui.navigate", volume=1.0)
 
 
 class TestBattleSceneCemeteryIntegration(unittest.TestCase):
@@ -162,11 +206,13 @@ class TestBattleSceneCemeteryIntegration(unittest.TestCase):
 
     def test_battle_scene_cemetery_button_opens_modal(self):
         """Clicar no botão Cemitério na BattleScene deve abrir o CemeteryModal."""
-        wm = WindowManager(WIDTH, HEIGHT, TITLE)
+        from unittest.mock import MagicMock
+
+        wm = WindowManager(WIDTH, HEIGHT, TITLE, window_size=(WIDTH, HEIGHT))
         am = AssetManager()
         sm = SceneManager()
+        sm.audio_manager = MagicMock()
         scene = BattleScene(sm, wm, am)
-
         sm.change_scene(scene)
         self.assertFalse(sm.has_modal)
 
@@ -180,12 +226,16 @@ class TestBattleSceneCemeteryIntegration(unittest.TestCase):
 
         self.assertTrue(sm.has_modal)
         self.assertIsInstance(sm.modal_stack[-1], CemeteryModal)
+        sm.audio_manager.play_sfx.assert_called_with("ui.click", volume=1.0)
 
     def test_battle_scene_c_key_opens_modal(self):
         """Pressionar a tecla C durante o turno do jogador deve abrir o CemeteryModal."""
-        wm = WindowManager(WIDTH, HEIGHT, TITLE)
+        from unittest.mock import MagicMock
+
+        wm = WindowManager(WIDTH, HEIGHT, TITLE, window_size=(WIDTH, HEIGHT))
         am = AssetManager()
         sm = SceneManager()
+        sm.audio_manager = MagicMock()
         scene = BattleScene(sm, wm, am)
 
         sm.change_scene(scene)
@@ -196,6 +246,7 @@ class TestBattleSceneCemeteryIntegration(unittest.TestCase):
 
         self.assertTrue(sm.has_modal)
         self.assertIsInstance(sm.modal_stack[-1], CemeteryModal)
+        sm.audio_manager.play_sfx.assert_called_with("ui.click", volume=1.0)
 
 
 if __name__ == "__main__":

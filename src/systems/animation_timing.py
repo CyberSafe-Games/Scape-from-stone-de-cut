@@ -32,10 +32,3 @@ def frame_index(group, elapsed_ms, duration_ms, frame_count):
         sequence = list(range(frame_count)) + list(range(1, frame_count))
         return sequence[min(len(sequence) - 1, int(progress * len(sequence)))]
     return min(frame_count - 1, int(progress * frame_count))
-
-
-def dash_distance(group, is_corpo_seco):
-    """Evita que o miniboss atravesse a arena inteira em poucos frames."""
-    if not is_corpo_seco:
-        return None
-    return 120 if group == "atk4" else 225

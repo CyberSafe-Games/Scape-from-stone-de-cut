@@ -40,11 +40,13 @@ class GoblinRangedAttackTests(unittest.TestCase):
                 self.assertAlmostEqual(view.player_flash, FLASH_DURATION - 1)
                 self.assertFalse(view.is_enemy_resolving_done())
                 view.update(duration - arrival)
+                self.assertFalse(view.is_enemy_resolving_done())
+                view.update(max(view.enemy_recovery_ms, view.player_flash))
                 self.assertTrue(view.is_enemy_resolving_done())
                 self.assertIsNone(view.get_enemy_projectile_pose())
 
     def test_other_enemies_and_goblin_melee_still_approach(self):
-        for name, action in (("Corpo Seco", "atk1"), ("Slime", "atk"), ("Goblin Nerd", "atk3")):
+        for name, action in (("Corpo Seco", "atk1"), ("Vinimuth", "atk1"), ("Goblin Nerd", "atk3")):
             with self.subTest(name=name, action=action):
                 view = EntityView(None)
                 view.trigger_attack("enemy", action, name)

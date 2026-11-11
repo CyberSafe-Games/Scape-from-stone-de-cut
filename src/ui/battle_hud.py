@@ -5,6 +5,7 @@ from src.config.colors import WHITE, GOLD
 from src.ui.helpers import draw_text
 from src.ui.status_badges import draw_status_badges
 from src.systems.normal_enemy_catalog import NORMAL_PORTRAITS
+from src.systems.character_portraits import FRAMED_PORTRAITS
 
 
 class BattleHUD:
@@ -24,11 +25,21 @@ class BattleHUD:
         return True
 
     def portrait(self, surface, rect, name, player=False):
+        portrait_name = 'jaum manel' if player else name.strip().lower()
+        if portrait_name in FRAMED_PORTRAITS:
+            portrait = self.assets.get_character_portrait(portrait_name, rect.size)
+            if portrait is not None:
+                self._portraits[(portrait_name, rect.size)] = portrait
+                surface.blit(portrait, rect)
+                return
         inner = pygame.Rect(rect.x + round(rect.width * 0.17),
                             rect.y + round(rect.height * 0.18),
                             round(rect.width * 0.66), round(rect.height * 0.64))
         pygame.draw.rect(surface, (9, 14, 15), inner)
         key = ('player' if player else name.lower(), inner.size)
+        portrait = None if player else self.assets.get_character_portrait(name, inner.size)
+        if portrait is not None:
+            self._portraits[key] = portrait
         if key not in self._portraits:
             sprites = (self.assets.get_player_sprite_group('idle') if player
                        else self.assets.get_enemy_sprite_group(name, 'idle'))
@@ -46,22 +57,26 @@ class BattleHUD:
         if key in self._portraits:
             surface.blit(self._portraits[key], inner)
         if not self.art(surface, 'hud_portrait', rect):
-            pygame.draw.rect(surface, (153, 119, 65), rect, 3)
+            pygame.draw.rect(surface, (153, 119, 65), rect, 5)
 
     def combatant(self, surface, rect, name, hp, maximum, stats, enemy=False, boss=False,
                   combatant=None, mouse=(0, 0)):
-        portrait = pygame.Rect(rect.right - 88 if enemy else rect.left, rect.top, 88, 96)
+        portrait = pygame.Rect(rect.right - 132 if enemy else rect.left, rect.top, 132, 144)
         self.portrait(surface, portrait, name, player=not enemy)
-        track = pygame.Rect(rect.left if enemy else portrait.right + 4, rect.top + 30,
-                            rect.width - 96, 42)
+        track = pygame.Rect(rect.left if enemy else portrait.right + 6, rect.top + 45,
+                            rect.width - 144, 63)
         label = name + ('  ·  MINIBOSS' if boss else '')
+        if getattr(combatant, 'is_final_boss', False):
+            label = name + ' · BOSS FINAL'
+        if getattr(combatant, 'total_phases', 0):
+            label = f'{name} · {combatant.phase}/{combatant.total_phases}'
         title = self.assets.menu_font
         if title.size(label)[0] > track.width:
             title = self.assets.small_font
         draw_text(surface, label, title, GOLD if boss else WHITE,
-                  track.centerx, rect.top + 15, center=True)
+                  track.centerx, rect.top + 23, center=True)
         if not self.art(surface, 'hud_health', track):
-            pygame.draw.rect(surface, (119, 92, 50), track, 2)
+            pygame.draw.rect(surface, (119, 92, 50), track, 3)
         bar = pygame.Rect(track.x + round(track.width * 0.18), track.y + round(track.height * 0.30),
                           round(track.width * 0.64), round(track.height * 0.34))
         pygame.draw.rect(surface, (29, 12, 13), bar)
@@ -71,16 +86,16 @@ class BattleHUD:
         if filled.width:
             pygame.draw.rect(surface, (137, 32, 30), filled)
             pygame.draw.line(surface, (203, 77, 52), filled.topleft,
-                             (filled.right - 1, filled.top), 2)
+                             (filled.right - 1, filled.top), 3)
             pygame.draw.line(surface, (72, 16, 20), filled.bottomleft,
-                             (filled.right - 1, filled.bottom), 2)
+                             (filled.right - 1, filled.bottom), 3)
         health_label = '∞' if getattr(combatant, 'invulnerable', False) else f'{hp}/{maximum}'
         draw_text(surface, health_label, self.assets.small_font, WHITE,
                   track.centerx, track.centery, center=True)
         if combatant is not None:
-            draw_status_badges(surface, combatant, track.x + 10, rect.top + 76,
+            draw_status_badges(surface, combatant, track.x + 15, rect.top + 114,
                                track.width, self.assets, mouse)
             return
         for i, (label, value, color) in enumerate(stats[:2]):
             draw_text(surface, f'{label}: {value}', self.assets.small_font, color,
-                      track.x + 13 + i * 112, rect.top + 76)
+                      track.x + 20 + i * 168, rect.top + 114)

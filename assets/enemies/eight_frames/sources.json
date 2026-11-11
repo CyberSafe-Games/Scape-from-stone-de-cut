@@ -1,0 +1,132 @@
+{
+  "esqueleto": {
+    "name": "Esqueleto Saqueador",
+    "groups": [
+      "idle",
+      "dano",
+      "atk1",
+      "atk2"
+    ],
+    "height": 135
+  },
+  "golem": {
+    "name": "Golem das Ruínas",
+    "groups": [
+      "idle",
+      "dano",
+      "atk1",
+      "def"
+    ],
+    "height": 145
+  },
+  "centauro": {
+    "name": "Centauro Vigia",
+    "groups": [
+      "idle",
+      "dano",
+      "atk1",
+      "atk2"
+    ],
+    "height": 140
+  },
+  "putrefato": {
+    "name": "Putrefato do Pântano",
+    "groups": [
+      "idle",
+      "dano",
+      "atk1",
+      "healer2"
+    ],
+    "height": 109
+  },
+  "guerreiro_mata": {
+    "name": "Guerreiro da Mata",
+    "groups": [
+      "idle",
+      "dano",
+      "atk1",
+      "atk2"
+    ],
+    "height": 142
+  },
+  "lagarto": {
+    "name": "Lagarto Couraçado",
+    "groups": [
+      "idle",
+      "dano",
+      "atk1",
+      "def"
+    ],
+    "height": 87
+  },
+  "morcego": {
+    "name": "Morcego Sombrio",
+    "groups": [
+      "idle",
+      "dano",
+      "atk1",
+      "atk2"
+    ],
+    "height": 150
+  },
+  "lutador": {
+    "name": "Lutador Mascarado",
+    "groups": [
+      "idle",
+      "dano",
+      "atk1",
+      "atk2"
+    ],
+    "height": 138
+  },
+  "mago": {
+    "name": "Mago do Santuário",
+    "groups": [
+      "idle",
+      "dano",
+      "atk1",
+      "atk2"
+    ],
+    "height": 140
+  },
+  "crocodilo": {
+    "name": "Crocodilo Abissal",
+    "groups": [
+      "idle",
+      "dano",
+      "def",
+      "atk1"
+    ],
+    "height": 148
+  },
+  "macaco": {
+    "name": "Macaco Selvagem",
+    "groups": [
+      "idle",
+      "dano",
+      "atk1",
+      "healer2"
+    ],
+    "height": 100
+  },
+  "vinimuth": {
+    "name": "Vinimuth",
+    "groups": [
+      "idle",
+      "dano",
+      "atk1",
+      "atk2"
+    ],
+    "height": 137
+  },
+  "slime": {
+    "name": "Slime",
+    "groups": [
+      "idle",
+      "dano",
+      "atk",
+      "def"
+    ],
+    "height": 72
+  }
+}

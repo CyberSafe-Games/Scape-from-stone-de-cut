@@ -1,0 +1,245 @@
+{
+  "idle": {
+    "batch": "base",
+    "candidates": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  "dano": {
+    "batch": "base",
+    "candidates": [
+      5,
+      0,
+      3,
+      4
+    ]
+  },
+  "soco": {
+    "batch": "base",
+    "candidates": [
+      7,
+      1,
+      0,
+      4
+    ]
+  },
+  "vitoria": {
+    "batch": "base",
+    "candidates": [
+      7,
+      1,
+      3,
+      4
+    ]
+  },
+  "mana_ancestral": {
+    "batch": "ultimates",
+    "candidates": [
+      4,
+      0,
+      2,
+      7
+    ]
+  },
+  "forcas_ancestrais": {
+    "batch": "ultimates",
+    "candidates": [
+      4,
+      0,
+      2,
+      5
+    ]
+  },
+  "rugido_da_floresta": {
+    "batch": "ultimates",
+    "candidates": [
+      5,
+      1,
+      0,
+      4
+    ]
+  },
+  "esfera_protetora": {
+    "batch": "cards_1",
+    "candidates": [
+      6,
+      0,
+      2,
+      7
+    ]
+  },
+  "soco_simples": {
+    "batch": "cards_1",
+    "candidates": [
+      6,
+      1,
+      2,
+      4
+    ]
+  },
+  "investida": {
+    "batch": "cards_1",
+    "candidates": [
+      0,
+      1,
+      3,
+      6
+    ]
+  },
+  "aura_rubra": {
+    "batch": "cards_1",
+    "candidates": [
+      6,
+      0,
+      2,
+      3
+    ]
+  },
+  "pocao_fragilizante": {
+    "batch": "cards_2",
+    "candidates": [
+      5,
+      2,
+      3,
+      7
+    ]
+  },
+  "pocao_purificadora": {
+    "batch": "cards_2",
+    "candidates": [
+      5,
+      0,
+      1,
+      7
+    ]
+  },
+  "totem_protetor": {
+    "batch": "cards_2",
+    "candidates": [
+      7,
+      1,
+      2,
+      5
+    ]
+  },
+  "zarabatana_venenosa": {
+    "batch": "cards_2",
+    "candidates": [
+      5,
+      1,
+      2,
+      7
+    ]
+  },
+  "disparo_de_arco": {
+    "batch": "cards_3",
+    "candidates": [
+      7,
+      1,
+      3,
+      4
+    ]
+  },
+  "esfera_escudo": {
+    "batch": "cards_3",
+    "candidates": [
+      7,
+      1,
+      2,
+      4
+    ]
+  },
+  "machado_quebra_escudo": {
+    "batch": "cards_3",
+    "candidates": [
+      7,
+      1,
+      2,
+      4
+    ]
+  },
+  "amuleto_dissipador": {
+    "batch": "cards_3",
+    "candidates": [
+      7,
+      0,
+      2,
+      4
+    ]
+  },
+  "adaga_sangrenta": {
+    "batch": "cards_4",
+    "candidates": [
+      0,
+      1,
+      3,
+      6
+    ]
+  },
+  "mascara_ancestral": {
+    "batch": "cards_4",
+    "candidates": [
+      6,
+      0,
+      3,
+      4
+    ]
+  },
+  "machados_gemeos": {
+    "batch": "cards_4",
+    "candidates": [
+      4,
+      1,
+      3,
+      6
+    ]
+  },
+  "lanca_perfurante": {
+    "batch": "cards_4",
+    "candidates": [
+      5,
+      0,
+      1,
+      4
+    ]
+  },
+  "bola_de_fogo": {
+    "batch": "cards_5",
+    "candidates": [
+      7,
+      0,
+      3,
+      4
+    ]
+  },
+  "pocao_de_cura": {
+    "batch": "cards_5",
+    "candidates": [
+      7,
+      0,
+      2,
+      6
+    ]
+  },
+  "surto_de_energia": {
+    "batch": "cards_5",
+    "candidates": [
+      4,
+      0,
+      1,
+      7
+    ]
+  },
+  "pocao_venenosa": {
+    "batch": "cards_5",
+    "candidates": [
+      6,
+      1,
+      2,
+      7
+    ]
+  }
+}

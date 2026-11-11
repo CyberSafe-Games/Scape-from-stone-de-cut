@@ -4,6 +4,8 @@ from src.models.action import Action
 from src.models.enemy import Enemy
 from src.config.layout import MINIBOSS_INTERVAL
 from src.models.effects.crimson_vigor_effect import CrimsonVigorEffect
+from src.models.effects.forest_smoke_effect import ForestSmokeEffect
+from src.models.effects.golden_amulet_effect import GoldenAmuletEffect
 from src.systems.normal_enemy_catalog import biome_enemy_names, NORMAL_SPRITES, NORMAL_ACTIONS
 
 # Configuração de inimigos comuns: (Nome, HP Base, HP por Andar)
@@ -173,13 +175,88 @@ def create_point_enemy(level):
     """Resolve chefes territoriais específicos antes do fallback genérico."""
     if level == 1:
         return create_guardiao_da_pedra(level)
+    if level == 2:
+        return create_alvaro_tex(level)
     if level == 3:
         return create_goblin_nerd(level)
+    if level == 4:
+        return create_gordofera(level)
     if level == 5:
         return create_corpo_seco(level)
     if level == 6:
         return create_carrasco_da_vigilia(level)
+    if level == 7:
+        return create_zanzara(level)
     return create_enemy(level, is_miniboss_level(level))
+
+
+def create_zanzara(level=7):
+    """Boss final do Santuário: investida, moedas, energia e amuleto restaurador."""
+    actions = [
+        Action('Investida Soberana', 'attack', damage=15, energy_cost=1,
+               weight=.35, visual_effect='atk1'),
+        Action('Chuva de Moedas', 'attack', damage=17, energy_cost=1,
+               weight=.25, visual_effect='atk2'),
+        Action('Onda Imperial', 'attack', damage=20, energy_cost=2,
+               weight=.25, visual_effect='atk3'),
+        Action('Amuleto Dourado', 'buff', defense=16, energy_cost=1,
+               weight=.15, visual_effect='healer2', effect=GoldenAmuletEffect()),
+    ]
+    boss = Enemy('Zanzara', hp=190, energy=4, max_energy=4, actions=actions, is_miniboss=True)
+    boss.boss_id = 'zanzara'
+    boss.is_final_boss = True
+    return _configure_boss(boss, 'Maré Soberana', 32, 'atk3')
+
+
+def create_gordofera(level=4):
+    """Guardião do Pântano: garras, investidas e guarda; salto no oitavo ato."""
+    actions = [
+        Action('Garras Dilacerantes', 'attack', damage=9, energy_cost=1,
+               weight=.35, visual_effect='atk1', status_effect=('bleed', 2, 4)),
+        Action('Rugido Feroz', 'attack', damage=11, energy_cost=1,
+               weight=.25, visual_effect='atk2'),
+        Action('Cabeçada Brutal', 'attack', damage=14, energy_cost=2,
+               weight=.25, visual_effect='atk3'),
+        Action('Guarda Ferrenha', 'defend', defense=10, energy_cost=1,
+               weight=.15, visual_effect='def'),
+    ]
+    boss = Enemy('Gordofera', hp=116, energy=4, max_energy=4, actions=actions, is_miniboss=True)
+    boss.boss_id = 'gordofera'
+    return _configure_boss(boss, 'Abalo Abissal', 21, 'atk4')
+
+
+def create_alvaro_tex(level=2, phase=1):
+    """Dupla da Mata Sombria; o pequeno continua após a queda do parceiro."""
+    if phase not in (1, 2):
+        raise ValueError('Fase inválida para Álvaro e Tex.')
+    if phase == 1:
+        actions = [
+            Action('Estocada da Dupla', 'attack', damage=9, energy_cost=1,
+                   weight=.45, visual_effect='atk1'),
+            Action('Estrela Traiçoeira', 'attack', damage=7, energy_cost=1,
+                   weight=.35, visual_effect='atk2'),
+            Action('Fumaça Restauradora', 'buff', defense=10, energy_cost=1,
+                   weight=.20, visual_effect='healer2', effect=ForestSmokeEffect()),
+        ]
+        boss = Enemy('Álvaro e Tex', hp=76, energy=4, max_energy=4,
+                     actions=actions, is_miniboss=True)
+        _configure_boss(boss, 'Vendaval da Dupla', 15, 'atk4')
+    else:
+        actions = [
+            Action('Chute Ardiloso', 'attack', damage=7, energy_cost=1,
+                   weight=.40, visual_effect='atk1'),
+            Action('Pancada de Porrete', 'attack', damage=9, energy_cost=1,
+                   weight=.35, visual_effect='atk2'),
+            Action('Shuriken Furtiva', 'attack', damage=6, energy_cost=1,
+                   weight=.25, visual_effect='atk4'),
+        ]
+        boss = Enemy('Álvaro e Tex · Pequeno', hp=44, energy=4, max_energy=4,
+                     actions=actions, is_miniboss=True)
+        _configure_boss(boss, 'Fúria do Pequeno', 13, 'atk3')
+    boss.boss_id = 'alvaro_tex'
+    boss.phase = phase
+    boss.total_phases = 2
+    return boss
 
 
 def create_road_enemy(level):
@@ -202,10 +279,32 @@ def create_road_enemy(level):
                  actions=actions, is_miniboss=False)
 
 
-def choose_next_action(enemy):
-    """Prepara o próximo ato; ataques especiais respeitam intervalos do chefe."""
-    if getattr(enemy, "special_interval", 0) and (enemy.action_counter + 1) % enemy.special_interval == 0:
-        special = enemy.special_action
-        enemy.set_intent(special.action_type, special.value, special)
-    else:
-        choose_enemy_intent(enemy)
+def choose_next_action(enemy, count=None):
+    """Planeja a rodada inteira; a segunda intenção já fica definida antes da vez do jogador."""
+    count = getattr(enemy, 'actions_per_turn', 1) if count is None else count
+    budget = enemy.energy
+    plan = []
+    for offset in range(count):
+        interval = getattr(enemy, 'special_interval', 0)
+        ordinal = getattr(enemy, 'action_counter', 0)+offset+1
+        if interval and ordinal % interval == 0:
+            action = enemy.special_action
+        elif enemy.actions:
+            reserve = sum(enemy.special_action.energy_cost for future in range(offset+1, count)
+                          if interval and (getattr(enemy, 'action_counter', 0)+future+1) % interval == 0)
+            valid = [a for a in enemy.actions if a.energy_cost <= budget-reserve]
+            action = (random.choices(valid, weights=[a.weight for a in valid], k=1)[0]
+                      if valid else Action('Aguardar', 'defend', defense=0))
+        else:
+            multiplier = 1.5 if enemy.is_miniboss else 1.0
+            if random.random() < .7:
+                damage = int(random.randint(6, 10+enemy.max_hp//10)*multiplier)
+                action = Action('Ataque', 'attack', damage=damage)
+            else:
+                action = Action('Defesa', 'defend', defense=int(random.randint(5, 10)*multiplier))
+        plan.append(action)
+        budget = max(0, budget-action.energy_cost)
+    enemy.action_plan = plan
+    enemy.action_plan_index = 0
+    if plan:
+        enemy.set_intent(plan[0].action_type, plan[0].value, plan[0])

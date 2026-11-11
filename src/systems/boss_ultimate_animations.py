@@ -1,5 +1,6 @@
 """Apresentação dos especiais territoriais; não altera regras ou dano."""
 from dataclasses import dataclass
+from src.systems.animation_inbetweens import timed_frame
 
 
 @dataclass(frozen=True)
@@ -15,6 +16,10 @@ class BossUltimateAnimation:
 
 
 BOSS_ULTIMATE_ANIMATIONS = {
+    'gordofera': BossUltimateAnimation('gordofera', 'Abalo Abissal', 2700, .40, .64,
+                                         (218, 186, 112), 'tremor', 165),
+    'zanzara': BossUltimateAnimation('zanzara', 'Maré Soberana', 2900, .44, .80,
+                                    (244, 199, 83), 'sovereign', 170),
     'guardião da pedra': BossUltimateAnimation('guardiao_da_pedra', 'Rugido Espiritual', 2600, .42, .78,
                                                (71, 183, 255), 'bear', 155),
     'goblin nerd': BossUltimateAnimation('goblin_nerd', 'Descarga Sobrecarregada', 2400, .44, .77,
@@ -36,18 +41,41 @@ BOSS_ORIGINAL_CASTS = {
 
 
 def boss_cast_frame(progress, spec=None):
-    release = spec.release if spec and spec.mode in ('bear', 'plasma') else .50
+    release = spec.release if spec and spec.mode in ('bear', 'plasma', 'sovereign') else .50
     return 0 if progress < .22 else 1 if progress < release else 2 if progress < .80 else 3
 
 
+def boss_effect_frame(progress, spec, count=8):
+    """Carga, ataque e dissipação em oito ou doze poses, sem antecipar o impacto."""
+    p = max(0, min(1, progress))
+    if count == 12:
+        ground = spec.mode in ('execution','tremor')
+        flight_count = 2 if ground else 4
+        impact_count = 4 if ground else 2
+        boundaries = (0,spec.release/2,
+                      *(spec.release+(spec.impact-spec.release)*i/flight_count for i in range(flight_count)),
+                      *(spec.impact+(1-spec.impact)*i/impact_count for i in range(impact_count)))
+        return timed_frame(p,boundaries,count)
+    if p < spec.release:
+        return min(1, int(p/spec.release*2))
+    ground_impact = spec.mode in ('execution', 'tremor')
+    if p < spec.impact:
+        phase = (p-spec.release)/(spec.impact-spec.release)
+        count = 2 if ground_impact else 4
+        return 2+min(count-1, int(phase*count))
+    phase = (p-spec.impact)/(1-spec.impact)
+    start = 4 if ground_impact else 6
+    return start+min(7-start, int(phase*(8-start)))
+
+
 def boss_ultimate_pose(spec, progress, home_x, target_x):
-    if spec.mode in ('bear', 'plasma') or progress < .25:
+    if spec.mode in ('bear', 'plasma', 'sovereign') or progress < .25:
         return home_x, 0
     if progress < .52:
         t = (progress-.25)/.27
         eased = t*t*(3-2*t)
         import math
-        lift = math.sin(t*math.pi)*65 if spec.mode == 'execution' else 0
+        lift = math.sin(t*math.pi)*(128 if spec.mode == 'tremor' else 98) if spec.mode in ('execution', 'tremor') else 0
         return home_x+(target_x-home_x)*eased, lift
     if progress < .76:
         return target_x, 0

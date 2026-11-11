@@ -6,7 +6,7 @@ from datetime import datetime
 from src.config.settings import SAVES_DIR
 from src.systems.card_catalog import CARD_POOL, create_starting_deck
 from src.systems.card_definitions import migrate_card_name
-from src.systems.territory_map import TERRITORY_IDS, FIRST_TERRITORY_ID
+from src.systems.territory_map import TERRITORY_IDS, FIRST_TERRITORY_ID, ROAD_FIGHTS
 from src.models.effects.ultimate_effect import DEFAULT_ULTIMATE_ID, known_ultimate_ids
 from src.systems.deck_loadout import INITIAL_SLOTS, normalize_collection_and_slots, expand_slots, SLOT_COUNT, CARD_NAMES
 
@@ -178,10 +178,10 @@ class SaveManager:
                             unlocked.append(tid)
         normalize_collection_and_slots(progress)
         # Saves anteriores (sem rota) preservam o acesso aos confrontos que
-        # já estavam disponíveis; novas jornadas começam com 0/3 encontros.
+        # já estavam disponíveis.
         if "encontros_por_territorio" not in progress:
             progress["encontros_por_territorio"] = {
-                tid: 3 for tid in progress.get("territorios_desbloqueados", [])
+                tid: ROAD_FIGHTS for tid in progress.get("territorios_desbloqueados", [])
                 if tid in TERRITORY_IDS
             }
         for key, default in base["progresso"].items():
@@ -217,6 +217,10 @@ class SaveManager:
             for key, value in steps.items()
         )):
             raise SaveCorruptedError("Contador de encontros inválido.")
+        # A rota antiga aceitava três vitórias. Duas mantêm o chefe liberado.
+        progress["encontros_por_territorio"] = {
+            territory: min(wins, ROAD_FIGHTS) for territory, wins in steps.items()
+        }
 
         if not isinstance(progress["territorios_desbloqueados"], list):
             raise SaveCorruptedError("Lista de territórios inválida.")
@@ -273,7 +277,7 @@ class SaveManager:
     def _unlock_test_progress(progress):
         progress['territorios_desbloqueados'] = list(TERRITORY_IDS)
         progress['territorios_concluidos'] = list(TERRITORY_IDS)
-        progress['encontros_por_territorio'] = {tid: 3 for tid in TERRITORY_IDS}
+        progress['encontros_por_territorio'] = {tid: ROAD_FIGHTS for tid in TERRITORY_IDS}
         progress['cartas_colecao'] = [card.name for card in CARD_POOL]
         progress['ultimates_desbloqueadas'] = known_ultimate_ids()
         progress['tutorial_concluido'] = True

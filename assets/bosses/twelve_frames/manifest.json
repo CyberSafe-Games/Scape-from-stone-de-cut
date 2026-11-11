@@ -1,0 +1,73 @@
+{
+  "guardiao_da_pedra": [
+    "idle",
+    "atk1",
+    "atk2",
+    "def",
+    "healer2",
+    "dano",
+    "ultimate"
+  ],
+  "goblin_nerd": [
+    "idle",
+    "atk1",
+    "atk2",
+    "atk3",
+    "healer2",
+    "dano",
+    "ultimate"
+  ],
+  "corpo_seco": [
+    "idle",
+    "atk1",
+    "atk3",
+    "atk4",
+    "healer2",
+    "dano",
+    "ultimate"
+  ],
+  "carrasco_da_vigilia": [
+    "idle",
+    "atk1",
+    "atk2",
+    "atk3",
+    "healer2",
+    "dano",
+    "ultimate"
+  ],
+  "alvaro_tex_phase1": [
+    "idle",
+    "dano",
+    "atk1",
+    "atk2",
+    "atk3",
+    "atk4",
+    "transition"
+  ],
+  "alvaro_tex_phase2": [
+    "idle",
+    "dano",
+    "atk1",
+    "atk2",
+    "atk3",
+    "atk4"
+  ],
+  "zanzara": [
+    "idle",
+    "dano",
+    "atk1",
+    "atk2",
+    "atk3",
+    "healer2",
+    "ultimate"
+  ],
+  "gordofera": [
+    "idle",
+    "dano",
+    "atk1",
+    "atk2",
+    "atk3",
+    "def",
+    "ultimate"
+  ]
+}

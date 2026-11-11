@@ -15,7 +15,7 @@ class FloatingText:
 
     def update(self, dt):
         self.life -= dt
-        self.y -= 45 * (dt / 1000)
+        self.y -= 67.5 * (dt / 1000)
 
     def is_dead(self):
         return self.life <= 0

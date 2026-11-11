@@ -91,7 +91,7 @@ class AudioManager:
             logger.warning("Não foi possível carregar o som '%s' (%s): %s", sound_id, path, exc)
             return None
 
-    def play_sfx(self, sound_id, volume=1.0):
+    def play_sfx(self, sound_id, volume=1.0, maxtime=None):
         """Reproduz um efeito sonoro registrado; não falha se ele estiver ausente."""
         sound = self._get_sound(sound_id)
         if sound is None:
@@ -99,6 +99,10 @@ class AudioManager:
         effective_volume = self._clamp_volume(self.master_volume * self.sfx_volume * volume)
         sound.set_volume(effective_volume)
         try:
+            if maxtime is not None:
+                if maxtime <= 0:
+                    return None
+                return sound.play(maxtime=max(1, int(maxtime)))
             return sound.play()
         except pygame.error as exc:
             logger.warning("Não foi possível reproduzir o som '%s': %s", sound_id, exc)

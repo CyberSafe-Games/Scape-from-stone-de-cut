@@ -39,7 +39,7 @@ class TestLaboratorySave(unittest.TestCase):
         self.assertEqual(set(p['cartas_colecao']), {c.name for c in CARD_POOL})
         self.assertEqual(set(p['ultimates_desbloqueadas']), set(known_ultimate_ids()))
         for tid in TERRITORY_IDS:
-            for index in (0, 1, 2, None):
+            for index in (0, 1, None):
                 self.assertEqual(encounter_status(data, tid, index), 'completed')
 
     def test_invulnerability_includes_all_damage_and_preserves_shield_consumption(self):

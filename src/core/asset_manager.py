@@ -1,11 +1,13 @@
 import os
 import pygame
+from src.systems.common_animation_kits import COMMON_KITS
 from src.ui.sprite_cleanup import remove_white_fringe, recolor_green_aura_red
 from src.systems.normal_enemy_catalog import NORMAL_SPRITES, NORMAL_RANGED
 
 from src.config.settings import (
     WIDTH,
     HEIGHT,
+    ASSETS_DIR,
     BACKGROUND_PATH,
     PLAYER_ASSETS_DIR,
     CARD_ASSETS_DIR,
@@ -21,6 +23,7 @@ from src.config.typography import (
     LINE_HEIGHT,
     SYMBOL_FALLBACK_FONTS,
     SYSTEM_FALLBACK_FONTS,
+    scaled_font_size,
 )
 from src.core.game_font import GameFont
 
@@ -54,6 +57,7 @@ class AssetManager:
         self._player_sprites = {}
         self._enemy_sprites = {}
         self._enemy_projectiles = {}
+        self._character_portraits = {}
         self._background = None
         self._background_tutorial = None
         self._territory_backgrounds = {}
@@ -62,6 +66,7 @@ class AssetManager:
         self._ui_images = {}
         self._status_icons = {}
         self._projectile_images = {}
+        self._intent_art = {}
         self._ultimate_images = {}
         self._ultimate_effect_sprites = {}
         self._boss_ultimate_sprites = {}
@@ -73,8 +78,11 @@ class AssetManager:
         self._load_territory_backgrounds()
         self._load_player_sprites()
         self._load_enemy_sprites()
+        self._load_common_eight_frames()
         self._load_card_action_sprites()
+        self._load_player_eight_frames()
         self._load_boss_ultimate_sprites()
+        self._load_boss_eight_frame_sprites()
         self._load_coin_icon()
         self._load_ui_images()
         self._load_ultimate_images()
@@ -103,7 +111,7 @@ class AssetManager:
     def _init_fonts(self):
         """Tipografia autoral (Igarape Pixel) definida em src/config/typography.py."""
         for name, (weight, size) in FONT_STYLES.items():
-            self._fonts[name] = self._load_game_font(weight, size)
+            self._fonts[name] = self._load_game_font(weight, scaled_font_size(size))
 
     def get_font(self, name="default"):
         return self._fonts.get(name, self._fonts["default"])
@@ -117,14 +125,29 @@ class AssetManager:
                 self._status_icons[name] = None
         return self._status_icons[name]
 
-    def get_projectile_image(self, name):
-        if name not in self._projectile_images:
-            path = os.path.join(os.path.dirname(BACKGROUND_PATH), 'projectiles', name + '.png')
+    def get_projectile_image(self, name, frame=None):
+        key = name if frame is None else f'{name}_{frame % 4}'
+        if key not in self._projectile_images:
+            path = os.path.join(ASSETS_DIR, 'projectiles', key + '.png')
             try:
-                self._projectile_images[name] = pygame.image.load(path).convert_alpha()
+                self._projectile_images[key] = pygame.image.load(path).convert_alpha()
             except (pygame.error, FileNotFoundError):
-                self._projectile_images[name] = None
-        return self._projectile_images[name]
+                self._projectile_images[key] = None
+        return self._projectile_images[key]
+
+    def get_intent_art(self, enemy_name, action):
+        kit = COMMON_KITS.get(enemy_name.strip().lower())
+        if kit is None or action not in kit[1]:
+            return None
+        key = (kit[0], action)
+        if key not in self._intent_art:
+            path = os.path.join(ASSETS_DIR, 'intent_art', key[0], action + '.png')
+            try:
+                art = pygame.image.load(path).convert()
+                self._intent_art[key] = pygame.transform.smoothscale(art, (88, 81))
+            except (pygame.error, FileNotFoundError):
+                self._intent_art[key] = None
+        return self._intent_art[key]
 
     @property
     def font(self):
@@ -203,8 +226,8 @@ class AssetManager:
         return self._background
 
     def _load_coin_icon(self):
-        """Carrega o icone de moeda (48x48). Fallback: circulo dourado procedural."""
-        ICON_SIZE = 48
+        """Carrega o icone de moeda (72x72). Fallback: circulo dourado procedural."""
+        ICON_SIZE = 72
         try:
             raw = pygame.image.load(COIN_ICON_PATH).convert_alpha()
             self._coin_icon = pygame.transform.smoothscale(raw, (ICON_SIZE, ICON_SIZE))
@@ -212,7 +235,7 @@ class AssetManager:
             # Fallback procedural: círculo dourado
             surf = pygame.Surface((ICON_SIZE, ICON_SIZE), pygame.SRCALPHA)
             pygame.draw.circle(surf, (255, 200, 50), (ICON_SIZE // 2, ICON_SIZE // 2), ICON_SIZE // 2)
-            pygame.draw.circle(surf, (220, 160, 20), (ICON_SIZE // 2, ICON_SIZE // 2), ICON_SIZE // 2, 3)
+            pygame.draw.circle(surf, (220, 160, 20), (ICON_SIZE // 2, ICON_SIZE // 2), ICON_SIZE // 2, 5)
             self._coin_icon = surf
             print(f"[AVISO] Ícone de moeda não encontrado: {COIN_ICON_PATH}")
 
@@ -350,12 +373,45 @@ class AssetManager:
     def get_ultimate_effect_sprites(self, action_name):
         return self._ultimate_effect_sprites.get(action_name, [])
 
+    def _load_player_eight_frames(self):
+        """Usa sequências completas com o mesmo desenho e a mesma paleta."""
+        from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS
+        original = os.path.join(PLAYER_ASSETS_DIR, 'eight_frames')
+        expanded = os.path.join(PLAYER_ASSETS_DIR, 'twelve_frames')
+        has_expanded = os.path.isfile(os.path.join(expanded, 'manifest.json'))
+
+        def load(group):
+            versions = [(original, 8)]
+            if has_expanded and group not in ('idle', 'dano'):
+                versions.insert(0, (expanded, 12))
+            for folder, count in versions:
+                paths = [os.path.join(folder, f'{group}_{i}.png') for i in range(1, count + 1)]
+                if all(os.path.isfile(path) for path in paths):
+                    return [pygame.image.load(path).convert_alpha() for path in paths]
+            return None
+
+        for group in ('idle', 'dano', 'soco', 'vitoria'):
+            frames = load(group)
+            if frames:
+                self._player_sprites[group] = frames
+        for name, group in self.CARD_ACTION_FILES.items():
+            frames = load(group)
+            if frames:
+                self._card_action_sprites[name] = frames
+        for name, spec in ULTIMATE_ANIMATIONS.items():
+            frames = load(spec.ultimate_id)
+            if frames:
+                self._card_action_sprites[name] = frames
+            effects = load(f'{spec.ultimate_id}_effect')
+            if effects:
+                self._ultimate_effect_sprites[name] = effects
+
     def _load_boss_ultimate_sprites(self):
         from src.systems.boss_ultimate_animations import BOSS_ULTIMATE_ANIMATIONS, BOSS_ORIGINAL_CASTS
         for name, spec in BOSS_ULTIMATE_ANIMATIONS.items():
             folder = os.path.join(os.path.dirname(ULTIMATE_ASSETS_DIR), 'boss_ultimate_effects', spec.asset_id)
             casts = []
-            for group, index in BOSS_ORIGINAL_CASTS[name]:
+            for group, index in BOSS_ORIGINAL_CASTS.get(name, ()):
                 originals = self.get_enemy_sprite_group(name, group)
                 if originals:
                     source = originals[min(index, len(originals)-1)]
@@ -389,7 +445,13 @@ class AssetManager:
                     casts.append(frame)
             self._boss_ultimate_sprites[name] = casts
             effects = []
-            for i in range(1, 5):
+            count = 4
+            for version, candidate_count in (('twelve_frames',12),('eight_frames',8)):
+                expanded = os.path.join(os.path.dirname(ULTIMATE_ASSETS_DIR), 'boss_ultimate_effects', version, spec.asset_id)
+                if all(os.path.isfile(os.path.join(expanded, f'effect_{i}.png')) for i in range(1,candidate_count+1)):
+                    folder,count = expanded,candidate_count
+                    break
+            for i in range(1, count+1):
                 try:
                     effects.append(pygame.image.load(os.path.join(folder, f'effect_{i}.png')).convert_alpha())
                 except (pygame.error, FileNotFoundError):
@@ -398,6 +460,57 @@ class AssetManager:
 
     def get_boss_ultimate_sprites(self, name, effects=False):
         return (self._boss_ultimate_effects if effects else self._boss_ultimate_sprites).get(name.lower(), [])
+
+    def _load_boss_eight_frame_sprites(self):
+        import json
+        from src.systems.boss_animation_kits import KITS
+        from src.config.settings import ASSETS_DIR
+        root = os.path.join(ASSETS_DIR,'bosses','eight_frames')
+        legacy_root = root
+        count = 8
+        expanded = os.path.join(ASSETS_DIR,'bosses','twelve_frames')
+        if os.path.isfile(os.path.join(expanded,'manifest.json')):
+            root,count = expanded,12
+        # Original sources remain available for reproducible extraction and identity checks.
+        self._boss_original_groups = {name: dict(self._enemy_sprites.get(name,{})) for name in KITS}
+        self._boss_original_ultimates = dict(self._boss_ultimate_sprites)
+        if not os.path.isfile(os.path.join(root,'manifest.json')):
+            return
+        with open(os.path.join(root,'manifest.json'),encoding='utf8') as stream:
+            prepared = json.load(stream)
+        for name,(slug,groups) in KITS.items():
+            if slug not in prepared:
+                continue
+            self._enemy_sprites.setdefault(name, {})
+            for group in prepared[slug]:
+                folder, frame_count = (legacy_root, 8) if group in ('idle', 'dano') else (root, count)
+                frames = [pygame.image.load(os.path.join(folder, slug, f'{group}_{i}.png')).convert_alpha()
+                          for i in range(1, frame_count + 1)]
+                if name == 'carrasco da vigília' and group == 'healer2':
+                    frames = [recolor_green_aura_red(frame) for frame in frames]
+                if group == 'ultimate':
+                    self._boss_ultimate_sprites[name] = frames
+                else:
+                    self._enemy_sprites[name][group] = frames
+            current = self._enemy_sprites[name]
+            current['atk'] = current['atk1']
+            if name in ('goblin nerd','corpo seco'):
+                current['def'] = current['healer2']
+            if name == 'goblin nerd':
+                current['atk4'] = current['atk2']
+            if name == 'álvaro e tex':
+                current['healer2'] = current['atk3']
+            if name == 'zanzara':
+                current['def'] = current['healer2']
+                for action in ('atk2', 'atk3'):
+                    self._enemy_projectiles[(name, action)] = [
+                        pygame.image.load(os.path.join(legacy_root, slug, f'projectile_{action}_{i}.png')).convert_alpha()
+                        for i in range(1, 5)]
+                    if action == 'atk3':
+                        # A frente da onda de palma acompanha o disparo para a esquerda.
+                        self._enemy_projectiles[(name, action)] = [
+                            pygame.transform.flip(frame, True, False)
+                            for frame in self._enemy_projectiles[(name, action)]]
 
     def get_card_action_sprites(self, action_name):
         return self._card_action_sprites.get(action_name, [])
@@ -554,8 +667,25 @@ class AssetManager:
             groups['atk'] = groups['atk1']
             self._enemy_sprites['carrasco da vigília'] = groups
 
+        from src.systems.alvaro_tex_animations import NAMES
+        for phase, name in enumerate(NAMES, 1):
+            folder = os.path.join(ASSETS_DIR, 'bosses', 'alvaro_tex', f'phase{phase}')
+            groups = {}
+            for group in ('idle', 'dano', 'atk1', 'atk2', 'atk3', 'atk4', 'transition'):
+                paths = [os.path.join(folder, f'{group}_{i}.png') for i in range(1, 9)]
+                groups[group] = [pygame.image.load(p).convert_alpha() for p in paths if os.path.isfile(p)]
+            groups['atk'] = groups['atk1']
+            self._enemy_sprites[name] = groups
+            if phase == 1:
+                groups['healer2'] = groups['atk3']
+            star = os.path.join(ASSETS_DIR, 'bosses', 'alvaro_tex', 'shuriken.png')
+            if os.path.isfile(star):
+                self._enemy_projectiles[(name, 'atk2' if phase == 1 else 'atk4')] = pygame.image.load(star).convert_alpha()
+
         for name, (slug, action_groups, _, _) in NORMAL_SPRITES.items():
             folder = os.path.join(ASSETS_DIR, 'enemies', slug)
+            if not os.path.isdir(folder):
+                continue
             groups = {}
             for group in action_groups:
                 groups[group] = [pygame.image.load(os.path.join(folder, f'{group}_{i}.png')).convert_alpha()
@@ -566,8 +696,48 @@ class AssetManager:
                 path = os.path.join(folder, f'projectile_{action}.png')
                 self._enemy_projectiles[(name.lower(), action)] = pygame.image.load(path).convert_alpha()
 
-    def get_enemy_projectile(self, enemy_name, action):
-        return self._enemy_projectiles.get((enemy_name.strip().lower(), action))
+    def get_enemy_projectile(self, enemy_name, action, frame=0):
+        key = (enemy_name.strip().lower(), action)
+        imported = {
+            ('goblin nerd', 'atk1'): 'wrench', ('goblin nerd', 'atk2'): 'goblin_shot',
+            ('golem das ruínas', 'atk1'): 'stone_fist', ('putrefato do pântano', 'atk1'): 'parasite',
+            ('zanzara', 'atk2'): 'coins',
+        }.get(key)
+        if imported:
+            image = self.get_projectile_image(imported, frame)
+            if image is not None:
+                return image
+        if key == ('centauro vigia', 'atk1'):
+            image = self.get_projectile_image('arrow', frame)
+            if image is not None:
+                cache_key = f'arrow_left_{frame % 4}'
+                if cache_key not in self._projectile_images:
+                    self._projectile_images[cache_key] = pygame.transform.flip(image, True, False)
+                return self._projectile_images[cache_key]
+        projectile = self._enemy_projectiles.get(key)
+        return projectile[frame % len(projectile)] if isinstance(projectile, list) else projectile
+
+    def _load_common_eight_frames(self):
+        import json
+        from src.systems.common_animation_kits import COMMON_KITS
+        from src.config.settings import ASSETS_DIR
+        root = os.path.join(ASSETS_DIR, 'enemies', 'eight_frames')
+        manifest_path = os.path.join(root, 'manifest.json')
+        if not os.path.isfile(manifest_path):
+            return
+        with open(manifest_path, encoding='utf8') as stream:
+            manifest = json.load(stream)
+        for name, (slug, groups) in COMMON_KITS.items():
+            if slug not in manifest: continue
+            current = self._enemy_sprites.setdefault(name, {})
+            for group in groups:
+                current[group] = [pygame.image.load(os.path.join(root, slug, f'{group}_{i}.png')).convert_alpha()
+                                  for i in range(1, 9)]
+            if 'atk1' in current:
+                current['atk'] = current['atk1']
+            projectile = os.path.join(root, slug, 'projectile_atk.png')
+            if name == 'slime' and os.path.isfile(projectile):
+                self._enemy_projectiles[(name, 'atk')] = pygame.image.load(projectile).convert_alpha()
 
     def has_enemy_sprites(self, enemy_name):
         """Verifica se existem sprites customizados carregados para o inimigo."""
@@ -576,6 +746,35 @@ class AssetManager:
         key = enemy_name.strip().lower()
         groups = self._enemy_sprites.get(key, {})
         return any(bool(frames) for frames in groups.values())
+
+    def get_character_portrait(self, name, size):
+        """Enquadra o retrato sem distorcer; ausências usam o recorte de sprite da HUD."""
+        from src.systems.character_portraits import PORTRAITS
+        key = (name.strip().lower(), tuple(size))
+        if key in self._character_portraits:
+            return self._character_portraits[key]
+        spec = PORTRAITS.get(key[0])
+        result = None
+        if spec:
+            filename, crop, mode = spec
+            path = os.path.join(os.path.dirname(PLAYER_ASSETS_DIR), 'portraits', 'source', filename)
+            try:
+                source = pygame.image.load(path).convert_alpha()
+                x, y, w, h = crop
+                bounds = pygame.Rect(round(x*source.get_width()), round(y*source.get_height()),
+                                     round(w*source.get_width()), round(h*source.get_height())).clip(source.get_rect())
+                source = source.subsurface(bounds)
+                ratios = (size[0]/source.get_width(), size[1]/source.get_height())
+                scale = min(ratios) if mode in ('contain', 'framed') else max(ratios)
+                image = pygame.transform.smoothscale(source, (max(1, round(source.get_width()*scale)), max(1, round(source.get_height()*scale))))
+                result = pygame.Surface(size, pygame.SRCALPHA)
+                if mode != 'framed':
+                    result.fill((9, 14, 15))
+                result.blit(image, image.get_rect(center=result.get_rect().center))
+            except (pygame.error, FileNotFoundError):
+                pass
+        self._character_portraits[key] = result
+        return result
 
     def get_enemy_sprite_group(self, enemy_name, group_name="idle"):
         """Retorna a lista de frames para a ação solicitada do inimigo."""

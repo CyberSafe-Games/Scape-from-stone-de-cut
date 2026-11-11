@@ -2,7 +2,7 @@
 from pathlib import Path
 import unittest
 
-from src.systems.animation_timing import frame_index, animation_duration, dash_distance
+from src.systems.animation_timing import frame_index, animation_duration
 
 
 ASSETS = Path(__file__).resolve().parents[1] / 'assets' / 'corpo_seco'
@@ -29,9 +29,31 @@ class CorpoSecoAnimationTests(unittest.TestCase):
         self.assertEqual(frame_index('atk1', 810, 810, 4), 3)
         self.assertEqual(frame_index('atk1', 0, 810, 4), 0)
 
-    def test_special_does_not_dash_entire_arena(self):
-        self.assertLess(dash_distance('atk4', True), dash_distance('atk1', True))
-        self.assertIsNone(dash_distance('atk1', False))
+    def test_melee_is_drawn_next_to_player_at_impact_and_returns_home(self):
+        import os
+        os.environ.setdefault('SDL_VIDEODRIVER','dummy')
+        os.environ.setdefault('SDL_AUDIODRIVER','dummy')
+        import pygame
+        from types import SimpleNamespace
+        from src.ui.entity_view import EntityView
+        from src.config.layout import PLAYER_X, ENEMY_X, PLAYER_GROUND_Y, APPROACH_GAP
+        marker=pygame.Surface((20,24),pygame.SRCALPHA)
+        marker.fill((10,200,70,255))
+        assets=SimpleNamespace(has_enemy_sprites=lambda _:True,
+                               get_enemy_sprite_group=lambda *_:[marker])
+        enemy=SimpleNamespace(name='Corpo Seco')
+        for group in ('atk1','atk3','atk4'):
+            with self.subTest(group=group):
+                view=EntityView(assets)
+                view.trigger_attack('enemy',group,enemy.name)
+                for elapsed, expected in ((0, ENEMY_X),
+                                          (.52 * view.enemy_attack_duration, PLAYER_X + APPROACH_GAP),
+                                          (view.enemy_attack_duration + view.enemy_recovery_ms, ENEMY_X)):
+                    view.attack_timer = elapsed
+                    screen=pygame.Surface((1920,1080),pygame.SRCALPHA)
+                    view.draw_enemy(screen,enemy)
+                    self.assertEqual(screen.get_at((expected,PLAYER_GROUND_Y-12)).a,255)
+                    self.assertLess(abs(screen.get_bounding_rect().centerx-expected),3)
 
     def test_pngs_use_alpha_channel(self):
         for path in ASSETS.glob('*.png'):

@@ -1,0 +1,81 @@
+{
+  "viniurgo": ["idle", "dano", "atk1", "atk2"],
+  "esqueleto": [
+    "idle",
+    "dano",
+    "atk1",
+    "atk2"
+  ],
+  "golem": [
+    "idle",
+    "dano",
+    "atk1",
+    "def"
+  ],
+  "centauro": [
+    "idle",
+    "dano",
+    "atk1",
+    "atk2"
+  ],
+  "putrefato": [
+    "idle",
+    "dano",
+    "atk1",
+    "healer2"
+  ],
+  "guerreiro_mata": [
+    "idle",
+    "dano",
+    "atk1",
+    "atk2"
+  ],
+  "lagarto": [
+    "idle",
+    "dano",
+    "atk1",
+    "def"
+  ],
+  "morcego": [
+    "idle",
+    "dano",
+    "atk1",
+    "atk2"
+  ],
+  "lutador": [
+    "idle",
+    "dano",
+    "atk1",
+    "atk2"
+  ],
+  "mago": [
+    "idle",
+    "dano",
+    "atk1",
+    "atk2"
+  ],
+  "crocodilo": [
+    "idle",
+    "dano",
+    "def",
+    "atk1"
+  ],
+  "macaco": [
+    "idle",
+    "dano",
+    "atk1",
+    "healer2"
+  ],
+  "vinimuth": [
+    "idle",
+    "dano",
+    "atk1",
+    "atk2"
+  ],
+  "slime": [
+    "idle",
+    "dano",
+    "atk",
+    "def"
+  ]
+}

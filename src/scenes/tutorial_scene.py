@@ -4,6 +4,7 @@ Integra o cenário de tutorial, inimigo didático, balões flutuantes próximos
 aos elementos ensinados, setas animadas e caixas de texto com narrativa e instruções,
 proporcionando uma experiência jogável completa e explicativa com avanço por clique.
 """
+
 import pygame
 
 from src.config.colors import (
@@ -30,7 +31,14 @@ from src.ui.tutorial_overlay import TutorialOverlay, TutorialStep
 class TutorialScene(BattleScene):
     """Fase interativa de tutorial que ensina as regras e elementos de combate."""
 
-    def __init__(self, scene_manager, window_manager, asset_manager, save_manager=None, save_data=None):
+    def __init__(
+        self,
+        scene_manager,
+        window_manager,
+        asset_manager,
+        save_manager=None,
+        save_data=None,
+    ):
         super().__init__(
             scene_manager,
             window_manager,
@@ -51,15 +59,20 @@ class TutorialScene(BattleScene):
         self._tutorial_completion_committed = False
 
         # Botão para reabrir o guia durante a batalha
-        self.help_button_rect = pygame.Rect(WIDTH // 2 - 70, 16, 140, 30)
+        self.help_button_rect = pygame.Rect(WIDTH // 2 - 105, 24, 210, 45)
 
         # Botão de conclusão do tutorial na tela de vitória
-        self.finish_tutorial_button_rect = pygame.Rect(WIDTH // 2 - 160, HEIGHT // 2 + 130, 320, 52)
+        self.finish_tutorial_button_rect = pygame.Rect(
+            WIDTH // 2 - 240, HEIGHT // 2 + 195, 480, 78
+        )
 
         # Inicializa o overlay com todos os passos, balões flutuantes e setas
         self.overlay = TutorialOverlay(self._create_tutorial_steps())
 
     def _handle_combat_event(self, event_name, **kwargs):
+        # A conclusão do tutorial apresenta instruções sem fanfarra de vitória.
+        if event_name == "victory":
+            return
         # O treinamento concede uma recompensa fixa na conclusão, em vez do
         # sorteio de moedas do combate comum (que impediria repetir com segurança).
         if event_name == "coin_drop":
@@ -70,7 +83,7 @@ class TutorialScene(BattleScene):
         """Cria um Slime balanceado com ações previsíveis para o aprendizado."""
         tutorial_actions = [
             Action(
-                name="Investida Leve",
+                name="Salpico Leve",
                 action_type="attack",
                 damage=5,
                 energy_cost=1,
@@ -102,6 +115,7 @@ class TutorialScene(BattleScene):
         hand_names = [c.name for c in self.engine.hand]
         if "Esfera Protetora" not in hand_names or "Soco Simples" not in hand_names:
             from src.systems.card_catalog import CARD_POOL
+
             catalog = {c.name: c for c in CARD_POOL}
             if len(self.engine.hand) >= 2:
                 self.engine.hand[0] = catalog["Soco Simples"].copy()
@@ -124,8 +138,8 @@ class TutorialScene(BattleScene):
                     "Aprenda seus recursos, cartas e táticas de sobrevivência.",
                 ],
                 target_rect_fn=None,
-                bubble_pos=((WIDTH - 480) // 2, 210),
-                bubble_size=(480, 196),
+                bubble_pos=((WIDTH - 720) // 2, 315),
+                bubble_size=(720, 294),
                 arrow_origin_fn=None,
                 arrow_target_fn=None,
             )
@@ -143,11 +157,11 @@ class TutorialScene(BattleScene):
                     "Reduza a vida do Slime a zero para vencer a batalha!",
                     "Se seu HP acabar, você pode reiniciar o treinamento.",
                 ],
-                target_rect_fn=lambda: pygame.Rect(22, 20, 390, 92),
-                bubble_pos=(432, 20),
-                bubble_size=(470, 190),
-                arrow_origin_fn=lambda: (432, 66),
-                arrow_target_fn=lambda: (412, 66),
+                target_rect_fn=lambda: pygame.Rect(33, 30, 585, 138),
+                bubble_pos=(648, 30),
+                bubble_size=(705, 285),
+                arrow_origin_fn=lambda: (648, 99),
+                arrow_target_fn=lambda: (618, 99),
             )
         )
 
@@ -163,11 +177,11 @@ class TutorialScene(BattleScene):
                     "Toda carta possui seu custo gravado no canto superior.",
                     "Sua energia é totalmente restaurada a cada novo turno.",
                 ],
-                target_rect_fn=lambda: pygame.Rect(36, 156, 170, 26),
-                bubble_pos=(222, 132),
-                bubble_size=(470, 190),
-                arrow_origin_fn=lambda: (222, 169),
-                arrow_target_fn=lambda: (206, 169),
+                target_rect_fn=lambda: pygame.Rect(54, 234, 255, 39),
+                bubble_pos=(333, 198),
+                bubble_size=(705, 285),
+                arrow_origin_fn=lambda: (333, 254),
+                arrow_target_fn=lambda: (309, 254),
             )
         )
 
@@ -183,11 +197,11 @@ class TutorialScene(BattleScene):
                     "• Defesas protegem seu corpo contra ataques iminentes.",
                     "Cartas não usadas permanecem na mão no próximo turno.",
                 ],
-                target_rect_fn=lambda: pygame.Rect(250, HEIGHT - 180, WIDTH - 500, 160),
-                bubble_pos=((WIDTH - 470) // 2, HEIGHT - 395),
-                bubble_size=(470, 196),
-                arrow_origin_fn=lambda: (WIDTH // 2, HEIGHT - 199),
-                arrow_target_fn=lambda: (WIDTH // 2, HEIGHT - 175),
+                target_rect_fn=lambda: pygame.Rect(375, HEIGHT - 270, WIDTH - 750, 240),
+                bubble_pos=((WIDTH - 705) // 2, HEIGHT - 593),
+                bubble_size=(705, 294),
+                arrow_origin_fn=lambda: (WIDTH // 2, HEIGHT - 299),
+                arrow_target_fn=lambda: (WIDTH // 2, HEIGHT - 263),
             )
         )
 
@@ -204,31 +218,32 @@ class TutorialScene(BattleScene):
                     "• Fogo acumula; Veneno ignora Escudo.",
                     "Sangramento pune o primeiro ataque de cada turno.",
                 ],
-                target_rect_fn=lambda: pygame.Rect(120, 94, 276, 48),
-                bubble_pos=(416, 78),
-                bubble_size=(480, 192),
-                arrow_origin_fn=lambda: (416, 106),
-                arrow_target_fn=lambda: (396, 106),
+                target_rect_fn=lambda: pygame.Rect(180, 141, 414, 72),
+                bubble_pos=(624, 117),
+                bubble_size=(720, 288),
+                arrow_origin_fn=lambda: (624, 159),
+                arrow_target_fn=lambda: (594, 159),
             )
         )
 
-        # 6. Intenção do Inimigo - Balão à esquerda da caixa de intenção
+        # 6. Intenção do Inimigo - Ícones e descrição sob o mouse
         steps.append(
             TutorialStep(
                 id="intent",
                 title="INTENÇÃO DO INIMIGO",
                 subtitle="Previsão Tática",
                 lines=[
-                    "Esta caixa revela com antecedência o plano do monstro:",
-                    "• Ícone de Espada: ele atacará e exibirá o dano (ex: 5).",
-                    "• Ícone de Escudo: ele erguerá bloqueio.",
-                    "Antecipe seus passos: use Esfera Protetora se ele for atacar!",
+                    "Os ícones revelam o que o inimigo fará.",
+                    "O número indica o dano, a cura ou o Escudo da ação.",
+                    "Passe o mouse para ver o nome e o efeito da habilidade.",
+                    "Chefes mostram duas ações na ordem 1 e 2.",
+                    "A borda dourada marca a ultimate. Prepare sua defesa!",
                 ],
-                target_rect_fn=lambda: pygame.Rect(900, 156, 270, 28),
-                bubble_pos=(418, 126),
-                bubble_size=(470, 190),
-                arrow_origin_fn=lambda: (888, 170),
-                arrow_target_fn=lambda: (900, 170),
+                target_rect_fn=lambda: pygame.Rect(1641, 228, 108, 101),
+                bubble_pos=(627, 189),
+                bubble_size=(825, 366),
+                arrow_origin_fn=lambda: (1452, 273),
+                arrow_target_fn=lambda: (1641, 273),
             )
         )
 
@@ -242,14 +257,16 @@ class TutorialScene(BattleScene):
                     "Ao gastar energia jogando cartas, a Ultimate se carrega.",
                     "Quando a barra atingir 100%, sua habilidade suprema desperta!",
                     "Uma carta dourada lendária aparecerá na sua mão sem custo.",
-                      "Depois do treino, escolha sua habilidade na aba Ultimates da mochila.",
+                    "Depois do treino, escolha sua habilidade na aba Ultimates da mochila.",
                     "Liberte o poder supremo quando estiver pronto.",
                 ],
-                target_rect_fn=lambda: pygame.Rect(WIDTH // 2 - 170, HEIGHT - 32, 340, 26),
-                  bubble_pos=((WIDTH - 470) // 2, HEIGHT - 298),
-                  bubble_size=(470, 240),
-                arrow_origin_fn=lambda: (WIDTH // 2, HEIGHT - 58),
-                arrow_target_fn=lambda: (WIDTH // 2, HEIGHT - 34),
+                target_rect_fn=lambda: pygame.Rect(
+                    WIDTH // 2 - 255, HEIGHT - 48, 510, 39
+                ),
+                bubble_pos=((WIDTH - 705) // 2, HEIGHT - 447),
+                bubble_size=(705, 360),
+                arrow_origin_fn=lambda: (WIDTH // 2, HEIGHT - 87),
+                arrow_target_fn=lambda: (WIDTH // 2, HEIGHT - 51),
             )
         )
 
@@ -265,11 +282,11 @@ class TutorialScene(BattleScene):
                     "Trocar uma carta por outra é grátis, 1 vez por turno.",
                     "Aperte C ou clique no livro do Cemitério!",
                 ],
-                target_rect_fn=lambda: pygame.Rect(28, HEIGHT - 154, 92, 124),
-                bubble_pos=(134, HEIGHT - 245),
-                bubble_size=(470, 192),
-                arrow_origin_fn=lambda: (134, HEIGHT - 100),
-                arrow_target_fn=lambda: (120, HEIGHT - 92),
+                target_rect_fn=lambda: pygame.Rect(42, HEIGHT - 231, 138, 186),
+                bubble_pos=(201, HEIGHT - 368),
+                bubble_size=(705, 288),
+                arrow_origin_fn=lambda: (201, HEIGHT - 150),
+                arrow_target_fn=lambda: (180, HEIGHT - 138),
             )
         )
 
@@ -287,10 +304,10 @@ class TutorialScene(BattleScene):
                     "Clique em qualquer lugar da tela para lutar!",
                 ],
                 target_rect_fn=lambda: self.end_turn_rect,
-                bubble_pos=(WIDTH - 604, HEIGHT - 250),
-                bubble_size=(474, 198),
-                arrow_origin_fn=lambda: (WIDTH - 130, HEIGHT - 82),
-                arrow_target_fn=lambda: (WIDTH - 120, HEIGHT - 82),
+                bubble_pos=(WIDTH - 906, HEIGHT - 375),
+                bubble_size=(711, 297),
+                arrow_origin_fn=lambda: (WIDTH - 195, HEIGHT - 123),
+                arrow_target_fn=lambda: (WIDTH - 180, HEIGHT - 123),
             )
         )
 
@@ -313,8 +330,13 @@ class TutorialScene(BattleScene):
         # Sombras sob os pés dos combatentes
         ground = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         from src.config.layout import PLAYER_X, ENEMY_X
-        pygame.draw.ellipse(ground, (0, 0, 0, 80), pygame.Rect(PLAYER_X - 92, 422, 180, 36))
-        pygame.draw.ellipse(ground, (0, 0, 0, 80), pygame.Rect(ENEMY_X - 86, 422, 170, 34))
+
+        pygame.draw.ellipse(
+            ground, (0, 0, 0, 80), pygame.Rect(PLAYER_X - 138, 633, 270, 54)
+        )
+        pygame.draw.ellipse(
+            ground, (0, 0, 0, 80), pygame.Rect(ENEMY_X - 129, 633, 255, 51)
+        )
         surface.blit(ground, (0, 0))
 
     def update(self, dt):
@@ -350,8 +372,15 @@ class TutorialScene(BattleScene):
             )
 
             # Barra superior discreta com dicas essenciais de combate
-            tip_rect = pygame.Rect(WIDTH // 2 - 310, 52, 620, 24)
-            draw_panel(surface, tip_rect, fill=(10, 16, 16, 210), border=(90, 78, 54), radius=10, shadow=False)
+            tip_rect = pygame.Rect(WIDTH // 2 - 465, 78, 930, 36)
+            draw_panel(
+                surface,
+                tip_rect,
+                fill=(10, 16, 16, 210),
+                border=(90, 78, 54),
+                radius=15,
+                shadow=False,
+            )
             draw_text(
                 surface,
                 "ENERGIA para jogar cartas  ·  BLOQUEIO reduz dano  ·  FORÇA amplia ataques",
@@ -366,7 +395,11 @@ class TutorialScene(BattleScene):
             self._draw_top_message(surface)
 
         # Sobrescreve a tela de vitória quando o tutorial for concluído
-        if self.engine.state == "victory" and self.entity_view.player_action is None and self.entity_view.attacker is None:
+        if (
+            self.engine.state == "victory"
+            and self.entity_view.player_action is None
+            and self.entity_view.attacker is None
+        ):
             self._draw_tutorial_victory(surface, cursor)
 
     def _draw_tutorial_victory(self, surface, cursor):
@@ -375,7 +408,7 @@ class TutorialScene(BattleScene):
         overlay.fill((4, 8, 8, 230))
         surface.blit(overlay, (0, 0))
 
-        card_rect = pygame.Rect(WIDTH // 2 - 300, HEIGHT // 2 - 210, 600, 420)
+        card_rect = pygame.Rect(WIDTH // 2 - 450, HEIGHT // 2 - 315, 900, 630)
         theme.panel(surface, card_rect, highlighted=True, fill=(12, 18, 18, 250))
 
         theme.eyebrow(
@@ -383,7 +416,7 @@ class TutorialScene(BattleScene):
             "JORNADA INICIADA  ·  TREINAMENTO RÚNICO CONCLUÍDO",
             self.asset_manager.small_font,
             card_rect.centerx,
-            card_rect.y + 28,
+            card_rect.y + 42,
             center=True,
         )
         draw_text(
@@ -392,10 +425,12 @@ class TutorialScene(BattleScene):
             self.asset_manager.title_font,
             GOLD,
             card_rect.centerx,
-            card_rect.y + 60,
+            card_rect.y + 90,
             center=True,
         )
-        theme.divider(surface, card_rect.x + 40, card_rect.right - 40, card_rect.y + 125)
+        theme.divider(
+            surface, card_rect.x + 60, card_rect.right - 60, card_rect.y + 188
+        )
 
         lines = [
             "Você derrotou o Slime e assimilou os pilares do combate por cartas!",
@@ -408,12 +443,20 @@ class TutorialScene(BattleScene):
             "Recompensa: +30 Moedas de Ouro pelo treinamento!",
         ]
 
-        text_y = card_rect.y + 145
+        text_y = card_rect.y + 218
         for line in lines:
-            color = GOLD if "Recompensa" in line else (205, 210, 205) if line.startswith("•") else WHITE
+            color = (
+                GOLD
+                if "Recompensa" in line
+                else (205, 210, 205)
+                if line.startswith("•")
+                else WHITE
+            )
             font = self.asset_manager.font if line else self.asset_manager.small_font
-            draw_text(surface, line, font, color, card_rect.centerx, text_y, center=True)
-            text_y += 24
+            draw_text(
+                surface, line, font, color, card_rect.centerx, text_y, center=True
+            )
+            text_y += 36
 
         # Botão para avançar para o mapa
         hover = self.finish_tutorial_button_rect.collidepoint(cursor)
@@ -432,7 +475,7 @@ class TutorialScene(BattleScene):
             self.asset_manager.small_font,
             GRAY,
             card_rect.centerx,
-            card_rect.bottom + 18,
+            card_rect.bottom + 27,
             center=True,
         )
 
@@ -449,7 +492,10 @@ class TutorialScene(BattleScene):
                 # Qualquer clique na tela ou no botão avança
                 self._complete_tutorial()
                 return
-            elif event.type == pygame.KEYDOWN and event.key in (pygame.K_RETURN, pygame.K_SPACE):
+            elif event.type == pygame.KEYDOWN and event.key in (
+                pygame.K_RETURN,
+                pygame.K_SPACE,
+            ):
                 self._complete_tutorial()
                 return
             return
@@ -458,26 +504,56 @@ class TutorialScene(BattleScene):
         if self.overlay.is_active:
             if self.window_manager.handle_window_event(event):
                 return
-            if self.overlay.handle_event(event, virt_pos):
-                return
 
+            if self.overlay.handle_event(event, virt_pos):
+                if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1) or (
+                    event.type == pygame.KEYDOWN
+                    and event.key
+                    in (
+                        pygame.K_SPACE,
+                        pygame.K_RETURN,
+                        pygame.K_RIGHT,
+                        pygame.K_LEFT,
+                        pygame.K_BACKSPACE,
+                        pygame.K_ESCAPE,
+                    )
+                ):
+                    self.play_ui_sound("ui.click")
+
+                return
+            return
         # Clique no botão de rever guia
-        if not self.overlay.is_active and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+        if (
+            not self.overlay.is_active
+            and event.type == pygame.MOUSEBUTTONDOWN
+            and event.button == 1
+        ):
             if self.help_button_rect.collidepoint(virt_pos):
+                self.play_ui_sound("ui.click")
                 self.overlay.reset()
                 return
 
         # Tecla de atalho 'H' ou 'F1' para reabrir o guia
         if not self.overlay.is_active and event.type == pygame.KEYDOWN:
             if event.key in (pygame.K_h, pygame.K_F1):
+                self.play_ui_sound("ui.click")
                 self.overlay.reset()
                 return
 
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_r and self.engine.state == "game_over":
-            self.scene_manager.change_scene(TutorialScene(
-                self.scene_manager, self.window_manager, self.asset_manager,
-                save_manager=self.save_manager, save_data=self.save_data,
-            ))
+        if (
+            event.type == pygame.KEYDOWN
+            and event.key == pygame.K_r
+            and self.engine.state == "game_over"
+        ):
+            self.scene_manager.change_scene(
+                TutorialScene(
+                    self.scene_manager,
+                    self.window_manager,
+                    self.asset_manager,
+                    save_manager=self.save_manager,
+                    save_data=self.save_data,
+                )
+            )
             return
 
         # Executa os eventos normais da batalha
@@ -499,8 +575,10 @@ class TutorialScene(BattleScene):
                     self.engine.player.add_coins(30)
                     self.save_data["progresso"]["tutorial_concluido"] = True
                     self.save_manager.update_from_game(
-                        self.save_data, self.engine.player,
-                        self.engine.deck_manager, level=1,
+                        self.save_data,
+                        self.engine.player,
+                        self.engine.deck_manager,
+                        level=1,
                     )
                     self.save_manager.save(self.save_data)
                 self._tutorial_completion_committed = True
@@ -508,13 +586,20 @@ class TutorialScene(BattleScene):
                 # Restaura o estado lógico; o jogador pode tentar salvar de novo.
                 self.engine.player.coins = max(0, self.engine.player.coins - 30)
                 self.save_data["progresso"]["tutorial_concluido"] = False
-                self.engine.show_message(f"Falha ao gravar tutorial: {exc}", duration=5000)
+                self.engine.show_message(
+                    f"Falha ao gravar tutorial: {exc}", duration=5000
+                )
                 return
-
-        self.scene_manager.change_scene(MapScene(
-            self.scene_manager, self.window_manager, self.asset_manager,
-            save_manager=self.save_manager, save_data=self.save_data,
-        ))
+        self.play_ui_sound("ui.confirm")
+        self.scene_manager.change_scene(
+            MapScene(
+                self.scene_manager,
+                self.window_manager,
+                self.asset_manager,
+                save_manager=self.save_manager,
+                save_data=self.save_data,
+            )
+        )
 
     def _save_progress(self):
         """Nunca registra um checkpoint parcial de treinamento."""
@@ -527,6 +612,12 @@ class TutorialScene(BattleScene):
     def _return_to_main_menu(self):
         """ESC/MENU antes da vitória não libera o mapa."""
         from src.scenes.menu_scene import MenuScene
-        self.scene_manager.change_scene(MenuScene(
-            self.scene_manager, self.window_manager, self.asset_manager,
-        ))
+
+        self.play_ui_sound("ui.confirm")
+        self.scene_manager.change_scene(
+            MenuScene(
+                self.scene_manager,
+                self.window_manager,
+                self.asset_manager,
+            )
+        )

@@ -45,7 +45,7 @@ class BossUltimateAnimationTests(unittest.TestCase):
         scene.engine.enemy_turn()
 
     def test_all_four_specials_are_marked_only_on_the_eighth_and_sixteenth_actions(self):
-        for level in (1, 3, 5, 6):
+        for level in (1, 3, 4, 5, 6, 7):
             with self.subTest(level=level):
                 events = []
                 engine = CombatEngine(on_event_callback=lambda event, **data: events.append((event, data)))
@@ -61,12 +61,12 @@ class BossUltimateAnimationTests(unittest.TestCase):
                     engine.finish_enemy_turn()
                 self.assertEqual(fired, [8, 16])
 
-    def test_every_boss_has_four_transparent_casts_and_four_independent_effects(self):
+    def test_every_boss_has_twelve_transparent_casts_and_twelve_independent_effects(self):
         for name in BOSS_ULTIMATE_ANIMATIONS:
             casts = self.assets.get_boss_ultimate_sprites(name)
             effects = self.assets.get_boss_ultimate_sprites(name, effects=True)
-            self.assertEqual(len(casts), 4)
-            self.assertEqual(len(effects), 4)
+            self.assertEqual(len(casts), 12)
+            self.assertEqual(len(effects), 12)
             for frame in casts:
                 self.assertEqual(frame.get_size(), (448, 320))
                 bounds = frame.get_bounding_rect(min_alpha=50)
@@ -90,7 +90,7 @@ class BossUltimateAnimationTests(unittest.TestCase):
         self.assertIs(view.get_enemy_frame(create_point_enemy(3)), self.assets.get_boss_ultimate_sprites('Goblin Nerd')[0])
 
     def test_damage_flash_and_visual_health_shield_wait_for_each_impact(self):
-        for level in (1, 3, 5, 6):
+        for level in (1, 3, 4, 5, 6, 7):
             with self.subTest(level=level):
                 scene = self.scene(level)
                 scene.engine.player.add_block(5)
@@ -111,34 +111,21 @@ class BossUltimateAnimationTests(unittest.TestCase):
                 self.assertTrue(scene.floating_texts.texts)
                 self.assertFalse(scene._boss_events)
 
-    def test_casts_preserve_the_original_characters_pixels_and_scale(self):
-        import numpy as np
-        for name, references in BOSS_ORIGINAL_CASTS.items():
+    def test_casts_use_the_new_character_palette_and_close_on_ready(self):
+        root = Path(__file__).resolve().parents[1]
+        from src.systems.boss_animation_kits import KITS
+        for name in BOSS_ULTIMATE_ANIMATIONS:
+            slug = KITS[name][0]
+            colors = json.loads((root/'assets/bosses/eight_frames'/slug/'palette.json').read_text(encoding='utf8'))
+            palette = set(map(tuple, colors))
             casts = self.assets.get_boss_ultimate_sprites(name)
-            for cast, (group, index) in zip(casts, references):
-                with self.subTest(name=name, pose=(group, index)):
-                    original = self.assets.get_enemy_sprite_group(name, group)[index]
-                    if name == 'goblin nerd':
-                        # A arma original veio de uma folha em escala menor:
-                        # a normalização deve manter os mesmos pixels/cores e
-                        # a altura física do personagem em idle.
-                        visible = pygame.surfarray.array_alpha(cast) == 255
-                        source_visible = pygame.surfarray.array_alpha(original) == 255
-                        palette = set(map(tuple, pygame.surfarray.array3d(original)[source_visible]))
-                        self.assertTrue(set(map(tuple, pygame.surfarray.array3d(cast)[visible])).issubset(palette))
-                        height = self.assets.get_enemy_sprite_group(name, 'idle')[0].get_bounding_rect(min_alpha=50).height
-                        self.assertLessEqual(abs(cast.get_bounding_rect(min_alpha=50).height-height), 2)
-                        continue
-                    expected = pygame.Surface((448, 320), pygame.SRCALPHA)
-                    bounds = original.get_bounding_rect(min_alpha=50)
-                    rect = original.get_rect(midbottom=(224, 318))
-                    rect.y += original.get_height()-bounds.bottom
-                    expected.blit(original, rect)
-                    visible = pygame.surfarray.array_alpha(cast) > 250
-                    original_visible = pygame.surfarray.array_alpha(expected) > 250
-                    self.assertGreater(visible.sum(), original_visible.sum()*.85)
-                    self.assertTrue(np.array_equal(pygame.surfarray.array3d(cast)[visible],
-                                                   pygame.surfarray.array3d(expected)[visible]))
+            for cast in casts:
+                visible = pygame.surfarray.array_alpha(cast) > 200
+                used = set(map(tuple, pygame.surfarray.array3d(cast)[visible]))
+                self.assertTrue(used.issubset(palette), name)
+                self.assertGreater(len(used), 20)
+            idle = self.assets.get_enemy_sprite_group(name,'idle')[0]
+            self.assertEqual(pygame.image.tobytes(casts[-1],'RGBA'),pygame.image.tobytes(idle,'RGBA'))
 
     def test_approved_magic_effect_files_remain_identical(self):
         root = Path(__file__).resolve().parents[1]
@@ -150,21 +137,21 @@ class BossUltimateAnimationTests(unittest.TestCase):
     def test_projectiles_go_left_melee_bosses_advance_and_all_return_home(self):
         for name, spec in BOSS_ULTIMATE_ANIMATIONS.items():
             view = EntityView(self.assets)
-            boss = create_point_enemy({'bear': 1, 'plasma': 3, 'blades': 5, 'execution': 6}[spec.mode])
+            boss = create_point_enemy({'bear': 1, 'plasma': 3, 'blades': 5, 'execution': 6, 'sovereign': 7, 'tremor': 4}[spec.mode])
             view.trigger_attack('enemy', boss.special_action.visual_effect, boss.name, ultimate=True)
             view.update(spec.duration*.60)
-            if spec.mode in ('bear', 'plasma'):
+            if spec.mode in ('bear', 'plasma', 'sovereign'):
                 self.assertEqual(view.get_attack_pose('enemy', ENEMY_X, PLAYER_X)[0], ENEMY_X)
                 start = view.get_enemy_projectile_pose()
                 view.update(30)
                 self.assertLess(view.get_enemy_projectile_pose()[0], start[0])
             else:
-                self.assertEqual(view.get_attack_pose('enemy', ENEMY_X, PLAYER_X)[0], PLAYER_X+105)
-            x, lift = boss_ultimate_pose(spec, 1, ENEMY_X, PLAYER_X+105)
+                self.assertEqual(view.get_attack_pose('enemy', ENEMY_X, PLAYER_X)[0], PLAYER_X+158)
+            x, lift = boss_ultimate_pose(spec, 1, ENEMY_X, PLAYER_X+158)
             self.assertEqual(x, ENEMY_X)
             self.assertEqual(lift, 0)
             if spec.mode == 'execution':
-                self.assertGreater(boss_ultimate_pose(spec, .38, ENEMY_X, PLAYER_X+105)[1], 30)
+                self.assertGreater(boss_ultimate_pose(spec, .38, ENEMY_X, PLAYER_X+158)[1], 30)
 
     def test_layers_render_then_clear_and_followup_action_waits_until_end(self):
         for level in (1, 3, 5, 6):
@@ -173,13 +160,13 @@ class BossUltimateAnimationTests(unittest.TestCase):
             spec = scene.entity_view.enemy_ultimate
             scene.update(spec.duration*.6)
             for behind in (True, False):
-                canvas = pygame.Surface((1280, 720), pygame.SRCALPHA)
+                canvas = pygame.Surface((1920, 1080), pygame.SRCALPHA)
                 original = canvas.get_clip()
                 draw_boss_ultimate_fx(canvas, scene.entity_view, behind)
                 self.assertEqual(canvas.get_clip(), original)
                 self.assertGreater(canvas.get_bounding_rect().width, 0)
-                self.assertGreaterEqual(canvas.get_bounding_rect().top, 116)
-                self.assertLessEqual(canvas.get_bounding_rect().bottom, 516)
+                self.assertGreaterEqual(canvas.get_bounding_rect().top, 174)
+                self.assertLessEqual(canvas.get_bounding_rect().bottom, 774)
             self.assertEqual(scene.engine.state, 'enemy_resolving')
             self.assertEqual(scene.engine.enemy_actions_remaining, 1)
             scene.update(spec.duration*.4+1)
@@ -196,17 +183,54 @@ class BossUltimateAnimationTests(unittest.TestCase):
         self.assertEqual(scene.engine.state, 'game_over')
         self.assertEqual(scene._visible_player().hp, 1)
         scene._draw_game_over = MagicMock()
-        scene.draw(pygame.Surface((1280, 720)))
+        scene.draw(pygame.Surface((1920, 1080)))
         scene._draw_game_over.assert_not_called()
         scene.update(2801)
         self.assertEqual(scene._visible_player().hp, 0)
         self.assertIsNone(scene.entity_view.enemy_ultimate)
-        scene.draw(pygame.Surface((1280, 720)))
+        scene.draw(pygame.Surface((1920, 1080)))
+        scene._draw_game_over.assert_called_once()
+
+    def test_regular_boss_attacks_show_health_and_damage_only_at_impact(self):
+        for level in (1,2,3,5,6):
+            with self.subTest(level=level):
+                scene=self.scene(level)
+                boss=scene.engine.enemy
+                action=boss.actions[0]
+                before=scene.engine.player.hp
+                scene.engine.end_turn()
+                boss.set_intent('attack',action.value,action)
+                scene.engine.enemy_turn()
+                actual=scene.engine.player.hp
+                self.assertLess(actual,before)
+                self.assertEqual(scene._visible_player().hp,before)
+                view=scene.entity_view
+                self.assertFalse(scene.floating_texts.texts)
+                scene.update(view.enemy_attack_duration*(view.enemy_impact_fraction-.02))
+                self.assertEqual(scene._visible_player().hp,before)
+                scene.update(view.enemy_attack_duration*.03)
+                self.assertEqual(scene._visible_player().hp,actual)
+                self.assertTrue(scene.floating_texts.texts)
+
+    def test_regular_lethal_hit_finishes_before_defeat_overlay(self):
+        scene=self.scene(6)
+        scene.engine.player.hp=1
+        scene.engine.end_turn()
+        action=scene.engine.enemy.actions[0]
+        scene.engine.enemy.set_intent('attack',action.value,action)
+        scene.engine.enemy_turn()
+        self.assertEqual(scene.engine.state,'game_over')
+        scene._draw_game_over=MagicMock()
+        canvas=pygame.Surface((1920,1080))
+        scene.draw(canvas)
+        scene._draw_game_over.assert_not_called()
+        scene.update(scene.entity_view.enemy_attack_duration + scene.entity_view.enemy_recovery_ms + 1)
+        scene.draw(canvas)
         scene._draw_game_over.assert_called_once()
 
     def test_ruins_background_is_used_by_goblin_and_regular_biome_encounters(self):
         background = self.assets.get_battle_background(3)
-        self.assertEqual(background.get_size(), (1280, 720))
+        self.assertEqual(background.get_size(), (1920, 1080))
         self.assertIsNot(background, self.assets.background)
         self.assertIsNot(background, self.assets.get_battle_background(2))
         self.assertEqual(create_point_enemy(3).name, 'Goblin Nerd')

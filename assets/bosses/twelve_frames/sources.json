@@ -1,0 +1,129 @@
+{
+  "guardiao_da_pedra": {
+    "name": "guardião da pedra",
+    "groups": [
+      "idle",
+      "atk1",
+      "atk2",
+      "def",
+      "healer2",
+      "dano",
+      "ultimate"
+    ],
+    "canvas": [
+      448,
+      320
+    ]
+  },
+  "goblin_nerd": {
+    "name": "goblin nerd",
+    "groups": [
+      "idle",
+      "atk1",
+      "atk2",
+      "atk3",
+      "healer2",
+      "dano",
+      "ultimate"
+    ],
+    "canvas": [
+      448,
+      320
+    ]
+  },
+  "corpo_seco": {
+    "name": "corpo seco",
+    "groups": [
+      "idle",
+      "atk1",
+      "atk3",
+      "atk4",
+      "healer2",
+      "dano",
+      "ultimate"
+    ],
+    "canvas": [
+      448,
+      320
+    ]
+  },
+  "carrasco_da_vigilia": {
+    "name": "carrasco da vigília",
+    "groups": [
+      "idle",
+      "atk1",
+      "atk2",
+      "atk3",
+      "healer2",
+      "dano",
+      "ultimate"
+    ],
+    "canvas": [
+      448,
+      320
+    ]
+  },
+  "alvaro_tex_phase1": {
+    "name": "álvaro e tex",
+    "groups": [
+      "idle",
+      "dano",
+      "atk1",
+      "atk2",
+      "atk3",
+      "atk4",
+      "transition"
+    ],
+    "canvas": [
+      448,
+      250
+    ]
+  },
+  "alvaro_tex_phase2": {
+    "name": "álvaro e tex · pequeno",
+    "groups": [
+      "idle",
+      "dano",
+      "atk1",
+      "atk2",
+      "atk3",
+      "atk4"
+    ],
+    "canvas": [
+      448,
+      250
+    ]
+  },
+  "zanzara": {
+    "name": "zanzara",
+    "groups": [
+      "idle",
+      "dano",
+      "atk1",
+      "atk2",
+      "atk3",
+      "healer2",
+      "ultimate"
+    ],
+    "canvas": [
+      448,
+      320
+    ]
+  },
+  "gordofera": {
+    "name": "gordofera",
+    "groups": [
+      "idle",
+      "dano",
+      "atk1",
+      "atk2",
+      "atk3",
+      "def",
+      "ultimate"
+    ],
+    "canvas": [
+      448,
+      320
+    ]
+  }
+}

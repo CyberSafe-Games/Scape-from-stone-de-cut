@@ -16,10 +16,11 @@ from src.config.layout import ENEMY_X, PLAYER_X
 
 
 class NormalBestiaryTests(unittest.TestCase):
-    def test_thirteen_unique_types_follow_the_requested_biome_distribution(self):
-        self.assertEqual([len(pool) for pool in BIOME_ENEMIES.values()], [1, 2, 2, 2, 2, 2, 2])
+    def test_fourteen_unique_types_follow_the_requested_biome_distribution(self):
+        self.assertEqual(BIOME_ENEMIES[1], ('Slime', 'Viniurgo'))
+        self.assertEqual([len(pool) for pool in BIOME_ENEMIES.values()], [2] * 7)
         names = [name for pool in BIOME_ENEMIES.values() for name in pool]
-        self.assertEqual(len(set(names)), 13)
+        self.assertEqual(len(set(names)), 14)
         self.assertEqual(set(names), set(NORMAL_SPRITES) | {'Slime', 'Vinimuth'})
         for level, pool in BIOME_ENEMIES.items():
             for name in pool:
@@ -70,11 +71,11 @@ class NormalBestiaryTests(unittest.TestCase):
         if not was_initialized:
             self.addCleanup(pygame.quit)
         assets = AssetManager()
-        root = Path(__file__).resolve().parents[1] / 'assets' / 'enemies'
+        root = Path(__file__).resolve().parents[1] / 'assets' / 'enemies' / 'eight_frames'
         for name, (slug, groups, _, _) in NORMAL_SPRITES.items():
             for group in groups:
                 frames = assets.get_enemy_sprite_group(name, group)
-                self.assertEqual(len(frames), 4, (name, group))
+                self.assertEqual(len(frames), 8, (name, group))
                 for i, frame in enumerate(frames, 1):
                     with self.subTest(name=name, group=group, frame=i):
                         self.assertTrue((root/slug/f'{group}_{i}.png').is_file())
@@ -94,7 +95,7 @@ class NormalBestiaryTests(unittest.TestCase):
                     view.update(duration*(launch+impact)/2)
                     self.assertEqual(view.get_attack_pose('enemy', ENEMY_X, PLAYER_X)[0], ENEMY_X)
                     self.assertIsNotNone(view.get_enemy_projectile_pose())
-                    screen = pygame.Surface((1280, 720), pygame.SRCALPHA)
+                    screen = pygame.Surface((1920, 1080), pygame.SRCALPHA)
                     view.draw_enemy_projectile(screen)
                     self.assertGreater(screen.get_bounding_rect().width, 10)
                     self.assertEqual(view.player_flash, 0)

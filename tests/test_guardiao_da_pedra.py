@@ -109,14 +109,14 @@ class GuardiaoDaPedraTests(unittest.TestCase):
         assets = AssetManager()
         for level in (1, 2, 5):
             bg = assets.get_battle_background(level)
-            self.assertEqual(bg.get_size(), (1280, 720))
+            self.assertEqual(bg.get_size(), (1920, 1080))
             self.assertIsNot(bg, assets.background)
         self.assertNotEqual(pygame.image.tobytes(assets.get_battle_background(1), 'RGB'),
                             pygame.image.tobytes(assets.get_battle_background(5), 'RGB'))
         self.assertIs(assets.get_battle_background(7), assets.background)
         boss = create_guardiao_da_pedra()
         view = EntityView(assets)
-        screen = pygame.Surface((1280, 720), pygame.SRCALPHA)
+        screen = pygame.Surface((1920, 1080), pygame.SRCALPHA)
         for group in ('atk1', 'atk2'):
             view.trigger_attack('enemy', group, boss.name)
             view.update(view.enemy_attack_duration * .6)
@@ -127,7 +127,8 @@ class GuardiaoDaPedraTests(unittest.TestCase):
         frames = assets.get_enemy_sprite_group(boss.name, 'atk2')
         view.trigger_attack('enemy', 'atk2', boss.name)
         view.update(1400 * .6)
-        self.assertIs(view.get_enemy_frame(boss), frames[3])
+        # O lançamento ainda está sustentado a 60% do movimento.
+        self.assertIs(view.get_enemy_frame(boss), frames[6])
         view.update(3000)
         x, frame = view.get_player_frame('victory')
         self.assertEqual(x, PLAYER_X)

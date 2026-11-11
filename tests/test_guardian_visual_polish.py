@@ -47,11 +47,11 @@ class GuardianVisualPolishTests(unittest.TestCase):
         view.trigger_attack('enemy', 'atk2', 'Guardião da Pedra')
         for progress in (.25, .65, .90):
             view.attack_timer = 1400 * progress
-            surface = pygame.Surface((1280, 720), pygame.SRCALPHA)
+            surface = pygame.Surface((1920, 1080), pygame.SRCALPHA)
             view.draw_enemy_projectile(surface)
             self.assertGreater(surface.get_bounding_rect().width, 0)
         view.update(2000)
-        surface = pygame.Surface((1280, 720), pygame.SRCALPHA)
+        surface = pygame.Surface((1920, 1080), pygame.SRCALPHA)
         view.draw_enemy_projectile(surface)
         self.assertEqual(surface.get_bounding_rect().width, 0)
 
@@ -59,6 +59,6 @@ class GuardianVisualPolishTests(unittest.TestCase):
         view = EntityView(None)
         for name, action in (('Vinimuth', 'atk2'), ('Guardião da Pedra', 'atk1')):
             view.trigger_attack('enemy', action, name)
-            surface = pygame.Surface((1280, 720), pygame.SRCALPHA)
+            surface = pygame.Surface((1920, 1080), pygame.SRCALPHA)
             draw_guardian_spirit(surface, view)
             self.assertEqual(surface.get_bounding_rect().width, 0)
