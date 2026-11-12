@@ -1,40 +1,5 @@
 [
   {
-    "kind": "bosses",
-    "file": "assets/portraits/source/bosses/01.jpeg",
-    "original": "boses/boss1.jpeg"
-  },
-  {
-    "kind": "bosses",
-    "file": "assets/portraits/source/bosses/02.png",
-    "original": "boses/boss2.png"
-  },
-  {
-    "kind": "bosses",
-    "file": "assets/portraits/source/bosses/03.jpeg",
-    "original": "boses/boss3.jpeg"
-  },
-  {
-    "kind": "bosses",
-    "file": "assets/portraits/source/bosses/04.jpeg",
-    "original": "boses/boss4.jpeg"
-  },
-  {
-    "kind": "bosses",
-    "file": "assets/portraits/source/bosses/05.jpeg",
-    "original": "boses/boss5.jpeg"
-  },
-  {
-    "kind": "bosses",
-    "file": "assets/portraits/source/bosses/06.jpeg",
-    "original": "boses/boss6.jpeg"
-  },
-  {
-    "kind": "bosses",
-    "file": "assets/portraits/source/bosses/07.jpeg",
-    "original": "boses/bossFinal.jpeg"
-  },
-  {
     "kind": "enemies",
     "file": "assets/portraits/source/enemies/01.png",
     "original": "inimigos/Bárbaro Mascarado em Pixel Art.png"

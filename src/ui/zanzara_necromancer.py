@@ -4,7 +4,6 @@ Ações em oito quadros; estados de dano/derrota em faixas 384x280.
 Preserva as artes aprovadas e usa poses dedicadas nos novos estados.
 Não altera regras de combate. Coordenadas lógicas preservam os movimentos.
 """
-import json
 from functools import lru_cache
 from pathlib import Path
 import pygame
@@ -202,15 +201,6 @@ def _blit(surface, frame, x, scale, anchor_x, anchor_y, alpha=255):
     if alpha < 255:
         enlarged.set_alpha(alpha)
     surface.blit(enlarged, (round(x-anchor_x*scale), round(PLAYER_GROUND_Y-anchor_y*scale)))
-
-
-@lru_cache(maxsize=2)
-def state_sprite(name):
-    folder = Path(ASSETS_DIR) / 'bosses/zanzara_necromancer_v12'
-    metadata = json.loads((folder/'estados.json').read_text(encoding='utf-8'))
-    image = pygame.image.load(str(folder/(name+'.png'))).convert_alpha()
-    anchor = metadata[name]['anchor']
-    return image,anchor[0]/4,anchor[1]/4
 
 
 @lru_cache(maxsize=2)

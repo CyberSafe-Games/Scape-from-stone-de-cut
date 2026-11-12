@@ -13,8 +13,9 @@ As oito poses aprovadas foram conservadas, pixel a pixel, nas posições
 2, 5, 8 e 11. Foram gerados com a ferramenta integrada de geração de imagens,
 usando as próprias animações do jogo como referência.
 
-As fontes estão em `assets/bosses/twelve_frames/<boss>/reference.png` e
-`inbetweens.png`. Cada personagem conserva a paleta anterior e o pivô dos pés.
+Os quadros intermediários vêm de `assets/bosses/twelve_frames/<boss>/inbetweens.png`.
+O preparo com `--references` recria as folhas de referência quando necessário.
+Cada personagem conserva a paleta anterior e o pivô dos pés.
 O preparo ajusta as cores dos intermediários por material. A entrada e a
 recuperação podem aproveitar poses da referência de repouso do personagem.
 `selection.json` registra a origem de cada intermediário selecionado.

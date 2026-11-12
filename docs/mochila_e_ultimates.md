@@ -54,8 +54,7 @@ Três ilustrações foram geradas com a ferramenta integrada de imagens. Ficam e
 gemas da cor da habilidade e rodapé de ultimate. Título, descrição e carga são
 compostos a partir do modelo real para evitar texto desatualizado.
 
-`assets/ultimates/*_v2.png` contém exportações completas das novas cartas para
-revisão. O jogo compõe sua versão atualizada no carregamento.
+A prévia das cartas completas está em `docs/cartas_ultimates_v2.png`.
 Os prompts completos estão em [prompts_ultimates_v2.md](prompts_ultimates_v2.md).
 
 ![Deck e coleção](mochila_deck_v2.png)

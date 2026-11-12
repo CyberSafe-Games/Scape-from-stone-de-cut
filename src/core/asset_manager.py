@@ -684,19 +684,12 @@ class AssetManager:
             if os.path.isfile(star):
                 self._enemy_projectiles[(name, 'atk2' if phase == 1 else 'atk4')] = pygame.image.load(star).convert_alpha()
 
-        for name, (slug, action_groups, _, _) in NORMAL_SPRITES.items():
+        for name, (slug, _, _, _) in NORMAL_SPRITES.items():
             folder = os.path.join(ASSETS_DIR, 'enemies', slug)
-            if not os.path.isdir(folder):
-                continue
-            groups = {}
-            for group in action_groups:
-                groups[group] = [pygame.image.load(os.path.join(folder, f'{group}_{i}.png')).convert_alpha()
-                                 for i in range(1, 5)]
-            groups['atk'] = groups['atk1']
-            self._enemy_sprites[name.lower()] = groups
             for action in NORMAL_RANGED.get(name.lower(), {}):
                 path = os.path.join(folder, f'projectile_{action}.png')
-                self._enemy_projectiles[(name.lower(), action)] = pygame.image.load(path).convert_alpha()
+                if os.path.isfile(path):
+                    self._enemy_projectiles[(name.lower(), action)] = pygame.image.load(path).convert_alpha()
 
     def get_enemy_projectile(self, enemy_name, action, frame=0):
         key = (enemy_name.strip().lower(), action)

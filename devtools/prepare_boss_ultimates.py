@@ -1,4 +1,4 @@
-"""Exporta poses originais e mantém os efeitos das ultimates aprovadas.
+"""Gera uma prévia das poses originais e dos efeitos das ultimates aprovadas.
 
 Use --effects apenas para recortar novamente os efeitos das folhas geradas.
 Os personagens dessas folhas não são usados: o corpo vem dos assets originais.
@@ -12,7 +12,7 @@ from PIL import Image, ImageFilter, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from src.systems.boss_ultimate_animations import BOSS_ULTIMATE_ANIMATIONS
+from src.systems.boss_ultimate_animations import BOSS_ORIGINAL_CASTS, BOSS_ULTIMATE_ANIMATIONS
 from src.core.asset_manager import AssetManager
 
 
@@ -68,7 +68,8 @@ def main():
     assets = AssetManager()
     preview = Image.new('RGB', (4*384, 4*470), '#101e1b')
     labels = ImageDraw.Draw(preview)
-    for row, (name, spec) in enumerate(BOSS_ULTIMATE_ANIMATIONS.items()):
+    for row, name in enumerate(BOSS_ORIGINAL_CASTS):
+        spec = BOSS_ULTIMATE_ANIMATIONS[name]
         folder = ROOT/'assets'/'boss_ultimate_effects'/spec.asset_id
         if '--effects' in sys.argv:
             source = Image.open(folder/'source.png').convert('RGBA')
@@ -79,8 +80,7 @@ def main():
                 fx = Image.new('RGBA', (384, 320))
                 fx.alpha_composite(resized, (192-resized.width//2, 160-resized.height//2))
                 fx.save(folder/f'effect_{i}.png')
-        for i, cast in enumerate(assets.get_boss_ultimate_sprites(name), 1):
-            pygame.image.save(cast, str(folder/f'cast_{i}.png'))
+        for i, cast in enumerate(assets._boss_original_ultimates[name], 1):
             frame = Image.frombytes('RGBA', cast.get_size(), pygame.image.tobytes(cast, 'RGBA'))
             fx = Image.open(folder/f'effect_{i}.png').convert('RGBA')
             preview.paste(frame, ((i-1)*384-32, row*470-40), frame)

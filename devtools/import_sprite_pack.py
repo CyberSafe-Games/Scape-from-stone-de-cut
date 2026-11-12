@@ -34,7 +34,7 @@ INTENT_ART = (
 PORTRAITS = {
     "alvaro e tex": "alvaro_tex", "gabriel": "carrasco",
     "jose": "goblin_nerd", "jp": "corpo_seco", "manel": "manel",
-    "marcus": "zanzara", "otavio": "guardiao", "tex": "tex",
+    "otavio": "guardiao", "tex": "tex",
     "tom hanks": "gordofera",
 }
 
@@ -111,6 +111,8 @@ def import_pack(path):
                 save(ImageOps.fit(dark_bounds(sheet).convert("RGB"), (96, 96)), f"status/{key}.png")
 
         for name, portrait in images("molduras"):
+            if name == "marcus":
+                continue  # Zanzara usa o retrato da versão necromante.
             save(portrait.convert("RGB").resize((300, 400), Image.Resampling.LANCZOS),
                  f"portraits/source/framed/{PORTRAITS[name]}.png")
 
