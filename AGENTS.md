@@ -105,20 +105,20 @@ Cada território tem **2 encontros comuns** (`ROAD_FIGHTS = 2`, inimigos de biom
 
 **Cartas (20)** — fonte da verdade: `CARD_SPECS` em `src/systems/card_definitions.py`. O contexto cita Golpe/Defesa/Investida/Fortalecer/Fúria/Golpe Duplo; esses nomes foram **substituídos/renomeados** (migração em `LEGACY_CARD_NAMES`: Golpe→Soco Simples, Defesa→Esfera Protetora, Fortalecer→Esfera Escudo, Fúria→Aura Rubra, Golpe Duplo→Machados Gêmeos). O catálogo completo hoje: Esfera Protetora, Soco Simples, Investida, Aura Rubra, Poção Fragilizante, Poção Purificadora, Totem Protetor, Zarabatana Venenosa, Disparo de Arco, Esfera Escudo, Machado Quebra-Escudo, Amuleto Dissipador, Adaga Sangrenta, Máscara Ancestral, Machados Gêmeos, Lança Perfurante, Bola de Fogo, Poção de Cura, Surto de Energia, Poção Venenosa.
 
-**Mochila/Deck:** até 6 tipos de carta equipados, 3 cópias de cada (`deck_loadout.py`); desbloqueio pertence à run; coleção persiste no save.
+**Mochila/Deck:** deck por **espaços individuais** (um espaço por cópia); limite na constante `DECK_SLOT_LIMIT` (hoje 18), máximo de 3 cópias da mesma carta; clique na coleção adiciona 1 cópia ao próximo espaço livre; clique num espaço preenchido remove só aquela cópia; deck inicial preenche com até 3 cópias de cada carta inicial (`deck_loadout.py`); desbloqueio pertence à run; coleção persiste no save.
 
 **Loja ("Mercado Silencioso")** — `shop_system.py`, persistida no save:
 - Cura +15 HP por **50 moedas**, limite **3 por run** (não por território), vida máxima 60.
-- Cartas do catálogo por **25 + 15 × custo de energia**; cada compra adiciona o tipo à coleção (equipe na Mochila).
+- Cartas do catálogo por **25 + 15 × custo de energia**; cada compra adiciona o tipo à coleção (adicione cópias na Mochila).
 - **TODO/Verificar** — compra de upgrades de vida e energia máxima prevista no contexto não existe no código.
 
-**Saves:** um JSON por slot em `saves/` (gitignored), 3 slots + `modo_teste` (Laboratório de Testes, acesso em `[T]` na tela de seleção, invulnerável). `SAVE_VERSION = 8`; `SaveManager._normalize()` valida e migra saves antigos — ao mudar o schema, incremente `SAVE_VERSION` e estenda `_normalize()`.
+**Saves:** um JSON por slot em `saves/` (gitignored), 3 slots + `modo_teste` (Laboratório de Testes, acesso em `[T]` na tela de seleção, invulnerável). `SAVE_VERSION = 9`; `SaveManager._normalize()` valida e migra saves antigos — ao mudar o schema, incremente `SAVE_VERSION` e estenda `_normalize()`. Saves v8 (6 espaços de tipos × 3 cópias) migram em `normalize_collection_and_slots()` para 18 espaços individuais.
 
 **Moedas por inimigo:** cada vitória concede moedas do inimigo derrotado (acumuladas e coletadas na vitória). Progresso por vitória: `record_victory` / `record_road_victory` em `campaign_progress.py` gravam e liberam o próximo território.
 
 ## 6. Estado atual de implementação
 
-**Implementado e com testes:** combate por turnos completo (pilhas, mão, energia, intenção, bloqueio), 20 cartas e suas regras (`CARD_SPECS` + `TacticalCardEffect`), Cemitério, 3 ultimates + barra de carga, moedas e recompensa/draft, desbloqueio progressivo dos 7 territórios, 2 lutas comuns + chefes por território, Mochila (deck de 6 tipos/3 cópias), Loja (cura + compra de cartas), Tutorial guiado com caixas de texto, tela de seleção de saves, sistema de saves com migração (v8) e laboratório `modo_teste`, chefes Álvaro e Tex (2 fases), Zanzara como boss final, sprites animados (12 frames p/ jogador e chefes, 8 p/ inimigos comuns), áudio (SFX via `AudioManager`, missing files tolerados; `play_music` disponível mas **nenhuma cena chama** — soundtrack pendente no código).
+**Implementado e com testes:** combate por turnos completo (pilhas, mão, energia, intenção, bloqueio), 20 cartas e suas regras (`CARD_SPECS` + `TacticalCardEffect`), Cemitério, 3 ultimates + barra de carga, moedas e recompensa/draft, desbloqueio progressivo dos 7 territórios, 2 lutas comuns + chefes por território, Mochila (deck por espaços individuais, limite `DECK_SLOT_LIMIT=18`), Loja (cura + compra de cartas), Tutorial guiado com caixas de texto, tela de seleção de saves, sistema de saves com migração (v9) e laboratório `modo_teste`, chefes Álvaro e Tex (2 fases), Zanzara como boss final, sprites animados (12 frames p/ jogador e chefes, 8 p/ inimigos comuns), áudio (SFX via `AudioManager`, missing files tolerados; `play_music` disponível mas **nenhuma cena chama** — soundtrack pendente no código).
 
 **TODO/Verificar (incompleto ou ausente no código):**
 - Introdução em quadrinhos; tela/sequência de encerramento após Zanzara.

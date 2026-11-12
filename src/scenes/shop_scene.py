@@ -323,7 +323,7 @@ class ShopScene(BaseScene):
 
         draw_text(
             surface,
-            "Novos tipos vão para a coleção; equipe três cópias na mochila.",
+            "Novos tipos vão para a coleção; adicione cópias na mochila (até 3).",
             self.asset_manager.small_font,
             GRAY,
             701,
