@@ -1,7 +1,8 @@
 # Protagonista com doze frames
 
-Todas as 27 interações usam doze poses: repouso, dano, soco básico, vitória,
-vinte cartas e três ultimates. São 324 sprites de corpo e 36 efeitos de ultimate.
+Soco básico, vitória, vinte cartas e três ultimates usam doze poses. São 300
+sprites de corpo e 36 efeitos de ultimate. Repouso e reação ao dano usam oito
+poses em `assets/player/eight_frames`.
 O protagonista mantém a silhueta magrela, o rosto, as penas, as roupas e a paleta
 aprovados. Olha para a direita e conserva o pivô dos pés e a transparência.
 
@@ -11,19 +12,17 @@ Os quadros estão em `assets/player/twelve_frames`. As oito poses anteriores for
 conservadas pixel a pixel nas posições 1, 3, 4, 6, 7, 9, 10 e 12. Os intermediários
 ocupam 2, 5, 8 e 11; são desenhos novos, sem misturar imagens ou duplicar quadros.
 As fontes em `source` foram geradas pela ferramenta integrada de geração de imagens.
-`selection.json` registra as poses selecionadas, inclusive o repouso utilizado
-para completar entradas e recuperações.
+`selection.json` registra as poses intermediárias selecionadas para as ações.
 
 Todos os prompts estão em `docs/player_twelve_frames_prompts.json`. O preparo usa
-a paleta anterior, ajusta as cores por material e estabiliza o brilho das poses
-de repouso. Os arquivos em `assets/player/eight_frames` permanecem disponíveis
+a paleta anterior e ajusta as cores por material.
+Os arquivos em `assets/player/eight_frames` permanecem disponíveis
 para reprodução e comparação da identidade.
 
 ## Movimento e efeitos
 
 - Os tempos das ações, o lançamento dos projéteis e os impactos foram preservados.
-- O repouso mantém o ciclo de 1.200 ms, agora com doze poses a cada 100 ms.
-- A vitória mantém seu ciclo de 1.120 ms.
+- Repouso e vitória usam a cadência de `src/config/layout.py`.
 - O soco básico usa a sequência completa de preparação, golpe e recuperação.
 - Os efeitos de Mana Ancestral, Forças Ancestrais e Rugido da Floresta também têm
   doze desenhos. A dissipação do rugido começa no impacto, com voo para a direita.

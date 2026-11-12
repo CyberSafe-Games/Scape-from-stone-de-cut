@@ -135,6 +135,9 @@ def main():
         selection={}
         for group,row in zip(groups,rows):
             originals=[Image.open(old/f'{group}_{i}.png').convert('RGBA') for i in range(1,9)]
+            if group in ('idle', 'dano'):
+                prepared[group] = originals
+                continue
             # A ready drawing sets body size; raised weapons and effects must not shrink the actor.
             idle=Image.open(old/'idle_1.png').convert('RGBA')
             native=idle.getbbox();first=rows[0][0].getbbox()
@@ -160,13 +163,14 @@ def main():
             overview.paste(thumb,(c*320,number*220+20),thumb)
         (folder/'palette.json').write_text(json.dumps(colors),encoding='utf8')
         (folder/'selection.json').write_text(json.dumps(selection,indent=2),encoding='utf8')
-        manifest[slug]=list(groups)
+        manifest[slug]=list(selection)
     # The duo's last transition pose must remain the small form's ready pose.
     (BODY/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf8')
     overview.save(ROOT/'docs/bosses_twelve_frames_overview.png')
     prepare_effects()
     pygame.quit()
-    print('55 sequências de corpo, 660 quadros: oito originais + quatro intermediários.')
+    count = sum(map(len, manifest.values()))
+    print(f'{count} sequências de doze poses, {count * 12} quadros preparados.')
 
 
 def prepare_effects():

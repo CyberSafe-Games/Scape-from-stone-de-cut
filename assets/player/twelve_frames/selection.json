@@ -1,22 +1,4 @@
 {
-  "idle": {
-    "batch": "base",
-    "candidates": [
-      0,
-      1,
-      2,
-      3
-    ]
-  },
-  "dano": {
-    "batch": "base",
-    "candidates": [
-      5,
-      0,
-      3,
-      4
-    ]
-  },
   "soco": {
     "batch": "base",
     "candidates": [

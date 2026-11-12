@@ -482,7 +482,9 @@ class AssetManager:
             if slug not in prepared:
                 continue
             self._enemy_sprites.setdefault(name, {})
-            for group in prepared[slug]:
+            for group in groups:
+                if group not in ('idle', 'dano') and group not in prepared[slug]:
+                    continue
                 folder, frame_count = (legacy_root, 8) if group in ('idle', 'dano') else (root, count)
                 frames = [pygame.image.load(os.path.join(folder, slug, f'{group}_{i}.png')).convert_alpha()
                           for i in range(1, frame_count + 1)]
