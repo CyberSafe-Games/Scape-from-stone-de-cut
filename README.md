@@ -53,7 +53,7 @@ Jaum Manel, jovem indígena da aldeia Stone The Cut, vê sua terra invadida pelo
 - **Cemitério:** descarte uma carta da mão por 1 de energia, ou faça 1 troca grátis por turno com uma carta do descarte.
 - **Ultimates:** uma barra de carga (20 pontos, alimentada pela energia gasta em cartas) destrava uma das três Ultimates — **Mana Ancestral**, **Forças Ancestrais** ou **Rugido da Floresta**.
 - **Moedas** ganhas em combate servem para a **loja "Mercado Silencioso"** (cura de +15 HP por 50 moedas, até 3 por run, e cartas do catálogo).
-- **Mochila:** monte seu deck com até 6 tipos de carta (3 cópias de cada) e escolha a Ultimate equipada.
+- **Mochila:** monte seu deck em espaços individuais (até 18, com no máximo 3 cópias da mesma carta) e escolha a Ultimate equipada.
 - **Tutorial guiado:** primeiro acesso a um save ensina as regras com balões e textos na tela.
 - **Saves em 3 slots** (e um laboratório de testes via `T`): progresso, coleção, moedas e ultimates persistem entre sessões.
 - **Recuperação de vida entre lutas:** o balanceamento da cura pós-combate é ponto de atenção do projeto; a regra definitiva (vida persistindo entre combates, com cura apenas após chefes de território) está em evolução — veja [Em desenvolvimento](#estado-atual-e-roadmap).

@@ -1,13 +1,16 @@
-"""Preparação: seis tipos de cartas e uma ultimate independente do deck."""
+"""Preparação: deck por espaços individuais e uma ultimate independente do deck."""
+
+from collections import Counter
 
 import pygame
 from src.config.colors import WHITE, GOLD, GRAY
 from src.scenes.base_scene import BaseScene
 from src.systems.deck_loadout import (
-    SLOT_COUNT,
-    COPIES_PER_SLOT,
+    DECK_SLOT_LIMIT,
+    COPIES_PER_CARD,
     normalize_collection_and_slots,
-    equip_card_type,
+    add_card_to_deck,
+    remove_card_from_deck,
     equip_ultimate,
 )
 from src.systems.card_catalog import AVAILABLE_CARD_NAMES, CARD_POOL, CARD_BY_NAME
@@ -25,19 +28,37 @@ class BackpackScene(BaseScene):
         super().__init__(scene_manager, window_manager, asset_manager)
         self.save_manager, self.save_data = save_manager, save_data
         normalize_collection_and_slots(save_data["progresso"])
-        self.tab, self.selected_slot, self.owned_only = "deck", 0, False
+        self.tab, self.owned_only = "deck", False
         self.selected_card = next(
-            name for name in save_data["progresso"]["deck_slots"] if name
+            (name for name in save_data["progresso"]["deck_slots"] if name),
+            save_data["progresso"]["cartas_colecao"][0],
         )
         self.back_rect = pygame.Rect(1518, 65, 330, 65)
         self.deck_tab_rect = pygame.Rect(72, 177, 270, 59)
         self.ultimate_tab_rect = pygame.Rect(363, 177, 270, 59)
-        self.clear_rect = pygame.Rect(72, 966, 429, 53)
-        self.equip_rect = pygame.Rect(1419, 938, 402, 59)
-        self.filter_rect = pygame.Rect(1185, 272, 150, 41)
-        self.previous_page_rect = pygame.Rect(528, 966, 165, 53)
-        self.next_page_rect = pygame.Rect(1194, 966, 165, 53)
-        self.slots = [pygame.Rect(93, 335 + i * 96, 387, 89) for i in range(SLOT_COUNT)]
+        self.add_rect = pygame.Rect(1419, 914, 402, 59)
+        self.filter_rect = pygame.Rect(1192, 278, 150, 41)
+        self.previous_page_rect = pygame.Rect(786, 966, 165, 53)
+        self.next_page_rect = pygame.Rect(1181, 966, 165, 53)
+        self.page_label_center = 1066
+        self.slots = []
+        cell_w, cell_h = 206, 96
+        cols = 3
+        rows = (DECK_SLOT_LIMIT + cols - 1) // cols
+        grid_top = 345
+        self.deck_panel = pygame.Rect(
+            72, 267, 672, grid_top - 267 + rows * cell_h + (rows - 1) * 6 + 16
+        )
+        for i in range(DECK_SLOT_LIMIT):
+            col, row = i % cols, i // cols
+            self.slots.append(
+                pygame.Rect(
+                    89 + col * (cell_w + 8),
+                    grid_top + row * (cell_h + 6),
+                    cell_w,
+                    cell_h,
+                )
+            )
         self.ultimate_rects = {
             uid: pygame.Rect(72 + i * 603, 267, 558, 738)
             for i, uid in enumerate(ULTIMATE_METADATA)
@@ -49,7 +70,8 @@ class BackpackScene(BaseScene):
         self._thumbs = {}
         self._set_page(0)
         self.notice = (
-            "Escolha um espaço, selecione uma carta e equipe no painel à direita."
+            "Clique em uma carta da coleção para adicionar 1 cópia; "
+            "clique em um espaço preenchido para remover."
         )
         self.notice_color = GRAY
 
@@ -64,7 +86,7 @@ class BackpackScene(BaseScene):
             self.page * self.PAGE_SIZE : (self.page + 1) * self.PAGE_SIZE
         ]
         self.cards = {
-            c.name: pygame.Rect(566 + (i % 3) * 269, 324 + (i // 3) * 312, 188, 275)
+            c.name: pygame.Rect(786 + (i % 3) * 190, 330 + (i // 3) * 300, 176, 258)
             for i, c in enumerate(visible)
         }
 
@@ -139,19 +161,31 @@ class BackpackScene(BaseScene):
             self._draw_ultimates(surface)
         draw_text(surface, self.notice, a.small_font, self.notice_color, 75, 1038)
 
+    def _deck_counts(self):
+        return Counter(name for name in self.save_data["progresso"]["deck_slots"] if name)
+
     def _draw_deck(self, surface):
         a, p = self.asset_manager, self.save_data["progresso"]
-        count = sum(n is not None for n in p["deck_slots"])
-        theme.panel(surface, (72, 267, 429, 681))
-        theme.panel(surface, (528, 267, 831, 681))
+        counts = self._deck_counts()
+        filled = sum(counts.values())
+        theme.panel(surface, self.deck_panel)
+        theme.panel(surface, (768, 267, 592, 700))
         theme.panel(surface, (1392, 267, 456, 752), highlighted=True)
         draw_text(
             surface,
-            f"DECK  ·  {count}/6 TIPOS  ·  {count * COPIES_PER_SLOT} CARTAS",
+            f"DECK  ·  {filled}/{DECK_SLOT_LIMIT}",
             a.small_font,
             GOLD,
             99,
-            290,
+            282,
+        )
+        draw_text(
+            surface,
+            "Clique num espaço para remover a cópia.",
+            a.small_font,
+            GRAY,
+            99,
+            310,
         )
         owned_count = len(AVAILABLE_CARD_NAMES.intersection(p["cartas_colecao"]))
         draw_text(
@@ -159,57 +193,50 @@ class BackpackScene(BaseScene):
             f"COLEÇÃO  ·  {owned_count}/{len(AVAILABLE_CARD_NAMES)}",
             a.small_font,
             GOLD,
-            557,
+            786,
             282,
         )
         self._button(
             surface, self.filter_rect, "OBTIDAS" if self.owned_only else "TODAS"
         )
+        mouse = self.window_manager.get_virtual_mouse_pos()
         for i, rect in enumerate(self.slots):
-            selected = i == self.selected_slot
-            theme.panel(
-                surface,
-                rect,
-                highlighted=selected,
-                fill=(34, 37, 27, 245) if selected else (12, 21, 20, 230),
-            )
-            draw_text(
-                surface,
-                str(i + 1),
-                a.small_font,
-                GOLD if selected else GRAY,
-                rect.x + 17,
-                rect.y + 32,
-            )
             name = p["deck_slots"][i]
+            hovered = rect.collidepoint(mouse)
             if name:
-                self._image(surface, name, pygame.Rect(rect.x + 47, rect.y + 8, 51, 74))
-                for row, text in enumerate(wrap_text(name, a.small_font, 219)):
+                theme.panel(
+                    surface,
+                    rect,
+                    highlighted=hovered,
+                    fill=(34, 37, 27, 245) if not hovered else (44, 48, 33, 245),
+                )
+                self._image(surface, name, pygame.Rect(rect.x + 8, rect.y + 4, 62, 88))
+                lines = wrap_text(name, a.small_font, rect.width - 78)
+                text_y = rect.y + rect.height // 2 - (len(lines) * 27) // 2
+                for row, text in enumerate(lines):
                     draw_text(
                         surface,
                         text,
                         a.small_font,
                         WHITE,
-                        rect.x + 116,
-                        rect.y + 15 + row * 27,
+                        rect.x + 78,
+                        text_y + row * 27,
                     )
-                draw_text(
-                    surface,
-                    "×3",
-                    a.small_font,
-                    GOLD,
-                    rect.right - 32,
-                    rect.centery,
-                    center=True,
-                )
             else:
+                theme.panel(
+                    surface,
+                    rect,
+                    fill=(11, 19, 18, 215),
+                    border=(46, 54, 49),
+                )
                 draw_text(
                     surface,
-                    "ESPAÇO VAZIO",
+                    "VAZIO",
                     a.small_font,
                     GRAY,
-                    rect.x + 57,
-                    rect.y + 32,
+                    rect.centerx,
+                    rect.centery,
+                    center=True,
                 )
         for name, rect in self.cards.items():
             if name not in AVAILABLE_CARD_NAMES:
@@ -223,21 +250,41 @@ class BackpackScene(BaseScene):
                           rect.centerx, rect.bottom - 40, center=True)
                 continue
             owned = name in p["cartas_colecao"]
-            self._image(surface, name, rect, dim=not owned)
+            copies = counts.get(name, 0)
+            maxed = copies >= COPIES_PER_CARD
+            dim = not owned or maxed
+            self._image(surface, name, rect, dim=dim)
             if self.selected_card == name:
                 pygame.draw.rect(
                     surface, (238, 198, 112), rect.inflate(9, 9), 3, border_radius=8
                 )
-            label = (
-                "EM USO"
-                if name in p["deck_slots"]
-                else "DISPONÍVEL"
-                if owned
-                else "NA LOJA"
-            )
-            color = (
-                GOLD if name in p["deck_slots"] else (137, 179, 150) if owned else GRAY
-            )
+            if owned:
+                badge = pygame.Rect(rect.right - 58, rect.y + 10, 48, 30)
+                pygame.draw.rect(surface, (10, 14, 13), badge, border_radius=6)
+                pygame.draw.rect(
+                    surface,
+                    (226, 135, 118) if maxed else GOLD,
+                    badge,
+                    2,
+                    border_radius=6,
+                )
+                draw_text(
+                    surface,
+                    f"{copies}/{COPIES_PER_CARD}",
+                    a.small_font,
+                    (226, 135, 118) if maxed else GOLD,
+                    badge.centerx,
+                    badge.centery,
+                    center=True,
+                )
+            if not owned:
+                label, color = "NA LOJA", GRAY
+            elif maxed:
+                label, color = f"MÁXIMO {COPIES_PER_CARD}/{COPIES_PER_CARD}", (226, 135, 118)
+            elif copies:
+                label, color = f"{copies}/{COPIES_PER_CARD} NO DECK", (137, 179, 150)
+            else:
+                label, color = "DISPONÍVEL", (137, 179, 150)
             draw_text(
                 surface,
                 label,
@@ -247,9 +294,6 @@ class BackpackScene(BaseScene):
                 rect.bottom + 18,
                 center=True,
             )
-        self._button(
-            surface, self.clear_rect, "ESVAZIAR ESPAÇO " + str(self.selected_slot + 1)
-        )
         self._button(
             surface, self.previous_page_rect, "ANTERIOR", enabled=self.page > 0
         )
@@ -264,14 +308,15 @@ class BackpackScene(BaseScene):
             f"PÁGINA {self.page + 1} / {self.page_count}",
             a.small_font,
             GRAY,
-            944,
+            self.page_label_center,
             993,
             center=True,
         )
-        self._draw_detail(surface)
+        self._draw_detail(surface, filled)
 
-    def _draw_detail(self, surface):
+    def _draw_detail(self, surface, filled):
         a, p = self.asset_manager, self.save_data["progresso"]
+        counts = self._deck_counts()
         card = CARD_BY_NAME.get(self.selected_card)
         draw_text(
             surface, "CARTA SELECIONADA", a.small_font, GOLD, 1620, 293, center=True
@@ -294,22 +339,34 @@ class BackpackScene(BaseScene):
         for row, text in enumerate(wrap_text(card.description, a.small_font, 390)):
             draw_text(surface, text, a.small_font, WHITE, 1425, 723 + row * 27)
         owned = card.name in p["cartas_colecao"]
-        duplicate = (
-            card.name in p["deck_slots"]
-            and p["deck_slots"][self.selected_slot] != card.name
+        available = card.name in AVAILABLE_CARD_NAMES
+        copies = counts.get(card.name, 0)
+        deck_full = filled >= DECK_SLOT_LIMIT
+        maxed = copies >= COPIES_PER_CARD
+        draw_text(
+            surface,
+            f"NO DECK  ·  {copies}/{COPIES_PER_CARD}",
+            a.small_font,
+            GOLD if not maxed else (226, 135, 118),
+            1620,
+            878,
+            center=True,
         )
-        label = (
-            "ADQUIRA NA LOJA"
-            if not owned
-            else "JÁ ESTÁ EM OUTRO ESPAÇO"
-            if duplicate
-            else f"EQUIPAR NO ESPAÇO {self.selected_slot + 1}"
-        )
+        if not available:
+            label, enabled = "INDISPONÍVEL NO MOMENTO", False
+        elif not owned:
+            label, enabled = "ADQUIRA NA LOJA", False
+        elif maxed:
+            label, enabled = f"MÁXIMO DE {COPIES_PER_CARD} CÓPIAS", False
+        elif deck_full:
+            label, enabled = f"DECK CHEIO  ·  {DECK_SLOT_LIMIT}/{DECK_SLOT_LIMIT}", False
+        else:
+            label, enabled = f"ADICIONAR AO DECK  ·  {copies}/{COPIES_PER_CARD}", True
         self._button(
             surface,
-            self.equip_rect,
+            self.add_rect,
             label,
-            enabled=owned and not duplicate,
+            enabled=enabled,
             prominent=True,
         )
 
@@ -371,11 +428,7 @@ class BackpackScene(BaseScene):
                 self.tab = "ultimates" if self.tab == "deck" else "deck"
                 self.play_ui_sound("ui.click")
             elif self.tab == "deck":
-                if pygame.K_1 <= event.key <= pygame.K_6:
-                    self.selected_slot = event.key - pygame.K_1
-                    self.play_ui_sound("ui.click")
-
-                elif event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT:
                     if self.page > 0:
                         self._set_page(self.page - 1)
                         self.play_ui_sound("ui.click")
@@ -386,7 +439,10 @@ class BackpackScene(BaseScene):
                         self.play_ui_sound("ui.click")
 
                 elif event.key == pygame.K_RETURN:
-                    self._equip_selected()
+                    self._add_selected()
+
+                elif event.key in (pygame.K_BACKSPACE, pygame.K_DELETE):
+                    self._remove_last_filled_slot()
             return
 
         if event.type == pygame.MOUSEWHEEL and self.tab == "deck":
@@ -446,41 +502,54 @@ class BackpackScene(BaseScene):
             self.owned_only = not self.owned_only
             self._set_page(0)
             self.play_ui_sound("ui.click")
-        elif self.clear_rect.collidepoint(point):
-            self._equip(None)
-        elif self.equip_rect.collidepoint(point):
-            self._equip_selected()
+        elif self.add_rect.collidepoint(point):
+            self._add_selected()
         else:
-            for i, rect in enumerate(self.slots):
-                if rect.collidepoint(point):
-                    self.selected_slot = i
-                    self.play_ui_sound("ui.click")
-                    return
+            slot_index = next(
+                (i for i, rect in enumerate(self.slots) if rect.collidepoint(point)),
+                None,
+            )
+            if slot_index is not None:
+                self._remove_slot(slot_index)
+                return
             for name, rect in self.cards.items():
                 if rect.collidepoint(point):
                     if name not in AVAILABLE_CARD_NAMES:
                         self._notice(False, "Carta indisponível no momento.")
                         return
                     self.selected_card = name
-                    self.play_ui_sound("ui.click")
+                    self._add(name)
                     return
 
-    def _equip_selected(self):
-        if self.selected_card in self.save_data["progresso"]["cartas_colecao"]:
-            self._equip(self.selected_card)
+    def _add_selected(self):
+        if self.selected_card in AVAILABLE_CARD_NAMES:
+            self._add(self.selected_card)
 
-    def _equip(self, name):
-        success, message = equip_card_type(
-            self.save_manager,
-            self.save_data,
-            self.selected_slot,
-            name,
+    def _add(self, name):
+        success, message = add_card_to_deck(
+            self.save_manager, self.save_data, name
         )
-
         self._notice(success, message)
-
         if success:
             self.play_ui_sound("ui.confirm")
+
+    def _remove_slot(self, slot_index):
+        success, message = remove_card_from_deck(
+            self.save_manager, self.save_data, slot_index
+        )
+        self._notice(success, message)
+        if success:
+            self.play_ui_sound("ui.confirm")
+        else:
+            self.play_ui_sound("ui.click")
+
+    def _remove_last_filled_slot(self):
+        slots = self.save_data["progresso"]["deck_slots"]
+        filled = [i for i, name in enumerate(slots) if name]
+        if not filled:
+            self._notice(False, "O deck está vazio.")
+            return
+        self._remove_slot(filled[-1])
 
     def _notice(self, ok, message):
         self.notice, self.notice_color = (

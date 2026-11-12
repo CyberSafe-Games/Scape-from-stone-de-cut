@@ -10,7 +10,7 @@ from src.systems.combat_engine import CombatEngine
 from src.systems.enemy_factory import create_corpo_seco, create_road_enemy
 from src.systems.campaign_progress import record_road_victory, record_victory
 from src.systems.territory_map import TERRITORY_IDS, encounter_status, status
-from src.systems.deck_loadout import equip_card_type, COPIES_PER_SLOT, SLOT_COUNT
+from src.systems.deck_loadout import add_card_to_deck, remove_card_from_deck, COPIES_PER_CARD, DECK_SLOT_LIMIT
 from src.systems.shop_system import purchase_card
 
 
@@ -122,30 +122,42 @@ class RouteBossDeckTests(unittest.TestCase):
         e.finish_enemy_turn()
         self.assertEqual(e.state, 'player_turn')
 
-    def test_initial_deck_three_copies_per_type(self):
+    def test_initial_deck_three_copies_per_starter(self):
         p = self.data['progresso']
-        self.assertEqual(p['deck_slots'], ['Soco Simples', 'Esfera Protetora', None, None, None, None])
+        self.assertEqual(p['deck_slots'][:6], ['Soco Simples'] * 3 + ['Esfera Protetora'] * 3)
+        self.assertEqual(p['deck_slots'][6:], [None] * (DECK_SLOT_LIMIT - 6))
         self.assertEqual(p['cartas'].count('Soco Simples'), 3)
         self.assertEqual(p['cartas'].count('Esfera Protetora'), 3)
-        self.assertEqual(len(p['deck_slots']), SLOT_COUNT)
+        self.assertEqual(len(p['deck_slots']), DECK_SLOT_LIMIT)
 
-    def test_purchase_collect_then_equip_three(self):
+    def test_purchase_collect_then_add_three_copies(self):
         self.data['progresso']['moedas'] = 1000
         self.assertTrue(purchase_card(self.saves, self.data, 'Investida').success)
         self.assertNotIn('Investida', self.data['progresso']['cartas'])
-        result = equip_card_type(self.saves, self.data, 2, 'Investida')
-        self.assertTrue(result[0])
+        for _ in range(COPIES_PER_CARD):
+            self.assertTrue(add_card_to_deck(self.saves, self.data, 'Investida')[0])
         saved = self.saves.load_save('slot_1')['progresso']
-        self.assertEqual(saved['cartas'].count('Investida'), COPIES_PER_SLOT)
-        self.assertFalse(equip_card_type(self.saves, self.data, 3, 'Investida')[0])
-        self.assertFalse(equip_card_type(self.saves, self.data, 4, 'Fúria')[0])
-        self.assertTrue(equip_card_type(self.saves, self.data, 2, None)[0])
-        self.assertEqual(self.data['progresso']['cartas'].count('Investida'), 0)
+        self.assertEqual(saved['cartas'].count('Investida'), COPIES_PER_CARD)
+        # A quarta cópia é recusada.
+        self.assertFalse(add_card_to_deck(self.saves, self.data, 'Investida')[0])
+        # Carta que o jogador não possui não entra.
+        self.assertFalse(add_card_to_deck(self.saves, self.data, 'Fúria')[0])
+        index = self.data['progresso']['deck_slots'].index('Investida')
+        self.assertTrue(remove_card_from_deck(self.saves, self.data, index)[0])
+        self.assertEqual(self.data['progresso']['cartas'].count('Investida'), COPIES_PER_CARD - 1)
 
-    def test_equip_must_leave_one_type(self):
-        self.assertTrue(equip_card_type(self.saves, self.data, 1, None)[0])
-        self.assertFalse(equip_card_type(self.saves, self.data, 0, None)[0])
-        self.assertEqual(self.data['progresso']['cartas'], ['Soco Simples']*3)
+    def test_deck_must_keep_one_card(self):
+        while self.data['progresso']['cartas'].count('Esfera Protetora'):
+            index = self.data['progresso']['deck_slots'].index('Esfera Protetora')
+            self.assertTrue(remove_card_from_deck(self.saves, self.data, index)[0])
+        self.assertEqual(self.data['progresso']['cartas'], ['Soco Simples'] * 3)
+        while len(self.data['progresso']['cartas']) > 1:
+            index = next(i for i, name in enumerate(self.data['progresso']['deck_slots']) if name)
+            self.assertTrue(remove_card_from_deck(self.saves, self.data, index)[0])
+        self.assertEqual(len(self.data['progresso']['cartas']), 1)
+        index = next(i for i, name in enumerate(self.data['progresso']['deck_slots']) if name)
+        self.assertFalse(remove_card_from_deck(self.saves, self.data, index)[0])
+        self.assertEqual(len(self.data['progresso']['cartas']), 1)
 
     def test_bad_encounter_counter_rejected(self):
         for value in (4, -1, True, '3'):
