@@ -5,3 +5,7 @@ __pycache__
 # Saves locais
 saves/
 tools/
+
+# Preferencias locais de volume
+settings/audio.json
+settings/.audio-*.tmp

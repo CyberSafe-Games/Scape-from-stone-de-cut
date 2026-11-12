@@ -8,6 +8,7 @@ from pathlib import Path
 import logging
 
 import pygame
+from src.config.audio_mix import DAMAGE_SOUND_IDS, INTERFACE_SOUND_IDS
 
 logger = logging.getLogger(__name__)
 
@@ -19,12 +20,13 @@ class AudioManager:
     ausentes para que o jogo continue funcionando sem som.
     """
 
-    def __init__(self, assets_dir=None, master_volume=1.0, sfx_volume=1.0, music_volume=0.7):
+    def __init__(self, assets_dir=None, master_volume=1.0, sfx_volume=1.0, music_volume=0.7, combat_volume=1.0, damage_volume=1.0):
         project_root = Path(__file__).resolve().parents[2]
         self.assets_dir = Path(assets_dir) if assets_dir else project_root / "assets" / "audio"
         self._sound_paths = {}
         self._sounds = {}
         self._sound_volumes = {}
+        self._sfx_call_volumes = {}
         self._failed_sounds = set()
         self._mixer_available = False
         self._music_path = None
@@ -32,6 +34,8 @@ class AudioManager:
         self.master_volume = self._clamp_volume(master_volume)
         self.sfx_volume = self._clamp_volume(sfx_volume)
         self.music_volume = self._clamp_volume(music_volume)
+        self.combat_volume = self._clamp_volume(combat_volume)
+        self.damage_volume = self._clamp_volume(damage_volume)
 
         self._initialize_mixer()
 
@@ -97,10 +101,8 @@ class AudioManager:
         sound = self._get_sound(sound_id)
         if sound is None:
             return None
-        effective_volume = self._clamp_volume(
-            self.master_volume * self.sfx_volume * volume
-            * self._sound_volumes.get(sound_id, 1.0)
-        )
+        self._sfx_call_volumes[sound_id] = volume
+        effective_volume = self._effective_sfx_volume(sound_id, volume)
         sound.set_volume(effective_volume)
         try:
             if maxtime is not None:
@@ -112,7 +114,26 @@ class AudioManager:
             logger.warning("Não foi possível reproduzir o som '%s': %s", sound_id, exc)
             return None
 
-    def play_music(self, relative_path, loops=-1, start=0.0):
+    def _effective_sfx_volume(self, sound_id, call_volume):
+        category_volume = (self.damage_volume if sound_id in DAMAGE_SOUND_IDS
+                           else self.combat_volume if sound_id.startswith('gameplay.')
+                           and sound_id not in INTERFACE_SOUND_IDS else 1.0)
+        return self._clamp_volume(self.master_volume * self.sfx_volume * call_volume
+                                  * self._sound_volumes.get(sound_id, 1.0) * category_volume)
+
+    def _apply_sfx_volumes(self):
+        for sound_id, sound in self._sounds.items():
+            sound.set_volume(self._effective_sfx_volume(sound_id, self._sfx_call_volumes.get(sound_id, 1.0)))
+
+    def set_combat_volume(self, volume):
+        self.combat_volume = self._clamp_volume(volume)
+        self._apply_sfx_volumes()
+
+    def set_damage_volume(self, volume):
+        self.damage_volume = self._clamp_volume(volume)
+        self._apply_sfx_volumes()
+
+    def play_music(self, relative_path, loops=-1, start=0.0, fade_ms=0):
         """Inicia música de fundo. Por padrão, a música repete continuamente."""
         if not self.available:
             return False
@@ -122,7 +143,10 @@ class AudioManager:
         try:
             pygame.mixer.music.load(str(path))
             pygame.mixer.music.set_volume(self._clamp_volume(self.master_volume * self.music_volume))
-            pygame.mixer.music.play(loops=loops, start=start)
+            if fade_ms > 0:
+                pygame.mixer.music.play(loops=loops, start=start, fade_ms=int(fade_ms))
+            else:
+                pygame.mixer.music.play(loops=loops, start=start)
             self._music_path = path
             return True
         except (pygame.error, OSError) as exc:
@@ -142,13 +166,16 @@ class AudioManager:
     def set_master_volume(self, volume):
         self.master_volume = self._clamp_volume(volume)
         self._apply_music_volume()
+        self._apply_sfx_volumes()
 
     def set_sfx_volume(self, volume):
         self.sfx_volume = self._clamp_volume(volume)
+        self._apply_sfx_volumes()
 
     def set_sound_volume(self, sound_id, volume):
         """Ajusta o ganho de um efeito nas próximas reproduções (0.0 a 1.0)."""
         self._sound_volumes[str(sound_id)] = self._clamp_volume(volume)
+        self._apply_sfx_volumes()
 
     def set_music_volume(self, volume):
         self.music_volume = self._clamp_volume(volume)

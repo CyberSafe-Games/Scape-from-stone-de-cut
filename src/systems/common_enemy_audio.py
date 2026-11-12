@@ -68,6 +68,7 @@ BOSS_ULTIMATE_SOUNDS = {
 }
 
 SOUND_WINDOWS_MS = {
+    "gameplay.boss.zanzara.ferry_hit": 1400,
     "gameplay.boss.zanzara.souls": 2200,
     "gameplay.boss.zanzara.laugh": 3300,
     "gameplay.boss.zanzara.swing": 400,

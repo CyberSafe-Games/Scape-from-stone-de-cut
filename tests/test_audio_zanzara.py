@@ -11,7 +11,7 @@ class TestZanzaraAudio(unittest.TestCase):
         return scene
 
     def test_four_attacks_schedule_distinct_stages(self):
-        expected = [('atk1',False,['swing','flesh']),('atk2',False,['smoke','swing','flesh','smoke']),('atk3',False,['aura','portal','souls']),('atk3',True,['aura','laugh','summon','ferry'])]
+        expected = [('atk1',False,['swing','flesh']),('atk2',False,['smoke','swing','flesh','smoke']),('atk3',False,['aura','portal','souls']),('atk3',True,['aura','laugh','summon','ferry','ferry_hit'])]
         for action, ultimate, stages in expected:
             with self.subTest(action=action,ultimate=ultimate):
                 scene=self.scene(action,ultimate)
@@ -33,3 +33,17 @@ class TestZanzaraAudio(unittest.TestCase):
         scene.update(16)
         scene.scene_manager.audio_manager.play_sfx.assert_not_called()
         self.assertEqual(scene._pending_enemy_audio,[])
+
+    def test_ferry_body_impact_matches_visual_contact_once(self):
+        scene=self.scene('atk3',True)
+        view=scene.entity_view
+        contact=view.enemy_attack_duration*view.enemy_impact_fraction
+        audio=scene.scene_manager.audio_manager.play_sfx
+        scene.update(contact-1)
+        self.assertNotIn('gameplay.boss.zanzara.ferry_hit',[c.args[0] for c in audio.call_args_list])
+        audio.reset_mock()
+        scene.update(1)
+        self.assertEqual([c.args[0] for c in audio.call_args_list],['gameplay.boss.zanzara.ferry','gameplay.boss.zanzara.ferry_hit'])
+        self.assertGreater(view.player_flash,0)
+        scene.update(2000)
+        self.assertEqual(sum(c.args[0]=='gameplay.boss.zanzara.ferry_hit' for c in audio.call_args_list),1)

@@ -7,6 +7,8 @@ from src.core.asset_manager import AssetManager
 from src.core.scene_manager import SceneManager
 from src.core.audio_manager import AudioManager
 from src.config.audio_mix import SOUND_VOLUMES
+from src.config.music import MUSIC_VOLUME
+from src.systems.audio_preferences import AudioPreferences
 from src.scenes.menu_scene import MenuScene
 
 
@@ -22,7 +24,7 @@ def main():
     # entre 1280x720 e o maior tamanho 16:9 que cabe na tela.
     window_manager = WindowManager(WIDTH, HEIGHT, TITLE)
     asset_manager = AssetManager()
-    audio_manager = AudioManager()
+    audio_manager = AudioManager(music_volume=MUSIC_VOLUME)
     audio_manager.register_sounds(
         {
             "ui.click": "ui/click.ogg",
@@ -33,7 +35,7 @@ def main():
             "gameplay.ultimate_activate": "ultimate_xamanico_opcao_2.ogg",
             "gameplay.game_over": "game_over_risada_apos_fala_v4.ogg",
             "gameplay.victory": "victory_fanfare_2_curta.ogg",
-            "gameplay.attack.punch": "dragon-studio-hard-punch-sfx-515251_sync.ogg",
+            "gameplay.attack.punch": "soco_impacto_suave_v2.ogg",
             "gameplay.attack.dagger": "adaga_corte_sangramento.ogg",
             "gameplay.attack.blowgun": "freesound_community-052708_blowgun-39165_sync.ogg",
             "gameplay.attack.arrow_launch": "dennish18-arrow-body-impact-146419_sync.ogg",
@@ -67,6 +69,7 @@ def main():
             "gameplay.boss.zanzara.aura": "zanzara_aura_piloto_v1.ogg",
             "gameplay.boss.zanzara.portal": "zanzara_portal_piloto_v1.ogg",
             "gameplay.boss.zanzara.summon": "zanzara_summon_piloto_v1.ogg",
+            "gameplay.boss.zanzara.ferry_hit": "carrasco_execucao_impacto_sangramento_v1.ogg",
             "gameplay.boss.zanzara.ferry": "zanzara_ferry_piloto_v1.ogg",
             "gameplay.boss.guardian.claw": "guardiao_garra_cortante_v4.ogg",
             "gameplay.boss.guardian.claw_hit": "guardiao_garra_sangramento_v4.ogg",
@@ -109,7 +112,9 @@ def main():
     # Ganho por efeito, multiplicado pelos volumes geral, de SFX e da chamada.
     for sound_id, gain in SOUND_VOLUMES.items():
         audio_manager.set_sound_volume(sound_id, gain)
-    scene_manager = SceneManager(audio_manager=audio_manager)
+    audio_preferences = AudioPreferences()
+    audio_preferences.apply(audio_manager)
+    scene_manager = SceneManager(audio_manager=audio_manager, audio_preferences=audio_preferences)
     clock = pygame.time.Clock()
 
     # Inicializa a aplicação com a cena do Menu Principal

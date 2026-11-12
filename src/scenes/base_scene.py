@@ -5,6 +5,10 @@ from abc import ABC, abstractmethod
 class BaseScene(ABC):
     """Classe base abstrata para todas as cenas do jogo (Open/Closed Principle)."""
 
+    @property
+    def music_context(self):
+        return 'menu'
+
     def __init__(self, scene_manager, window_manager, asset_manager):
         self.scene_manager = scene_manager
         self.window_manager = window_manager

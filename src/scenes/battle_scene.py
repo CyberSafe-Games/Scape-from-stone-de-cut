@@ -56,6 +56,17 @@ from src.config.layout import (
 class BattleScene(BaseScene):
     """Cena principal de batalha onde o combate por turnos acontece."""
 
+    @property
+    def music_context(self):
+        if self.engine.state in ('game_over', 'victory', 'phase_complete'):
+            return None
+        enemy = self.engine.enemy
+        if getattr(enemy, 'is_final_boss', False) or enemy.name.lower() == 'zanzara':
+            return 'final_boss'
+        if getattr(enemy, 'is_miniboss', False) or getattr(enemy, 'boss_id', None):
+            return 'boss'
+        return 'battle'
+
     def __init__(
         self,
         scene_manager,
@@ -355,7 +366,7 @@ class BattleScene(BaseScene):
                 spec = view.enemy_ultimate
                 if spec is None:
                     return
-                cues = ((.08, "aura"), (.12, "laugh"), (spec.release, "summon"), (spec.impact, "ferry"))
+                cues = ((.08, "aura"), (.12, "laugh"), (spec.release, "summon"), (spec.impact, "ferry"), (spec.impact, "ferry_hit"))
             elif action == "atk1":
                 cues = ((max(0, fraction-400/duration), "swing"), (fraction, "flesh"))
             elif action == "atk2":

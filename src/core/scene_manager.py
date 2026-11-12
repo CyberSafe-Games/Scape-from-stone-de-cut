@@ -1,20 +1,25 @@
 from pygame import event
 import pygame
+from src.core.music_director import MusicDirector
 
 
 class SceneManager:
     """Gerencia a máquina de estados de cenas do jogo e sobreposição de modais."""
 
-    def __init__(self, audio_manager=None):
+    def __init__(self, audio_manager=None, audio_preferences=None):
         self.current_scene = None
         self.modal_stack = []
         # Serviço opcional compartilhado pelas cenas, sem acoplá-las ao mixer.
         self.audio_manager = audio_manager
+        self.audio_preferences = audio_preferences
+        self.music_director = MusicDirector(audio_manager) if audio_manager is not None else None
 
     def change_scene(self, scene):
         """Muda a cena ativa e limpa eventuais modais sobrepostos."""
         self.modal_stack.clear()
         self.current_scene = scene
+        if self.music_director is not None:
+            self.music_director.set_context(getattr(scene, "music_context", None))
 
     def push_modal(self, modal):
         """Empilha um modal (ex: confirmação de saída) sobre a cena atual."""
@@ -49,6 +54,10 @@ class SceneManager:
             self.modal_stack[-1].update(dt)
         elif self.current_scene:
             self.current_scene.update(dt)
+
+        if self.music_director is not None:
+            self.music_director.set_context(getattr(self.current_scene, "music_context", None))
+            self.music_director.update(dt)
 
     def draw(self, surface):
         """Desenha a cena atual e, se houver, os modais por cima."""
