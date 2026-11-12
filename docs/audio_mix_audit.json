@@ -104,15 +104,15 @@
     },
     {
       "id": "gameplay.attack.punch",
-      "file": "dragon-studio-hard-punch-sfx-515251_sync.ogg",
-      "seconds": 1.29,
-      "gain": 0.14,
-      "mixer_gain": 0.1328125,
-      "source_peak_dbfs": -0.0,
-      "source_active_rms_dbfs": -5.385,
-      "source_samples_at_limit": 2474,
-      "output_peak_dbfs": -17.535,
-      "output_active_rms_dbfs": -22.92
+      "file": "soco_impacto_suave_v2.ogg",
+      "seconds": 1.292,
+      "gain": 1.0,
+      "mixer_gain": 1.0,
+      "source_peak_dbfs": -16.233,
+      "source_active_rms_dbfs": -32.007,
+      "source_samples_at_limit": 0,
+      "output_peak_dbfs": -16.233,
+      "output_active_rms_dbfs": -32.007
     },
     {
       "id": "gameplay.attack.dagger",
@@ -509,6 +509,18 @@
       "source_samples_at_limit": 0,
       "output_peak_dbfs": -11.68,
       "output_active_rms_dbfs": -27.343
+    },
+    {
+      "id": "gameplay.boss.zanzara.ferry_hit",
+      "file": "carrasco_execucao_impacto_sangramento_v1.ogg",
+      "seconds": 1.4,
+      "gain": 1.0,
+      "mixer_gain": 1.0,
+      "source_peak_dbfs": -10.174,
+      "source_active_rms_dbfs": -28.051,
+      "source_samples_at_limit": 0,
+      "output_peak_dbfs": -10.174,
+      "output_active_rms_dbfs": -28.051
     },
     {
       "id": "gameplay.boss.zanzara.ferry",

@@ -1,0 +1,13 @@
+{
+  "source": "assets\\audio\\dragon-studio-hard-punch-sfx-515251_sync.ogg",
+  "source_sha256": "0084adad6e7f232f828063db16584087a0c5bc40d6f6894c2fa4e9aa94172e57",
+  "target": "assets\\audio\\soco_impacto_suave_v2.ogg",
+  "target_sha256": "25975a74bed3a1ed587b2a080dba71866bafcc7251f309f4a667d9ead742b05b",
+  "filters": "adeclip=window=55:overlap=75,highpass=f=65,lowpass=f=4800,afade=t=in:d=0.004,afade=t=out:st=1.17:d=0.12",
+  "gain": 0.11446966950735975,
+  "active_rms_target_dbfs": -28,
+  "peak_ceiling_dbfs": -16,
+  "timing": "Sem corte ou mudança de velocidade; preserva a duração e os gatilhos.",
+  "listening": false,
+  "limitation": "Atenua aspereza e estima picos; não recupera informação perdida. Aprovação perceptiva depende da escuta pelo usuário no jogo."
+}

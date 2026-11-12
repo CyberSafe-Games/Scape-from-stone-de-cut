@@ -1181,6 +1181,7 @@ class TestMenuExitAudio(unittest.TestCase):
                 )
 
                 scene.play_button = pygame.Rect(300, 300, 50, 50)
+                scene.options_button = pygame.Rect(500, 500, 50, 50)
                 scene.quit_button = pygame.Rect(0, 0, 100, 100)
 
                 if exit_method == "mouse":

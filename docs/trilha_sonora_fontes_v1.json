@@ -1,0 +1,207 @@
+{
+  "status": "Piloto provisório; músicas e loops aguardam aprovação auditiva.",
+  "escuta_critica": false,
+  "volume_musica_piloto": 0.45,
+  "recursos": [
+    {
+      "arquivo": "assets\\audio\\music\\menu_floresta_v1.ogg",
+      "fonte": {
+        "contexto_sugerido": "Menu e mapa",
+        "titulo": "Deep forest",
+        "autor": "PoshPony",
+        "url_pagina": "https://pixabay.com/music/ambient-deep-forest-335081/",
+        "licenca_indicada": "Free for use under the Pixabay Content License",
+        "url_licenca": "https://pixabay.com/service/license-summary/",
+        "nome_local": "poshpony-deep-forest-335081.mp3",
+        "caminho_local": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\trilha-sonora\\originais\\poshpony-deep-forest-335081.mp3",
+        "duracao_pagina": "4:00",
+        "duracao_segundos": 240.024,
+        "metodo_duracao": "Soma de durações dos quadros MPEG Layer III, incluindo eventual padding do encoder; nenhuma edição.",
+        "sha256": "13eddf73e571d5d364e49ad1dc148419e6b376267891c39434c94854f7ad3219",
+        "tamanho_bytes": 7680768,
+        "quadros_mp3": 10001,
+        "content_id": {
+          "aviso_exibido": false,
+          "indicacao": "Não exibido para a faixa na página consultada; não comprova ausência de registro."
+        },
+        "geracao_ia": {
+          "aviso_exibido": true,
+          "indicacao": "AI generated"
+        },
+        "escuta_critica": false,
+        "selecao": "Candidato indicado pelo usuário; verificação apenas por metadados, sem reprodução nem escuta crítica.",
+        "status_download": "baixado_e_verificado",
+        "verificacao": "Download concluído no navegador; arquivo MP3 local não vazio e com quadros válidos; cópia com SHA-256 idêntico.",
+        "login_exigido": false,
+        "bloqueios": [],
+        "status_avaliacao": "Provisório; pendente de avaliação no jogo."
+      },
+      "filtros": "volume=-10.3dB,afade=t=in:d=0.35,afade=t=out:st=239.374:d=0.65",
+      "ganho_db": -10.3,
+      "media_origem_dbfs": -16.2,
+      "pico_origem_dbfs": -1.7,
+      "sha256": "a760e6b0d96119a05bed90018a685a2f53791503a18d87fb07dd876d29320d52",
+      "loop_aprovado": false
+    },
+    {
+      "arquivo": "assets\\audio\\music\\combate_tambores_v1.ogg",
+      "fonte": {
+        "contexto_sugerido": "Combates comuns",
+        "titulo": "The Last Stand",
+        "autor": "CharlVera",
+        "url_pagina": "https://pixabay.com/music/world-the-last-stand-190499/",
+        "licenca_indicada": "Free for use under the Pixabay Content License",
+        "url_licenca": "https://pixabay.com/service/license-summary/",
+        "nome_local": "charlvera-the-last-stand-190499.mp3",
+        "caminho_local": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\trilha-sonora\\originais\\charlvera-the-last-stand-190499.mp3",
+        "duracao_pagina": "1:23",
+        "duracao_segundos": 83.304,
+        "metodo_duracao": "Soma de durações dos quadros MPEG Layer III, incluindo eventual padding do encoder; nenhuma edição.",
+        "sha256": "c6aa67cf359fcda6de7833e148a64e188d0b3700e6a63b2dbe72aad36db9cd09",
+        "tamanho_bytes": 2665728,
+        "quadros_mp3": 3471,
+        "content_id": {
+          "aviso_exibido": true,
+          "indicacao": "Content ID Registered"
+        },
+        "geracao_ia": {
+          "aviso_exibido": false,
+          "indicacao": "Não exibido para a faixa na página consultada; não comprova autoria sem IA."
+        },
+        "escuta_critica": false,
+        "selecao": "Candidato indicado pelo usuário; verificação apenas por metadados, sem reprodução nem escuta crítica.",
+        "status_download": "baixado_e_verificado",
+        "verificacao": "Download concluído no navegador; arquivo MP3 local não vazio e com quadros válidos; cópia com SHA-256 idêntico.",
+        "login_exigido": false,
+        "bloqueios": [],
+        "status_avaliacao": "Provisório; pendente de avaliação no jogo."
+      },
+      "filtros": "volume=-11.5dB,afade=t=in:d=0.35,afade=t=out:st=82.654:d=0.65",
+      "ganho_db": -11.5,
+      "media_origem_dbfs": -20.7,
+      "pico_origem_dbfs": -0.5,
+      "sha256": "aaf38fa814d05696c40964dd54f1b56cc9388a69ef5db64302002989158619d1",
+      "loop_aprovado": false
+    },
+    {
+      "arquivo": "assets\\audio\\music\\chefes_selva_v1.ogg",
+      "fonte": {
+        "contexto_sugerido": "Chefes",
+        "titulo": "Jungle Guerilla,Percussive tribal war music with jungle drums",
+        "autor": "DesiFreeMusic",
+        "url_pagina": "https://pixabay.com/music/action-jungle-guerillapercussive-tribal-war-music-with-jungle-drums-345242/",
+        "licenca_indicada": "Free for use under the Pixabay Content License",
+        "url_licenca": "https://pixabay.com/service/license-summary/",
+        "nome_local": "desifreemusic-jungle-guerillapercussive-tribal-war-music-with-jungle-drums-345242.mp3",
+        "caminho_local": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\trilha-sonora\\originais\\desifreemusic-jungle-guerillapercussive-tribal-war-music-with-jungle-drums-345242.mp3",
+        "duracao_pagina": "1:39",
+        "duracao_segundos": 98.664,
+        "metodo_duracao": "Soma de durações dos quadros MPEG Layer III, incluindo eventual padding do encoder; nenhuma edição.",
+        "sha256": "e8ed3d07ac780d2feb0b2c3ae36ea55ae24a435d04c0f18b8bb6dada5b15c069",
+        "tamanho_bytes": 3157248,
+        "quadros_mp3": 4111,
+        "content_id": {
+          "aviso_exibido": false,
+          "indicacao": "Não exibido para a faixa na página consultada; não comprova ausência de registro."
+        },
+        "geracao_ia": {
+          "aviso_exibido": true,
+          "indicacao": "AI generated"
+        },
+        "escuta_critica": false,
+        "selecao": "Candidato indicado pelo usuário; verificação apenas por metadados, sem reprodução nem escuta crítica.",
+        "status_download": "baixado_e_verificado",
+        "verificacao": "Download concluído no navegador; arquivo MP3 local não vazio e com quadros válidos; cópia com SHA-256 idêntico.",
+        "login_exigido": false,
+        "bloqueios": [],
+        "status_avaliacao": "Provisório; pendente de avaliação no jogo."
+      },
+      "filtros": "volume=-12.0dB,afade=t=in:d=0.35,afade=t=out:st=98.014:d=0.65",
+      "ganho_db": -12.0,
+      "media_origem_dbfs": -17.0,
+      "pico_origem_dbfs": 0.0,
+      "sha256": "cd6001ec3253f76e3fa158b3b42c14e8517175c0141e08ceb58d6dbbd1823a03",
+      "loop_aprovado": false
+    },
+    {
+      "arquivo": "assets\\audio\\music\\zanzara_ritual_v1.ogg",
+      "fonte": {
+        "contexto_sugerido": "Zanzara, boss final",
+        "titulo": "Ritual Horror",
+        "autor": "leberch",
+        "url_pagina": "https://pixabay.com/music/ambient-ritual-horror-262597/",
+        "licenca_indicada": "Free for use under the Pixabay Content License",
+        "url_licenca": "https://pixabay.com/service/license-summary/",
+        "nome_local": "leberch-ritual-horror-262597.mp3",
+        "caminho_local": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\trilha-sonora\\originais\\leberch-ritual-horror-262597.mp3",
+        "duracao_pagina": "2:34",
+        "duracao_segundos": 154.096,
+        "metodo_duracao": "Soma de durações dos quadros MPEG Layer III, incluindo eventual padding do encoder; nenhuma edição.",
+        "sha256": "f2b02d8fed0e4d812a52e923acb18f572ae27e959020bf4571936f9cc4e4df17",
+        "tamanho_bytes": 4931082,
+        "quadros_mp3": 5899,
+        "content_id": {
+          "aviso_exibido": true,
+          "indicacao": "Content ID Registered"
+        },
+        "geracao_ia": {
+          "aviso_exibido": false,
+          "indicacao": "Não exibido para a faixa na página consultada; não comprova autoria sem IA."
+        },
+        "escuta_critica": false,
+        "selecao": "Candidato indicado pelo usuário; verificação apenas por metadados, sem reprodução nem escuta crítica.",
+        "status_download": "baixado_e_verificado",
+        "verificacao": "Download concluído no navegador; arquivo MP3 local não vazio e com quadros válidos; cópia com SHA-256 idêntico.",
+        "login_exigido": false,
+        "bloqueios": [],
+        "status_avaliacao": "Provisório; pendente de avaliação no jogo."
+      },
+      "filtros": "volume=-8.1dB,afade=t=in:d=0.35,afade=t=out:st=153.446:d=0.65",
+      "ganho_db": -8.1,
+      "media_origem_dbfs": -22.5,
+      "pico_origem_dbfs": -3.9,
+      "sha256": "5f29cc5a590f4ae3579ed84969c8afc93ec2de72b7de99107a10e675445b29e3",
+      "loop_aprovado": false
+    },
+    {
+      "arquivo": "assets\\audio\\music\\zanzara_ancestrais_v1.ogg",
+      "fonte": {
+        "contexto_sugerido": "Alternativa para Zanzara",
+        "titulo": "Ritual of the Ancients - Cinematic",
+        "autor": "FreeFunArt",
+        "url_pagina": "https://pixabay.com/music/adventure-ritual-of-the-ancients-cinematic-517862/",
+        "licenca_indicada": "Free for use under the Pixabay Content License",
+        "url_licenca": "https://pixabay.com/service/license-summary/",
+        "nome_local": "freefunart-ritual-of-the-ancients-cinematic-517862.mp3",
+        "caminho_local": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\trilha-sonora\\originais\\freefunart-ritual-of-the-ancients-cinematic-517862.mp3",
+        "duracao_pagina": "4:22",
+        "duracao_segundos": 262.344,
+        "metodo_duracao": "Soma de durações dos quadros MPEG Layer III, incluindo eventual padding do encoder; nenhuma edição.",
+        "sha256": "e306ac20a2358cd13114e6bc207b0c3115ce0b566377cdaafa1ecb28be566f8a",
+        "tamanho_bytes": 8395008,
+        "quadros_mp3": 10931,
+        "content_id": {
+          "aviso_exibido": false,
+          "indicacao": "Não exibido para a faixa na página consultada; não comprova ausência de registro."
+        },
+        "geracao_ia": {
+          "aviso_exibido": true,
+          "indicacao": "AI generated"
+        },
+        "escuta_critica": false,
+        "selecao": "Candidato indicado pelo usuário; verificação apenas por metadados, sem reprodução nem escuta crítica.",
+        "status_download": "baixado_e_verificado",
+        "verificacao": "Download concluído no navegador; arquivo MP3 local não vazio e com quadros válidos; cópia com SHA-256 idêntico.",
+        "login_exigido": false,
+        "bloqueios": [],
+        "status_avaliacao": "Provisório; pendente de avaliação no jogo."
+      },
+      "filtros": "volume=-10.2dB,afade=t=in:d=0.35,afade=t=out:st=261.694:d=0.65",
+      "ganho_db": -10.2,
+      "media_origem_dbfs": -13.8,
+      "pico_origem_dbfs": -2.4,
+      "sha256": "b220382eb5b2a92fc41f1e8ec2bafcff08f8bf5b6eeceba2dd0e2aae8605f455",
+      "loop_aprovado": false
+    }
+  ]
+}
