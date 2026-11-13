@@ -2,10 +2,14 @@
 
 O deck possui DECK_SLOT_LIMIT espaços; cada carta possui no máximo
 COPIES_PER_CARD cópias no deck. A ordem dos espaços não influencia o jogo:
-o baralho de combate é embaralhado ao iniciar cada luta.
+o baralho de combate é embaralhado ao iniciar cada luta. Durante a edição
+o deck pode ficar com zero cartas; DECK_MIN_CARDS vale apenas para sair da
+Mochila. Na Mochila, as alterações acontecem em um rascunho em memória:
+somente um deck válido é promovido a deck oficial e gravado no save.
 O desbloqueio pertence à RUN. A ultimate é independente do deck.
 """
 
+import random
 from collections import Counter
 
 from src.systems.card_catalog import AVAILABLE_CARD_NAMES, CARD_BY_NAME, UNAVAILABLE_CARD_NAMES
@@ -13,8 +17,10 @@ from src.systems.card_definitions import migrate_card_name
 
 CARD_NAMES = frozenset(CARD_BY_NAME)
 DECK_SLOT_LIMIT = 18  # Quantidade máxima de espaços individuais no deck. Pode mudar no futuro.
+DECK_MIN_CARDS = 6    # Mínimo de cópias para sair da Mochila (cada espaço preenchido conta 1).
 COPIES_PER_CARD = 3   # Limite de cópias do mesmo tipo de carta no deck.
-MIN_DECK_COPIES = 1   # O deck precisa ter pelo menos uma carta para entrar em combate.
+# Alvo do "Deck aleatório"; limitado ao total de cópias possíveis da coleção.
+RANDOM_DECK_SIZE = DECK_SLOT_LIMIT
 INITIAL_STARTERS = ["Soco Simples", "Esfera Protetora"]
 INITIAL_SLOTS = (
     [name for name in INITIAL_STARTERS for _ in range(COPIES_PER_CARD)]
@@ -26,6 +32,16 @@ LEGACY_SLOT_COUNT = 6  # Formato antigo (SAVE_VERSION <= 8): um espaço por tipo
 def deck_cards(slots):
     """Cartas preenchidas nos espaços, na ordem. O combate embaralha a pilha."""
     return [name for name in slots if isinstance(name, str)]
+
+
+def deck_copy_count(slots):
+    """Conta cópias ocupando espaços, não tipos distintos de carta."""
+    return len(deck_cards(slots or ()))
+
+
+def deck_is_ready_for_exit(slots):
+    """Indica se o deck tem o mínimo de cópias para sair da Mochila."""
+    return deck_copy_count(slots) >= DECK_MIN_CARDS
 
 
 def _expand_names(names, limit=DECK_SLOT_LIMIT, copies=COPIES_PER_CARD):
@@ -40,6 +56,60 @@ def _expand_names(names, limit=DECK_SLOT_LIMIT, copies=COPIES_PER_CARD):
     return slots
 
 
+def initial_deck_slots(collection):
+    """Deck inicial do tutorial restrito às cartas que o jogador possui.
+
+    O deck novo nasce com INITIAL_STARTERS (3 cópias de cada), formando
+    DECK_MIN_CARDS cartas. Este fallback só usa cartas da coleção e do
+    catálogo jogável, nunca altera a coleção e nunca lança exceção.
+    """
+    owned = {
+        name
+        for name in collection or ()
+        if isinstance(name, str) and name in AVAILABLE_CARD_NAMES
+    }
+    slots = []
+    for name in INITIAL_STARTERS:
+        if name in owned:
+            slots.extend([name] * COPIES_PER_CARD)
+    return (slots + [None] * DECK_SLOT_LIMIT)[:DECK_SLOT_LIMIT]
+
+
+def random_deck_capacity(collection):
+    """Quantas cópias o deck aleatório consegue montar com a coleção atual.
+
+    Cada carta possuída e jogável contribui com até COPIES_PER_CARD cópias,
+    sempre respeitando DECK_SLOT_LIMIT e o alvo RANDOM_DECK_SIZE.
+    """
+    owned = {
+        name
+        for name in collection or ()
+        if isinstance(name, str) and name in AVAILABLE_CARD_NAMES
+    }
+    return min(DECK_SLOT_LIMIT, RANDOM_DECK_SIZE, len(owned) * COPIES_PER_CARD)
+
+
+def build_random_deck(collection, rng=None):
+    """Sorteia um deck a partir da coleção, sem alterar o save.
+
+    Retorna uma lista com DECK_SLOT_LIMIT espaços (cópias sorteadas e None no
+    restante) ou None quando a coleção não permite atingir DECK_MIN_CARDS.
+    `rng` pode receber um random.Random com semente fixa para testes.
+    """
+    rng = rng if rng is not None else random.Random()
+    owned = sorted({
+        name
+        for name in collection or ()
+        if isinstance(name, str) and name in AVAILABLE_CARD_NAMES
+    })
+    target = min(RANDOM_DECK_SIZE, DECK_SLOT_LIMIT, len(owned) * COPIES_PER_CARD)
+    if target < DECK_MIN_CARDS:
+        return None
+    pool = [name for name in owned for _ in range(COPIES_PER_CARD)]
+    chosen = rng.sample(pool, target)
+    return chosen + [None] * (DECK_SLOT_LIMIT - len(chosen))
+
+
 def normalize_collection_and_slots(progress):
     """Valida deck e coleção, migrando saves antigos sem perder cartas.
 
@@ -47,7 +117,11 @@ def normalize_collection_and_slots(progress):
       por tipo). Cada tipo vira COPIES_PER_CARD espaços individuais.
     - Saves v9 guardam um espaço por cópia e sempre DECK_SLOT_LIMIT entradas.
     - Deck ausente: preenche a partir das cartas antigas; se não houver,
-      reparte a coleção em até COPIES_PER_CARD cópias por carta.
+      usa o deck inicial do tutorial.
+    - Entradas fora da coleção/catálogo são descartadas. Se o deck ficar
+      abaixo de DECK_MIN_CARDS, ele é substituído pelo deck inicial do
+      tutorial, restrito às cartas que o jogador possui. A coleção existente
+      nunca é apagada nem trocada por causa disso.
     - A ordem dos espaços não importa: o baralho é embaralhado no combate.
     """
     for field in ('cartas', 'cartas_colecao', 'deck_slots'):
@@ -59,18 +133,18 @@ def normalize_collection_and_slots(progress):
         owned = list(dict.fromkeys(legacy))
     owned = list(dict.fromkeys(name for name in owned if isinstance(name, str) and name in CARD_NAMES))
     playable_owned = set(owned).intersection(AVAILABLE_CARD_NAMES)
-    if not playable_owned:
+    if not owned:
+        # Save anterior à coleção (ou sem nenhuma carta registrada): garante
+        # os iniciais do tutorial para o jogador poder montar o deck.
         starters = [name for name in INITIAL_STARTERS if name in AVAILABLE_CARD_NAMES]
         owned.extend(starters)
         playable_owned.update(starters)
 
     slots = progress.get('deck_slots')
     if not isinstance(slots, list):
-        # Sem deck registrado: reparte as cartas antigas; sem elas, a coleção.
+        # Sem deck registrado: reparte as cartas antigas; sem elas, o inicial.
         playable = [name for name in legacy if name in playable_owned]
-        slots = _expand_names(playable)
-        if not slots:
-            slots = _expand_names([name for name in owned if name in playable_owned])
+        slots = _expand_names(playable) if playable else initial_deck_slots(owned)
     elif len(slots) <= LEGACY_SLOT_COUNT:
         # Formato antigo: um espaço por tipo, três cópias cada.
         slots = _expand_names([name for name in slots if isinstance(name, str) and name in playable_owned])
@@ -84,74 +158,112 @@ def normalize_collection_and_slots(progress):
             slots[i] = None
             continue
         used[name] += 1
-    if not used:
-        # Nunca deixa o deck vazio: começa pelas cartas jogáveis que o jogador tem.
-        slots = _expand_names([name for name in owned if name in playable_owned])
-        slots = (slots + [None] * DECK_SLOT_LIMIT)[:DECK_SLOT_LIMIT]
+    if deck_copy_count(slots) < DECK_MIN_CARDS:
+        # Deck vazio, incompleto ou com cartas que saíram da coleção:
+        # restaura o deck inicial do tutorial, restrito ao que o jogador
+        # possui. Nunca inventa cartas nem lança exceção.
+        slots = initial_deck_slots(owned)
     progress['cartas_colecao'] = owned
     progress['deck_slots'] = slots
     progress['cartas'] = deck_cards(slots)
     return progress
 
 
-def add_card_to_deck(save_manager, data, name):
-    """Adiciona 1 cópia da carta ao próximo espaço livre.
+def _draft_slots(slots):
+    """Copia um rascunho garantindo DECK_SLOT_LIMIT espaços."""
+    return (list(slots or ()) + [None] * DECK_SLOT_LIMIT)[:DECK_SLOT_LIMIT]
+
+
+def add_card_to_slots(slots, collection, name):
+    """Adiciona 1 cópia ao rascunho sem gravar no save.
 
     Recusa a cópia quando a carta já possui COPIES_PER_CARD exemplares no
-    deck ou quando não há espaço livre. Não altera nada em caso de falha.
+    rascunho ou quando não há espaço livre. Retorna
+    (sucesso, mensagem, novos_slots); o chamador decide quando promover o
+    rascunho com commit_deck.
+    """
+    updated = _draft_slots(slots)
+    if not isinstance(name, str) or name not in CARD_NAMES:
+        return False, "Carta desconhecida.", updated
+    if name in UNAVAILABLE_CARD_NAMES:
+        return False, "Carta indisponível no momento.", updated
+    if name not in (collection or ()):
+        return False, "Carta não encontrada na coleção.", updated
+    copies = sum(1 for item in updated if item == name)
+    if copies >= COPIES_PER_CARD:
+        return False, f"Você já tem {COPIES_PER_CARD} cópias de {name} no deck.", updated
+    try:
+        index = updated.index(None)
+    except ValueError:
+        return False, f"O deck está cheio ({DECK_SLOT_LIMIT}/{DECK_SLOT_LIMIT}).", updated
+    updated[index] = name
+    return True, f"{name} adicionada ao deck ({copies + 1}/{COPIES_PER_CARD}).", updated
+
+
+def remove_card_from_slots(slots, slot_index):
+    """Remove uma cópia do rascunho, inclusive a última, sem gravar no save.
+
+    A remoção pode deixar o rascunho com zero cartas; o mínimo de
+    DECK_MIN_CARDS vale apenas para sair da Mochila. Retorna
+    (sucesso, mensagem, novos_slots).
+    """
+    updated = _draft_slots(slots)
+    if type(slot_index) is not int or not 0 <= slot_index < DECK_SLOT_LIMIT:
+        return False, "Espaço inválido.", updated
+    name = updated[slot_index]
+    if not isinstance(name, str):
+        return False, "O espaço já está vazio.", updated
+    updated[slot_index] = None
+    return True, f"{name} removida do deck.", updated
+
+
+def empty_deck_slots():
+    """Rascunho vazio, com todos os espaços disponíveis."""
+    return [None] * DECK_SLOT_LIMIT
+
+
+def commit_deck(save_manager, data, slots):
+    """Promove o rascunho a deck oficial somente se ele for válido.
+
+    O deck com menos de DECK_MIN_CARDS cartas nunca sobrescreve o último
+    deck válido gravado no save. Retorna (sucesso, mensagem).
     """
     from copy import deepcopy
-    if not isinstance(name, str) or name not in CARD_NAMES:
-        return False, "Carta desconhecida."
-    if name in UNAVAILABLE_CARD_NAMES:
-        return False, "Carta indisponível no momento."
+    from src.systems.save_manager import SaveError
+    candidate = _draft_slots(slots)
+    if not deck_is_ready_for_exit(candidate):
+        return False, (
+            f"O deck precisa de pelo menos {DECK_MIN_CARDS} cartas para ser salvo."
+        )
     p = data['progresso']
-    normalize_collection_and_slots(p)
-    if name not in p['cartas_colecao']:
-        return False, "Carta não encontrada na coleção."
-    slots = list(p['deck_slots'])
-    copies = slots.count(name)
-    if copies >= COPIES_PER_CARD:
-        return False, f"Você já tem {COPIES_PER_CARD} cópias de {name} no deck."
-    try:
-        index = slots.index(None)
-    except ValueError:
-        return False, f"O deck está cheio ({DECK_SLOT_LIMIT}/{DECK_SLOT_LIMIT})."
     before = deepcopy(p)
-    slots[index] = name
-    p['deck_slots'] = slots
-    p['cartas'] = deck_cards(slots)
+    p['deck_slots'] = candidate
+    p['cartas'] = deck_cards(candidate)
     try:
         save_manager.save(data)
-    except (OSError, ValueError, TypeError):
+    except (OSError, ValueError, TypeError, SaveError):
         data['progresso'] = before
         return False, "Falha ao gravar a alteração; deck preservado."
-    return True, f"{name} adicionada ao deck ({copies + 1}/{COPIES_PER_CARD})."
+    return True, "Deck salvo."
 
 
-def remove_card_from_deck(save_manager, data, slot_index):
-    """Libera o espaço indicado, removendo apenas aquela cópia."""
-    from copy import deepcopy
-    if type(slot_index) is not int or not 0 <= slot_index < DECK_SLOT_LIMIT:
-        return False, "Espaço inválido."
+def set_random_deck(save_manager, data, rng=None):
+    """Substitui o deck por um sorteio da coleção e persiste a alteração.
+
+    O deck aleatório sempre atinge DECK_MIN_CARDS, então é promovido
+    imediatamente. Não mexe na coleção. Se a coleção não permitir o mínimo,
+    devolve False e preserva o deck atual.
+    """
     p = data['progresso']
-    normalize_collection_and_slots(p)
-    slots = list(p['deck_slots'])
-    name = slots[slot_index]
-    if name is None:
-        return False, "O espaço já está vazio."
-    if sum(item is not None for item in slots) <= MIN_DECK_COPIES:
-        return False, "O deck precisa ter pelo menos uma carta."
-    before = deepcopy(p)
-    slots[slot_index] = None
-    p['deck_slots'] = slots
-    p['cartas'] = deck_cards(slots)
-    try:
-        save_manager.save(data)
-    except (OSError, ValueError, TypeError):
-        data['progresso'] = before
-        return False, "Falha ao gravar a alteração; deck preservado."
-    return True, f"{name} removida do deck."
+    slots = build_random_deck(p['cartas_colecao'], rng=rng)
+    if slots is None:
+        return False, (
+            f"Coleção insuficiente: mínimo de {DECK_MIN_CARDS} cópias."
+        )
+    success, message = commit_deck(save_manager, data, slots)
+    if not success:
+        return False, message
+    return True, f"Deck aleatório montado: {deck_copy_count(slots)} cartas."
 
 
 def equip_ultimate(save_manager, data, ultimate_id):

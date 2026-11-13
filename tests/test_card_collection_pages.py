@@ -10,7 +10,11 @@ from src.scenes.shop_scene import ShopScene
 from src.scenes.backpack_scene import BackpackScene
 from src.systems.save_manager import SaveManager
 from src.systems.card_catalog import AVAILABLE_CARD_NAMES, AVAILABLE_CARD_POOL, CARD_BY_NAME, UNAVAILABLE_CARD_NAMES
-from src.systems.deck_loadout import DECK_SLOT_LIMIT, add_card_to_deck
+from src.systems.deck_loadout import (
+    DECK_SLOT_LIMIT,
+    add_card_to_slots,
+    deck_is_ready_for_exit,
+)
 from src.systems.shop_system import purchase_card
 
 
@@ -66,18 +70,20 @@ class CardCollectionPageTests(unittest.TestCase):
             for name, rect in scene.cards.items():
                 with self.subTest(page=page, card=name):
                     scene.selected_card = None
-                    # Parte de um deck determinístico com um único espaço livre.
-                    self.data['progresso']['deck_slots'] = ['Soco Simples'] + [None] * (DECK_SLOT_LIMIT - 1)
-                    self.data['progresso']['cartas'] = ['Soco Simples']
+                    # Parte de um rascunho determinístico com um único espaço livre.
+                    scene.draft_slots = ['Soco Simples'] + [None] * (DECK_SLOT_LIMIT - 1)
                     self.click(scene, rect)
                     if name in AVAILABLE_CARD_NAMES:
-                        # O baralho começa com uma Soco Simples; o clique adiciona mais uma.
+                        # O rascunho começa com uma Soco Simples; o clique adiciona mais uma.
                         expected = 2 if name == 'Soco Simples' else 1
                         self.assertEqual(scene.selected_card, name)
-                        self.assertEqual(self.data['progresso']['cartas'].count(name), expected)
+                        self.assertEqual(scene.draft_slots.count(name), expected)
                     else:
                         self.assertIsNone(scene.selected_card)
-                        self.assertEqual(self.data['progresso']['cartas'], ['Soco Simples'])
+                        self.assertEqual(
+                            scene.draft_slots,
+                            ['Soco Simples'] + [None] * (DECK_SLOT_LIMIT - 1),
+                        )
                     if scene.selected_card:
                         selected.add(scene.selected_card)
         self.assertEqual(selected, AVAILABLE_CARD_NAMES)
@@ -91,11 +97,15 @@ class CardCollectionPageTests(unittest.TestCase):
         coins = progress['moedas']
 
         self.assertFalse(purchase_card(self.saves, self.data, name).success)
-        self.assertFalse(add_card_to_deck(self.saves, self.data, name)[0])
+        ok, message, slots = add_card_to_slots(
+            progress['deck_slots'], progress['cartas_colecao'], name
+        )
+        self.assertFalse(ok)
         self.assertEqual(progress['moedas'], coins)
         self.saves.save.assert_not_called()
 
-        BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, self.data)
+        scene = BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, self.data)
         self.assertIn(name, progress['cartas_colecao'])
         self.assertNotIn(name, progress['cartas'])
-        self.assertTrue(progress['cartas'])
+        self.assertNotIn(name, scene.draft_slots)
+        self.assertFalse(deck_is_ready_for_exit(scene.draft_slots))
