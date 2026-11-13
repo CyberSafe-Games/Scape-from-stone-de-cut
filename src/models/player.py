@@ -6,11 +6,12 @@ from src.models.effects.ultimate_effect import DEFAULT_ULTIMATE_ID, known_ultima
 class Player(Combatant):
     """Representa o herói controlado pelo jogador."""
 
+    BASE_HP = 60
     INITIAL_ENERGY_MAX = 2
     MAX_ENERGY_LIMIT = 8
     CEMETERY_ENERGY_COST = 1
 
-    def __init__(self, name="Jaum Manel", hp=60, energy_max=INITIAL_ENERGY_MAX, ultimate_threshold=20):
+    def __init__(self, name="Jaum Manel", hp=BASE_HP, energy_max=INITIAL_ENERGY_MAX, ultimate_threshold=20):
         super().__init__(name, hp)
         self._energy_max = max(0, min(energy_max, self.MAX_ENERGY_LIMIT))
         self.energy = self._energy_max

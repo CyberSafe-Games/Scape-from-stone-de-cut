@@ -8,7 +8,7 @@ from src.systems.combat_engine import CombatEngine
 from src.models.player import Player
 from src.systems.save_manager import SaveManager, SaveCorruptedError
 from src.systems.shop_system import (
-    purchase_healing, purchase_card, HEAL_PRICE, HEAL_PURCHASE_LIMIT,
+    purchase_health_upgrade, purchase_card, HEALTH_UPGRADE_PRICE, HEALTH_UPGRADE_LIMIT,
     CARD_PRICES, CARD_OFFERS,
 )
 
@@ -27,47 +27,54 @@ class ShopAndCombatTests(unittest.TestCase):
         self.data["progresso"]["vida"] = hp
         self.manager.save(self.data)
 
-    def test_heal_restores_15_hp_and_charges_once(self):
+    def test_upgrade_persists_in_combat_without_healing(self):
         self._set_progress(coins=180, hp=20)
-        result = purchase_healing(self.manager, self.data)
+        result = purchase_health_upgrade(self.manager, self.data)
         self.assertTrue(result.success)
         self.assertEqual(result.amount, 15)
-        self.assertEqual(self.manager.load_save("slot_1")["progresso"]["vida"], 35)
-        self.assertEqual(self.data["progresso"]["moedas"], 180 - HEAL_PRICE)
-        self.assertEqual(self.data["progresso"]["curas_compradas_run"], 1)
+        loaded = self.manager.load_save("slot_1")
+        self.assertEqual(loaded["progresso"]["vida"], 20)
+        self.assertEqual(loaded["progresso"]["moedas"], 180 - HEALTH_UPGRADE_PRICE)
+        self.assertEqual(loaded["progresso"]["melhorias_vida_run"], 1)
+        engine = CombatEngine()
+        engine.resume_from_save(loaded, self.manager)
+        self.assertEqual((engine.player.hp, engine.player.max_hp), (20, 75))
+        loaded["progresso"]["vida"] = 75
+        self.manager.save(loaded)
+        self.assertEqual(self.manager.load_save("slot_1")["progresso"]["vida"], 75)
 
-    def test_partial_heal_never_exceeds_max_hp(self):
-        self._set_progress(coins=HEAL_PRICE, hp=52)
-        result = purchase_healing(self.manager, self.data)
-        self.assertEqual(result.amount, 8)
+    def test_can_buy_at_full_hp(self):
+        self._set_progress(coins=HEALTH_UPGRADE_PRICE)
+        self.assertTrue(purchase_health_upgrade(self.manager, self.data).success)
         self.assertEqual(self.data["progresso"]["vida"], 60)
         self.assertEqual(self.data["progresso"]["moedas"], 0)
 
-    def test_full_hp_or_insufficient_funds_does_not_charge(self):
-        self._set_progress(coins=500, hp=60)
-        self.assertFalse(purchase_healing(self.manager, self.data).success)
-        self.assertEqual(self.data["progresso"]["moedas"], 500)
-        self._set_progress(coins=HEAL_PRICE - 1, hp=20)
-        self.assertFalse(purchase_healing(self.manager, self.data).success)
-        self.assertEqual(self.data["progresso"]["curas_compradas_run"], 0)
+    def test_insufficient_funds_does_not_charge(self):
+        self._set_progress(coins=HEALTH_UPGRADE_PRICE - 1, hp=20)
+        self.assertFalse(purchase_health_upgrade(self.manager, self.data).success)
+        self.assertEqual(self.data["progresso"]["moedas"], HEALTH_UPGRADE_PRICE - 1)
+        self.assertEqual(self.data["progresso"]["melhorias_vida_run"], 0)
         self.assertEqual(self.data["progresso"]["vida"], 20)
 
-    def test_only_three_heals_per_run_across_reloads(self):
+    def test_only_three_upgrades_per_run_across_reloads(self):
         self._set_progress(coins=1000, hp=1)
-        for i in range(HEAL_PURCHASE_LIMIT):
-            self.assertTrue(purchase_healing(self.manager, self.data).success)
+        for i in range(HEALTH_UPGRADE_LIMIT):
+            self.assertTrue(purchase_health_upgrade(self.manager, self.data).success)
             self.data = self.manager.load_save("slot_1")
-            self.assertEqual(self.data["progresso"]["curas_compradas_run"], i + 1)
-        self.assertFalse(purchase_healing(self.manager, self.data).success)
-        self.assertEqual(self.data["progresso"]["curas_compradas_run"], 3)
-        self.assertEqual(self.data["progresso"]["moedas"], 1000 - 3 * HEAL_PRICE)
+            self.assertEqual(self.data["progresso"]["melhorias_vida_run"], i + 1)
+        self.assertFalse(purchase_health_upgrade(self.manager, self.data).success)
+        self.assertEqual(self.data["progresso"]["melhorias_vida_run"], 3)
+        self.assertEqual(self.data["progresso"]["moedas"], 1000 - 3 * HEALTH_UPGRADE_PRICE)
+        engine = CombatEngine()
+        engine.resume_from_save(self.data, self.manager)
+        self.assertEqual(engine.player.max_hp, 105)
 
     def test_independent_runs_and_new_save_reset_limit(self):
         self._set_progress(coins=100, hp=20)
-        purchase_healing(self.manager, self.data)
+        purchase_health_upgrade(self.manager, self.data)
         other = self.manager.create_save("slot_2")
-        self.assertEqual(other["progresso"]["curas_compradas_run"], 0)
-        self.assertEqual(self.manager.load_save("slot_1")["progresso"]["curas_compradas_run"], 1)
+        self.assertEqual(other["progresso"]["melhorias_vida_run"], 0)
+        self.assertEqual(self.manager.load_save("slot_1")["progresso"]["melhorias_vida_run"], 1)
 
     def test_card_purchase_adds_to_collection_and_persists(self):
         self._set_progress(coins=150)
@@ -91,27 +98,30 @@ class ShopAndCombatTests(unittest.TestCase):
         self.assertEqual(self.data["progresso"]["cartas"], original)
         self.assertEqual(self.data["progresso"]["moedas"], 0)
 
-    def test_failed_save_rolls_back_card_and_heal(self):
+    def test_failed_save_rolls_back_card_and_upgrade(self):
         self._set_progress(coins=1000, hp=10)
         before = dict(self.data["progresso"])
         before_cards = list(self.data["progresso"]["cartas"])
         with patch.object(self.manager, "save", side_effect=OSError("Sem permissão")):
             self.assertFalse(purchase_card(self.manager, self.data, "Defesa").success)
-            self.assertFalse(purchase_healing(self.manager, self.data).success)
+            self.assertFalse(purchase_health_upgrade(self.manager, self.data).success)
         self.assertEqual(self.data["progresso"]["moedas"], before["moedas"])
         self.assertEqual(self.data["progresso"]["vida"], before["vida"])
         self.assertEqual(self.data["progresso"]["cartas"], before_cards)
-        self.assertEqual(self.data["progresso"]["curas_compradas_run"], 0)
+        self.assertEqual(self.data["progresso"]["melhorias_vida_run"], 0)
 
-    def test_old_save_migrates_without_purchase_history(self):
-        self.data["progresso"].pop("curas_compradas_run", None)
+    def test_old_heals_do_not_consume_upgrade_limit(self):
+        self.data["progresso"].pop("melhorias_vida_run", None)
+        self.data["progresso"]["curas_compradas_run"] = 3
+        self.data["versao"] = 9
         self.manager.save(self.data)
         loaded = self.manager.load_save("slot_1")
-        self.assertEqual(loaded["progresso"]["curas_compradas_run"], 0)
+        self.assertNotIn("curas_compradas_run", loaded["progresso"])
+        self.assertEqual(loaded["progresso"]["melhorias_vida_run"], 0)
 
     def test_corrupt_purchase_counter_rejected(self):
         for counter in (-1, 4, "3", True):
-            self.data["progresso"]["curas_compradas_run"] = counter
+            self.data["progresso"]["melhorias_vida_run"] = counter
             with self.assertRaises(SaveCorruptedError):
                 self.manager.save(self.data)
 

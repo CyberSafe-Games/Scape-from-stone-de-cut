@@ -28,7 +28,7 @@ class CombatEngine:
         self.on_event = on_event_callback or (lambda event, **kwargs: None)
         self.map_mode = map_mode
 
-        self.player = Player("Jaum Manel", 60, energy_max=Player.INITIAL_ENERGY_MAX)
+        self.player = Player()
         self.deck_manager = DeckManager(create_starting_deck())
         self.ultimate = create_ultimate(self.player.equipped_ultimate_id)
         self.level = 1

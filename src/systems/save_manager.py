@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 
 from src.config.settings import SAVES_DIR
+from src.models.player import Player
 from src.systems.card_catalog import AVAILABLE_CARD_POOL, create_starting_deck
 from src.systems.card_definitions import migrate_card_name
 from src.systems.territory_map import TERRITORY_IDS, FIRST_TERRITORY_ID, ROAD_FIGHTS
@@ -13,13 +14,19 @@ from src.systems.deck_loadout import INITIAL_SLOTS, normalize_collection_and_slo
 # v9: deck equipado passa a ser uma cópia por espaço (DECK_SLOT_LIMIT).
 # Saves v8 (e anteriores) migram em normalize_collection_and_slots: cada
 # tipo equipado (3 cópias) vira três espaços individuais.
-SAVE_VERSION = 9
+SAVE_VERSION = 10
+HEALTH_UPGRADE_AMOUNT = 15
+HEALTH_UPGRADE_LIMIT = 3
 SLOT_COUNT = 3
 
 # Território disponível em um save novo (ids de território definidos pelo jogo).
 INITIAL_TERRITORIES = [FIRST_TERRITORY_ID]
 INITIAL_COINS = 0
 TEST_SAVE_ID = 'modo_teste'
+
+
+def player_max_hp(progress):
+    return Player.BASE_HP + HEALTH_UPGRADE_AMOUNT * progress.get("melhorias_vida_run", 0)
 
 
 def is_test_save(data):
@@ -73,14 +80,14 @@ class SaveManager:
                 "guia_mapa_visto": False,
                 "tutorial_concluido": False,
                 "moedas": INITIAL_COINS,
-                "curas_compradas_run": 0,
+                "melhorias_vida_run": 0,
                 "cartas": deck_cards(INITIAL_SLOTS),
                 "cartas_colecao": ["Soco Simples", "Esfera Protetora"],
                 "deck_slots": list(INITIAL_SLOTS),
                 "encontros_por_territorio": {},
                 # Checkpoint reiniciado no começo de um combate (não é um snapshot do turno).
                 "andar": 1,
-                "vida": 60,
+                "vida": Player.BASE_HP,
                 "energia_maxima": 2,
                 "carga_ultimate": 0,
                 "turnos": 1,
@@ -189,6 +196,8 @@ class SaveManager:
                 tid: ROAD_FIGHTS for tid in progress.get("territorios_desbloqueados", [])
                 if tid in TERRITORY_IDS
             }
+        # Curas antigas não contam como compras da nova melhoria.
+        progress.pop("curas_compradas_run", None)
         for key, default in base["progresso"].items():
             progress.setdefault(key, default)
 
@@ -212,8 +221,9 @@ class SaveManager:
 
         if type(progress["moedas"]) is not int or progress["moedas"] < 0:
             raise SaveCorruptedError("Valor de moedas inválido.")
-        if type(progress["curas_compradas_run"]) is not int or not 0 <= progress["curas_compradas_run"] <= 3:
-            raise SaveCorruptedError("Contador de curas da RUN inválido.")
+        upgrades = progress["melhorias_vida_run"]
+        if type(upgrades) is not int or not 0 <= upgrades <= HEALTH_UPGRADE_LIMIT:
+            raise SaveCorruptedError("Contador de melhorias de vida da run inválido.")
         if not isinstance(progress["cartas"], list):
             raise SaveCorruptedError("Lista de cartas inválida.")
         steps = progress.get("encontros_por_territorio", {})
@@ -239,7 +249,7 @@ class SaveManager:
         for field in ("andar", "vida", "energia_maxima", "carga_ultimate", "turnos"):
             if type(progress[field]) is not int or progress[field] < 0:
                 raise SaveCorruptedError(f"Campo de progresso inválido: {field}.")
-        if progress["andar"] < 1 or progress["vida"] > 60 or not 1 <= progress["energia_maxima"] <= 8:
+        if progress["andar"] < 1 or progress["vida"] > player_max_hp(progress) or not 1 <= progress["energia_maxima"] <= 8:
             raise SaveCorruptedError("Checkpoint inválido.")
         if any(not isinstance(card, str) for card in progress["cartas"]):
             raise SaveCorruptedError("Lista de cartas inválida.")
@@ -289,7 +299,7 @@ class SaveManager:
         progress['ultimates_desbloqueadas'] = known_ultimate_ids()
         progress['tutorial_concluido'] = True
         progress['guia_mapa_visto'] = True
-        progress['vida'] = 60
+        progress['vida'] = player_max_hp(progress)
 
     def load_or_create_test_save(self):
         """Save extra identificado explicitamente; não ocupa nem substitui slots."""
@@ -347,6 +357,7 @@ class SaveManager:
         player.invulnerable = is_test_save(data)
         player.coins = progress["moedas"]
 
+        player.max_hp = player_max_hp(progress)
         player.hp = min(player.max_hp, progress["vida"] or player.max_hp)
         if player.invulnerable:
             player.hp = player.max_hp
