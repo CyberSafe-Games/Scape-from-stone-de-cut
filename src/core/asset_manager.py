@@ -22,7 +22,6 @@ from src.config.typography import (
     FONT_STYLES,
     LINE_HEIGHT,
     SYMBOL_FALLBACK_FONTS,
-    SYSTEM_FALLBACK_FONTS,
     scaled_font_size,
 )
 from src.core.game_font import GameFont
@@ -98,20 +97,22 @@ class AssetManager:
                 return font
         return pygame.font.SysFont(None, size, bold=bold)
 
-    def _load_game_font(self, weight, size):
+    def _load_game_font(self, style, size):
         """Carrega a fonte autoral; símbolos ausentes nela usam fonte de símbolos."""
         fallback = self._pick_font(SYMBOL_FALLBACK_FONTS, size)
-        path = FONT_FILES.get(weight)
-        try:
-            return GameFont(path, size, fallback=fallback, line_height=LINE_HEIGHT)
-        except (pygame.error, FileNotFoundError, OSError, TypeError):
-            print(f"[AVISO] Fonte do jogo não encontrada: {path}")
-            return self._pick_font(SYSTEM_FALLBACK_FONTS, size, bold=(weight == "bold"))
+        # Se o arquivo do estilo faltar, usa o outro estilo da própria fonte autoral.
+        paths = [FONT_FILES.get(style)] + [p for p in FONT_FILES.values() if p != FONT_FILES.get(style)]
+        for path in paths:
+            try:
+                return GameFont(path, size, fallback=fallback, line_height=LINE_HEIGHT)
+            except (pygame.error, FileNotFoundError, OSError, TypeError):
+                print(f"[AVISO] Fonte do jogo não encontrada: {path}")
+        return pygame.font.Font(None, size)
 
     def _init_fonts(self):
         """Tipografia autoral (Igarape Pixel) definida em src/config/typography.py."""
-        for name, (weight, size) in FONT_STYLES.items():
-            self._fonts[name] = self._load_game_font(weight, scaled_font_size(size))
+        for name, (style, size) in FONT_STYLES.items():
+            self._fonts[name] = self._load_game_font(style, scaled_font_size(size))
 
     def get_font(self, name="default"):
         return self._fonts.get(name, self._fonts["default"])
