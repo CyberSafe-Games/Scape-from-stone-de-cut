@@ -36,6 +36,10 @@ from src.systems.normal_enemy_catalog import biome_enemy_names
 
 MAP_AREA = pygame.Rect(45, 138, 1319, 881)
 PANEL = pygame.Rect(1394, 137, 482, 885)
+# Lado (px) dos ícones de território (assets/ui/map_icons/<id>.png, centrados no
+# losango). O boss final recebe um leve destaque de tamanho.
+MAP_ICON_SIZE = 157
+FINAL_BOSS_ICON_SIZE = 168
 
 
 class MapScene(BaseScene):
@@ -253,7 +257,22 @@ class MapScene(BaseScene):
             chosen = territory.id == self.selected and self.selected_encounter is None
             hovered = math.dist(cursor, (x, y)) <= 48
             radius = 41 if chosen else 36
+            is_final_boss = territory.level == len(TERRITORIES)
+            icon_size = FINAL_BOSS_ICON_SIZE if is_final_boss else MAP_ICON_SIZE
             if chosen:
+                icon_size = round(icon_size * 1.1)
+            icon = self.asset_manager.get_map_icon(
+                territory.id, icon_size, dimmed=(state == "locked")
+            )
+            has_icon = isinstance(icon, pygame.Surface)
+            if has_icon:
+                # Ícone exclusivo do chefe; o losango central segue mostrando o estado.
+                if chosen:
+                    pygame.draw.circle(surface, (9, 16, 15), (x, y), int(icon_size * 0.54 * pulse), 5)
+                    pygame.draw.circle(surface, (234, 191, 112), (x, y), int(icon_size * 0.54 * pulse), 2)
+                surface.blit(icon, icon.get_rect(center=(x, y)))
+                radius = round(icon_size * 0.17)
+            elif chosen:
                 pygame.draw.circle(surface, (9, 16, 15), (x, y), 59)
                 pygame.draw.circle(surface, (174, 135, 71), (x, y), int(53 * pulse), 2)
             fill = (
@@ -270,17 +289,19 @@ class MapScene(BaseScene):
                 if state == "completed"
                 else (76, 83, 78)
             )
-            pygame.draw.circle(surface, (5, 9, 9), (x + 5, y + 8), radius + 9)
             pts = [(x, y - radius), (x + radius, y), (x, y + radius), (x - radius, y)]
+            if not has_icon:
+                pygame.draw.circle(surface, (5, 9, 9), (x + 5, y + 8), radius + 9)
             pygame.draw.polygon(surface, fill, pts)
             pygame.draw.lines(surface, border, True, pts, 3)
-            inner = [
-                (x, y - radius + 11),
-                (x + radius - 11, y),
-                (x, y + radius - 11),
-                (x - radius + 11, y),
-            ]
-            pygame.draw.lines(surface, (119, 111, 82), True, inner, 2)
+            if not has_icon:
+                inner = [
+                    (x, y - radius + 11),
+                    (x + radius - 11, y),
+                    (x, y + radius - 11),
+                    (x - radius + 11, y),
+                ]
+                pygame.draw.lines(surface, (119, 111, 82), True, inner, 2)
             symbol = (
                 "V"
                 if state == "completed"
@@ -288,15 +309,24 @@ class MapScene(BaseScene):
                 if state == "available"
                 else "×"
             )
-            draw_text(
-                surface,
-                symbol,
-                self.asset_manager.menu_font,
-                WHITE if state != "locked" else GRAY,
-                x,
-                y,
-                center=True,
-            )
+            # Chefe concluído: caveira no lugar do antigo "V" (vermelha no boss final).
+            skull = None
+            if state == "completed":
+                skull = self.asset_manager.get_map_marker(
+                    "final_boss_skull" if is_final_boss else "miniboss_skull"
+                )
+            if isinstance(skull, pygame.Surface):
+                surface.blit(skull, skull.get_rect(center=(x, y)))
+            else:
+                draw_text(
+                    surface,
+                    symbol,
+                    self.asset_manager.menu_font,
+                    WHITE if state != "locked" else GRAY,
+                    x,
+                    y,
+                    center=True,
+                )
             font = self.asset_manager.small_font
             label_width = min(288, font.size(territory.title)[0] + 39)
             label_rect = pygame.Rect(0, 0, label_width, 45)
@@ -309,6 +339,17 @@ class MapScene(BaseScene):
                 (165, 30),
                 (-45, -63),
             )
+            if has_icon:
+                # Os ícones são maiores que o losango antigo: afasta os nomes.
+                offsets = (
+                    (188, 6),
+                    (178, 8),
+                    (-12, -102),
+                    (0, -100),
+                    (44, 102),
+                    (182, 30),
+                    (-222, -8),
+                )
             dx, dy = offsets[territory.level - 1]
             label_rect.center = (x + dx, y + dy)
             pygame.draw.rect(surface, (12, 20, 19), label_rect, border_radius=3)
@@ -563,8 +604,9 @@ class MapScene(BaseScene):
     def draw(self, surface):
         self._background(surface)
         self._routes(surface)
-        self._encounters(surface)
+        # Encontros por cima: os efeitos dos ícones não podem esconder os círculos.
         self._territories(surface)
+        self._encounters(surface)
         self._sidebar(surface)
         draw_text(
             surface,
