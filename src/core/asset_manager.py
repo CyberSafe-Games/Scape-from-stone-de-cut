@@ -63,6 +63,7 @@ class AssetManager:
         self._fallback_sprite = None
         self._coin_icon = None
         self._ui_images = {}
+        self._map_icons = {}
         self._status_icons = {}
         self._projectile_images = {}
         self._intent_art = {}
@@ -276,6 +277,30 @@ class AssetManager:
 
     def get_ui_image(self, key):
         return self._ui_images.get(key)
+
+    def get_map_icon(self, territory_id, size, dimmed=False):
+        """Ícone do território no mapa (assets/ui/map_icons/<id>.png), já escalado.
+
+        `dimmed` devolve a versão apagada usada em territórios bloqueados, gerada
+        em memória (o arquivo original não é alterado). Retorna None se faltar a arte.
+        """
+        key = (territory_id, size, dimmed)
+        if key not in self._map_icons:
+            source_key = (territory_id, None, False)
+            if source_key not in self._map_icons:
+                path = os.path.join(UI_ASSETS_DIR, "map_icons", territory_id + ".png")
+                try:
+                    self._map_icons[source_key] = pygame.image.load(path).convert_alpha()
+                except (pygame.error, FileNotFoundError):
+                    self._map_icons[source_key] = None
+            icon = self._map_icons[source_key]
+            if icon is not None:
+                icon = pygame.transform.smoothscale(icon, (size, size))
+                if dimmed:
+                    icon = pygame.transform.grayscale(icon)
+                    icon.fill((150, 158, 154, 255), special_flags=pygame.BLEND_RGBA_MULT)
+            self._map_icons[key] = icon
+        return self._map_icons[key]
 
     def get_ultimate_image(self, ultimate_id):
         return self._ultimate_images.get(ultimate_id)
