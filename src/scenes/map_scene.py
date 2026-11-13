@@ -257,7 +257,8 @@ class MapScene(BaseScene):
             chosen = territory.id == self.selected and self.selected_encounter is None
             hovered = math.dist(cursor, (x, y)) <= 48
             radius = 41 if chosen else 36
-            icon_size = FINAL_BOSS_ICON_SIZE if territory.level == len(TERRITORIES) else MAP_ICON_SIZE
+            is_final_boss = territory.level == len(TERRITORIES)
+            icon_size = FINAL_BOSS_ICON_SIZE if is_final_boss else MAP_ICON_SIZE
             if chosen:
                 icon_size = round(icon_size * 1.1)
             icon = self.asset_manager.get_map_icon(
@@ -308,15 +309,24 @@ class MapScene(BaseScene):
                 if state == "available"
                 else "×"
             )
-            draw_text(
-                surface,
-                symbol,
-                self.asset_manager.menu_font,
-                WHITE if state != "locked" else GRAY,
-                x,
-                y,
-                center=True,
-            )
+            # Chefe concluído: caveira no lugar do antigo "V" (vermelha no boss final).
+            skull = None
+            if state == "completed":
+                skull = self.asset_manager.get_map_marker(
+                    "final_boss_skull" if is_final_boss else "miniboss_skull"
+                )
+            if isinstance(skull, pygame.Surface):
+                surface.blit(skull, skull.get_rect(center=(x, y)))
+            else:
+                draw_text(
+                    surface,
+                    symbol,
+                    self.asset_manager.menu_font,
+                    WHITE if state != "locked" else GRAY,
+                    x,
+                    y,
+                    center=True,
+                )
             font = self.asset_manager.small_font
             label_width = min(288, font.size(territory.title)[0] + 39)
             label_rect = pygame.Rect(0, 0, label_width, 45)

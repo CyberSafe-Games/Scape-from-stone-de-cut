@@ -49,6 +49,42 @@ class MapIconTests(unittest.TestCase):
         self.assertLess(sum(dimmed.get_at(point)[:3]), sum(icon.get_at(point)[:3]) + 1)
         self.assertIsNone(self.assets.get_map_icon("territorio_inexistente", MAP_ICON_SIZE))
 
+    def test_completed_bosses_show_skulls_instead_of_the_v_marker(self):
+        import tempfile
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        saves = SaveManager(folder.name)
+        data = saves.create_save("slot_1")
+        progress = data["progresso"]
+        progress["territorios_desbloqueados"] = list(TERRITORY_IDS)
+        progress["territorios_concluidos"] = list(TERRITORY_IDS[:1]) + [TERRITORY_IDS[-1]]
+        requested = []
+        assets = MagicMock()
+        assets.menu_font = assets.small_font = pygame.font.Font(None, 28)
+        assets.get_map_icon.side_effect = self.assets.get_map_icon
+        assets.get_map_marker.side_effect = lambda name: (
+            requested.append(name) or self.assets.get_map_marker(name)
+        )
+        window = MagicMock()
+        window.get_virtual_mouse_pos.return_value = (-100, -100)
+        scene = MapScene(MagicMock(), window, assets, saves, data)
+        surface = pygame.Surface((1920, 1080), pygame.SRCALPHA)
+        scene._territories(surface)
+        # Só os chefes concluídos pedem caveira; o boss final usa a vermelha.
+        self.assertEqual(requested, ["miniboss_skull", "final_boss_skull"])
+        for name, territory in (("miniboss_skull", TERRITORIES[0]), ("final_boss_skull", TERRITORIES[-1])):
+            skull = self.assets.get_map_marker(name)
+            self.assertEqual(skull.get_at((0, 0)).a, 0)
+            rect = skull.get_rect(center=territory.position)
+            for point in ((16, 6), (9, 14), (16, 20)):  # testa, olho e nariz, sem reescala
+                self.assertEqual(
+                    surface.get_at((rect.x + point[0], rect.y + point[1]))[:3],
+                    skull.get_at(point)[:3], (name, point),
+                )
+        red = self.assets.get_map_marker("final_boss_skull").get_at((16, 12))
+        self.assertGreater(red.r, red.g * 3)
+        self.assertIsNone(self.assets.get_map_marker("marcador_inexistente"))
+
     def test_map_draws_the_icon_centered_on_each_territory(self):
         import tempfile
         folder = tempfile.TemporaryDirectory()

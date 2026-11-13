@@ -278,6 +278,21 @@ class AssetManager:
     def get_ui_image(self, key):
         return self._ui_images.get(key)
 
+    def get_map_marker(self, name):
+        """Marcador em pixel art do mapa (assets/ui/map_markers/<nome>.png).
+
+        Já vem no tamanho de desenho: não é reescalado, para manter os pixels
+        nítidos. Retorna None se o arquivo faltar.
+        """
+        key = ("marker", name)
+        if key not in self._map_icons:
+            path = os.path.join(UI_ASSETS_DIR, "map_markers", name + ".png")
+            try:
+                self._map_icons[key] = pygame.image.load(path).convert_alpha()
+            except (pygame.error, FileNotFoundError):
+                self._map_icons[key] = None
+        return self._map_icons[key]
+
     def get_map_icon(self, territory_id, size, dimmed=False):
         """Ícone do território no mapa (assets/ui/map_icons/<id>.png), já escalado.
 
