@@ -107,6 +107,19 @@ class TestTutorialSceneIntegration(unittest.TestCase):
     def tearDown(self):
         self._tmp.cleanup()
 
+    def test_save_on_exit_keeps_initial_deck_unchanged(self):
+        """Fechar durante o tutorial não altera o deck inicial do save."""
+        progress = self.save_data["progresso"]
+        initial_slots = list(progress["deck_slots"])
+        initial_collection = list(progress["cartas_colecao"])
+
+        self.assertTrue(self.tutorial_scene.save_on_exit())
+
+        loaded = self.save_manager.load_save("slot_1")["progresso"]
+        self.assertEqual(loaded["deck_slots"], initial_slots)
+        self.assertEqual(loaded["cartas"], initial_slots[:6])
+        self.assertEqual(loaded["cartas_colecao"], initial_collection)
+
     def test_floating_bubbles_positioned_near_targets(self):
         """Garante que os balões não estão todos no centro e ficam próximos aos elementos."""
         bubble_positions = [step.bubble_pos for step in self.tutorial_scene.overlay.steps]

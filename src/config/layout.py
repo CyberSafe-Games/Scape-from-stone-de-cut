@@ -23,6 +23,17 @@ CARD_SPACING = 18
 
 
 # ============================================================
+# BOTÕES DO DECK NA MOCHILA
+# ============================================================
+
+# Os dois botões ficam na mesma linha, logo abaixo do painel do deck.
+BACKPACK_DECK_BUTTON_OFFSET_Y = 26
+BACKPACK_DECK_BUTTON_HEIGHT = 59
+BACKPACK_DECK_BUTTON_GAP = 16
+BACKPACK_DECK_BUTTON_INSET_X = 8
+
+
+# ============================================================
 # PARÂMETROS DE ANIMAÇÃO E TIMERS (em milissegundos)
 # ============================================================
 

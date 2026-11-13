@@ -135,10 +135,9 @@ class TestBackpackAudio(unittest.TestCase):
         # A primeira carta da página é Esfera Protetora, possuída no save novo.
         card_name, card_rect = next(iter(scene.cards.items()))
         self.assertIn(card_name, save_data["progresso"]["cartas_colecao"])
-        # Abre espaço no deck: o save novo começa com 3 cópias de cada inicial.
-        deck = save_data["progresso"]["deck_slots"]
+        # Abre espaço no rascunho: o save novo começa com 3 cópias de cada inicial.
+        deck = scene.draft_slots
         deck[deck.index(card_name)] = None
-        save_data["progresso"]["cartas"] = [n for n in deck if n]
 
         window_manager.map_to_virtual.return_value = card_rect.center
 
@@ -355,7 +354,11 @@ class TestBackpackAudio(unittest.TestCase):
 
         scene.handle_event(event)
 
-        self.assertIsNone(save_data["progresso"]["deck_slots"][0])
+        self.assertIsNone(scene.draft_slots[0])
+        # A remoção deixou o rascunho com 5 cartas: o deck oficial não muda.
+        self.assertEqual(
+            sum(1 for name in save_data["progresso"]["deck_slots"] if name), 6
+        )
         scene_manager.audio_manager.play_sfx.assert_called_once_with(
             "ui.confirm",
             volume=1.0,
@@ -376,16 +379,17 @@ class TestBackpackAudio(unittest.TestCase):
         )
 
         card_name = save_data["progresso"]["cartas_colecao"][0]
+        draft_before = list(scene.draft_slots)
 
         with patch(
-            "src.scenes.backpack_scene.add_card_to_deck",
-            return_value=(True, "Carta adicionada ao deck."),
+            "src.scenes.backpack_scene.add_card_to_slots",
+            return_value=(True, "Carta adicionada ao deck.", draft_before),
         ) as mock_add:
             scene._add(card_name)
 
         mock_add.assert_called_once_with(
-            save_manager,
-            save_data,
+            draft_before,
+            save_data["progresso"]["cartas_colecao"],
             card_name,
         )
 
@@ -409,8 +413,12 @@ class TestBackpackAudio(unittest.TestCase):
         )
 
         with patch(
-            "src.scenes.backpack_scene.add_card_to_deck",
-            return_value=(False, "Você já tem 3 cópias no deck."),
+            "src.scenes.backpack_scene.add_card_to_slots",
+            return_value=(
+                False,
+                "Você já tem 3 cópias no deck.",
+                list(scene.draft_slots),
+            ),
         ):
             scene._add("Carta de teste")
 
@@ -440,15 +448,18 @@ class TestBackpackAudio(unittest.TestCase):
             pos=scene.slots[2].center,
         )
 
+        draft_before = list(scene.draft_slots)
+        slots_after = list(draft_before)
+        slots_after[2] = None
+
         with patch(
-            "src.scenes.backpack_scene.remove_card_from_deck",
-            return_value=(True, "Carta removida do deck."),
+            "src.scenes.backpack_scene.remove_card_from_slots",
+            return_value=(True, "Carta removida do deck.", slots_after),
         ) as mock_remove:
             scene.handle_event(event)
 
         mock_remove.assert_called_once_with(
-            save_manager,
-            save_data,
+            draft_before,
             2,
         )
 
@@ -677,16 +688,19 @@ class TestBackpackAudio(unittest.TestCase):
             key=pygame.K_BACKSPACE,
         )
 
+        draft_before = list(scene.draft_slots)
+        slots_after = list(draft_before)
+        slots_after[5] = None
+
         with patch(
-            "src.scenes.backpack_scene.remove_card_from_deck",
-            return_value=(True, "Carta removida do deck."),
+            "src.scenes.backpack_scene.remove_card_from_slots",
+            return_value=(True, "Carta removida do deck.", slots_after),
         ) as mock_remove:
             scene.handle_event(event)
 
         # Save novo: espaços 0-5 preenchidos (3+3); o último é o 5.
         mock_remove.assert_called_once_with(
-            save_manager,
-            save_data,
+            draft_before,
             5,
         )
 
@@ -787,15 +801,17 @@ class TestBackpackAudio(unittest.TestCase):
             key=pygame.K_RETURN,
         )
 
+        draft_before = list(scene.draft_slots)
+
         with patch(
-            "src.scenes.backpack_scene.add_card_to_deck",
-            return_value=(True, "Carta adicionada ao deck."),
+            "src.scenes.backpack_scene.add_card_to_slots",
+            return_value=(True, "Carta adicionada ao deck.", draft_before),
         ) as mock_add:
             scene.handle_event(event)
 
         mock_add.assert_called_once_with(
-            save_manager,
-            save_data,
+            draft_before,
+            save_data["progresso"]["cartas_colecao"],
             scene.selected_card,
         )
 
