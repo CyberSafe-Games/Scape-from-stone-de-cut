@@ -10,7 +10,7 @@ from src.systems.territory_map import TERRITORY_IDS, FIRST_TERRITORY_ID, ROAD_FI
 from src.models.effects.ultimate_effect import DEFAULT_ULTIMATE_ID, known_ultimate_ids
 from src.systems.deck_loadout import INITIAL_SLOTS, normalize_collection_and_slots, expand_slots, SLOT_COUNT, CARD_NAMES
 
-SAVE_VERSION = 8
+SAVE_VERSION = 9
 SLOT_COUNT = 3
 
 # Território disponível em um save novo (ids de território definidos pelo jogo).
@@ -69,6 +69,8 @@ class SaveManager:
                 "territorios_concluidos": [],
                 "guia_mapa_visto": False,
                 "tutorial_concluido": False,
+                "intro_vista": False,
+                "pos_tutorial_visto": False,
                 "moedas": INITIAL_COINS,
                 "curas_compradas_run": 0,
                 "cartas": expand_slots(INITIAL_SLOTS),
@@ -162,6 +164,8 @@ class SaveManager:
         # Saves anteriores ao tutorial já têm jornada iniciada: não obrigá-los
         # a refazer o treinamento. Apenas novos saves recebem False.
         progress.setdefault("tutorial_concluido", True)
+        progress.setdefault("intro_vista", True)
+        progress.setdefault("pos_tutorial_visto", True)
         if "territorios_desbloqueados" not in progress:
             progress["territorios_desbloqueados"] = list(INITIAL_TERRITORIES)
         # Migração dos saves v2: andares avançados significam fases anteriores
@@ -230,6 +234,10 @@ class SaveManager:
             raise SaveCorruptedError("Indicador do guia inválido.")
         if type(progress["tutorial_concluido"]) is not bool:
             raise SaveCorruptedError("Indicador de tutorial inválido.")
+        if type(progress["intro_vista"]) is not bool:
+            raise SaveCorruptedError("Indicador de introdução inválido.")
+        if type(progress["pos_tutorial_visto"]) is not bool:
+            raise SaveCorruptedError("Indicador de pós-tutorial inválido.")
 
         for field in ("andar", "vida", "energia_maxima", "carga_ultimate", "turnos"):
             if type(progress[field]) is not int or progress[field] < 0:
@@ -281,6 +289,8 @@ class SaveManager:
         progress['cartas_colecao'] = [card.name for card in CARD_POOL]
         progress['ultimates_desbloqueadas'] = known_ultimate_ids()
         progress['tutorial_concluido'] = True
+        progress['intro_vista'] = True
+        progress['pos_tutorial_visto'] = True
         progress['guia_mapa_visto'] = True
         progress['vida'] = 60
 

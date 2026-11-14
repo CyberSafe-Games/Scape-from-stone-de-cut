@@ -590,16 +590,55 @@ class TutorialScene(BattleScene):
                     f"Falha ao gravar tutorial: {exc}", duration=5000
                 )
                 return
+        
         self.play_ui_sound("ui.confirm")
-        self.scene_manager.change_scene(
-            MapScene(
+
+        def create_map():
+            return MapScene(
                 self.scene_manager,
                 self.window_manager,
                 self.asset_manager,
                 save_manager=self.save_manager,
                 save_data=self.save_data,
             )
+
+        # O tutorial sem save segue diretamente para o mapa.
+        if self.save_data is None or self.save_manager is None:
+            self.scene_manager.change_scene(create_map())
+            return
+
+        progress = self.save_data["progresso"]
+
+        if progress.get("pos_tutorial_visto", True):
+            self.scene_manager.change_scene(create_map())
+            return
+
+        from src.config.cutscenes import POST_TUTORIAL_CUTSCENE
+        from src.scenes.cutscene_scene import CutsceneScene
+
+        def finish_post_tutorial():
+            progress["pos_tutorial_visto"] = True
+
+            try:
+                self.save_manager.save(self.save_data)
+            except (OSError, ValueError, SaveError) as exc:
+                progress["pos_tutorial_visto"] = False
+                self.engine.show_message(
+                    f"Falha ao salvar cutscene: {exc}",
+                    duration=5000,
+                )
+
+        self.scene_manager.change_scene(
+            CutsceneScene(
+                self.scene_manager,
+                self.window_manager,
+                self.asset_manager,
+                scenes=POST_TUTORIAL_CUTSCENE,
+                next_scene_factory=create_map,
+                on_finish=finish_post_tutorial,
+            )
         )
+
 
     def _save_progress(self):
         """Nunca registra um checkpoint parcial de treinamento."""
