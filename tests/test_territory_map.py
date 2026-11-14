@@ -116,7 +116,7 @@ class TestTerritoryMap(unittest.TestCase):
         engine.choose_reward(0)
         self.assertEqual(engine.level, 1)
         self.assertEqual(engine.state, 'phase_complete')
-        self.assertEqual(engine.player.hp, 30)
+        self.assertEqual(engine.player.hp, 22)  # Combates comuns não curam; a vida persiste.
         self.assertEqual(len(engine.deck_manager.deck), deck_len + 1)
         self.assertEqual(events[-1], ('phase_complete', {'level': 1}))
         engine.choose_reward(0)
@@ -157,7 +157,7 @@ class TestTerritoryMap(unittest.TestCase):
         self.assertEqual(loaded['progresso']['andar'], 2)
         self.assertEqual(loaded['progresso']['moedas'], 47)
         self.assertEqual(len(loaded['progresso']['cartas']), 6)
-        self.assertEqual(sum(c is not None for c in loaded['progresso']['deck_slots']), 2)
+        self.assertEqual(sum(c is not None for c in loaded['progresso']['deck_slots']), 6)
         # Um retry de gravação não deve voltar a recompensar a mesma fase.
         data['progresso']['encontros_por_territorio'][TERRITORY_IDS[0]] = 3
         record_victory(self.saves, data, engine, finish_animation)

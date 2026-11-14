@@ -149,7 +149,9 @@ def render_blend(pose, light):
     result = pygame.Surface(dominant.get_size(), pygame.SRCALPHA)
     bounds = dominant.get_bounding_rect()
     position = bounds.move(dominant_shift)
-    result.blit(dominant.subsurface(bounds).premul_alpha(), position, special_flags=pygame.BLEND_RGBA_ADD)
+    # No Pygame 2.6, o recorte precisa de pixels próprios antes de pré-multiplicar.
+    body = dominant.subsurface(bounds).copy().premul_alpha()
+    result.blit(body, position, special_flags=pygame.BLEND_RGBA_ADD)
 
     # Só mistura onde já existe corpo na pose dominante. O restante mantém um
     # único contorno, sem braços ou armas semitransparentes em duplicidade.
@@ -157,7 +159,8 @@ def render_blend(pose, light):
     if overlap.width and overlap.height:
         mask = pygame.mask.from_surface(result.subsurface(overlap), 96)
         stencil = mask.to_surface(setcolor=(255, 255, 255, 255), unsetcolor=(0, 0, 0, 0))
-        layer = secondary.subsurface(overlap.move(-secondary_shift[0], -secondary_shift[1])).premul_alpha()
+        source = overlap.move(-secondary_shift[0], -secondary_shift[1])
+        layer = secondary.subsurface(source).copy().premul_alpha()
         opacity = round(255 * min(fraction, 1 - fraction))
         layer.fill((opacity,) * 4, special_flags=pygame.BLEND_RGBA_MULT)
         layer.blit(stencil, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)

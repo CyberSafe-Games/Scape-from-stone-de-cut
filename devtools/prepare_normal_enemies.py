@@ -72,7 +72,8 @@ def main(folder):
     root = Path(__file__).resolve().parents[1]
     preview = Image.new('RGB', (4 * 320, 11 * 215), '#14231f')
     draw = ImageDraw.Draw(preview)
-    for idx, ((name, spec), source) in enumerate(zip(NORMAL_SPRITES.items(), SOURCES)):
+    reference_enemies = [(name, spec) for name, spec in NORMAL_SPRITES.items() if spec[0] != 'viniurgo']
+    for idx, ((name, spec), source) in enumerate(zip(reference_enemies, SOURCES, strict=True)):
         slug, groups, _, _ = spec
         original = Image.open(Path(folder) / f'codex-clipboard-{source}.png')
         w, h = original.size
@@ -166,7 +167,6 @@ def main(folder):
                     impact = cells[row][col].transpose(Image.Transpose.FLIP_LEFT_RIGHT)
                     impact.thumbnail((110, 100), Image.Resampling.NEAREST)
                     frame.alpha_composite(impact, (90, 214-impact.height))
-                frame.save(out / f'{group}_{col+1}.png')
                 if col == 2:
                     preview.paste(frame, (row*320-64, idx*215-5), frame)
             draw.text((row*320+8, idx*215+5), f'{name} / {group}', fill='#ecd5a1')

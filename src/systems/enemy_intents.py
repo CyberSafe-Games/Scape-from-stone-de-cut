@@ -1,6 +1,7 @@
 """Previsões de intenções sem consumir energia ou sortear novas ações."""
 from dataclasses import dataclass
 import unicodedata
+from src.models.action import action_status_effects
 
 
 @dataclass(frozen=True)
@@ -17,10 +18,14 @@ class IntentPreview:
 
 def icon_family(action):
     name = ''.join(c for c in unicodedata.normalize('NFD', action.name.lower()) if not unicodedata.combining(c))
+    if 'grilhoes' in name: return 'chains'
+    if 'travessia final' in name: return 'ferry'
+    if 'foice' in name or 'passo do barqueiro' in name: return 'scythe'
     if action.action_type in ('defend', 'defense'): return 'shield'
     if action.action_type == 'heal': return 'heal'
     if action.action_type == 'buff': return 'smoke' if 'fumaca' in name else 'buff'
-    status = getattr(action, 'status_effect', None)
+    statuses = action_status_effects(action)
+    status = statuses[0] if statuses else None
     if status:
         return {'fire': 'fire', 'poison': 'poison', 'bleed': 'claw'}.get(status[0], 'strike')
     for words, family in ((('moeda',), 'coins'), (('chave',), 'tool'),
@@ -42,6 +47,10 @@ def preview_intents(engine):
     index = getattr(enemy, 'action_plan_index', 0)
     bonus = enemy.attack_bonus
     result = []
+    vulnerability = engine.player.statuses.get('vulnerable', {})
+    expires_before_action = engine.state == 'player_turn' and vulnerability.get('turns',0) <= 1
+    predicted_vulnerable = bool(vulnerability) and not expires_before_action
+    predicted_totem = 'totem' in engine.player.statuses
     for i, action in enumerate(actions):
         done = i < index
         active = i == index and engine.state in ('enemy_turn', 'enemy_resolving')
@@ -50,22 +59,30 @@ def preview_intents(engine):
         if action.action_type == 'attack':
             base = max(0, int(round(action.damage*.75))) if enemy.weak_turns > 0 else action.damage
             value = max(0, base+bonus)
-            vulnerability = engine.player.statuses.get('vulnerable', {})
-            expires_before_action = engine.state == 'player_turn' and vulnerability.get('turns', 0) <= 1
-            if vulnerability and not expires_before_action:
+            if predicted_vulnerable:
                 value = (value*125+99)//100
             text = f'Causa {value} de dano antes de Escudo e Totem.'
             if bonus: text += f' Inclui +{bonus} de bônus de dano.'
             if enemy.weak_turns: text += ' Fraqueza já considerada.'
-            status = getattr(action, 'status_effect', None)
-            if status:
-                key, turns, potency = status
+            statuses = action_status_effects(action)
+            for key,turns,potency in statuses:
                 if key == 'bleed':
                     text += f' Aplica Sangramento por {turns} turnos: {potency} de dano direto no primeiro ataque do alvo por turno.'
                 elif key == 'poison':
                     text += f' Aplica Veneno por {turns} turnos: {potency} de dano direto à vida no fim do turno.'
+                elif key == 'vulnerable':
+                    text += f' Aplica Vulnerável por {turns} turnos: recebe {potency}% a mais de dano de ataques. Reaplicar renova a duração.'
                 elif key == 'fire':
                     text += f' Aplica {potency} intensidade(s) de Fogo por {turns} turnos: 3 de dano por intensidade ao fim do turno. Máximo: 3 intensidades.'
+            if any(status[0] in ('bleed','poison') for status in statuses):
+                text += ' Reaplicar renova a duração, sem acumular; mantém a maior intensidade ativa.'
+            # Simular só ações futuras; em enemy_resolving a atual já aconteceu.
+            pending = not done and not (active and engine.state == 'enemy_resolving')
+            if pending:
+                protected = predicted_totem
+                predicted_totem = False
+                if any(status[0] == 'vulnerable' for status in statuses) and not protected:
+                    predicted_vulnerable = True
         elif action.action_type in ('defend', 'defense'):
             value = action.defense
             text = f'Recebe {value} de Escudo por 2 turnos completos. Esta ação não causa dano.'

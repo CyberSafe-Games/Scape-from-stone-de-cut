@@ -1,9 +1,10 @@
 # Bosses com doze frames
 
-Os sete bosses usam doze poses em todas as ações existentes, incluindo idle,
-reação ao dano, defesa, cura, ataques e ultimates. Álvaro e Tex contam com as duas
-fases e a transição entre elas. São 55 sequências de corpo (660 sprites) e seis
-camadas de ultimate com doze efeitos cada (72 sprites).
+Os sete bosses usam doze poses em defesa, cura, ataques e ultimates. Álvaro e
+Tex contam com as duas fases e a transição entre elas. São 39 sequências de
+corpo (468 sprites) e seis camadas de ultimate com doze efeitos cada (72
+sprites). Repouso e reação ao dano usam oito poses em
+`assets/bosses/eight_frames`.
 
 ## Identidade e sequência
 
@@ -12,11 +13,11 @@ As oito poses aprovadas foram conservadas, pixel a pixel, nas posições
 2, 5, 8 e 11. Foram gerados com a ferramenta integrada de geração de imagens,
 usando as próprias animações do jogo como referência.
 
-As fontes estão em `assets/bosses/twelve_frames/<boss>/reference.png` e
-`inbetweens.png`. Cada personagem conserva a paleta anterior e o pivô dos pés.
-O preparo ajusta as cores dos intermediários por material e estabiliza a
-luminosidade do idle. A entrada e a recuperação podem aproveitar as novas poses
-de repouso do próprio personagem; elas não substituem a execução do golpe.
+Os quadros intermediários vêm de `assets/bosses/twelve_frames/<boss>/inbetweens.png`.
+O preparo com `--references` recria as folhas de referência quando necessário.
+Cada personagem conserva a paleta anterior e o pivô dos pés.
+O preparo ajusta as cores dos intermediários por material. A entrada e a
+recuperação podem aproveitar poses da referência de repouso do personagem.
 `selection.json` registra a origem de cada intermediário selecionado.
 
 A fonte de oito frames permanece em `assets/bosses/eight_frames`. As camadas
@@ -31,9 +32,9 @@ O design e os equipamentos originais dos demais personagens foram preservados.
 
 Os quadros extras subdividem os intervalos existentes. Lançamentos, impactos,
 dano, duração das ações, regras dos buffs e troca de fase mantêm seus tempos.
-O idle continua com ciclo de 1.440 ms, agora com doze poses a cada 120 ms.
+O repouso usa a cadência de `src/config/layout.py`.
 Os efeitos de impacto só aparecem na etapa de acerto, inclusive nos saltos do
-Carrasco e do Gordofera. Protagonista e inimigos comuns continuam com oito frames.
+Carrasco e do Gordofera. Os inimigos comuns usam oito quadros.
 
 ## Reprodução e validação
 

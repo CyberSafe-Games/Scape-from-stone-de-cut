@@ -1,0 +1,21 @@
+{
+  "pedido": "L?mina nos dois ataques de foice e cauda de sangramento aprovada no contato.",
+  "sincronia": "Movimento come?a 400ms antes do contato; cauda corporal de 1100ms a partir do impacto visual.",
+  "recursos": [
+    {
+      "arquivo": "assets\\audio\\alvaro_tex_estocada_base_retomada_v6.ogg",
+      "sha256": "69fd5f2c6236c2b4094817c41ae80c24d427b0fc50359d4c9fc562ac85529852",
+      "origem": "Reutilizado sem altera??o dos recursos existentes e aprovados."
+    },
+    {
+      "arquivo": "assets\\audio\\alvaro_tex_espada_contato_sangramento_v2.ogg",
+      "sha256": "10d8f31e29f3e8c5ee62e87c4f2d7fcb9a2732554f439887e39cb7dc3278cd10",
+      "origem": "Reutilizado sem altera??o dos recursos existentes e aprovados."
+    }
+  ],
+  "pendencias": [
+    "Grilh?es: obter cauda de almas gritando.",
+    "Travessia: obter risada mal?fica masculina para lan?amento."
+  ],
+  "escuta": "Aguardando avalia??o do jogador no piloto."
+}

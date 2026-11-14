@@ -24,7 +24,8 @@ class MenuScene(BaseScene):
         super().__init__(scene_manager, window_manager, asset_manager)
 
         self.play_button = pygame.Rect(216, 684, 489, 84)
-        self.quit_button = pygame.Rect(216, 789, 489, 80)
+        self.options_button = pygame.Rect(216, 789, 489, 80)
+        self.quit_button = pygame.Rect(216, 894, 489, 80)
 
     def draw_button(self, surface, rect, text):
         hovered = rect.collidepoint(self.window_manager.get_virtual_mouse_pos())
@@ -43,8 +44,8 @@ class MenuScene(BaseScene):
     def draw(self, surface):
         theme.backdrop(surface, self.asset_manager.background, opacity=186)
         # Placa vertical e sigilo discreto em vez de botões coloridos genéricos.
-        pygame.draw.line(surface, (118, 91, 52), (174, 198), (174, 875), 3)
-        for y in (198, 875):
+        pygame.draw.line(surface, (118, 91, 52), (174, 198), (174, 980), 3)
+        for y in (198, 980):
             pygame.draw.polygon(
                 surface, GOLD, [(174, y - 9), (183, y), (174, y + 9), (165, y)]
             )
@@ -77,6 +78,7 @@ class MenuScene(BaseScene):
             639,
         )
         self.draw_button(surface, self.play_button, "INICIAR JORNADA")
+        self.draw_button(surface, self.options_button, "OPÇÕES DE ÁUDIO")
         self.draw_button(surface, self.quit_button, "SAIR DO JOGO")
 
         # Marca ornamental sobre o cenário. Não é um botão.
@@ -100,7 +102,7 @@ class MenuScene(BaseScene):
         self.window_manager.draw_fullscreen_button(self.asset_manager.small_font)
         theme.footer(
             surface,
-            "ENTER / ESPAÇO  ·  JOGAR                     F11  ·  TELA CHEIA",
+            "ENTER / ESPAÇO · JOGAR     O · OPÇÕES     F11 · TELA CHEIA",
             self.asset_manager.small_font,
         )
 
@@ -122,6 +124,11 @@ class MenuScene(BaseScene):
                 self._start_game()
                 return
 
+            if self.options_button.collidepoint(virt_pos):
+                self.play_ui_sound("ui.confirm")
+                self._open_audio_options()
+                return
+
             if self.quit_button.collidepoint(virt_pos):
                 self.play_ui_sound("ui.click")
                 pygame.quit()
@@ -131,10 +138,18 @@ class MenuScene(BaseScene):
             if event.key in (pygame.K_RETURN, pygame.K_SPACE):
                 self.play_ui_sound("ui.confirm")
                 self._start_game()
+            elif event.key == pygame.K_o:
+                self.play_ui_sound("ui.confirm")
+                self._open_audio_options()
             elif event.key == pygame.K_ESCAPE:
                 self.play_ui_sound("ui.click")
                 pygame.quit()
                 sys.exit()
+
+    def _open_audio_options(self):
+        from src.scenes.audio_options_scene import AudioOptionsScene
+        self.scene_manager.change_scene(AudioOptionsScene(
+            self.scene_manager, self.window_manager, self.asset_manager, return_scene=self))
 
     def _start_game(self):
         from src.scenes.save_selection_scene import SaveSelectionScene

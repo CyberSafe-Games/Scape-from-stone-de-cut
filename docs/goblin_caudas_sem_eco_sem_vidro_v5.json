@@ -1,0 +1,38 @@
+{
+  "alteracoes": [
+    "Removidas repeti??es sobrepostas da queima e processamento temporal; uma ?nica passagem de fogo em velocidade natural.",
+    "T?xico usa somente ?nsia e Acid Bubbling; removida a camada pocao_venenosa_corrosao.",
+    "O deslocamento de 170 ms do ?cido ? sequenciamento ap?s a ?nsia, sem repetir o som."
+  ],
+  "recursos": [
+    {
+      "destino": "goblin_laser_queima_sem_repeticao_v4.ogg",
+      "fontes": [
+        {
+          "arquivo": "C:\\Users\\marco\\OneDrive\\Desktop\\Scape-from-stone-de-cut-git\\assets\\audio\\bola_de_fogo_continua.ogg",
+          "sha256": "a8110db1f80e2832bdd60ac2a8c719d5f95a8e52f4eafe96ec29c9f5a3a68863"
+        }
+      ],
+      "filtros_ffmpeg": "anoisesrc=color=pink:amplitude=0.25:duration=0.12:sample_rate=44100:seed=1741,highpass=f=1400,lowpass=f=7000,tremolo=f=65:d=0.85,afade=t=out:st=0.03:d=0.09,volume=0.45[s];[0:a]atrim=start=0.05:duration=1.6,asetpts=PTS-STARTPTS,highpass=f=180,lowpass=f=6000,volume=0.16,afade=t=in:d=0.025[f];[s][f]amix=inputs=2:normalize=0:duration=longest,apad,atrim=duration=1.6,afade=t=in:d=0.002,afade=t=out:st=1.1:d=0.5[out]",
+      "ganho": 1,
+      "sha256_ogg": "d7157f437ad9f0265fc30eb2ca3caef7dd238f9c755a263193c1f20c5fe031ee"
+    },
+    {
+      "destino": "goblin_ansia_acido_sem_vidro_v5.ogg",
+      "fontes": [
+        {
+          "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\goblin-nerd\\originais\\toxico-r2-01-dragon-studio-vomiting-sound-effect-382720.mp3",
+          "sha256": "d407e819efc94bad8db62148cf2b0bba7fbe0d59bcabd786dc2e09ec7bf33dd3"
+        },
+        {
+          "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\goblin-nerd\\originais\\toxico-acid-bubbling-105397.mp3",
+          "sha256": "4e3c7e2a01731ac0e404d48e51fa556bd12b31a008acdb44114ae00450a61534"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.30:end=0.50,asetpts=PTS-STARTPTS,volume=0.9,afade=t=out:st=0.16:d=0.04[g];[1:a]atrim=start=0.25:duration=1.6,asetpts=PTS-STARTPTS,highpass=f=65,lowpass=f=5500,volume=0.6,afade=t=in:d=0.008,adelay=170|170[a];[g][a]amix=inputs=2:normalize=0:duration=longest,apad,atrim=duration=1.8,afade=t=in:d=0.005,afade=t=out:st=1.25:d=0.55[out]",
+      "ganho": 0.9976823480057261,
+      "sha256_ogg": "df8beb56287a642b40fe52aaabfe28e6b998904a7021f1adea5cfcf45d40c39e"
+    }
+  ],
+  "escuta": "Pendente de avalia??o do jogador. Originais, vers?es anteriores e demais efeitos preservados."
+}

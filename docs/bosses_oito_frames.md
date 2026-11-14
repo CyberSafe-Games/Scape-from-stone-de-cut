@@ -66,4 +66,4 @@ Esses comandos usam arquivos locais; não fazem novas chamadas à geração de i
 
 Testes cobrem contagem e uso dos quadros, paleta comum, estabilidade de brilho,
 transparência, pivô, fechamento no idle e reinício do relógio após as habilidades.
-Prévia atualizada: `bosses_cores_fluidas.gif`.
+Prévia atualizada: `bosses_oito_frames.gif`.

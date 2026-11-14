@@ -62,10 +62,9 @@ estão recebendo chefes próprios não tiveram novos personagens inventados.
 - `assets/boss_ultimate_effects/corpo_seco/`.
 - `assets/boss_ultimate_effects/carrasco_da_vigilia/`.
 
-Cada pasta contém `source.png`, `cast_1.png` a `cast_4.png` e `effect_1.png`
-a `effect_4.png`. As poses usam canvas 448 × 320 e os efeitos 384 × 320,
-com fundo transparente. `cast_*.png` são exportações das poses originais para
-revisão. O jogo também as monta diretamente dos assets originais ao carregar.
+Cada pasta contém `source.png` e `effect_1.png` a `effect_4.png`.
+As poses usam canvas 448 × 320 e os efeitos 384 × 320, com fundo transparente.
+O jogo monta as poses diretamente dos assets originais ao carregar.
 Somente a parte dos efeitos de `source.png` é usada; seus personagens gerados
 ficam como histórico e não são exibidos no jogo.
 

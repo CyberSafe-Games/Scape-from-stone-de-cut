@@ -1,0 +1,527 @@
+[
+  {
+    "nome": "Soco MUITO Simples",
+    "custo": 0,
+    "tipo": "attack",
+    "descricao": "Cause 3 de dano.",
+    "disponivel": false
+  },
+  {
+    "nome": "Bisbilhotar",
+    "custo": 2,
+    "tipo": "skill",
+    "descricao": "Compre 2 cartas.",
+    "disponivel": false
+  },
+  {
+    "nome": "Negociação",
+    "custo": 1,
+    "tipo": "skill",
+    "descricao": "Descarte 1 carta, compre 2 cartas.",
+    "disponivel": false
+  },
+  {
+    "nome": "Sem Dor, Sem Ganho",
+    "custo": 1,
+    "tipo": "skill",
+    "descricao": "Ganhe 1 de energia, receba 3 de dano.",
+    "disponivel": false
+  },
+  {
+    "nome": "Marretada",
+    "custo": 2,
+    "tipo": "attack",
+    "descricao": "Cause 12 de dano.",
+    "disponivel": false
+  },
+  {
+    "nome": "Proteção",
+    "custo": 2,
+    "tipo": "skill",
+    "descricao": "Receba 12 de escudo.",
+    "disponivel": false
+  },
+  {
+    "nome": "A Melhor Defesa é o Ataque",
+    "custo": 2,
+    "tipo": "attack",
+    "descricao": "Cause dano igual ao seu escudo atual.",
+    "disponivel": false
+  },
+  {
+    "nome": "Justiça",
+    "custo": 3,
+    "tipo": "attack",
+    "descricao": "Cause 7 de dano e receba 7 de escudo.",
+    "disponivel": false
+  },
+  {
+    "nome": "Banho de Ervas",
+    "custo": 3,
+    "tipo": "skill",
+    "descricao": "Remova todos os debuffs de você e fique imune a debuffs por 2 turnos.",
+    "disponivel": false
+  },
+  {
+    "nome": "Fôlego da Mata",
+    "custo": 2,
+    "tipo": "skill",
+    "descricao": "No próximo turno, você recebe 2 de energia a mais.",
+    "disponivel": false
+  },
+  {
+    "nome": "Pacto Doloroso",
+    "custo": 2,
+    "tipo": "skill",
+    "descricao": "Receba 4 de dano e restaure 2 de energia.",
+    "disponivel": false
+  },
+  {
+    "nome": "Bênção da Mãe-Terra",
+    "custo": 8,
+    "tipo": "skill",
+    "descricao": "Restaure 20 de vida. No próximo turno, você não pode jogar cartas de ataque.",
+    "disponivel": false
+  },
+  {
+    "nome": "Flecha Envenenada",
+    "custo": 1,
+    "tipo": "attack",
+    "descricao": "Cause 5 de dano e aplique 2 de veneno no inimigo.",
+    "disponivel": false
+  },
+  {
+    "nome": "Casca Venenosa",
+    "custo": 1,
+    "tipo": "skill",
+    "descricao": "Receba 5 de escudo e aplique 2 de veneno no oponente.",
+    "disponivel": false
+  },
+  {
+    "nome": "Sangue Tóxico",
+    "custo": 1,
+    "tipo": "skill",
+    "descricao": "Cada vez que o oponente receber dano na vida neste turno, aplique 1 de veneno nele.",
+    "disponivel": false
+  },
+  {
+    "nome": "Peçonha Concentrada",
+    "custo": 2,
+    "tipo": "skill",
+    "descricao": "Aplique 7 de veneno.",
+    "disponivel": false
+  },
+  {
+    "nome": "Dose Letal",
+    "custo": 2,
+    "tipo": "attack",
+    "descricao": "Cause 4 de dano. Se o oponente tiver 5 ou mais de veneno, cause 10 de dano.",
+    "disponivel": false
+  },
+  {
+    "nome": "Erva-Dobro",
+    "custo": 4,
+    "tipo": "skill",
+    "descricao": "No próximo turno do oponente, o dano de veneno que ele recebe será duplicado.",
+    "disponivel": false
+  },
+  {
+    "nome": "Muralha de Cipó Tóxico",
+    "custo": 3,
+    "tipo": "skill",
+    "descricao": "Receba 15 de escudo e aplique 8 de veneno no oponente.",
+    "disponivel": false
+  },
+  {
+    "nome": "Purga da Jararaca",
+    "custo": 3,
+    "tipo": "skill",
+    "descricao": "Remova todo o veneno do oponente. Ele recebe 2 de dano para cada acúmulo removido.",
+    "disponivel": false
+  },
+  {
+    "nome": "Mistura Peçonhenta",
+    "custo": 1,
+    "tipo": "skill",
+    "descricao": "Aplique 3 de veneno. Se o oponente estiver sangrando, aplique 3 a mais.",
+    "disponivel": false
+  },
+  {
+    "nome": "Corte Contaminado",
+    "custo": 3,
+    "tipo": "attack",
+    "descricao": "Aplique 4 de sangramento e 4 de veneno.",
+    "disponivel": false
+  },
+  {
+    "nome": "Talho de Caçador",
+    "custo": 1,
+    "tipo": "attack",
+    "descricao": "Cause 5 de dano e aplique 3 de sangramento no alvo.",
+    "disponivel": false
+  },
+  {
+    "nome": "Dança da Lâmina Rubra",
+    "custo": 1,
+    "tipo": "power",
+    "descricao": "Suas cartas aplicam o dobro de sangramento no alvo neste turno.",
+    "disponivel": false
+  },
+  {
+    "nome": "Rasga-Carne",
+    "custo": 2,
+    "tipo": "attack",
+    "descricao": "Cause 8 de dano no oponente e aplique 5 de sangramento.",
+    "disponivel": false
+  },
+  {
+    "nome": "Banquete do Curupira",
+    "custo": 3,
+    "tipo": "attack",
+    "descricao": "Cause 8 de dano. Se o oponente tiver 10 ou mais acúmulos de sangramento, cause 16 de dano.",
+    "disponivel": false
+  },
+  {
+    "nome": "Ritual do Sacrifício",
+    "custo": 5,
+    "tipo": "attack",
+    "descricao": "Remova todo o sangramento do oponente. Ele recebe o dobro do dano correspondente.",
+    "disponivel": false
+  },
+  {
+    "nome": "Ferida que Não Fecha",
+    "custo": 4,
+    "tipo": "skill",
+    "descricao": "Compre 2 cartas. Seu oponente não pode se curar no próximo turno.",
+    "disponivel": false
+  },
+  {
+    "nome": "Brasa de Arco e Flecha",
+    "custo": 1,
+    "tipo": "attack",
+    "descricao": "Cause 4 de dano e aplique 2 de queimadura.",
+    "disponivel": false
+  },
+  {
+    "nome": "Carvão em Brasa",
+    "custo": 1,
+    "tipo": "skill",
+    "descricao": "Receba 5 de escudo e aplique 2 de queimadura.",
+    "disponivel": false
+  },
+  {
+    "nome": "Chuva de Faíscas",
+    "custo": 1,
+    "tipo": "power",
+    "descricao": "Neste turno, cada carta de ataque que você jogar aplica 1 de queimadura no oponente.",
+    "disponivel": false
+  },
+  {
+    "nome": "Fogo-Fátuo",
+    "custo": 2,
+    "tipo": "skill",
+    "descricao": "Aplique 5 de queimadura.",
+    "disponivel": false
+  },
+  {
+    "nome": "Labareda Selvagem",
+    "custo": 2,
+    "tipo": "attack",
+    "descricao": "Cause 8 de dano e aplique 3 de queimadura.",
+    "disponivel": false
+  },
+  {
+    "nome": "Sopro de Boitatá",
+    "custo": 2,
+    "tipo": "skill",
+    "descricao": "Dobre as queimaduras do oponente (máximo de 10 acúmulos adicionais).",
+    "disponivel": false
+  },
+  {
+    "nome": "Fumaça Reveladora",
+    "custo": 2,
+    "tipo": "skill",
+    "descricao": "Compre 1 carta para cada 3 acúmulos de queimadura no oponente (máximo de 4 cartas).",
+    "disponivel": false
+  },
+  {
+    "nome": "Explosão da Mata",
+    "custo": 3,
+    "tipo": "attack",
+    "descricao": "Cause dano igual ao dobro dos acúmulos de queimadura do oponente.",
+    "disponivel": false
+  },
+  {
+    "nome": "Armadilha de Brasa",
+    "custo": 3,
+    "tipo": "skill",
+    "descricao": "Receba 12 de escudo. No próximo turno do oponente, cada ação dele aplica 2 de queimadura extra nele mesmo.",
+    "disponivel": false
+  },
+  {
+    "nome": "Fogo que Cobra seu Preço",
+    "custo": 4,
+    "tipo": "skill",
+    "descricao": "Aplique 10 de queimadura e receba 5 de dano.",
+    "disponivel": false
+  },
+  {
+    "nome": "Cinzas Impiedosas",
+    "custo": 2,
+    "tipo": "skill",
+    "descricao": "Seu oponente não pode receber escudo no próximo turno. Aplique 2 de queimadura.",
+    "disponivel": false
+  },
+  {
+    "nome": "Cheiro de Medo",
+    "custo": 1,
+    "tipo": "attack",
+    "descricao": "Cause 4 de dano. Se o oponente tiver veneno, sangramento ou queimadura, aplique 1 de fraqueza.",
+    "disponivel": false
+  },
+  {
+    "nome": "Mau Agouro",
+    "custo": 2,
+    "tipo": "skill",
+    "descricao": "Aplique 1 de fraqueza.",
+    "disponivel": false
+  },
+  {
+    "nome": "Olhar do Anhangá",
+    "custo": 2,
+    "tipo": "skill",
+    "descricao": "Receba 8 de escudo e aplique 1 de fraqueza.",
+    "disponivel": false
+  },
+  {
+    "nome": "Maldição da Caipora",
+    "custo": 3,
+    "tipo": "skill",
+    "descricao": "Aplique 2 de fraqueza.",
+    "disponivel": false
+  },
+  {
+    "nome": "Ponto Fraco",
+    "custo": 4,
+    "tipo": "attack",
+    "descricao": "Aplique 1 de fraqueza. Se o oponente já tiver fraqueza, cause 15 de dano.",
+    "disponivel": false
+  },
+  {
+    "nome": "Fúria de Jaum Manel",
+    "custo": 0,
+    "tipo": "power",
+    "descricao": "Ganhe +2 de força até o fim do turno e receba 3 de dano.",
+    "disponivel": false
+  },
+  {
+    "nome": "Grito de Guerra",
+    "custo": 2,
+    "tipo": "power",
+    "descricao": "Ganhe +2 de força por 2 turnos.",
+    "disponivel": false
+  },
+  {
+    "nome": "Ataque Encorajado",
+    "custo": 1,
+    "tipo": "attack",
+    "descricao": "Cause 5 de dano e ganhe +1 de força por 2 turnos.",
+    "disponivel": false
+  },
+  {
+    "nome": "Casca de Guerreiro",
+    "custo": 2,
+    "tipo": "skill",
+    "descricao": "Receba 8 de escudo e ganhe +2 de força por 2 turnos.",
+    "disponivel": false
+  },
+  {
+    "nome": "Combo do Javali",
+    "custo": 2,
+    "tipo": "attack",
+    "descricao": "Cause 3 de dano duas vezes e ganhe +2 de força por 2 turnos.",
+    "disponivel": false
+  },
+  {
+    "nome": "Fúria Multiplicada",
+    "custo": 2,
+    "tipo": "power",
+    "descricao": "Dobre sua força atual até o fim do turno.",
+    "disponivel": false
+  },
+  {
+    "nome": "Três Golpes da Onça",
+    "custo": 3,
+    "tipo": "attack",
+    "descricao": "Cause 4 de dano três vezes.",
+    "disponivel": false
+  },
+  {
+    "nome": "Espírito do Guerreiro",
+    "custo": 5,
+    "tipo": "power",
+    "descricao": "Ganhe +1 de força permanente neste combate (máximo de 5 acúmulos).",
+    "disponivel": false
+  },
+  {
+    "nome": "Força a Qualquer Custo",
+    "custo": 4,
+    "tipo": "power",
+    "descricao": "Ganhe +4 de força por 3 turnos. Você não pode receber escudo durante esse período.",
+    "disponivel": false
+  },
+  {
+    "nome": "Garras da Iara",
+    "custo": 3,
+    "tipo": "attack",
+    "descricao": "Cause 1 de dano cinco vezes.",
+    "disponivel": false
+  },
+  {
+    "nome": "Instinto de Caça",
+    "custo": 2,
+    "tipo": "skill",
+    "descricao": "Compre 1 carta e ganhe +1 de força por 2 turnos.",
+    "disponivel": false
+  },
+  {
+    "nome": "Pancada de Tacape",
+    "custo": 2,
+    "tipo": "attack",
+    "descricao": "Cause 5 de dano. 30% de chance de atordoar o oponente.",
+    "disponivel": false
+  },
+  {
+    "nome": "Escudo Trovejante",
+    "custo": 2,
+    "tipo": "skill",
+    "descricao": "Receba 8 de escudo. 25% de chance de atordoar o oponente.",
+    "disponivel": false
+  },
+  {
+    "nome": "Confusão dos Espíritos",
+    "custo": 3,
+    "tipo": "attack",
+    "descricao": "Cause 6 de dano. A chance de atordoar é de 10% por tipo de debuff no oponente (máximo de 50%).",
+    "disponivel": false
+  },
+  {
+    "nome": "Golpe do Trovão",
+    "custo": 4,
+    "tipo": "attack",
+    "descricao": "Cause 10 de dano. 40% de chance de atordoar o oponente. Se falhar, compre 1 carta.",
+    "disponivel": false
+  },
+  {
+    "nome": "Totem Ancestral",
+    "custo": 5,
+    "tipo": "skill",
+    "descricao": "Receba 1 totem.",
+    "disponivel": false
+  },
+  {
+    "nome": "Totem Guardião",
+    "custo": 6,
+    "tipo": "skill",
+    "descricao": "Receba 1 totem e 6 de escudo.",
+    "disponivel": false
+  },
+  {
+    "nome": "Totem da Serpente",
+    "custo": 6,
+    "tipo": "skill",
+    "descricao": "Receba 1 totem. Quando ele for ativado, aplique 5 de veneno no oponente.",
+    "disponivel": false
+  },
+  {
+    "nome": "Totem da Cura",
+    "custo": 7,
+    "tipo": "skill",
+    "descricao": "Receba 1 totem. Quando ele for ativado, cure 8 de vida.",
+    "disponivel": false
+  },
+  {
+    "nome": "Proteção das Quatro Ervas",
+    "custo": 1,
+    "tipo": "skill",
+    "descricao": "Receba 4 de escudo para cada tipo de debuff no oponente.",
+    "disponivel": false
+  },
+  {
+    "nome": "Fumaça Venenosa",
+    "custo": 2,
+    "tipo": "attack",
+    "descricao": "Cause 6 de dano e aplique 2 de veneno e 2 de queimadura.",
+    "disponivel": false
+  },
+  {
+    "nome": "Ritual da Caçada",
+    "custo": 2,
+    "tipo": "attack",
+    "descricao": "Cause 5 de dano e aplique 2 de sangramento e 2 de veneno.",
+    "disponivel": false
+  },
+  {
+    "nome": "Castigo da Floresta",
+    "custo": 2,
+    "tipo": "attack",
+    "descricao": "Cause 4 de dano para cada tipo de debuff no oponente.",
+    "disponivel": false
+  },
+  {
+    "nome": "Praga Multiplicada",
+    "custo": 2,
+    "tipo": "skill",
+    "descricao": "Aplique 2 acúmulos de cada debuff que o oponente já tiver.",
+    "disponivel": false
+  },
+  {
+    "nome": "Tríplice Maldição",
+    "custo": 3,
+    "tipo": "skill",
+    "descricao": "Aplique 3 de veneno, 3 de sangramento e 3 de queimadura.",
+    "disponivel": false
+  },
+  {
+    "nome": "Despertar das Pragas",
+    "custo": 3,
+    "tipo": "skill",
+    "descricao": "Todos os debuffs do oponente causam seu dano imediatamente, sem remover os acúmulos.",
+    "disponivel": false
+  },
+  {
+    "nome": "Conhecimento Proibido",
+    "custo": 3,
+    "tipo": "skill",
+    "descricao": "Compre 1 carta para cada debuff do oponente.",
+    "disponivel": false
+  },
+  {
+    "nome": "Dança de Guerra Selvagem",
+    "custo": 3,
+    "tipo": "attack",
+    "descricao": "Cause 8 de dano, aplique 3 de sangramento e ganhe +2 de força por 2 turnos.",
+    "disponivel": false
+  },
+  {
+    "nome": "Investida do Mapinguari",
+    "custo": 4,
+    "tipo": "attack",
+    "descricao": "Cause 10 de dano, tenha 30% de chance de atordoar o oponente e aplique 4 de queimadura.",
+    "disponivel": false
+  },
+  {
+    "nome": "Praga da Mata Fechada",
+    "custo": 4,
+    "tipo": "skill",
+    "descricao": "Aplique 4 de veneno, 4 de sangramento e 4 de queimadura.",
+    "disponivel": false
+  },
+  {
+    "nome": "Juízo Final da Floresta",
+    "custo": 5,
+    "tipo": "skill",
+    "descricao": "Dobre todos os debuffs do oponente (veneno, sangramento e queimadura). Você não pode jogar mais cartas de ataque neste turno.",
+    "disponivel": false
+  }
+]

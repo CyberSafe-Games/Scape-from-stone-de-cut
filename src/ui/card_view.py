@@ -39,15 +39,53 @@ class CardView:
 
         pygame.draw.rect(surface, CARD_BG, draw_rect, border_radius=15)
         pygame.draw.rect(surface, card.color, draw_rect, 5, border_radius=15)
-        draw_text(
-            surface,
-            card.name,
-            asset_manager.font,
-            WHITE,
-            draw_rect.centerx,
-            draw_rect.centery,
-            center=True,
+        font = asset_manager.small_font
+        padding = 12
+        line_height = font.get_linesize()
+        cost_surface = font.render(f'{card.cost} E', True, (239, 199, 111))
+        cost_surface_rect = cost_surface.get_rect(topright=(draw_rect.right - padding, draw_rect.y + padding))
+        surface.blit(cost_surface, cost_surface_rect)
+
+        title_lines = wrap_text(card.name, font, max(35, draw_rect.width - 22))
+        max_title_lines = max(
+            1,
+            (draw_rect.height - 2 * padding - 2 * line_height) // line_height,
         )
+        if len(title_lines) > max_title_lines:
+            title_lines = title_lines[:max_title_lines]
+            title_lines[-1] = title_lines[-1].rstrip(' .') + '...'
+        title_y = draw_rect.y + padding + line_height + 2
+        for index, line in enumerate(title_lines):
+            draw_text(
+                surface,
+                line,
+                font,
+                WHITE,
+                draw_rect.centerx,
+                title_y + index * line_height,
+                center=True,
+            )
+        if draw_rect.width >= 112 and draw_rect.height >= 155:
+            description_lines = wrap_text(card.description, font, draw_rect.width - 22)
+            available_lines = max(
+                1,
+                (draw_rect.bottom - padding - title_y - len(title_lines) * line_height)
+                // line_height,
+            )
+            if len(description_lines) > available_lines:
+                description_lines = description_lines[:available_lines]
+                description_lines[-1] = description_lines[-1].rstrip(' .') + '...'
+            description_y = title_y + len(title_lines) * line_height + 5
+            for index, line in enumerate(description_lines):
+                draw_text(
+                    surface,
+                    line,
+                    font,
+                    (218, 220, 202),
+                    draw_rect.centerx,
+                    description_y + index * line_height,
+                    center=True,
+                )
 
     @staticmethod
     def get_hand_rects(count):

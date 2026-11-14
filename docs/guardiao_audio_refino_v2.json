@@ -1,0 +1,95 @@
+{
+  "sons": [
+    {
+      "arquivo": "guardiao_garras_devastadoras_v2.ogg",
+      "fontes": [
+        {
+          "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\guardiao-da-pedra\\originais\\audio_3f3ff2c34f.mp3",
+          "sha256": "b7099e5497e94ed9b5cac231d61370234c422e1d41a12ec3d94e96a95a800ce1"
+        },
+        {
+          "arquivo": "C:\\Users\\marco\\OneDrive\\Desktop\\Scape-from-stone-de-cut-git\\assets\\audio\\investida_impacto_corporal.ogg",
+          "sha256": "2c34e20f7315d1a0472ded3408055834bb9f64251181a0b91be84b7c0f81768e"
+        },
+        {
+          "arquivo": "C:\\Users\\marco\\OneDrive\\Desktop\\Scape-from-stone-de-cut-git\\assets\\audio\\machado_quebra_madeira.ogg",
+          "sha256": "4340be8c97d347158a6d96671ad6b1ff386d144c8ac8e4e75ff050737b30a1d1"
+        }
+      ],
+      "filtros": "[0:a]atrim=duration=0.9,asetpts=PTS-STARTPTS,atempo=1.3,volume=0.8[a];[1:a]atrim=duration=0.22,asetpts=PTS-STARTPTS,volume=0.32[b];[2:a]atrim=duration=0.5,asetpts=PTS-STARTPTS,volume=0.45[c];[a][b][c]amix=inputs=3:normalize=0:duration=longest,highpass=f=65,lowpass=f=10000,apad,atrim=duration=0.7,afade=t=in:d=0.004,afade=t=out:st=0.55:d=0.15[out]",
+      "ganho": 0.44053956749525947,
+      "sha256_ogg": "d32caeaa4e1d66fc65d5223d1e1dfe0a8b962eeaf0bc6736993f8d99e9a1923d",
+      "origem_pixabay": {
+        "habilidade": "Golpe de Garras",
+        "titulo": "Scorpion Claw Attack (4)",
+        "autor": "Yodguard",
+        "perfil_autor": "https://pixabay.com/users/yodguard-12455005/",
+        "pagina": "https://pixabay.com/sound-effects/film-special-effects-scorpion-claw-attack-4-482507/",
+        "arquivo": "originais/audio_3f3ff2c34f.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2026/02/10/audio_3f3ff2c34f.mp3",
+        "bytes": 96768,
+        "sha256": "b7099e5497e94ed9b5cac231d61370234c422e1d41a12ec3d94e96a95a800ce1",
+        "ai_generated_indicado": true,
+        "licenca": "Pixabay Content License",
+        "licenca_url": "https://pixabay.com/service/license-summary/",
+        "observacao": "Ataque rápido e cortante, selecionado pela descrição e tags. Validar a secura na audição do piloto."
+      }
+    },
+    {
+      "arquivo": "guardiao_pele_rochosa_cauda_v2.ogg",
+      "fontes": [
+        {
+          "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\guardiao-da-pedra\\originais\\audio_6fde8cd005.mp3",
+          "sha256": "cde36cc7eba20611388b06b104175dfd5056e78b12734e588fb324f203cd4e2f"
+        }
+      ],
+      "filtros": "[0:a]atrim=start=0.3:duration=1.1,asetpts=PTS-STARTPTS,highpass=f=60,lowpass=f=9000,aecho=1:1:55|110:0.16|0.08,apad,atrim=duration=1.1,afade=t=in:d=0.008,afade=t=out:st=0.8:d=0.3[out]",
+      "ganho": 0.31622776601683794,
+      "sha256_ogg": "66bc79fb9831b6416496fcd7879de0c759f1de631faaa8475c676c9d48e0fa19",
+      "origem_pixabay": {
+        "habilidade": "Pele Rochosa",
+        "titulo": "Earth Spell",
+        "autor": "DRAGON-STUDIO",
+        "perfil_autor": "https://pixabay.com/users/dragon-studio-38165424/",
+        "pagina": "https://pixabay.com/sound-effects/film-special-effects-earth-spell-393923/",
+        "arquivo": "originais/audio_6fde8cd005.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2025/08/23/audio_6fde8cd005.mp3",
+        "bytes": 92787,
+        "sha256": "cde36cc7eba20611388b06b104175dfd5056e78b12734e588fb324f203cd4e2f",
+        "ai_generated_indicado": false,
+        "licenca": "Pixabay Content License",
+        "licenca_url": "https://pixabay.com/service/license-summary/",
+        "observacao": "Magia de terra e pedra para ativação da defesa."
+      }
+    },
+    {
+      "arquivo": "guardiao_vigor_selvagem_cauda_v2.ogg",
+      "fontes": [
+        {
+          "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\guardiao-da-pedra\\originais\\audio_b674fa4728.mp3",
+          "sha256": "135fac739bf2205dcd4fc277a8af9d36cdd84a0340d5fc252ba1f0d6a34aff15"
+        }
+      ],
+      "filtros": "[0:a]atrim=duration=1.92,asetpts=PTS-STARTPTS,atempo=1.6,highpass=f=60,lowpass=f=9000,aecho=1:1:80:0.12,apad,atrim=duration=1.2,afade=t=in:d=0.008,afade=t=out:st=0.85:d=0.35[out]",
+      "ganho": 1,
+      "sha256_ogg": "9692f6359bd8e5299c8858ffe001a53ce9350bb9d465aac0251423cf4eb1b262",
+      "origem_pixabay": {
+        "habilidade": "Vigor Selvagem",
+        "titulo": "Fantasy Healing Spell Soft Magic Chime #1",
+        "autor": "Vadim_Makes_Sound",
+        "perfil_autor": "https://pixabay.com/users/vadim_makes_sound-54823268/",
+        "pagina": "https://pixabay.com/sound-effects/film-special-effects-fantasy-healing-spell-soft-magic-chime-1-546563/",
+        "arquivo": "originais/audio_b674fa4728.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2026/06/04/audio_b674fa4728.mp3",
+        "bytes": 131328,
+        "sha256": "135fac739bf2205dcd4fc277a8af9d36cdd84a0340d5fc252ba1f0d6a34aff15",
+        "ai_generated_indicado": true,
+        "licenca": "Pixabay Content License",
+        "licenca_url": "https://pixabay.com/service/license-summary/",
+        "observacao": "Cura com sino suave. Ajustar volume na integração para manter discreto."
+      }
+    }
+  ],
+  "rugido": "Aguardando original de urso; mantém v2 anterior.",
+  "escuta": "Pendente de avaliação do jogador."
+}

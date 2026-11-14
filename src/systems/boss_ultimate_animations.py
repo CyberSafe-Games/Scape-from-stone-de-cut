@@ -18,8 +18,8 @@ class BossUltimateAnimation:
 BOSS_ULTIMATE_ANIMATIONS = {
     'gordofera': BossUltimateAnimation('gordofera', 'Abalo Abissal', 2700, .40, .64,
                                          (218, 186, 112), 'tremor', 165),
-    'zanzara': BossUltimateAnimation('zanzara', 'Maré Soberana', 2900, .44, .80,
-                                    (244, 199, 83), 'sovereign', 170),
+    'zanzara': BossUltimateAnimation('zanzara', 'Travessia Final', 2900, .44, .80,
+                                    (77, 225, 122), 'sovereign', 170),
     'guardião da pedra': BossUltimateAnimation('guardiao_da_pedra', 'Rugido Espiritual', 2600, .42, .78,
                                                (71, 183, 255), 'bear', 155),
     'goblin nerd': BossUltimateAnimation('goblin_nerd', 'Descarga Sobrecarregada', 2400, .44, .77,

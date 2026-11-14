@@ -1,4 +1,4 @@
-"""Amplia as 27 interações preservando as oito poses e a paleta aprovadas."""
+"""Amplia as ações de doze quadros preservando as poses e a paleta aprovadas."""
 import os
 import sys
 import json
@@ -70,7 +70,8 @@ def main():
         height=idle.getbbox()[3]-idle.getbbox()[1]
         b=rows[0][0].getbbox();scale=height/(b[3]-b[1])
         for group,row in zip(groups,rows):
-            if group=='idle' and batch!='base':continue
+            if group in ('idle', 'dano'):
+                continue
             originals=[Image.open(OLD/f'{group}_{i}.png').convert('RGBA') for i in range(1,9)]
             additions,indices=intermediates(originals,row,rows[0],palette,scale,group)
             for column,candidate in WEAPON_POSES.get(group,{}).items():
@@ -119,7 +120,7 @@ def main():
     (NEW/'manifest.json').write_text(json.dumps(list(prepared),indent=2),encoding='utf8')
     audit_sheets()
     pygame.quit()
-    print('27 interações, 324 sprites de corpo e 36 efeitos de ultimate preparados.')
+    print(f'{len(prepared)} ações, {sum(map(len, prepared.values()))} sprites de corpo e 36 efeitos de ultimate preparados.')
 
 
 def audit_sheets():

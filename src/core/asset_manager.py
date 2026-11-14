@@ -17,6 +17,14 @@ from src.config.settings import (
     ULTIMATE_ASSETS_DIR,
 )
 from src.config.colors import WHITE
+from src.config.typography import (
+    FONT_FILES,
+    FONT_STYLES,
+    LINE_HEIGHT,
+    SYMBOL_FALLBACK_FONTS,
+    scaled_font_size,
+)
+from src.core.game_font import GameFont
 
 # Escala visual do Corpo Seco: 0.74 * ~170 px de corpo = ~126 px no jogo.
 # Mantém o miniboss proporcional ao Jaum Manel (~130 px) e ao cenário.
@@ -55,6 +63,7 @@ class AssetManager:
         self._fallback_sprite = None
         self._coin_icon = None
         self._ui_images = {}
+        self._map_icons = {}
         self._status_icons = {}
         self._projectile_images = {}
         self._intent_art = {}
@@ -89,15 +98,22 @@ class AssetManager:
                 return font
         return pygame.font.SysFont(None, size, bold=bold)
 
+    def _load_game_font(self, style, size):
+        """Carrega a fonte autoral; símbolos ausentes nela usam fonte de símbolos."""
+        fallback = self._pick_font(SYMBOL_FALLBACK_FONTS, size)
+        # Se o arquivo do estilo faltar, usa o outro estilo da própria fonte autoral.
+        paths = [FONT_FILES.get(style)] + [p for p in FONT_FILES.values() if p != FONT_FILES.get(style)]
+        for path in paths:
+            try:
+                return GameFont(path, size, fallback=fallback, line_height=LINE_HEIGHT)
+            except (pygame.error, FileNotFoundError, OSError, TypeError):
+                print(f"[AVISO] Fonte do jogo não encontrada: {path}")
+        return pygame.font.Font(None, size)
+
     def _init_fonts(self):
-        """Serifa só nos títulos, legibilidade neutra em controles e informações."""
-        headings = ["cinzel", "constantia", "georgia", "liberationserif", "dejavuserif"]
-        body = ["segoeui", "trebuchetms", "liberationsans", "dejavusans"]
-        self._fonts["default"] = self._pick_font(body, 30)
-        self._fonts["big"] = self._pick_font(headings, 50, bold=True)
-        self._fonts["title"] = self._pick_font(headings, 84, bold=True)
-        self._fonts["menu"] = self._pick_font(headings, 35, bold=True)
-        self._fonts["small"] = self._pick_font(body, 24)
+        """Tipografia autoral (Igarape Pixel) definida em src/config/typography.py."""
+        for name, (style, size) in FONT_STYLES.items():
+            self._fonts[name] = self._load_game_font(style, scaled_font_size(size))
 
     def get_font(self, name="default"):
         return self._fonts.get(name, self._fonts["default"])
@@ -197,7 +213,7 @@ class AssetManager:
     def _load_territory_backgrounds(self):
         """Carrega fundos opcionais específicos de território."""
         mapping = {1: 'background_pedra_do_corte.png', 2: "background_mata_sombria.png", 3: 'background_ruinas_ancestrais.png',
-                   5: 'background_fortaleza_caida.png', 6: 'background_pico_da_vigilia.png'}
+                   5: 'background_fortaleza_caida.png', 6: 'background_pico_da_vigilia.png', 7: 'background_masmorra_final_v1.png'}
         for level, filename in mapping.items():
             path = os.path.join(os.path.dirname(BACKGROUND_PATH), filename)
             try:
@@ -261,6 +277,45 @@ class AssetManager:
 
     def get_ui_image(self, key):
         return self._ui_images.get(key)
+
+    def get_map_marker(self, name):
+        """Marcador em pixel art do mapa (assets/ui/map_markers/<nome>.png).
+
+        Já vem no tamanho de desenho: não é reescalado, para manter os pixels
+        nítidos. Retorna None se o arquivo faltar.
+        """
+        key = ("marker", name)
+        if key not in self._map_icons:
+            path = os.path.join(UI_ASSETS_DIR, "map_markers", name + ".png")
+            try:
+                self._map_icons[key] = pygame.image.load(path).convert_alpha()
+            except (pygame.error, FileNotFoundError):
+                self._map_icons[key] = None
+        return self._map_icons[key]
+
+    def get_map_icon(self, territory_id, size, dimmed=False):
+        """Ícone do território no mapa (assets/ui/map_icons/<id>.png), já escalado.
+
+        `dimmed` devolve a versão apagada usada em territórios bloqueados, gerada
+        em memória (o arquivo original não é alterado). Retorna None se faltar a arte.
+        """
+        key = (territory_id, size, dimmed)
+        if key not in self._map_icons:
+            source_key = (territory_id, None, False)
+            if source_key not in self._map_icons:
+                path = os.path.join(UI_ASSETS_DIR, "map_icons", territory_id + ".png")
+                try:
+                    self._map_icons[source_key] = pygame.image.load(path).convert_alpha()
+                except (pygame.error, FileNotFoundError):
+                    self._map_icons[source_key] = None
+            icon = self._map_icons[source_key]
+            if icon is not None:
+                icon = pygame.transform.smoothscale(icon, (size, size))
+                if dimmed:
+                    icon = pygame.transform.grayscale(icon)
+                    icon.fill((150, 158, 154, 255), special_flags=pygame.BLEND_RGBA_MULT)
+            self._map_icons[key] = icon
+        return self._map_icons[key]
 
     def get_ultimate_image(self, ultimate_id):
         return self._ultimate_images.get(ultimate_id)
@@ -468,7 +523,9 @@ class AssetManager:
             if slug not in prepared:
                 continue
             self._enemy_sprites.setdefault(name, {})
-            for group in prepared[slug]:
+            for group in groups:
+                if group not in ('idle', 'dano') and group not in prepared[slug]:
+                    continue
                 folder, frame_count = (legacy_root, 8) if group in ('idle', 'dano') else (root, count)
                 frames = [pygame.image.load(os.path.join(folder, slug, f'{group}_{i}.png')).convert_alpha()
                           for i in range(1, frame_count + 1)]
@@ -668,19 +725,12 @@ class AssetManager:
             if os.path.isfile(star):
                 self._enemy_projectiles[(name, 'atk2' if phase == 1 else 'atk4')] = pygame.image.load(star).convert_alpha()
 
-        for name, (slug, action_groups, _, _) in NORMAL_SPRITES.items():
+        for name, (slug, _, _, _) in NORMAL_SPRITES.items():
             folder = os.path.join(ASSETS_DIR, 'enemies', slug)
-            if not os.path.isdir(folder):
-                continue
-            groups = {}
-            for group in action_groups:
-                groups[group] = [pygame.image.load(os.path.join(folder, f'{group}_{i}.png')).convert_alpha()
-                                 for i in range(1, 5)]
-            groups['atk'] = groups['atk1']
-            self._enemy_sprites[name.lower()] = groups
             for action in NORMAL_RANGED.get(name.lower(), {}):
                 path = os.path.join(folder, f'projectile_{action}.png')
-                self._enemy_projectiles[(name.lower(), action)] = pygame.image.load(path).convert_alpha()
+                if os.path.isfile(path):
+                    self._enemy_projectiles[(name.lower(), action)] = pygame.image.load(path).convert_alpha()
 
     def get_enemy_projectile(self, enemy_name, action, frame=0):
         key = (enemy_name.strip().lower(), action)
@@ -733,6 +783,27 @@ class AssetManager:
         groups = self._enemy_sprites.get(key, {})
         return any(bool(frames) for frames in groups.values())
 
+    def _portrait_with_protagonist_frame(self, source):
+        from src.systems.character_portraits import FRAMED_PORTRAITS
+        path = os.path.join(os.path.dirname(PLAYER_ASSETS_DIR), 'portraits', 'source',
+                            'framed', FRAMED_PORTRAITS['jaum manel'] + '.png')
+        frame = pygame.image.load(path).convert_alpha().copy()
+        w, h = frame.get_size()
+        panel = pygame.Surface((w, h), pygame.SRCALPHA)
+        panel.fill((9, 14, 15, 255))
+        scale = max(w * .933 / source.get_width(), h * .96 / source.get_height())
+        image = pygame.transform.smoothscale(source, (round(source.get_width()*scale),
+                                                      round(source.get_height()*scale)))
+        panel.blit(image, image.get_rect(center=(w//2, h//2)))
+        mask = pygame.Surface((w, h), pygame.SRCALPHA)
+        points = ((.08,.02),(.92,.02),(.967,.055),(.967,.945),
+                  (.92,.98),(.08,.98),(.033,.945),(.033,.055))
+        pygame.draw.polygon(mask, (255,255,255,255),
+                            [(round(x*w),round(y*h)) for x,y in points])
+        panel.blit(mask, (0,0), special_flags=pygame.BLEND_RGBA_MULT)
+        frame.blit(panel, (0,0))
+        return frame
+
     def get_character_portrait(self, name, size):
         """Enquadra o retrato sem distorcer; ausências usam o recorte de sprite da HUD."""
         from src.systems.character_portraits import PORTRAITS
@@ -750,6 +821,9 @@ class AssetManager:
                 bounds = pygame.Rect(round(x*source.get_width()), round(y*source.get_height()),
                                      round(w*source.get_width()), round(h*source.get_height())).clip(source.get_rect())
                 source = source.subsurface(bounds)
+                if mode == 'framed-content':
+                    source = self._portrait_with_protagonist_frame(source)
+                    mode = 'framed'
                 ratios = (size[0]/source.get_width(), size[1]/source.get_height())
                 scale = min(ratios) if mode in ('contain', 'framed') else max(ratios)
                 image = pygame.transform.smoothscale(source, (max(1, round(source.get_width()*scale)), max(1, round(source.get_height()*scale))))

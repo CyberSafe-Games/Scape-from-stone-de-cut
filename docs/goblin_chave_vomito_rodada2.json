@@ -1,0 +1,160 @@
+{
+  "origem": {
+    "projeto": "Scape from Stone",
+    "personagem": "Goblin Nerd",
+    "rodada": 2,
+    "data_coleta": "2026-11-10",
+    "escopo": "Três aproximações para ferramenta metálica pesada no ar e três candidatos curtos de vômito/ânsia.",
+    "base_da_selecao": "Somente metadados: títulos, descrições, tags e duração indicada. Players acionados para carregar a fonte MP3, sem escuta crítica.",
+    "limites": "Não foi encontrado arremesso específico de chave inglesa/grifo. Os candidatos de chave são aproximações por movimento de objeto metálico; peso, rotação e ausência de impacto metálico precisam de audição. Nos tóxicos, sequência ânsia-líquido, ausência de fala e descarga, e caráter não cômico não foram confirmados perceptualmente.",
+    "preservacao": "MP3 disponibilizados pelo Pixabay, obtidos diretamente das mídias observadas nos players oficiais. Sem cortar, converter, normalizar ou misturar. Nomes locais descritivos. Arquivos e registros anteriores preservados. Nenhum código do jogo alterado. Borbulhamento ácido não foi acrescentado.",
+    "arquivos": [
+      {
+        "categoria": "Chave Arremessada",
+        "titulo": "Whoosh Axe Throw",
+        "autor": "SoundReality",
+        "pagina": "https://pixabay.com/sound-effects/film-special-effects-whoosh-axe-throw-389751/",
+        "licenca_indicada": {
+          "nome": "Pixabay Content License",
+          "texto_exibido": "Free for use under the Pixabay Content License",
+          "url": "https://pixabay.com/service/license-summary/"
+        },
+        "nome_local": "chave-r2-01-soundreality-whoosh-axe-throw-389751.mp3",
+        "caminho_relativo": "originais/chave-r2-01-soundreality-whoosh-axe-throw-389751.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2025/08/14/audio_90960c3368.mp3",
+        "motivo_da_escolha": "Arremesso de machado como aproximação de ferramenta pesada no ar. É a opção com arremesso explícito no título; duração indicada de cerca de 6 segundos, preservada integralmente. Não é gravação de chave inglesa.",
+        "base_da_selecao": "Somente metadados. Não houve escuta crítica.",
+        "bytes": 192768,
+        "sha256": "47430b475b9f4360a7c113e0b56031a0f64664dd10b9371df26ccc78eed5501b"
+      },
+      {
+        "categoria": "Chave Arremessada",
+        "titulo": "Metal pipe Swing-1",
+        "autor": "Deathscyp (Freesound), via freesound_community",
+        "pagina": "https://pixabay.com/sound-effects/musical-metal-pipe-swing-1-47741/",
+        "licenca_indicada": {
+          "nome": "Pixabay Content License",
+          "texto_exibido": "Free for use under the Pixabay Content License",
+          "url": "https://pixabay.com/service/license-summary/"
+        },
+        "nome_local": "chave-r2-02-deathscyp-metal-pipe-swing-1-47741.mp3",
+        "caminho_relativo": "originais/chave-r2-02-deathscyp-metal-pipe-swing-1-47741.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2022/03/10/audio_ba30e45b4d.mp3",
+        "motivo_da_escolha": "Descrição de cano metálico atravessando o ar, com tags Iron-pipe, Metallic e Hollow. Aproxima o corpo metálico de ferramenta pesada. Contém tag Hit: ausência de contato ou choque metálico não confirmada; conferir antes da integração.",
+        "base_da_selecao": "Somente metadados. Não houve escuta crítica.",
+        "bytes": 36480,
+        "sha256": "55b71aa04b789c6086237841403bba822d71a506a05ff4539b592d490399f00b"
+      },
+      {
+        "categoria": "Chave Arremessada",
+        "titulo": "Metallic Golf Swing",
+        "autor": "Universfield",
+        "pagina": "https://pixabay.com/sound-effects/film-special-effects-metallic-golf-swing-310481/",
+        "licenca_indicada": {
+          "nome": "Pixabay Content License",
+          "texto_exibido": "Free for use under the Pixabay Content License",
+          "url": "https://pixabay.com/service/license-summary/"
+        },
+        "nome_local": "chave-r2-03-universfield-metallic-golf-swing-310481.mp3",
+        "caminho_relativo": "originais/chave-r2-03-universfield-metallic-golf-swing-310481.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2025/03/07/audio_64094185f1.mp3",
+        "motivo_da_escolha": "Descrição de movimento de taco metálico com whoosh. Alternativa curta para passagem com vibração metálica; não é ferramenta girando em voo. Tags Golf Hit e Impact exigem escuta para conferir possível contato; não se afirma ausência de impacto.",
+        "base_da_selecao": "Somente metadados. Não houve escuta crítica.",
+        "bytes": 46080,
+        "sha256": "5c0d24e12f84711ed238a4da3e63232f57885aa1bb3765e44ebc99453fa78aa2"
+      },
+      {
+        "categoria": "Ataque tóxico",
+        "titulo": "Vomiting Sound Effect",
+        "autor": "DRAGON-STUDIO",
+        "pagina": "https://pixabay.com/sound-effects/people-vomiting-sound-effect-382720/",
+        "licenca_indicada": {
+          "nome": "Pixabay Content License",
+          "texto_exibido": "Free for use under the Pixabay Content License",
+          "url": "https://pixabay.com/service/license-summary/"
+        },
+        "nome_local": "toxico-r2-01-dragon-studio-vomiting-sound-effect-382720.mp3",
+        "caminho_relativo": "originais/toxico-r2-01-dragon-studio-vomiting-sound-effect-382720.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2025/07/30/audio_545796a8db.mp3",
+        "motivo_da_escolha": "Candidato fornecido pelo usuário, curto, com tags Gagging Noise, Retching Sound e Body Fluid Sound. Próximo da direção de ânsia e expulsão; sequência interna, ausência de fala e cauda líquida precisam de escuta.",
+        "base_da_selecao": "Somente metadados. Não houve escuta crítica.",
+        "bytes": 35108,
+        "sha256": "d407e819efc94bad8db62148cf2b0bba7fbe0d59bcabd786dc2e09ec7bf33dd3"
+      },
+      {
+        "categoria": "Ataque tóxico",
+        "titulo": "Vomit",
+        "autor": "DRAGON-STUDIO",
+        "pagina": "https://pixabay.com/sound-effects/people-vomit-386168/",
+        "licenca_indicada": {
+          "nome": "Pixabay Content License",
+          "texto_exibido": "Free for use under the Pixabay Content License",
+          "url": "https://pixabay.com/service/license-summary/"
+        },
+        "nome_local": "toxico-r2-02-dragon-studio-vomit-386168.mp3",
+        "caminho_relativo": "originais/toxico-r2-02-dragon-studio-vomit-386168.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2025/08/07/audio_8edf75c4ea.mp3",
+        "motivo_da_escolha": "Variação de cerca de 3 segundos com tags Gagging Sound, Retching Sound, Stomach Purge e Regurgitating Noise. Sem referência a banheiro ou efeito cômico na descrição examinada; isso não garante ausência por escuta.",
+        "base_da_selecao": "Somente metadados. Não houve escuta crítica.",
+        "bytes": 89443,
+        "sha256": "b2e15cc30b6d6625e5f690e5d46575e41278c7f8e1238d1d3f29127c49f18806"
+      },
+      {
+        "categoria": "Ataque tóxico",
+        "titulo": "Vomit",
+        "autor": "SoundReality",
+        "pagina": "https://pixabay.com/sound-effects/people-vomit-150122/",
+        "licenca_indicada": {
+          "nome": "Pixabay Content License",
+          "texto_exibido": "Free for use under the Pixabay Content License",
+          "url": "https://pixabay.com/service/license-summary/"
+        },
+        "nome_local": "toxico-r2-03-soundreality-vomit-150122.mp3",
+        "caminho_relativo": "originais/toxico-r2-03-soundreality-vomit-150122.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2023/05/16/audio_6fdf347d45.mp3",
+        "motivo_da_escolha": "Descrição de ânsia e vômito realistas, cerca de 4 segundos; tags Spew e Puke. A descrição também sugere uso em comédia, mas não afirma caráter exagerado. Selecionado pela indicação de realismo; validar ausência de vozes, descarga e exagero cômico na escuta.",
+        "base_da_selecao": "Somente metadados. Não houve escuta crítica.",
+        "bytes": 129024,
+        "sha256": "7a05c9b5930b9c5fc3b1004ee7cc6751d6c79ce0791c0ade5136a85226b53a26"
+      }
+    ]
+  },
+  "selecoes": "Metal pipe Swing-1 + Whoosh Axe Throw; Vomiting Sound Effect + Acid Bubbling.",
+  "sincronia": "Chave no lan?amento, contato corporal separado. ?nsia aos 35% do ataque; expuls?o l?quida 160 ms depois, junto ao contato aos 52%.",
+  "preservacao": "Originais, variantes anteriores, disparo laser, escudo e carga preservados. Mantida a nova colis?o est?tica/queima para avalia??o.",
+  "sons": [
+    {
+      "destino": "goblin_chave_metal_arremesso_v2.ogg",
+      "fontes": [
+        {
+          "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\goblin-nerd\\originais\\chave-r2-02-deathscyp-metal-pipe-swing-1-47741.mp3",
+          "sha256": "55b71aa04b789c6086237841403bba822d71a506a05ff4539b592d490399f00b"
+        },
+        {
+          "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\goblin-nerd\\originais\\chave-r2-01-soundreality-whoosh-axe-throw-389751.mp3",
+          "sha256": "47430b475b9f4360a7c113e0b56031a0f64664dd10b9371df26ccc78eed5501b"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.86:duration=0.30,asetpts=PTS-STARTPTS,atempo=0.8,volume=0.9[a];[1:a]atrim=start=0.22:duration=0.48,asetpts=PTS-STARTPTS,volume=0.24[b];[a][b]amix=inputs=2:normalize=0:duration=longest,highpass=f=90,lowpass=f=9000,apad,atrim=duration=0.48,afade=t=in:d=0.004,afade=t=out:st=0.34:d=0.14[out]",
+      "ganho": 0.457251319500961,
+      "sha256_ogg": "0cd4c43948a6e2846d0dbbf69fe32312e1369f93cb3c3c68e02df85eaf063c35"
+    },
+    {
+      "destino": "goblin_vomito_acido_v2.ogg",
+      "fontes": [
+        {
+          "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\goblin-nerd\\originais\\toxico-r2-01-dragon-studio-vomiting-sound-effect-382720.mp3",
+          "sha256": "d407e819efc94bad8db62148cf2b0bba7fbe0d59bcabd786dc2e09ec7bf33dd3"
+        },
+        {
+          "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\goblin-nerd\\originais\\toxico-acid-bubbling-105397.mp3",
+          "sha256": "4e3c7e2a01731ac0e404d48e51fa556bd12b31a008acdb44114ae00450a61534"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]asplit=2[g][v];[g]atrim=start=0.28:end=0.48,asetpts=PTS-STARTPTS,atempo=1.3,volume=0.65,afade=t=out:st=0.12:d=0.03[g1];[v]atrim=start=0.50:end=0.82,asetpts=PTS-STARTPTS,volume=0.85,afade=t=in:d=0.005,afade=t=out:st=0.23:d=0.09,adelay=160|160[v1];[1:a]atrim=start=0.65:duration=0.55,asetpts=PTS-STARTPTS,volume=0.20,afade=t=in:d=0.01,adelay=200|200[b];[g1][v1][b]amix=inputs=3:normalize=0:duration=longest,highpass=f=65,lowpass=f=6500,apad,atrim=duration=0.8,afade=t=in:d=0.005,afade=t=out:st=0.56:d=0.24[out]",
+      "ganho": 0.5726783937704829,
+      "sha256_ogg": "c225d8a281ce93d4bf6496b73bae5e3d8237e090a92861b63eb6b357acac771e"
+    }
+  ],
+  "escuta": "Pendente de avalia??o do jogador; escolha por metadados e medidas."
+}

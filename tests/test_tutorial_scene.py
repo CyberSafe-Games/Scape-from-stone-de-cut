@@ -20,6 +20,7 @@ from src.models.enemy import Enemy
 from src.models.player import Player
 from src.scenes.map_scene import MapScene
 from src.scenes.save_selection_scene import SaveSelectionScene
+from src.scenes.cutscene_scene import CutsceneScene
 from src.scenes.tutorial_scene import TutorialScene
 from src.systems.combat_engine import CombatEngine
 from src.systems.save_manager import SaveManager
@@ -106,6 +107,19 @@ class TestTutorialSceneIntegration(unittest.TestCase):
 
     def tearDown(self):
         self._tmp.cleanup()
+
+    def test_save_on_exit_keeps_initial_deck_unchanged(self):
+        """Fechar durante o tutorial não altera o deck inicial do save."""
+        progress = self.save_data["progresso"]
+        initial_slots = list(progress["deck_slots"])
+        initial_collection = list(progress["cartas_colecao"])
+
+        self.assertTrue(self.tutorial_scene.save_on_exit())
+
+        loaded = self.save_manager.load_save("slot_1")["progresso"]
+        self.assertEqual(loaded["deck_slots"], initial_slots)
+        self.assertEqual(loaded["cartas"], initial_slots[:6])
+        self.assertEqual(loaded["cartas_colecao"], initial_collection)
 
     def test_floating_bubbles_positioned_near_targets(self):
         """Garante que os balões não estão todos no centro e ficam próximos aos elementos."""
@@ -219,7 +233,7 @@ class TestTutorialSceneIntegration(unittest.TestCase):
         self.assertEqual(self.scene_manager.change_scene.call_count, 1)
 
     def test_victory_and_completion_flow(self):
-        """Derrotar o inimigo conclui a fase, atualiza save e transiciona para o mapa."""
+        """Derrotar o inimigo conclui a fase, atualiza save e abre a cutscene antes do mapa."""
         # Fecha overlay para liberar o combate direto
         self.tutorial_scene.overlay.finish()
         self.tutorial_scene.overlay.update(200)
@@ -239,10 +253,12 @@ class TestTutorialSceneIntegration(unittest.TestCase):
         self.assertTrue(loaded["progresso"]["tutorial_concluido"])
         self.assertGreaterEqual(loaded["progresso"]["moedas"], 30)
 
-        # Verifica se transicionou para MapScene
+        # Verifica a cutscene e a transição seguinte para o mapa
         self.scene_manager.change_scene.assert_called()
         new_scene = self.scene_manager.change_scene.call_args[0][0]
-        self.assertIsInstance(new_scene, MapScene)
+        self.assertIsInstance(new_scene, CutsceneScene)
+        new_scene._finish()
+        self.assertIsInstance(self.scene_manager.change_scene.call_args[0][0], MapScene)
 
 
 class TestSaveSelectionRouting(unittest.TestCase):
@@ -258,7 +274,7 @@ class TestSaveSelectionRouting(unittest.TestCase):
     def tearDown(self):
         self._tmp.cleanup()
 
-    def test_empty_slot_routes_to_tutorial(self):
+    def test_empty_slot_routes_to_intro_then_tutorial(self):
         selection_scene = SaveSelectionScene(
             self.scene_manager,
             self.window_manager,
@@ -270,11 +286,14 @@ class TestSaveSelectionRouting(unittest.TestCase):
 
         self.scene_manager.change_scene.assert_called()
         target_scene = self.scene_manager.change_scene.call_args[0][0]
-        self.assertIsInstance(target_scene, TutorialScene)
+        self.assertIsInstance(target_scene, CutsceneScene)
+        target_scene._finish()
+        self.assertIsInstance(self.scene_manager.change_scene.call_args[0][0], TutorialScene)
 
     def test_existing_save_without_tutorial_flag_does_not_restart_training(self):
         data = self.save_manager.create_save("slot_1")
-        del data["progresso"]["tutorial_concluido"]
+        for field in ("tutorial_concluido", "intro_vista", "pos_tutorial_visto"):
+            del data["progresso"][field]
         self.save_manager.save(data)
         self.assertTrue(self.save_manager.load_save("slot_1")["progresso"]["tutorial_concluido"])
         scene = SaveSelectionScene(self.scene_manager, self.window_manager,
@@ -286,6 +305,8 @@ class TestSaveSelectionRouting(unittest.TestCase):
     def test_unfinished_tutorial_routes_back_to_training(self):
         data = self.save_manager.create_save("slot_1")
         self.assertFalse(data["progresso"]["tutorial_concluido"])
+        data["progresso"]["intro_vista"] = True
+        self.save_manager.save(data)
         scene = SaveSelectionScene(self.scene_manager, self.window_manager,
                                    self.asset_manager, save_manager=self.save_manager)
         scene._select(0)

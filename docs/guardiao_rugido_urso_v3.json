@@ -1,0 +1,15 @@
+{
+  "titulo": "Bear Growl",
+  "autor": "Universfield",
+  "pagina": "https://pixabay.com/sound-effects/nature-bear-growl-191995/",
+  "licenca_indicada": "Pixabay Content License",
+  "licenca_url": "https://pixabay.com/service/license-summary/",
+  "original": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\guardiao-da-pedra\\originais\\universfield-bear-growl-191995.mp3",
+  "sha256_original": "982e0ea6697f6d2d2e83ee6186c2b2853e93c1156f534a9cf375dd1f391e2b91",
+  "destino": "assets/audio/guardiao_rugido_urso_v3.ogg",
+  "sha256_ogg": "b7a7fccd5d71600152387087ee7a160dbd36b0bcc3534d847d6663e401651286",
+  "filtros_ffmpeg": "atrim=start=0.08:end=1.05,asetpts=PTS-STARTPTS,highpass=f=55,lowpass=f=9500,aecho=1:1:70|140:0.14|0.06,apad,atrim=duration=1.5,afade=t=in:d=0.008,afade=t=out:st=0.95:d=0.55",
+  "ganho": 0.6789511592193244,
+  "disparo": "Lan?amento da Ultimate; janela de 1500 ms mantida.",
+  "escuta": "Pendente de aprova??o pelo jogador."
+}

@@ -4,19 +4,30 @@ import re
 from datetime import datetime
 
 from src.config.settings import SAVES_DIR
-from src.systems.card_catalog import CARD_POOL, create_starting_deck
+from src.models.player import Player
+from src.systems.card_catalog import AVAILABLE_CARD_POOL, create_starting_deck
 from src.systems.card_definitions import migrate_card_name
 from src.systems.territory_map import TERRITORY_IDS, FIRST_TERRITORY_ID, ROAD_FIGHTS
 from src.models.effects.ultimate_effect import DEFAULT_ULTIMATE_ID, known_ultimate_ids
-from src.systems.deck_loadout import INITIAL_SLOTS, normalize_collection_and_slots, expand_slots, SLOT_COUNT, CARD_NAMES
+from src.systems.deck_loadout import INITIAL_SLOTS, normalize_collection_and_slots, deck_cards, COPIES_PER_CARD
 
-SAVE_VERSION = 9
+# v9: deck equipado passa a ser uma cópia por espaço (DECK_SLOT_LIMIT).
+# Saves v8 (e anteriores) migram em normalize_collection_and_slots: cada
+# tipo equipado (3 cópias) vira três espaços individuais.
+# v11: registra as cutscenes vistas, com defaults em _normalize().
+SAVE_VERSION = 11
+HEALTH_UPGRADE_AMOUNT = 15
+HEALTH_UPGRADE_LIMIT = 3
 SLOT_COUNT = 3
 
 # Território disponível em um save novo (ids de território definidos pelo jogo).
 INITIAL_TERRITORIES = [FIRST_TERRITORY_ID]
 INITIAL_COINS = 0
 TEST_SAVE_ID = 'modo_teste'
+
+
+def player_max_hp(progress):
+    return Player.BASE_HP + HEALTH_UPGRADE_AMOUNT * progress.get("melhorias_vida_run", 0)
 
 
 def is_test_save(data):
@@ -49,7 +60,7 @@ class SaveManager:
 
     def __init__(self, saves_dir=SAVES_DIR):
         self.saves_dir = saves_dir
-        self._card_catalog = {card.name: card for card in CARD_POOL}
+        self._card_catalog = {card.name: card for card in AVAILABLE_CARD_POOL}
 
     # ========================================================
     # ESTRUTURA DE DADOS
@@ -72,14 +83,14 @@ class SaveManager:
                 "intro_vista": False,
                 "pos_tutorial_visto": False,
                 "moedas": INITIAL_COINS,
-                "curas_compradas_run": 0,
-                "cartas": expand_slots(INITIAL_SLOTS),
+                "melhorias_vida_run": 0,
+                "cartas": deck_cards(INITIAL_SLOTS),
                 "cartas_colecao": ["Soco Simples", "Esfera Protetora"],
                 "deck_slots": list(INITIAL_SLOTS),
                 "encontros_por_territorio": {},
                 # Checkpoint reiniciado no começo de um combate (não é um snapshot do turno).
                 "andar": 1,
-                "vida": 60,
+                "vida": Player.BASE_HP,
                 "energia_maxima": 2,
                 "carga_ultimate": 0,
                 "turnos": 1,
@@ -180,6 +191,8 @@ class SaveManager:
                     for tid in TERRITORY_IDS[:previous_floor]:
                         if tid not in unlocked:
                             unlocked.append(tid)
+        # v9: a migração de saves antigos acontece em normalize_collection_and_slots
+        # (6 espaços de tipos -> 18 espaços individuais).
         normalize_collection_and_slots(progress)
         # Saves anteriores (sem rota) preservam o acesso aos confrontos que
         # já estavam disponíveis.
@@ -188,6 +201,8 @@ class SaveManager:
                 tid: ROAD_FIGHTS for tid in progress.get("territorios_desbloqueados", [])
                 if tid in TERRITORY_IDS
             }
+        # Curas antigas não contam como compras da nova melhoria.
+        progress.pop("curas_compradas_run", None)
         for key, default in base["progresso"].items():
             progress.setdefault(key, default)
 
@@ -211,8 +226,9 @@ class SaveManager:
 
         if type(progress["moedas"]) is not int or progress["moedas"] < 0:
             raise SaveCorruptedError("Valor de moedas inválido.")
-        if type(progress["curas_compradas_run"]) is not int or not 0 <= progress["curas_compradas_run"] <= 3:
-            raise SaveCorruptedError("Contador de curas da RUN inválido.")
+        upgrades = progress["melhorias_vida_run"]
+        if type(upgrades) is not int or not 0 <= upgrades <= HEALTH_UPGRADE_LIMIT:
+            raise SaveCorruptedError("Contador de melhorias de vida da run inválido.")
         if not isinstance(progress["cartas"], list):
             raise SaveCorruptedError("Lista de cartas inválida.")
         steps = progress.get("encontros_por_territorio", {})
@@ -242,7 +258,7 @@ class SaveManager:
         for field in ("andar", "vida", "energia_maxima", "carga_ultimate", "turnos"):
             if type(progress[field]) is not int or progress[field] < 0:
                 raise SaveCorruptedError(f"Campo de progresso inválido: {field}.")
-        if progress["andar"] < 1 or progress["vida"] > 60 or not 1 <= progress["energia_maxima"] <= 8:
+        if progress["andar"] < 1 or progress["vida"] > player_max_hp(progress) or not 1 <= progress["energia_maxima"] <= 8:
             raise SaveCorruptedError("Checkpoint inválido.")
         if any(not isinstance(card, str) for card in progress["cartas"]):
             raise SaveCorruptedError("Lista de cartas inválida.")
@@ -286,13 +302,15 @@ class SaveManager:
         progress['territorios_desbloqueados'] = list(TERRITORY_IDS)
         progress['territorios_concluidos'] = list(TERRITORY_IDS)
         progress['encontros_por_territorio'] = {tid: ROAD_FIGHTS for tid in TERRITORY_IDS}
-        progress['cartas_colecao'] = [card.name for card in CARD_POOL]
+        progress['cartas_colecao'] = list(dict.fromkeys(
+            progress['cartas_colecao'] + [card.name for card in AVAILABLE_CARD_POOL]
+        ))
         progress['ultimates_desbloqueadas'] = known_ultimate_ids()
         progress['tutorial_concluido'] = True
         progress['intro_vista'] = True
         progress['pos_tutorial_visto'] = True
         progress['guia_mapa_visto'] = True
-        progress['vida'] = 60
+        progress['vida'] = player_max_hp(progress)
 
     def load_or_create_test_save(self):
         """Save extra identificado explicitamente; não ocupa nem substitui slots."""
@@ -307,9 +325,12 @@ class SaveManager:
         self._unlock_test_progress(progress)
         progress['andar'] = 7
         progress['moedas'] = 9999
-        progress['deck_slots'] = ['Soco Simples', 'Esfera Protetora', 'Disparo de Arco',
-                                  'Bola de Fogo', 'Adaga Sangrenta', 'Surto de Energia']
-        progress['cartas'] = expand_slots(progress['deck_slots'])
+        test_deck_types = ['Soco Simples', 'Esfera Protetora', 'Disparo de Arco',
+                           'Bola de Fogo', 'Adaga Sangrenta', 'Surto de Energia']
+        progress['deck_slots'] = [
+            name for name in test_deck_types for _ in range(COPIES_PER_CARD)
+        ]  # Um espaço por cópia: 18 espaços, 3 de cada tipo.
+        progress['cartas'] = list(progress['deck_slots'])
         self.save(data)
         return data
 
@@ -347,7 +368,7 @@ class SaveManager:
         player.invulnerable = is_test_save(data)
         player.coins = progress["moedas"]
 
-        # Cartas desconhecidas (ex: removidas do catálogo) são ignoradas.
+        player.max_hp = player_max_hp(progress)
         player.hp = min(player.max_hp, progress["vida"] or player.max_hp)
         if player.invulnerable:
             player.hp = player.max_hp
@@ -361,11 +382,14 @@ class SaveManager:
         player.equip_ultimate(progress.get("ultimate_equipada", DEFAULT_ULTIMATE_ID))
         # start_combat inicia a mão/energia do primeiro turno do novo combate.
         player.turn_count = 0
+        # Apenas cartas disponíveis entram no combate, inclusive em saves antigos.
         deck_manager.deck = [
             self._card_catalog[migrate_card_name(name)].copy()
             for name in progress["cartas"]
             if migrate_card_name(name) in self._card_catalog
         ]
+        if not deck_manager.deck:
+            deck_manager.deck = create_starting_deck()
 
     def update_from_game(self, data, player, deck_manager, level=None):
         """Copia o estado atual do jogador e do baralho para os dados do save."""
@@ -373,11 +397,11 @@ class SaveManager:
         progress["moedas"] = player.coins
         normalize_collection_and_slots(progress)
         for card in deck_manager.deck:
-            if card.name in CARD_NAMES and card.name not in progress["cartas_colecao"]:
+            if card.name in self._card_catalog and card.name not in progress["cartas_colecao"]:
                 progress["cartas_colecao"].append(card.name)
         # O deck é configurado na mochila. Recompensas entram na coleção, não
-        # entram automaticamente na seleção de três cópias por tipo.
-        progress["cartas"] = expand_slots(progress["deck_slots"])
+        # entram automaticamente nos espaços individuais.
+        progress["cartas"] = deck_cards(progress["deck_slots"])
         if level is not None:
             progress["andar"] = level
         progress["vida"] = player.hp

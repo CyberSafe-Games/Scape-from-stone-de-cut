@@ -1,0 +1,104 @@
+{
+  "concluido": true,
+  "total": 19,
+  "aprovados": 18,
+  "falhas": 1,
+  "motivo": "Reexecução individual após timeout de 180 s do módulo inteiro.",
+  "testes": [
+    {
+      "teste": "tests.test_tutorial_scene.TestTutorialOverlay.test_initial_state",
+      "exit_code": 0,
+      "segundos": 1.31
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestTutorialOverlay.test_advance_and_fluid_transition",
+      "exit_code": 0,
+      "segundos": 1.19
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestTutorialOverlay.test_skip_finishes_overlay",
+      "exit_code": 0,
+      "segundos": 1.68
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestTutorialOverlay.test_screen_click_advances",
+      "exit_code": 0,
+      "segundos": 1.38
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestTutorialOverlay.test_draw_helpers_do_not_crash",
+      "exit_code": 0,
+      "segundos": 1.47
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestTutorialSceneIntegration.test_floating_bubbles_positioned_near_targets",
+      "exit_code": 0,
+      "segundos": 26.85
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestTutorialSceneIntegration.test_bubble_text_stays_inside_bubble",
+      "exit_code": 0,
+      "segundos": 28.05
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestTutorialSceneIntegration.test_bubble_with_bottom_arrow_grows_upwards",
+      "exit_code": 0,
+      "segundos": 24.06
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestTutorialSceneIntegration.test_tutorial_required_elements_covered_in_steps",
+      "exit_code": 124,
+      "erro": "Limite de 180 s por teste excedido."
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestTutorialSceneIntegration.test_tutorial_enemy_setup",
+      "exit_code": 0,
+      "segundos": 14.5
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestTutorialSceneIntegration.test_tutorial_hand_setup",
+      "exit_code": 0,
+      "segundos": 12.29
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestTutorialSceneIntegration.test_overlay_navigation_via_screen_click",
+      "exit_code": 0,
+      "segundos": 12.4
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestTutorialSceneIntegration.test_tutorial_cannot_complete_before_victory",
+      "exit_code": 0,
+      "segundos": 11.07
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestTutorialSceneIntegration.test_tutorial_completion_is_once_only",
+      "exit_code": 0,
+      "segundos": 10.66
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestTutorialSceneIntegration.test_victory_and_completion_flow",
+      "exit_code": 0,
+      "segundos": 10.45
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestSaveSelectionRouting.test_empty_slot_routes_to_tutorial",
+      "exit_code": 0,
+      "segundos": 10.54
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestSaveSelectionRouting.test_existing_save_without_tutorial_flag_does_not_restart_training",
+      "exit_code": 0,
+      "segundos": 11.75
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestSaveSelectionRouting.test_unfinished_tutorial_routes_back_to_training",
+      "exit_code": 0,
+      "segundos": 12.27
+    },
+    {
+      "teste": "tests.test_tutorial_scene.TestSaveSelectionRouting.test_completed_save_routes_to_map",
+      "exit_code": 0,
+      "segundos": 11.95
+    }
+  ]
+}

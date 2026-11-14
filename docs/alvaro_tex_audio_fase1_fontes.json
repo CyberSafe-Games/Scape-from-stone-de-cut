@@ -1,0 +1,71 @@
+{
+  "fase": 1,
+  "origem": "Derivados de recursos já existentes no projeto; nenhum download novo.",
+  "escuta": "Pendente de aprovação pelo jogador.",
+  "sons": [
+    {
+      "arquivo": "alvaro_tex_estocada_movimento_v1.ogg",
+      "fontes_locais": [
+        {
+          "arquivo": "freesound_community-knife-slice-41231_sync.ogg",
+          "sha256": "5b984b0876057d0200d2d11bd9a834992160e089b697fe3cc5959423c30287fa"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=duration=0.4,asetpts=PTS-STARTPTS,highpass=f=130,lowpass=f=7500,apad,atrim=duration=0.4,afade=t=in:d=0.006,afade=t=out:st=0.3:d=0.1[out]",
+      "ganho": 0.34869251616715113,
+      "sha256_ogg": "cd14ee1a9f6dfe839917f82b1b630f74065cfc4b2309903f37bcfbed96dc2eb6"
+    },
+    {
+      "arquivo": "alvaro_tex_estrela_voo_v1.ogg",
+      "fontes_locais": [
+        {
+          "arquivo": "freesound_community-knife-slice-41231_sync.ogg",
+          "sha256": "5b984b0876057d0200d2d11bd9a834992160e089b697fe3cc5959423c30287fa"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=duration=0.8,asetpts=PTS-STARTPTS,atempo=1.4,highpass=f=550,lowpass=f=8500,tremolo=f=18:d=0.55,apad,atrim=duration=0.6,afade=t=in:d=0.008,afade=t=out:st=0.46:d=0.14[out]",
+      "ganho": 0.3921990115937494,
+      "sha256_ogg": "9eafe6e86a6adcd3c09913ca8abc3137f03ef359df697fed7e68d674430a672e"
+    },
+    {
+      "arquivo": "alvaro_tex_vendaval_giro_v1.ogg",
+      "fontes_locais": [
+        {
+          "arquivo": "freesound_community-knife-slice-41231_sync.ogg",
+          "sha256": "5b984b0876057d0200d2d11bd9a834992160e089b697fe3cc5959423c30287fa"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=duration=0.6,asetpts=PTS-STARTPTS,asplit=3[a][b][c];[b]adelay=100|100,volume=0.65[b1];[c]adelay=200|200,volume=0.4[c1];[a][b1][c1]amix=inputs=3:normalize=0:duration=longest,highpass=f=110,lowpass=f=8000,tremolo=f=9:d=0.35,apad,atrim=duration=0.7,afade=t=in:d=0.008,afade=t=out:st=0.53:d=0.17[out]",
+      "ganho": 0.4000323269552373,
+      "sha256_ogg": "f0f094892cdba31caaca6061d6a830650b86fb130b6b5a72cb59a6708d2d9911"
+    },
+    {
+      "arquivo": "alvaro_tex_corte_corporal_v1.ogg",
+      "fontes_locais": [
+        {
+          "arquivo": "adaga_corte_sangramento.ogg",
+          "sha256": "1cb26bd79515f02cf3d78fcbe07ea0cf96deaeafd8e02c3d6dd94b359de590d5"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.08:duration=1.1,asetpts=PTS-STARTPTS,highpass=f=65,lowpass=f=6500,afade=t=in:d=0.004,afade=t=out:st=0.8:d=0.3[out]",
+      "ganho": 0.40811408929918724,
+      "sha256_ogg": "f219834dc6259dfd81fb92b0ccc514e48f845fde2456d12f812b905439d65737"
+    },
+    {
+      "arquivo": "alvaro_tex_fumaca_restauradora_v1.ogg",
+      "fontes_locais": [
+        {
+          "arquivo": "pocao_purificadora_sync.ogg",
+          "sha256": "45c51ef7156484c925a6e0126cc2b49b19adf0dc3f643017e29a9c680d021aac"
+        },
+        {
+          "arquivo": "inimigo_cura.ogg",
+          "sha256": "ab48cc0819ad41dc0129585cd0ad53f00c8942ffed9032bedcec3a36fd772bb2"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=duration=1.4,asetpts=PTS-STARTPTS,lowpass=f=3500,volume=0.55[a];[1:a]atrim=duration=1.1,asetpts=PTS-STARTPTS,volume=0.3,adelay=80|80[b];[a][b]amix=inputs=2:normalize=0:duration=longest,aecho=1:1:90:0.15,highpass=f=80,apad,atrim=duration=1.5,afade=t=in:d=0.025,afade=t=out:st=1.05:d=0.45[out]",
+      "ganho": 0.842133142760536,
+      "sha256_ogg": "34567c171f240b230aff53be93ed2dd4b80ad92ce1e45fdd1f10ac971cbcca00"
+    }
+  ]
+}

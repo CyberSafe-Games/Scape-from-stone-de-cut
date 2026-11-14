@@ -1,0 +1,17 @@
+{
+  "objetivo": "Contato de est?tica curta com continua??o de crepita??o de queima; substitui o impacto plasma anterior nos dois lasers.",
+  "fontes": [
+    {
+      "arquivo": "assets/audio/bola_de_fogo_continua.ogg",
+      "sha256": "a8110db1f80e2832bdd60ac2a8c719d5f95a8e52f4eafe96ec29c9f5a3a68863"
+    },
+    {
+      "geracao": "Ru?do rosa gerado localmente com FFmpeg, semente fixa 1741, filtrado e modulado."
+    }
+  ],
+  "filtros_ffmpeg": "anoisesrc=color=pink:amplitude=0.25:duration=0.14:sample_rate=44100:seed=1741,highpass=f=1400,lowpass=f=7000,tremolo=f=65:d=0.85,afade=t=out:st=0.04:d=0.1,volume=0.55[a];[0:a]atrim=start=0.80:duration=0.55,asetpts=PTS-STARTPTS,atempo=0.7,highpass=f=180,lowpass=f=6500,volume=0.22,afade=t=in:d=0.015,adelay=35|35[b];[a][b]amix=inputs=2:normalize=0:duration=longest,apad,atrim=duration=0.9,afade=t=in:d=0.002,afade=t=out:st=0.60:d=0.30[out]",
+  "ganho": 1,
+  "destino": "goblin_colisao_estatica_queima_v2.ogg",
+  "sha256_ogg": "8ddbfe06ae12b146a7186b2cdfd5422ae43c21d30a584b539a322afcf8fe4a77",
+  "escuta": "Pendente. Disparo, escudo e carga da Ultimate aprovados e preservados. Chave e t?xico aguardam recursos espec?ficos."
+}

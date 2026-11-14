@@ -1,8 +1,17 @@
 .venv
 .env
 __pycache__
-AGENTS.md
+.pytest_cache/
 
 # Saves locais
 saves/
 tools/
+
+# Preferencias locais de volume
+settings/audio.json
+settings/.audio-*.tmp
+
+# Referências recriadas pelos scripts de preparação com --references
+/assets/bosses/twelve_frames/*/reference.png
+/assets/boss_ultimate_effects/twelve_frames/*/reference.png
+/assets/player/twelve_frames/source/*_reference.png

@@ -1,0 +1,170 @@
+{
+  "origem": {
+    "projeto": "Scape from Stone",
+    "personagem": "Gordofera",
+    "data_coleta": "2026-11-10",
+    "base_da_selecao": "Somente metadados: títulos, descrições, tags e duração indicada. Players acionados para carregar mídias; não houve escuta crítica.",
+    "limites": "Rugidos: ausência de voz humana, efeito robótico e eco exagerado ainda depende de escuta. Abalos: sequência impacto-terra-pedra-fragmentos e ausência de vidro, madeira, metal ou explosão de bomba não foram confirmadas perceptualmente. Small Rock Break é uma alternativa mais leve centrada em fragmentos. Marcas false significam não observadas na página, não certificação de ausência.",
+    "preservacao": "MP3 disponibilizados pelo Pixabay, obtidos das mídias observadas nos players oficiais. Sem cortar, converter, normalizar ou misturar. Nenhum arquivo existente sobrescrito. Nenhum código do jogo alterado.",
+    "arquivos": [
+      {
+        "categoria": "Rugido Feroz",
+        "titulo": "Tiger Roar Loudly",
+        "autor": "dffdv",
+        "pagina": "https://pixabay.com/sound-effects/nature-tiger-roar-loudly-193229/",
+        "licenca_indicada": {
+          "nome": "Pixabay Content License",
+          "texto_exibido": "Free for use under the Pixabay Content License",
+          "url": "https://pixabay.com/service/license-summary/"
+        },
+        "nome_local": "rugido-01-dffdv-tiger-roar-loudly-193229.mp3",
+        "caminho_relativo": "originais/rugido-01-dffdv-tiger-roar-loudly-193229.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2024/02/26/audio_0569e284ad.mp3",
+        "motivo_da_escolha": "Referência do usuário, descrita como rugido poderoso e alto de tigre. Cerca de 2 segundos. A página marca AI generated e Content ID Registered; não se afirma gravação natural nem ausência perceptual de processamento.",
+        "ai_generated_observado": true,
+        "content_id_registered_observado": true,
+        "base_da_selecao": "Somente metadados, sem escuta crítica.",
+        "bytes": 61440,
+        "sha256": "8a1d5bfa281b8834bcf923cda748657ad2d849a0bc3d1bbaead8d239c3d84035"
+      },
+      {
+        "categoria": "Rugido Feroz",
+        "titulo": "Powerful Lion Roar Sound Effect – High Quality SFX",
+        "autor": "PWLPL",
+        "pagina": "https://pixabay.com/sound-effects/nature-powerful-lion-roar-sound-effect-high-quality-sfx-444190/",
+        "licenca_indicada": {
+          "nome": "Pixabay Content License",
+          "texto_exibido": "Free for use under the Pixabay Content License",
+          "url": "https://pixabay.com/service/license-summary/"
+        },
+        "nome_local": "rugido-02-pwlpl-powerful-lion-roar-444190.mp3",
+        "caminho_relativo": "originais/rugido-02-pwlpl-powerful-lion-roar-444190.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2025/11/28/audio_a83280ddfa.mp3",
+        "motivo_da_escolha": "Rugido de leão com tags Powerful Lion Roar, Predator Roar e Realistic Lion Sound. Aproximadamente 3 segundos, alternativa curta e encorpada pelos metadados.",
+        "ai_generated_observado": false,
+        "content_id_registered_observado": false,
+        "base_da_selecao": "Somente metadados, sem escuta crítica.",
+        "bytes": 86016,
+        "sha256": "bcfe5beca3755c4c7dc3196f905bed0386379acabb1bc650d7d10f2f152a39d1"
+      },
+      {
+        "categoria": "Rugido Feroz",
+        "titulo": "Lion Roar Sound Effect",
+        "autor": "DRAGON-STUDIO",
+        "pagina": "https://pixabay.com/sound-effects/nature-lion-roar-sound-effect-324751/",
+        "licenca_indicada": {
+          "nome": "Pixabay Content License",
+          "texto_exibido": "Free for use under the Pixabay Content License",
+          "url": "https://pixabay.com/service/license-summary/"
+        },
+        "nome_local": "rugido-03-dragon-studio-lion-roar-324751.mp3",
+        "caminho_relativo": "originais/rugido-03-dragon-studio-lion-roar-324751.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2025/04/09/audio_7e076a0c0d.mp3",
+        "motivo_da_escolha": "Descrição de rugido realista e poderoso de leão, sem efeito robótico ou eco declarado. Aproximadamente 8 segundos completos, sem cortes.",
+        "ai_generated_observado": false,
+        "content_id_registered_observado": false,
+        "base_da_selecao": "Somente metadados, sem escuta crítica.",
+        "bytes": 259134,
+        "sha256": "c944e41d9b4021666861962262e74fb5b6ba4fa4b05a77902541dcca10a8b9d2"
+      },
+      {
+        "categoria": "Abalo Abissal",
+        "titulo": "Rock Break Hard",
+        "autor": "LordSonny",
+        "pagina": "https://pixabay.com/sound-effects/film-special-effects-rock-break-hard-184891/",
+        "licenca_indicada": {
+          "nome": "Pixabay Content License",
+          "texto_exibido": "Free for use under the Pixabay Content License",
+          "url": "https://pixabay.com/service/license-summary/"
+        },
+        "nome_local": "abalo-01-lordsonny-rock-break-hard-184891.mp3",
+        "caminho_relativo": "originais/abalo-01-lordsonny-rock-break-hard-184891.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2024/01/08/audio_2a7a1fb350.mp3",
+        "motivo_da_escolha": "Referência do usuário: descrição de quebra pesada de rocha e desmoronamento com detritos. Cerca de 3 segundos. Existe tag Explosion, mas a descrição é de pedra; caráter de bomba não foi confirmado nem descartado por escuta.",
+        "ai_generated_observado": false,
+        "content_id_registered_observado": false,
+        "base_da_selecao": "Somente metadados, sem escuta crítica.",
+        "bytes": 109505,
+        "sha256": "ece00e07ede13f837353adc1a3a90eca6d1c02f5a8350a3eb76b35519a05fc98"
+      },
+      {
+        "categoria": "Abalo Abissal",
+        "titulo": "Punch a Rock",
+        "autor": "LordSonny",
+        "pagina": "https://pixabay.com/sound-effects/film-special-effects-punch-a-rock-161647/",
+        "licenca_indicada": {
+          "nome": "Pixabay Content License",
+          "texto_exibido": "Free for use under the Pixabay Content License",
+          "url": "https://pixabay.com/service/license-summary/"
+        },
+        "nome_local": "abalo-02-lordsonny-punch-a-rock-161647.mp3",
+        "caminho_relativo": "originais/abalo-02-lordsonny-punch-a-rock-161647.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2023/08/11/audio_6841525915.mp3",
+        "motivo_da_escolha": "Descrição de golpe pesado na rocha com detritos desmoronando, cerca de 6 segundos. Tags Rock Impact e Stone Break. Há tags Explosion e Explode; validar que a leitura é quebra rochosa, não bomba.",
+        "ai_generated_observado": false,
+        "content_id_registered_observado": false,
+        "base_da_selecao": "Somente metadados, sem escuta crítica.",
+        "bytes": 187245,
+        "sha256": "aac6b693a7179906412ce19d5c0287dcac735d18562ac538579c338101d0ee9f"
+      },
+      {
+        "categoria": "Abalo Abissal",
+        "titulo": "Small Rock Break",
+        "autor": "LordSonny",
+        "pagina": "https://pixabay.com/sound-effects/film-special-effects-small-rock-break-194553/",
+        "licenca_indicada": {
+          "nome": "Pixabay Content License",
+          "texto_exibido": "Free for use under the Pixabay Content License",
+          "url": "https://pixabay.com/service/license-summary/"
+        },
+        "nome_local": "abalo-03-lordsonny-small-rock-break-194553.mp3",
+        "caminho_relativo": "originais/abalo-03-lordsonny-small-rock-break-194553.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2024/03/05/audio_b858bdb82f.mp3",
+        "motivo_da_escolha": "Alternativa com foco em quebra e pequenos fragmentos, descrita como rocha pequena se rompendo com detritos; cerca de 4 segundos. É a opção de menor peso; pode não sustentar sozinha um abalo pesado. Há tag Explosion, sem confirmação de som de bomba por escuta.",
+        "ai_generated_observado": false,
+        "content_id_registered_observado": false,
+        "base_da_selecao": "Somente metadados, sem escuta crítica.",
+        "bytes": 129567,
+        "sha256": "3205325b322f6c4befc5f8d80c018198f4b7bb348b811fb2229ae5ccb2f5b364"
+      }
+    ]
+  },
+  "selecao": "Tiger Roar Loudly com final natural; Rock Break Hard para aterrissagem e Small Rock Break como fragmentos.",
+  "sincronia": "Rugido aos 35%; salto aos 25% e pedras aos 64% da Ultimate.",
+  "preservacao": "Garras e cabe?ada aprovadas; aura e salto da revis?o anterior mantidos. Originais e variantes anteriores preservados.",
+  "recursos": [
+    {
+      "destino": "gordofera_rugido_tigre_v2.ogg",
+      "fontes": [
+        {
+          "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\gordofera\\originais\\rugido-01-dffdv-tiger-roar-loudly-193229.mp3",
+          "sha256": "8a1d5bfa281b8834bcf923cda748657ad2d849a0bc3d1bbaead8d239c3d84035"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.04:end=1.84,asetpts=PTS-STARTPTS,highpass=f=55,lowpass=f=9000,afade=t=in:d=0.008,afade=t=out:st=1.6:d=0.2[out]",
+      "ganho": 0.30629771623135366,
+      "sha256_ogg": "7737109483840f544c0473154eface2b224defa3db57a2c3d84c42824e962b3c"
+    },
+    {
+      "destino": "gordofera_abalo_pedras_fragmentos_v2.ogg",
+      "fontes": [
+        {
+          "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\gordofera\\originais\\abalo-01-lordsonny-rock-break-hard-184891.mp3",
+          "sha256": "ece00e07ede13f837353adc1a3a90eca6d1c02f5a8350a3eb76b35519a05fc98"
+        },
+        {
+          "arquivo": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\gordofera\\originais\\abalo-03-lordsonny-small-rock-break-194553.mp3",
+          "sha256": "3205325b322f6c4befc5f8d80c018198f4b7bb348b811fb2229ae5ccb2f5b364"
+        },
+        {
+          "arquivo": "C:\\Users\\marco\\OneDrive\\Desktop\\Scape-from-stone-de-cut-git\\assets\\audio\\investida_impacto_corporal.ogg",
+          "sha256": "2c34e20f7315d1a0472ded3408055834bb9f64251181a0b91be84b7c0f81768e"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=start=0.59:duration=1.6,asetpts=PTS-STARTPTS,highpass=f=45,lowpass=f=9000,volume=0.5[a];[1:a]atrim=start=0.55:duration=1.4,asetpts=PTS-STARTPTS,highpass=f=180,lowpass=f=9500,volume=0.18,adelay=90|90[b];[2:a]atrim=duration=0.18,asetpts=PTS-STARTPTS,highpass=f=45,lowpass=f=1100,volume=0.12,afade=t=out:st=0.09:d=0.09[c];[a][b][c]amix=inputs=3:normalize=0:duration=longest,apad,atrim=duration=1.6,afade=t=in:d=0.004,afade=t=out:st=1.1:d=0.5[out]",
+      "ganho": 0.4586190392830197,
+      "sha256_ogg": "1de1166c3c23f56b3d24619e402f83402c31329a30e9ab24554cf9ded1eae4e6"
+    }
+  ],
+  "escuta": "Sele??o por metadados e medidas; piloto aguarda avalia??o perceptual."
+}

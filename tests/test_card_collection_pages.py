@@ -1,4 +1,4 @@
-"""Todas as 20 cartas ficam alcançáveis na loja e na mochila."""
+"""A coleção exibe o catálogo e só libera seleção e compra de cartas disponíveis."""
 import os
 import unittest
 from unittest.mock import MagicMock
@@ -9,7 +9,13 @@ import pygame
 from src.scenes.shop_scene import ShopScene
 from src.scenes.backpack_scene import BackpackScene
 from src.systems.save_manager import SaveManager
-from src.systems.card_catalog import CARD_BY_NAME
+from src.systems.card_catalog import AVAILABLE_CARD_NAMES, AVAILABLE_CARD_POOL, CARD_BY_NAME, UNAVAILABLE_CARD_NAMES
+from src.systems.deck_loadout import (
+    DECK_SLOT_LIMIT,
+    add_card_to_slots,
+    deck_is_ready_for_exit,
+)
+from src.systems.shop_system import purchase_card
 
 
 class CardCollectionPageTests(unittest.TestCase):
@@ -34,12 +40,13 @@ class CardCollectionPageTests(unittest.TestCase):
                 self.click(scene, rect)
             if scene.page == scene.page_count - 1: break
             self.click(scene, scene.next_page_rect)
-        self.assertEqual(found, set(CARD_BY_NAME))
-        self.assertEqual(set(self.data['progresso']['cartas_colecao']), set(CARD_BY_NAME))
+        self.assertEqual(found, AVAILABLE_CARD_NAMES)
+        self.assertEqual(set(self.data['progresso']['cartas_colecao']), AVAILABLE_CARD_NAMES)
+        page_count = scene.page_count
         self.click(scene, scene.previous_page_rect)
-        self.assertEqual(scene.page, 2)
+        self.assertEqual(scene.page, page_count - 2)
 
-    def test_last_page_card_can_be_equipped_and_persists_slot(self):
+    def test_last_page_card_adds_copies_and_persists_slots(self):
         self.data['progresso']['cartas_colecao'] = list(CARD_BY_NAME)
         scene = BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, self.data)
         found = set(scene.cards)
@@ -47,25 +54,58 @@ class CardCollectionPageTests(unittest.TestCase):
             self.click(scene, scene.next_page_rect)
             found.update(scene.cards)
         self.assertEqual(found, set(CARD_BY_NAME))
-        scene.selected_slot = 2
-        self.click(scene, scene.cards['Poção Venenosa'])
-        self.assertIsNone(self.data['progresso']['deck_slots'][2])
-        self.click(scene, scene.equip_rect)
-        self.assertEqual(self.data['progresso']['deck_slots'][2], 'Poção Venenosa')
-        self.assertEqual(self.data['progresso']['cartas'].count('Poção Venenosa'), 3)
+        last_card_name = AVAILABLE_CARD_POOL[-1].name
+        scene._set_page((len(AVAILABLE_CARD_POOL) - 1) // scene.PAGE_SIZE)
+        for _ in range(3):
+            self.click(scene, scene.cards[last_card_name])
+        self.assertEqual(self.data['progresso']['deck_slots'].count(last_card_name), 3)
+        self.assertEqual(self.data['progresso']['cartas'].count(last_card_name), 3)
 
-    def test_every_visible_card_can_be_selected_without_equipping(self):
+    def test_only_available_cards_can_be_added_to_the_deck(self):
         self.data['progresso']['cartas_colecao'] = list(CARD_BY_NAME)
         scene = BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, self.data)
-        original_slots = list(self.data['progresso']['deck_slots'])
         selected = set()
         for page in range(scene.page_count):
             scene._set_page(page)
             for name, rect in scene.cards.items():
                 with self.subTest(page=page, card=name):
                     scene.selected_card = None
+                    # Parte de um rascunho determinístico com um único espaço livre.
+                    scene.draft_slots = ['Soco Simples'] + [None] * (DECK_SLOT_LIMIT - 1)
                     self.click(scene, rect)
-                    self.assertEqual(scene.selected_card, name)
-                    self.assertEqual(self.data['progresso']['deck_slots'], original_slots)
-                    selected.add(name)
-        self.assertEqual(selected, set(CARD_BY_NAME))
+                    if name in AVAILABLE_CARD_NAMES:
+                        # O rascunho começa com uma Soco Simples; o clique adiciona mais uma.
+                        expected = 2 if name == 'Soco Simples' else 1
+                        self.assertEqual(scene.selected_card, name)
+                        self.assertEqual(scene.draft_slots.count(name), expected)
+                    else:
+                        self.assertIsNone(scene.selected_card)
+                        self.assertEqual(
+                            scene.draft_slots,
+                            ['Soco Simples'] + [None] * (DECK_SLOT_LIMIT - 1),
+                        )
+                    if scene.selected_card:
+                        selected.add(scene.selected_card)
+        self.assertEqual(selected, AVAILABLE_CARD_NAMES)
+
+    def test_unavailable_card_cannot_be_bought_or_added_to_the_deck_from_an_old_save(self):
+        name = sorted(UNAVAILABLE_CARD_NAMES)[0]
+        progress = self.data['progresso']
+        progress['cartas_colecao'] = [name]
+        progress['deck_slots'] = [name] + [None] * (DECK_SLOT_LIMIT - 1)
+        progress['cartas'] = [name] * 3
+        coins = progress['moedas']
+
+        self.assertFalse(purchase_card(self.saves, self.data, name).success)
+        ok, message, slots = add_card_to_slots(
+            progress['deck_slots'], progress['cartas_colecao'], name
+        )
+        self.assertFalse(ok)
+        self.assertEqual(progress['moedas'], coins)
+        self.saves.save.assert_not_called()
+
+        scene = BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, self.data)
+        self.assertIn(name, progress['cartas_colecao'])
+        self.assertNotIn(name, progress['cartas'])
+        self.assertNotIn(name, scene.draft_slots)
+        self.assertFalse(deck_is_ready_for_exit(scene.draft_slots))

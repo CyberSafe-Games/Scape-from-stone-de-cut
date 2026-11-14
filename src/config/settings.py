@@ -25,6 +25,13 @@ TITLE = "Scape From Stone de Cut"
 HAND_SIZE_START = 3
 HAND_SIZE_MAX = 5
 
+# Cura concedida ao vencer um miniboss/chefe de território, como fração da
+# VIDA MÁXIMA atual (não da vida atual). Calculada no momento da cura, por
+# isso acompanha futuros upgrades de vida máxima. Arredondada para o inteiro
+# mais próximo (+0.5, truncado); nunca ultrapassa a vida máxima (min).
+# Exemplos: 60 → 18 HP; 80 → 24 HP. Ajustar somente esta linha.
+MINIBOSS_HEAL_PERCENT = 0.30
+
 # Caminhos do projeto
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(SRC_DIR)

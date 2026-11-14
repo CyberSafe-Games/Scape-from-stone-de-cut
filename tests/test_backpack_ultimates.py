@@ -156,13 +156,12 @@ class BackpackInteractionTests(unittest.TestCase):
         self.click(self.scene.deck_tab_rect)
         self.assertEqual(self.scene.tab, 'deck')
 
-    def test_preview_then_equip_and_owned_filter(self):
-        self.click(self.scene.slots[2])
+    def test_click_collection_card_adds_copies_and_owned_filter(self):
         self.click(self.scene.cards['Investida'])
         self.assertEqual(self.scene.selected_card, 'Investida')
-        self.assertIsNone(self.data['progresso']['deck_slots'][2])
-        self.click(self.scene.equip_rect)
-        self.assertEqual(self.data['progresso']['deck_slots'][2], 'Investida')
+        self.assertEqual(self.data['progresso']['deck_slots'].count('Investida'), 1)
+        self.click(self.scene.add_rect)
+        self.assertEqual(self.data['progresso']['deck_slots'].count('Investida'), 2)
         self.data['progresso']['cartas_colecao'] = ['Soco Simples', 'Esfera Protetora', 'Investida']
         self.click(self.scene.filter_rect)
         self.assertEqual(set(self.scene.cards), set(self.data['progresso']['cartas_colecao']))
@@ -171,7 +170,7 @@ class BackpackInteractionTests(unittest.TestCase):
     def test_both_tabs_keep_buttons_inside_the_screen(self):
         screen = pygame.Rect(0, 0, 1920, 1080)
         for rect in [*self.scene.slots, *self.scene.cards.values(), *self.scene.ultimate_buttons.values(),
-                     self.scene.equip_rect, self.scene.clear_rect, self.scene.back_rect]:
+                     self.scene.add_rect, self.scene.back_rect]:
             self.assertTrue(screen.contains(rect))
 
 

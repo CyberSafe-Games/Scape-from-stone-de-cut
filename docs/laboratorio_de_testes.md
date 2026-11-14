@@ -8,7 +8,7 @@ O arquivo separado `saves/modo_teste.json` é criado automaticamente no primeiro
 
 - Vida infinita contra ataques, fogo, veneno e sangramento. A HUD exibe ∞ e um aviso de laboratório.
 - Sete territórios concluídos e os 21 encontros comuns liberados para repetir.
-- Todas as 20 cartas comuns na coleção da mochila. Equipe até seis tipos, com três cópias por tipo, conforme as regras normais.
+- Todas as 20 cartas comuns na coleção da mochila. Monte seu deck nos espaços individuais (até `DECK_SLOT_LIMIT`, hoje 18, com no máximo 3 cópias da mesma carta), conforme as regras normais.
 - As três ultimates desbloqueadas e 9.999 moedas iniciais.
 - O deck equipado, a ultimate escolhida e as moedas são salvos normalmente. Os desbloqueios são mantidos ao reabrir o laboratório, incluindo cartas futuras adicionadas ao catálogo.
 

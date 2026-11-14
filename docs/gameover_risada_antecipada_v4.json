@@ -1,0 +1,10 @@
+{
+  "entrada_risada_segundos": 2.8,
+  "antes_segundos": 6,
+  "base": "assets\\audio\\game_over_fogueira_sombria_v2.ogg",
+  "risada": "assets\\audio\\zanzara_laugh_enviada_v5.ogg",
+  "filtros": "[1:a]adelay=2800|2800[b];[0:a][b]amix=inputs=2:normalize=0:duration=longest[out]",
+  "ganho": 0.7267137972741516,
+  "sha256": "e263b79e27a6fe355024cc0e530bb222e9c8ec908dc964eadd6c6f2584ffab38",
+  "metodo": "Entrada ajustada pela queda de energia da regi?o vocal em torno de 2.8s; avalia??o auditiva pelo jogador pendente. Ambiente original mantido sob a risada."
+}

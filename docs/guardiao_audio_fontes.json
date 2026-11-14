@@ -1,0 +1,98 @@
+{
+  "data_coleta": "2026-11-10",
+  "status": "OGG preparados; sincronização automatizada verificada separadamente; audição crítica pendente.",
+  "sons": [
+    {
+      "habilidade": "Golpe de Garras",
+      "titulo": "Scorpion Claw Attack (4)",
+      "autor": "Yodguard",
+      "perfil_autor": "https://pixabay.com/users/yodguard-12455005/",
+      "pagina": "https://pixabay.com/sound-effects/film-special-effects-scorpion-claw-attack-4-482507/",
+      "arquivo": "originais/audio_3f3ff2c34f.mp3",
+      "url_midia": "https://cdn.pixabay.com/audio/2026/02/10/audio_3f3ff2c34f.mp3",
+      "bytes": 96768,
+      "sha256": "b7099e5497e94ed9b5cac231d61370234c422e1d41a12ec3d94e96a95a800ce1",
+      "ai_generated_indicado": true,
+      "licenca": "Pixabay Content License",
+      "licenca_url": "https://pixabay.com/service/license-summary/",
+      "observacao": "Ataque rápido e cortante, selecionado pela descrição e tags. Validar a secura na audição do piloto.",
+      "preparacao": {
+        "destino": "assets/audio/guardiao_garras_piloto.ogg",
+        "filtros": "atrim=start=0:duration=0.9,asetpts=PTS-STARTPTS,atempo=2,highpass=f=60,lowpass=f=9000,apad,atrim=duration=0.45,afade=t=in:d=0.008,afade=t=out:st=0.37:d=0.08",
+        "ganho_pre_codificacao": 0.6933523878782031,
+        "rms_ativo_alvo_dbfs": -24,
+        "pico_alvo_dbfs": -10,
+        "sha256_ogg": "97380340db5b2b27a398b31bdca4a266fcd5448d23cb5019e98e67b33693d336"
+      }
+    },
+    {
+      "habilidade": "Pele Rochosa",
+      "titulo": "Earth Spell",
+      "autor": "DRAGON-STUDIO",
+      "perfil_autor": "https://pixabay.com/users/dragon-studio-38165424/",
+      "pagina": "https://pixabay.com/sound-effects/film-special-effects-earth-spell-393923/",
+      "arquivo": "originais/audio_6fde8cd005.mp3",
+      "url_midia": "https://cdn.pixabay.com/audio/2025/08/23/audio_6fde8cd005.mp3",
+      "bytes": 92787,
+      "sha256": "cde36cc7eba20611388b06b104175dfd5056e78b12734e588fb324f203cd4e2f",
+      "ai_generated_indicado": false,
+      "licenca": "Pixabay Content License",
+      "licenca_url": "https://pixabay.com/service/license-summary/",
+      "observacao": "Magia de terra e pedra para ativação da defesa.",
+      "preparacao": {
+        "destino": "assets/audio/guardiao_pele_rochosa_piloto.ogg",
+        "filtros": "atrim=start=0.3:duration=1.2,asetpts=PTS-STARTPTS,atempo=2,highpass=f=60,lowpass=f=9000,apad,atrim=duration=0.6,afade=t=in:d=0.008,afade=t=out:st=0.52:d=0.08",
+        "ganho_pre_codificacao": 0.381438247693431,
+        "rms_ativo_alvo_dbfs": -24,
+        "pico_alvo_dbfs": -10,
+        "sha256_ogg": "042be8c42dad158a0850ece90e88ecdb92376da6b52cc87ff2b6ec505160f92d"
+      }
+    },
+    {
+      "habilidade": "Vigor Selvagem",
+      "titulo": "Fantasy Healing Spell Soft Magic Chime #1",
+      "autor": "Vadim_Makes_Sound",
+      "perfil_autor": "https://pixabay.com/users/vadim_makes_sound-54823268/",
+      "pagina": "https://pixabay.com/sound-effects/film-special-effects-fantasy-healing-spell-soft-magic-chime-1-546563/",
+      "arquivo": "originais/audio_b674fa4728.mp3",
+      "url_midia": "https://cdn.pixabay.com/audio/2026/06/04/audio_b674fa4728.mp3",
+      "bytes": 131328,
+      "sha256": "135fac739bf2205dcd4fc277a8af9d36cdd84a0340d5fc252ba1f0d6a34aff15",
+      "ai_generated_indicado": true,
+      "licenca": "Pixabay Content License",
+      "licenca_url": "https://pixabay.com/service/license-summary/",
+      "observacao": "Cura com sino suave. Ajustar volume na integração para manter discreto.",
+      "preparacao": {
+        "destino": "assets/audio/guardiao_vigor_selvagem_piloto.ogg",
+        "filtros": "atrim=start=0:duration=1.4,asetpts=PTS-STARTPTS,atempo=2,highpass=f=60,lowpass=f=9000,apad,atrim=duration=0.7,afade=t=in:d=0.008,afade=t=out:st=0.62:d=0.08",
+        "ganho_pre_codificacao": 1,
+        "rms_ativo_alvo_dbfs": -27,
+        "pico_alvo_dbfs": -10,
+        "sha256_ogg": "5d99a6902723d653f17670b7a311bdade53ee8695d6aa638e79b90d88ed37a53"
+      }
+    },
+    {
+      "habilidade": "Rugido Espiritual",
+      "titulo": "Colossal Dragon Roar",
+      "autor": "DRAGON-STUDIO",
+      "perfil_autor": "https://pixabay.com/users/dragon-studio-38165424/",
+      "pagina": "https://pixabay.com/sound-effects/film-special-effects-colossal-dragon-roar-329856/",
+      "arquivo": "originais/audio_f4ef3fc7bb.mp3",
+      "url_midia": "https://cdn.pixabay.com/audio/2025/04/19/audio_f4ef3fc7bb.mp3",
+      "bytes": 290899,
+      "sha256": "19a40666a1640e02982f8252d175a2dfd404f242898a166532a5d518b2c3e8d1",
+      "ai_generated_indicado": false,
+      "licenca": "Pixabay Content License",
+      "licenca_url": "https://pixabay.com/service/license-summary/",
+      "observacao": "Base grave e poderosa para rugido espiritual; atmosfera espiritual ainda depende da mixagem.",
+      "preparacao": {
+        "destino": "assets/audio/guardiao_rugido_espiritual_piloto_v2.ogg",
+        "filtros": "atrim=start=2.8:duration=1.5,asetpts=PTS-STARTPTS,highpass=f=60,lowpass=f=9000,aecho=1:1:55:0.18,atrim=duration=1.5,afade=t=in:d=0.008,afade=t=out:st=1.42:d=0.08",
+        "ganho_pre_codificacao": 0.9819152313882067,
+        "rms_ativo_alvo_dbfs": -24,
+        "pico_alvo_dbfs": -10,
+        "sha256_ogg": "e7ff29d27d66f9e1d4d9872fc8507fd8b741a92338ab3695f9053a535930f155"
+      }
+    }
+  ]
+}

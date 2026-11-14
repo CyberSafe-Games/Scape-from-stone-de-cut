@@ -113,7 +113,8 @@ class TestShopAudio(unittest.TestCase):
 
 
 class TestBackpackAudio(unittest.TestCase):
-    def test_select_card_plays_click_sound(self):
+    def test_add_card_plays_confirm_sound(self):
+        # Clicar numa carta da coleção adiciona 1 cópia ao deck (sucesso → ui.confirm).
         scene_manager = MagicMock()
         window_manager = MagicMock()
         window_manager.handle_window_event.return_value = False
@@ -131,7 +132,12 @@ class TestBackpackAudio(unittest.TestCase):
 
         self.assertTrue(scene.cards)
 
+        # A primeira carta da página é Esfera Protetora, possuída no save novo.
         card_name, card_rect = next(iter(scene.cards.items()))
+        self.assertIn(card_name, save_data["progresso"]["cartas_colecao"])
+        # Abre espaço no rascunho: o save novo começa com 3 cópias de cada inicial.
+        deck = scene.draft_slots
+        deck[deck.index(card_name)] = None
 
         window_manager.map_to_virtual.return_value = card_rect.center
 
@@ -145,7 +151,7 @@ class TestBackpackAudio(unittest.TestCase):
 
         self.assertEqual(scene.selected_card, card_name)
         scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "ui.click",
+            "ui.confirm",
             volume=1.0,
         )
 
@@ -319,7 +325,7 @@ class TestBackpackAudio(unittest.TestCase):
             volume=1.0,
         )
 
-    def test_select_deck_slot_plays_click_sound(self):
+    def test_click_filled_slot_removes_copy_and_plays_confirm_sound(self):
         scene_manager = MagicMock()
         window_manager = MagicMock()
         window_manager.handle_window_event.return_value = False
@@ -335,8 +341,8 @@ class TestBackpackAudio(unittest.TestCase):
             save_data,
         )
 
-        slot_index = 1
-        slot_rect = scene.slots[slot_index]
+        # O save novo começa com 3 cópias de Soco Simples nos espaços 0-2.
+        slot_rect = scene.slots[0]
 
         window_manager.map_to_virtual.return_value = slot_rect.center
 
@@ -348,13 +354,17 @@ class TestBackpackAudio(unittest.TestCase):
 
         scene.handle_event(event)
 
-        self.assertEqual(scene.selected_slot, slot_index)
+        self.assertIsNone(scene.draft_slots[0])
+        # A remoção deixou o rascunho com 5 cartas: o deck oficial não muda.
+        self.assertEqual(
+            sum(1 for name in save_data["progresso"]["deck_slots"] if name), 6
+        )
         scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "ui.click",
+            "ui.confirm",
             volume=1.0,
         )
 
-    def test_equip_card_success_plays_confirm_sound(self):
+    def test_add_card_success_plays_confirm_sound(self):
         scene_manager = MagicMock()
         window_manager = MagicMock()
         save_manager = MagicMock()
@@ -369,20 +379,26 @@ class TestBackpackAudio(unittest.TestCase):
         )
 
         card_name = save_data["progresso"]["cartas_colecao"][0]
-        scene.selected_slot = 0
+        draft_before = list(scene.draft_slots)
 
         with patch(
-            "src.scenes.backpack_scene.equip_card_type",
-            return_value=(True, "Deck atualizado."),
-        ):
-            scene._equip(card_name)
+            "src.scenes.backpack_scene.add_card_to_slots",
+            return_value=(True, "Carta adicionada ao deck.", draft_before),
+        ) as mock_add:
+            scene._add(card_name)
+
+        mock_add.assert_called_once_with(
+            draft_before,
+            save_data["progresso"]["cartas_colecao"],
+            card_name,
+        )
 
         scene_manager.audio_manager.play_sfx.assert_called_once_with(
             "ui.confirm",
             volume=1.0,
         )
 
-    def test_equip_card_failure_does_not_play_confirm_sound(self):
+    def test_add_card_failure_does_not_play_confirm_sound(self):
         scene_manager = MagicMock()
         window_manager = MagicMock()
         save_manager = MagicMock()
@@ -397,14 +413,18 @@ class TestBackpackAudio(unittest.TestCase):
         )
 
         with patch(
-            "src.scenes.backpack_scene.equip_card_type",
-            return_value=(False, "Carta já equipada em outro espaço."),
+            "src.scenes.backpack_scene.add_card_to_slots",
+            return_value=(
+                False,
+                "Você já tem 3 cópias no deck.",
+                list(scene.draft_slots),
+            ),
         ):
-            scene._equip("Carta de teste")
+            scene._add("Carta de teste")
 
         scene_manager.audio_manager.play_sfx.assert_not_called()
 
-    def test_clear_slot_success_plays_confirm_sound(self):
+    def test_remove_slot_success_plays_confirm_sound(self):
         scene_manager = MagicMock()
         window_manager = MagicMock()
         window_manager.handle_window_event.return_value = False
@@ -420,25 +440,27 @@ class TestBackpackAudio(unittest.TestCase):
             save_data,
         )
 
-        window_manager.map_to_virtual.return_value = scene.clear_rect.center
+        window_manager.map_to_virtual.return_value = scene.slots[2].center
 
         event = pygame.event.Event(
             pygame.MOUSEBUTTONDOWN,
             button=1,
-            pos=scene.clear_rect.center,
+            pos=scene.slots[2].center,
         )
 
+        draft_before = list(scene.draft_slots)
+        slots_after = list(draft_before)
+        slots_after[2] = None
+
         with patch(
-            "src.scenes.backpack_scene.equip_card_type",
-            return_value=(True, "Espaço esvaziado."),
-        ) as mock_equip:
+            "src.scenes.backpack_scene.remove_card_from_slots",
+            return_value=(True, "Carta removida do deck.", slots_after),
+        ) as mock_remove:
             scene.handle_event(event)
 
-        mock_equip.assert_called_once_with(
-            save_manager,
-            save_data,
-            scene.selected_slot,
-            None,
+        mock_remove.assert_called_once_with(
+            draft_before,
+            2,
         )
 
         scene_manager.audio_manager.play_sfx.assert_called_once_with(
@@ -643,7 +665,7 @@ class TestBackpackAudio(unittest.TestCase):
             volume=1.0,
         )
 
-    def test_number_key_selects_slot_and_plays_click_sound(self):
+    def test_backspace_removes_last_filled_slot_and_plays_confirm_sound(self):
         scene_manager = MagicMock()
         window_manager = MagicMock()
         window_manager.handle_window_event.return_value = False
@@ -660,19 +682,30 @@ class TestBackpackAudio(unittest.TestCase):
         )
 
         scene.tab = "deck"
-        scene.selected_slot = 0
 
         event = pygame.event.Event(
             pygame.KEYDOWN,
-            key=pygame.K_2,
+            key=pygame.K_BACKSPACE,
         )
 
-        scene.handle_event(event)
+        draft_before = list(scene.draft_slots)
+        slots_after = list(draft_before)
+        slots_after[5] = None
 
-        self.assertEqual(scene.selected_slot, 1)
+        with patch(
+            "src.scenes.backpack_scene.remove_card_from_slots",
+            return_value=(True, "Carta removida do deck.", slots_after),
+        ) as mock_remove:
+            scene.handle_event(event)
+
+        # Save novo: espaços 0-5 preenchidos (3+3); o último é o 5.
+        mock_remove.assert_called_once_with(
+            draft_before,
+            5,
+        )
 
         scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "ui.click",
+            "ui.confirm",
             volume=1.0,
         )
 
@@ -744,7 +777,7 @@ class TestBackpackAudio(unittest.TestCase):
             volume=1.0,
         )
 
-    def test_enter_key_equips_card_and_plays_confirm_sound(self):
+    def test_enter_key_adds_card_and_plays_confirm_sound(self):
         scene_manager = MagicMock()
         window_manager = MagicMock()
         window_manager.handle_window_event.return_value = False
@@ -761,7 +794,6 @@ class TestBackpackAudio(unittest.TestCase):
         )
 
         scene.tab = "deck"
-        scene.selected_slot = 0
         scene.selected_card = save_data["progresso"]["cartas_colecao"][0]
 
         event = pygame.event.Event(
@@ -769,16 +801,17 @@ class TestBackpackAudio(unittest.TestCase):
             key=pygame.K_RETURN,
         )
 
+        draft_before = list(scene.draft_slots)
+
         with patch(
-            "src.scenes.backpack_scene.equip_card_type",
-            return_value=(True, "Deck atualizado."),
-        ) as mock_equip:
+            "src.scenes.backpack_scene.add_card_to_slots",
+            return_value=(True, "Carta adicionada ao deck.", draft_before),
+        ) as mock_add:
             scene.handle_event(event)
 
-        mock_equip.assert_called_once_with(
-            save_manager,
-            save_data,
-            0,
+        mock_add.assert_called_once_with(
+            draft_before,
+            save_data["progresso"]["cartas_colecao"],
             scene.selected_card,
         )
 
@@ -1164,6 +1197,7 @@ class TestMenuExitAudio(unittest.TestCase):
                 )
 
                 scene.play_button = pygame.Rect(300, 300, 50, 50)
+                scene.options_button = pygame.Rect(500, 500, 50, 50)
                 scene.quit_button = pygame.Rect(0, 0, 100, 100)
 
                 if exit_method == "mouse":

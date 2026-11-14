@@ -1,0 +1,12 @@
+{
+  "alteracao": "Retoma o trecho da ?nsia at? seu decaimento natural, em vez de recortar 200 ms no meio da vocaliza??o. Sem acelera??o.",
+  "mesclagem": "?nsia aos 169,2 ms; ?cido permanece aos 404,2 ms. As duas reprodu??es se sobrep?em por at? 585 ms; o final da voz cai naturalmente sob o l?quido.",
+  "fonte": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\goblin-nerd\\originais\\toxico-r2-01-dragon-studio-vomiting-sound-effect-382720.mp3",
+  "sha256_fonte": "d407e819efc94bad8db62148cf2b0bba7fbe0d59bcabd786dc2e09ec7bf33dd3",
+  "filtros_ffmpeg": "atrim=start=0.18:end=1.0,asetpts=PTS-STARTPTS,highpass=f=65,lowpass=f=6500,afade=t=in:d=0.008,afade=t=out:st=0.70:d=0.12",
+  "ganho": 0.39042122386019396,
+  "destino": "goblin_ansia_final_natural_v7.ogg",
+  "sha256_ogg": "9fe1325676d36a30ebd1227d5e499f4f38c2ae0ce7a09f4433fa53d734bee2a2",
+  "preservacao": "Mantidos ?cido e cauda sem vidro/eco, lasers e demais sons. Arquivos anteriores preservados.",
+  "escuta": "Pendente de avalia??o pelo jogador."
+}

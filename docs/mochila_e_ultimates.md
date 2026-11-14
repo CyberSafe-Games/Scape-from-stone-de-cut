@@ -6,17 +6,18 @@ as molduras de bronze, pedra escura e tipografia das outras telas do jogo.
 ## Como usar
 
 1. No mapa, abra a mochila pelo botão ou pela tecla B.
-2. Escolha um dos seis espaços de deck e uma carta da coleção. A prévia à direita
-   mostra a descrição completa; o botão Equipar confirma a escolha.
-3. Cada espaço fornece três cópias do tipo escolhido. Tipos não se repetem em
-   espaços diferentes, e pelo menos um precisa continuar ocupado.
-4. Use as setas, a roda do mouse ou Anterior/Próxima para navegar pela coleção.
+2. O deck é um grid de espaços individuais (o limite fica na constante `DECK_SLOT_LIMIT`, hoje 18). A prévia à direita mostra a descrição completa da carta selecionada.
+3. Clique em uma carta da coleção para adicionar 1 cópia ao próximo espaço livre (até 3 cópias da mesma carta). Clique em um espaço preenchido para remover apenas aquela cópia. Pelo menos uma carta precisa continuar no deck.
+4. Cada carta da coleção mostra quantas cópias já estão no deck (`x/3`); quando chega ao máximo, a carta aparece indisponível. O título do deck mostra os espaços em uso (`12/18`).
+5. Use as setas, a roda do mouse ou Anterior/Próxima para navegar pela coleção.
    O filtro Obtidas mostra apenas o que já está disponível no save.
-5. Na aba Ultimates, equipe uma das três habilidades. A troca não usa moedas,
+6. Na aba Ultimates, equipe uma das três habilidades. A troca não usa moedas,
    não ocupa espaço do deck e preserva a carga acumulada.
 
-TAB alterna as abas; 1–6 escolhem o espaço; Enter equipa a carta selecionada;
-ESC volta ao mapa. As alterações são salvas ao confirmar cada escolha.
+TAB alterna as abas; ←/→ navegam as páginas; Enter adiciona a carta selecionada;
+Backspace remove a última cópia adicionada; ESC volta ao mapa. As alterações são
+salvas a cada escolha. A ordem dos espaços não influencia o combate: o baralho é
+embaralhado ao iniciar a luta.
 
 As três ultimates estão disponíveis desde a preparação. Saves antigos também
 recebem as opções ao carregar, mantendo a habilidade equipada e o progresso.
@@ -53,8 +54,7 @@ Três ilustrações foram geradas com a ferramenta integrada de imagens. Ficam e
 gemas da cor da habilidade e rodapé de ultimate. Título, descrição e carga são
 compostos a partir do modelo real para evitar texto desatualizado.
 
-`assets/ultimates/*_v2.png` contém exportações completas das novas cartas para
-revisão. O jogo compõe sua versão atualizada no carregamento.
+A prévia das cartas completas está em `docs/cartas_ultimates_v2.png`.
 Os prompts completos estão em [prompts_ultimates_v2.md](prompts_ultimates_v2.md).
 
 ![Deck e coleção](mochila_deck_v2.png)

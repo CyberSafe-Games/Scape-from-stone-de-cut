@@ -1,6 +1,7 @@
 """Doze efeitos reais, oito chaves preservadas e impacto sincronizado."""
 import os
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 os.environ.setdefault('SDL_VIDEODRIVER','dummy')
 os.environ.setdefault('SDL_AUDIODRIVER','dummy')
@@ -49,7 +50,8 @@ class BossTwelveEffectTests(unittest.TestCase):
                 self.assertEqual(boss_effect_frame(spec.impact,spec,12),9)
             self.assertEqual(boss_effect_frame(1,spec,12),11)
 
-    def test_all_twelve_effects_render_in_arena_and_disappear_at_end(self):
+    @patch('src.ui.zanzara_necromancer.available', return_value=False)
+    def test_legacy_twelve_effects_render_in_arena_and_disappear_at_end(self, _available):
         for name,spec in BOSS_ULTIMATE_ANIMATIONS.items():
             view=EntityView(self.assets)
             view.trigger_attack('enemy','atk2',name,ultimate=True)

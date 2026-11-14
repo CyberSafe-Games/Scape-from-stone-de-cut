@@ -1,0 +1,83 @@
+{
+  "status": "Piloto provisório; músicas e loops aguardam aprovação auditiva.",
+  "escuta_critica": false,
+  "volume_musica_piloto": 0.45,
+  "recursos": [
+    {
+      "arquivo": "assets\\audio\\music\\chefes_jungle_tribe_v2.ogg",
+      "fonte": {
+        "contexto_sugerido": "Chefes — candidato provisório para comparação no piloto",
+        "titulo": "Jungle Tribe (Action Tribal Drums)",
+        "autor": "VasilYatsevich",
+        "url_pagina": "https://pixabay.com/music/epic-classical-jungle-tribe-action-tribal-drums-192142/",
+        "licenca_indicada": "Free for use under the Pixabay Content License",
+        "url_licenca": "https://pixabay.com/service/license-summary/",
+        "nome_local": "vasilyatsevich-jungle-tribe-action-tribal-drums-192142.mp3",
+        "caminho_local": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\trilha-sonora\\originais\\vasilyatsevich-jungle-tribe-action-tribal-drums-192142.mp3",
+        "duracao_pagina": "2:24",
+        "duracao_segundos": 144.039,
+        "metodo_duracao": "Soma das durações dos quadros MPEG Layer III do MP3 original; inclui eventual padding do encoder.",
+        "sha256": "47f6b0a39a173b7b88a69a3c46385ad5f83cd0882a5eca89a948c951378bbbf7",
+        "tamanho_bytes": 4609253,
+        "content_id": {
+          "aviso_exibido": true,
+          "indicacao": "Content ID Registered"
+        },
+        "geracao_ia": {
+          "aviso_exibido": false,
+          "indicacao": "Aviso de IA não exibido para esta faixa; não comprova autoria sem IA."
+        },
+        "escuta_critica": false,
+        "selecao": "Selecionada pelo usuário apenas por metadados. Sem reprodução ou escuta crítica nesta rodada; pendente de escuta no piloto.",
+        "status_download": "baixado_e_verificado",
+        "login_exigido": false,
+        "bloqueios": [],
+        "verificacao": "Download concluído no navegador; MP3 local não vazio com quadros válidos; cópia byte a byte e SHA-256 idêntico."
+      },
+      "filtros": "volume=-11.5dB,afade=t=in:d=0.35,afade=t=out:st=143.38899999999998:d=0.65",
+      "ganho_db": -11.5,
+      "media_origem_dbfs": -13.1,
+      "pico_origem_dbfs": -0.5,
+      "sha256": "02402a85da2c67eea9f8e4c948452ff352f0333bf50820fe748c091929e619b4",
+      "loop_aprovado": false
+    },
+    {
+      "arquivo": "assets\\audio\\music\\chefes_jungle_chase_v2.ogg",
+      "fonte": {
+        "contexto_sugerido": "Chefes — candidato provisório para comparação no piloto",
+        "titulo": "Jungle Chase (Action Tribal Drums)",
+        "autor": "VasilYatsevich",
+        "url_pagina": "https://pixabay.com/music/chase-scene-jungle-chase-action-tribal-drums-596656/",
+        "licenca_indicada": "Free for use under the Pixabay Content License",
+        "url_licenca": "https://pixabay.com/service/license-summary/",
+        "nome_local": "vasilyatsevich-jungle-chase-action-tribal-drums-596656.mp3",
+        "caminho_local": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\trilha-sonora\\originais\\vasilyatsevich-jungle-chase-action-tribal-drums-596656.mp3",
+        "duracao_pagina": "1:55",
+        "duracao_segundos": 115.043,
+        "metodo_duracao": "Soma das durações dos quadros MPEG Layer III do MP3 original; inclui eventual padding do encoder.",
+        "sha256": "20138479c63c5224a5b9b692ccd040f26ebc7da02406a99f75ff947f7ed01326",
+        "tamanho_bytes": 3681384,
+        "content_id": {
+          "aviso_exibido": false,
+          "indicacao": "Aviso não exibido para esta faixa; não comprova ausência de registro."
+        },
+        "geracao_ia": {
+          "aviso_exibido": false,
+          "indicacao": "Aviso de IA não exibido para esta faixa; não comprova autoria sem IA."
+        },
+        "escuta_critica": false,
+        "selecao": "Selecionada pelo usuário apenas por metadados. Sem reprodução ou escuta crítica nesta rodada; pendente de escuta no piloto.",
+        "status_download": "baixado_e_verificado",
+        "login_exigido": false,
+        "bloqueios": [],
+        "verificacao": "Download concluído no navegador; MP3 local não vazio com quadros válidos; cópia byte a byte e SHA-256 idêntico."
+      },
+      "filtros": "volume=-12.0dB,afade=t=in:d=0.35,afade=t=out:st=114.393:d=0.65",
+      "ganho_db": -12.0,
+      "media_origem_dbfs": -12.3,
+      "pico_origem_dbfs": 0.0,
+      "sha256": "df3bdd94759ae3a5582c4b1024a6afa245db7042f800f99b1fcd9a6cb9c46e20",
+      "loop_aprovado": false
+    }
+  ]
+}

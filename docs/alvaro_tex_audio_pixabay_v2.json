@@ -1,0 +1,83 @@
+{
+  "criterio": "Sele??o por metadados e medidas; escuta cr?tica pendente. Originais e vers?es anteriores preservados. Vendaval e impacto corporal mantidos.",
+  "sons": [
+    {
+      "fonte": {
+        "categoria": "Espada",
+        "titulo": "Swing Whoosh Weapon 1",
+        "autor": "floraphonic",
+        "pagina": "https://pixabay.com/sound-effects/film-special-effects-swing-whoosh-weapon-1-189819/",
+        "licenca_indicada": {
+          "nome": "Pixabay Content License",
+          "texto_exibido": "Free for use under the Pixabay Content License",
+          "url": "https://pixabay.com/service/license-summary/"
+        },
+        "nome_local": "espada-02-floraphonic-swing-whoosh-weapon-1-189819.mp3",
+        "caminho_relativo": "originais/espada-02-floraphonic-swing-whoosh-weapon-1-189819.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2024/02/06/audio_f018c74fc7.mp3",
+        "motivo_da_escolha": "Descrição de movimento rápido de arma, com tags Whoosh, Swish, Sword e Movement. Alternativa focada no deslocamento no ar, sem referência a choque na descrição.",
+        "base_da_selecao": "somente metadados (título, descrição, tags e duração indicada); sem escuta crítica",
+        "bytes": 8448,
+        "sha256": "4dd5d6b2deea0a150a4e15d3f02cd567da0bfe6e3e70cf56c77d46bb47b79144",
+        "tipo_conteudo": "audio/mpeg",
+        "validacao": "Arquivo não vazio e cabeçalho MPEG identificado; sem conversão ou processamento."
+      },
+      "destino": "alvaro_tex_espada_pixabay_v2.ogg",
+      "filtros_ffmpeg": "atrim=duration=0.24,asetpts=PTS-STARTPTS,atempo=0.65,highpass=f=100,lowpass=f=8500,apad,atrim=duration=0.4,afade=t=in:d=0.004,afade=t=out:st=0.29:d=0.11",
+      "ganho": 0.20855707225781794,
+      "sha256_ogg": "bdd9e05f5d59f4a7d90528aeadaaf17e8a5203f5f9e9069ca042bf72bd45757f"
+    },
+    {
+      "fonte": {
+        "categoria": "Shuriken",
+        "titulo": "Whoosh Blow Flutter Short.wav",
+        "autor": "abcmaxofficial (Freesound), via freesound_community",
+        "pagina": "https://pixabay.com/sound-effects/film-special-effects-whoosh-blow-flutter-shortwav-14678/",
+        "licenca_indicada": {
+          "nome": "Pixabay Content License",
+          "texto_exibido": "Free for use under the Pixabay Content License",
+          "url": "https://pixabay.com/service/license-summary/"
+        },
+        "nome_local": "shuriken-01-abcmaxofficial-whoosh-blow-flutter-short-14678.mp3",
+        "caminho_relativo": "originais/shuriken-01-abcmaxofficial-whoosh-blow-flutter-short-14678.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2022/01/18/audio_5e02185e26.mp3",
+        "motivo_da_escolha": "Whoosh curto com flutter e tag Spin: candidato para voo com modulação que sugira rotação. O título contém .wav, mas a mídia fornecida pelo Pixabay é MP3; nenhuma conversão foi feita.",
+        "base_da_selecao": "somente metadados (título, descrição, tags e duração indicada); sem escuta crítica",
+        "bytes": 17760,
+        "sha256": "23dd8dfc4058e4fafdcda161c7caba9ae555b970c05040a6e5923c22dfc90a76",
+        "tipo_conteudo": "audio/mpeg",
+        "validacao": "Arquivo não vazio e cabeçalho MPEG identificado; sem conversão ou processamento."
+      },
+      "destino": "alvaro_tex_shuriken_flutter_v2.ogg",
+      "filtros_ffmpeg": "atrim=start=0.10:duration=0.54,asetpts=PTS-STARTPTS,atempo=0.9,highpass=f=180,lowpass=f=8500,apad,atrim=duration=0.6,afade=t=in:d=0.006,afade=t=out:st=0.47:d=0.13",
+      "ganho": 1,
+      "sha256_ogg": "fec5b9428a3b62984d1eded23be6985c04bb38fcef4a4395237f38ad1e131937"
+    },
+    {
+      "fonte": {
+        "categoria": "Fumaça Restauradora",
+        "titulo": "Poof of Smoke",
+        "autor": "Planman (Freesound), via freesound_community",
+        "pagina": "https://pixabay.com/sound-effects/film-special-effects-poof-of-smoke-87381/",
+        "licenca_indicada": {
+          "nome": "Pixabay Content License",
+          "texto_exibido": "Free for use under the Pixabay Content License",
+          "url": "https://pixabay.com/service/license-summary/"
+        },
+        "nome_local": "fumaca-01-planman-poof-of-smoke-87381.mp3",
+        "caminho_relativo": "originais/fumaca-01-planman-poof-of-smoke-87381.mp3",
+        "url_midia": "https://cdn.pixabay.com/audio/2022/03/15/audio_410ea5df4a.mp3",
+        "motivo_da_escolha": "Baforada mágica curta; tags Cloud, Fluffy, Muffled e Dull favorecem uma nuvem abafada e suave. Não descrita como explosão, alarme ou sino.",
+        "base_da_selecao": "somente metadados (título, descrição, tags e duração indicada); sem escuta crítica",
+        "bytes": 19680,
+        "sha256": "334eab87d413897ea6bf18bb98801a34d10ea03f19d36ae9834e3492e6f87104",
+        "tipo_conteudo": "audio/mpeg",
+        "validacao": "Arquivo não vazio e cabeçalho MPEG identificado; sem conversão ou processamento."
+      },
+      "destino": "alvaro_tex_fumaca_poof_cauda_v2.ogg",
+      "filtros_ffmpeg": "atrim=start=0.24:duration=0.6,asetpts=PTS-STARTPTS,atempo=0.65,highpass=f=65,lowpass=f=3800,aecho=1:1:120|250|400:0.18|0.10|0.05,apad,atrim=duration=1.5,afade=t=in:d=0.012,afade=t=out:st=0.85:d=0.65",
+      "ganho": 0.46338270760489475,
+      "sha256_ogg": "191220a19c34403ef08b78d546b7306cc990004f2cc21bafe5f40176659aca6d"
+    }
+  ]
+}

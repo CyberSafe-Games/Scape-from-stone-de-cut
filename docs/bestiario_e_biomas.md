@@ -31,9 +31,9 @@ Cada um dos três encontros de um bioma sorteia apenas entre seus habitantes.
 - O Morcego paira e bate as asas. Os demais novos habitantes usam respiração
   discreta sobre uma pose estável para evitar mudanças bruscas no idle.
 
-As imagens prontas ficam em `assets/enemies/`. Não é preciso instalar ferramentas
-de imagem para jogar. `devtools/prepare_normal_enemies.py PASTA` permite refazer
-os recortes a partir das onze imagens de referência com seus nomes originais.
+As animações ficam em `assets/enemies/eight_frames/`. O script
+`devtools/prepare_normal_enemies.py PASTA` recria a prévia e os projéteis
+separados a partir das onze imagens de referência com seus nomes originais.
 
 Para testar todos os biomas, entre no Laboratório de Testes e repita os encontros
 do caminho. Os nomes dos habitantes aparecem no painel do mapa.

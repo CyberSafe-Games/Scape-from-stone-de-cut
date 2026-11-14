@@ -1,0 +1,24 @@
+{
+  "motivo": "Corrigir atraso interno do ataque do corte, mantendo a chamada no contato visual.",
+  "aplicacao": [
+    "Estocada da Dupla",
+    "Estrela Trai?oeira",
+    "Vendaval da Dupla"
+  ],
+  "fonte": "assets\\audio\\adaga_corte_sangramento.ogg",
+  "sha256_fonte": "1cb26bd79515f02cf3d78fcbe07ea0cf96deaeafd8e02c3d6dd94b359de590d5",
+  "destino": "alvaro_tex_corte_corporal_contato_v2.ogg",
+  "sha256_ogg": "037bf42ebd7911493b79fecf2bf1f99fe9d03dcad9b03414d9074054b8431423",
+  "filtros_ffmpeg": "atrim=start=0.24:duration=1.1,asetpts=PTS-STARTPTS,highpass=f=65,lowpass=f=6500,apad,atrim=duration=1.1,afade=t=in:d=0.003,afade=t=out:st=0.8:d=0.3",
+  "ganho": 0.5537145539337693,
+  "antes": {
+    "primeiro_bloco_a_menos_6db_do_maximo_ms": 50,
+    "bloco_rms_maximo_ms": 120
+  },
+  "depois": {
+    "primeiro_bloco_a_menos_6db_do_maximo_ms": 0,
+    "bloco_rms_maximo_ms": 10
+  },
+  "metodo": "RMS em blocos de 10 ms, mono a 44100 Hz. N?o equivale a valida??o perceptual.",
+  "escuta": "Pendente; arquivos anteriores preservados."
+}

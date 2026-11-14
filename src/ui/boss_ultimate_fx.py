@@ -7,6 +7,10 @@ from src.ui.ultimate_fx import _sprite, _particles
 
 
 def draw_boss_ultimate_fx(surface, view, behind=False):
+    if view.enemy_attack_name == 'zanzara':
+        from src.ui.zanzara_necromancer import available
+        if available():
+            return
     spec = view.enemy_ultimate
     if spec is None or view.attacker != 'enemy':
         return

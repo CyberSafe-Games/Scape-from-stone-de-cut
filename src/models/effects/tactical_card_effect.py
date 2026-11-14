@@ -13,13 +13,17 @@ class TacticalCardEffect(CardEffect):
         blocked = card.card_type == 'attack' and 'totem' in target.statuses
         if card.card_type == 'attack':
             result['damage'] = target.receive_attack(card.value + user.attack_bonus, hits=3 if rule == 'darts' else 1)
+            context._resolve_totem_trigger(target, user)
             context.spawn_damage_text(target, f"-{result['damage']}", RED)
         if rule in ('shield', 'mask'):
             user.add_block(card.value)
             context.spawn_player_text(f'+{card.value} Escudo', BLUE)
         if rule in ('heal', 'mask'):
             healed = min(card.value, user.max_hp - user.hp)
-            user.hp += healed
+            if 'no_heal' not in user.statuses:
+                user.hp += healed
+            else:
+                healed = 0
             result['heal'] = healed
             context.spawn_player_text(f'+{healed} vida', (102, 210, 137))
         if rule == 'aura': user.apply_status('aura', 3, card.value)

@@ -1,0 +1,21 @@
+{
+  "fonte": "C:\\Users\\marco\\Documents\\Codex\\2026-11-10\\navegador-plugin-browser-openai-bundled-x20-2\\outputs\\zanzara\\audio\\originais\\dragon-studio-evil-laughter-423671.mp3",
+  "autor": "DRAGON-STUDIO (nome do arquivo enviado)",
+  "pagina": "Não fornecida com o arquivo; confirmar no registro de fontes antes de publicação",
+  "sha256_fonte": "0f567532a7c238fb1bd09d1fec4ba56f94ceaa1f41e2712d289b83c07e5fda08",
+  "filtros_risada": "silenceremove=start_periods=1:start_duration=0.01:start_threshold=-50dB,highpass=f=65,apad,atrim=duration=3.3,afade=t=in:d=0.008,afade=t=out:st=3.1:d=0.2",
+  "ganho": 0.22664270454737584,
+  "gameover_base": "C:\\Users\\marco\\OneDrive\\Desktop\\Scape-from-stone-de-cut-git\\assets\\audio\\game_over_fogueira_sombria_v2.ogg",
+  "composicao": "Game over existente completo (6s), seguido da nova risada (3.3s). Voz e ambientação anteriores preservadas.",
+  "escuta_critica": false,
+  "arquivos": [
+    {
+      "arquivo": "C:\\Users\\marco\\OneDrive\\Desktop\\Scape-from-stone-de-cut-git\\assets\\audio\\zanzara_laugh_enviada_v5.ogg",
+      "sha256": "541fa426c5673e53df3365088d882984ef5f9e212ab261ad8593506a48108b66"
+    },
+    {
+      "arquivo": "C:\\Users\\marco\\OneDrive\\Desktop\\Scape-from-stone-de-cut-git\\assets\\audio\\game_over_risada_zanzara_v3.ogg",
+      "sha256": "db2c6ac36420ba8acc34ae97b52f00a937b5a623504796fa983ac5d11e57c449"
+    }
+  ]
+}

@@ -10,7 +10,14 @@ from src.systems.combat_engine import CombatEngine
 from src.systems.enemy_factory import create_corpo_seco, create_road_enemy
 from src.systems.campaign_progress import record_road_victory, record_victory
 from src.systems.territory_map import TERRITORY_IDS, encounter_status, status
-from src.systems.deck_loadout import equip_card_type, COPIES_PER_SLOT, SLOT_COUNT
+from src.systems.deck_loadout import (
+    COPIES_PER_CARD,
+    DECK_SLOT_LIMIT,
+    add_card_to_slots,
+    commit_deck,
+    deck_is_ready_for_exit,
+    remove_card_from_slots,
+)
 from src.systems.shop_system import purchase_card
 
 
@@ -22,6 +29,28 @@ class RouteBossDeckTests(unittest.TestCase):
 
     def tearDown(self):
         self.folder.cleanup()
+
+    def _add(self, name):
+        progress = self.data['progresso']
+        ok, message, slots = add_card_to_slots(
+            progress['deck_slots'], progress['cartas_colecao'], name
+        )
+        if ok:
+            saved, save_message = commit_deck(self.saves, self.data, slots)
+            if not saved:
+                return False, save_message
+        return ok, message
+
+    def _remove(self, slot_index):
+        progress = self.data['progresso']
+        ok, message, slots = remove_card_from_slots(
+            progress['deck_slots'], slot_index
+        )
+        if ok and deck_is_ready_for_exit(slots):
+            saved, save_message = commit_deck(self.saves, self.data, slots)
+            if not saved:
+                return False, save_message
+        return ok, message
 
     def _road_victory(self, level=1):
         engine = CombatEngine(map_mode=True)
@@ -122,30 +151,56 @@ class RouteBossDeckTests(unittest.TestCase):
         e.finish_enemy_turn()
         self.assertEqual(e.state, 'player_turn')
 
-    def test_initial_deck_three_copies_per_type(self):
+    def test_initial_deck_three_copies_per_starter(self):
         p = self.data['progresso']
-        self.assertEqual(p['deck_slots'], ['Soco Simples', 'Esfera Protetora', None, None, None, None])
+        self.assertEqual(p['deck_slots'][:6], ['Soco Simples'] * 3 + ['Esfera Protetora'] * 3)
+        self.assertEqual(p['deck_slots'][6:], [None] * (DECK_SLOT_LIMIT - 6))
         self.assertEqual(p['cartas'].count('Soco Simples'), 3)
         self.assertEqual(p['cartas'].count('Esfera Protetora'), 3)
-        self.assertEqual(len(p['deck_slots']), SLOT_COUNT)
+        self.assertEqual(len(p['deck_slots']), DECK_SLOT_LIMIT)
 
-    def test_purchase_collect_then_equip_three(self):
+    def test_purchase_collect_then_add_three_copies(self):
         self.data['progresso']['moedas'] = 1000
         self.assertTrue(purchase_card(self.saves, self.data, 'Investida').success)
         self.assertNotIn('Investida', self.data['progresso']['cartas'])
-        result = equip_card_type(self.saves, self.data, 2, 'Investida')
-        self.assertTrue(result[0])
+        for _ in range(COPIES_PER_CARD):
+            self.assertTrue(self._add('Investida')[0])
         saved = self.saves.load_save('slot_1')['progresso']
-        self.assertEqual(saved['cartas'].count('Investida'), COPIES_PER_SLOT)
-        self.assertFalse(equip_card_type(self.saves, self.data, 3, 'Investida')[0])
-        self.assertFalse(equip_card_type(self.saves, self.data, 4, 'Fúria')[0])
-        self.assertTrue(equip_card_type(self.saves, self.data, 2, None)[0])
-        self.assertEqual(self.data['progresso']['cartas'].count('Investida'), 0)
+        self.assertEqual(saved['cartas'].count('Investida'), COPIES_PER_CARD)
+        # A quarta cópia é recusada.
+        self.assertFalse(self._add('Investida')[0])
+        # Carta que o jogador não possui não entra.
+        self.assertFalse(self._add('Fúria')[0])
+        index = self.data['progresso']['deck_slots'].index('Investida')
+        self.assertTrue(self._remove(index)[0])
+        self.assertEqual(self.data['progresso']['cartas'].count('Investida'), COPIES_PER_CARD - 1)
 
-    def test_equip_must_leave_one_type(self):
-        self.assertTrue(equip_card_type(self.saves, self.data, 1, None)[0])
-        self.assertFalse(equip_card_type(self.saves, self.data, 0, None)[0])
-        self.assertEqual(self.data['progresso']['cartas'], ['Soco Simples']*3)
+    def test_deck_removal_can_empty_the_draft_without_persisting_it(self):
+        progress = self.data['progresso']
+        official_before = list(progress['deck_slots'])
+        slots = list(progress['deck_slots'])
+        while any(name for name in slots):
+            index = next(i for i, name in enumerate(slots) if name)
+            ok, message, slots = remove_card_from_slots(slots, index)
+            self.assertTrue(ok)
+            if deck_is_ready_for_exit(slots):
+                self.assertTrue(commit_deck(self.saves, self.data, slots)[0])
+        self.assertEqual([name for name in slots if name], [])
+        # O rascunho vazio não substitui o último deck válido.
+        self.assertEqual(
+            self.data['progresso']['deck_slots'], official_before
+        )
+        self.assertTrue(deck_is_ready_for_exit(self.data['progresso']['deck_slots']))
+        # Adicionar depois de zerar o rascunho volta a funcionar normalmente.
+        ok, message, slots = add_card_to_slots(
+            slots, progress['cartas_colecao'], 'Soco Simples'
+        )
+        self.assertTrue(ok)
+        self.assertFalse(commit_deck(self.saves, self.data, slots)[0])
+        self.assertEqual(
+            self.data['progresso']['cartas'],
+            ['Soco Simples'] * 3 + ['Esfera Protetora'] * 3,
+        )
 
     def test_bad_encounter_counter_rejected(self):
         for value in (4, -1, True, '3'):

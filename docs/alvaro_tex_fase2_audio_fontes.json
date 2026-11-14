@@ -1,0 +1,69 @@
+{
+  "escopo": "Segunda fase de ?lvaro e Tex; recursos derivados do repert?rio existente. Sem novos downloads.",
+  "chute": "Mantido o impacto j? integrado.",
+  "shuriken": "Reutiliza voo aprovado e corte sincronizado da primeira fase.",
+  "porrete_furia": "Movimento filtrado e contato corporal sem sangramento de l?mina.",
+  "recursos": [
+    {
+      "destino": "alvaro_tex_pequeno_porrete_movimento_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "alvaro_tex_estocada_base_retomada_v6.ogg",
+          "sha256": "69fd5f2c6236c2b4094817c41ae80c24d427b0fc50359d4c9fc562ac85529852"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]highpass=f=75,lowpass=f=2600,apad,atrim=duration=0.4,afade=t=in:d=0.005,afade=t=out:st=0.29:d=0.11[out]",
+      "ganho": 1,
+      "sha256_ogg": "b221381e6e1f7bb7c174032b767efc03d123efbc79b70c8e2b9eecb0e0e66b9d"
+    },
+    {
+      "destino": "alvaro_tex_pequeno_impacto_corporal_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "investida_impacto_corporal.ogg",
+          "sha256": "2c34e20f7315d1a0472ded3408055834bb9f64251181a0b91be84b7c0f81768e"
+        },
+        {
+          "arquivo": "flecha_acerto_corporal.ogg",
+          "sha256": "4e4294128fe967c53988727eb6e191de9c804215013b818061486b146e8a633d"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=duration=0.22,asetpts=PTS-STARTPTS,highpass=f=55,lowpass=f=1500,volume=0.3,afade=t=out:st=0.13:d=0.09[a];[1:a]atrim=duration=0.45,asetpts=PTS-STARTPTS,highpass=f=100,lowpass=f=4200,volume=0.6[b];[a][b]amix=inputs=2:normalize=0:duration=longest,apad,atrim=duration=0.55,afade=t=in:d=0.003,afade=t=out:st=0.32:d=0.23[out]",
+      "ganho": 0.6508540651883016,
+      "sha256_ogg": "124d63e91e5d129331bd8a390481effe826fba8fea97ce1f019627feb3452776"
+    },
+    {
+      "destino": "alvaro_tex_pequeno_furia_movimento_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "alvaro_tex_estocada_base_retomada_v6.ogg",
+          "sha256": "69fd5f2c6236c2b4094817c41ae80c24d427b0fc50359d4c9fc562ac85529852"
+        },
+        {
+          "arquivo": "investida_passos_isolados.ogg",
+          "sha256": "5b8ffda8d4f17ac0c22bfc3efedc2b28094b9fae4cf280f9a973c9751014fed9"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]asplit=2[a][b];[b]adelay=160|160,volume=0.65[b1];[1:a]atrim=duration=0.65,asetpts=PTS-STARTPTS,volume=0.35[c];[a][b1][c]amix=inputs=3:normalize=0:duration=longest,highpass=f=75,lowpass=f=2200,apad,atrim=duration=0.65,afade=t=in:d=0.008,afade=t=out:st=0.5:d=0.15[out]",
+      "ganho": 1,
+      "sha256_ogg": "204291a5a0b80c0fa901fbe0e519ef665ed62e15aa00ebe38cd9a37ae360be14"
+    },
+    {
+      "destino": "alvaro_tex_pequeno_furia_impactos_v1.ogg",
+      "fontes": [
+        {
+          "arquivo": "investida_impacto_corporal.ogg",
+          "sha256": "2c34e20f7315d1a0472ded3408055834bb9f64251181a0b91be84b7c0f81768e"
+        },
+        {
+          "arquivo": "flecha_acerto_corporal.ogg",
+          "sha256": "4e4294128fe967c53988727eb6e191de9c804215013b818061486b146e8a633d"
+        }
+      ],
+      "filtros_ffmpeg": "[0:a]atrim=duration=0.2,asetpts=PTS-STARTPTS,highpass=f=55,lowpass=f=1500,volume=0.25[a];[1:a]atrim=duration=0.35,asetpts=PTS-STARTPTS,highpass=f=100,lowpass=f=4000,volume=0.45,asplit=3[b][c][d];[c]adelay=100|100,volume=0.7[c1];[d]adelay=210|210,volume=0.5[d1];[a][b][c1][d1]amix=inputs=4:normalize=0:duration=longest,apad,atrim=duration=0.8,afade=t=in:d=0.003,afade=t=out:st=0.45:d=0.35[out]",
+      "ganho": 0.8027144349308037,
+      "sha256_ogg": "bb0e7b6bcbdd70c43fe841d025cf8725a1651512982aca23405dd359cd89b06b"
+    }
+  ],
+  "escuta": "Aguardando aprova??o do jogador; primeira fase aprovada preservada."
+}
