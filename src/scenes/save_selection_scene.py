@@ -363,28 +363,56 @@ class SaveSelectionScene(BaseScene):
             )
         )
 
+    
     def _select(self, index):
         self.play_ui_sound("ui.click")
         status, data = self.slots[index]
         if status == "corrupted":
             self.error = "Save danificado. Exclua o arquivo para poder criar um novo."
             return
+
         try:
             if status == "empty":
                 data = self.save_manager.create_save(
                     self.save_manager.slot_id(index + 1),
                     display_name=f"Jornada {index + 1:02d}",
                 )
+
             if not data["progresso"].get("tutorial_concluido", True):
                 from src.scenes.tutorial_scene import TutorialScene
 
-                next_scene = TutorialScene(
-                    self.scene_manager,
-                    self.window_manager,
-                    self.asset_manager,
-                    save_manager=self.save_manager,
-                    save_data=data,
-                )
+                def create_tutorial():
+                    return TutorialScene(
+                        self.scene_manager,
+                        self.window_manager,
+                        self.asset_manager,
+                        save_manager=self.save_manager,
+                        save_data=data,
+                    )
+
+                if not data["progresso"].get("intro_vista", True):
+                    from src.config.cutscenes import INTRO_CUTSCENE
+                    from src.scenes.cutscene_scene import CutsceneScene
+
+                    def finish_intro():
+                        data["progresso"]["intro_vista"] = True
+                        try:
+                            self.save_manager.save(data)
+                        except (OSError, ValueError, SaveError) as exc:
+                            data["progresso"]["intro_vista"] = False
+                            self.error = f"Falha ao salvar introdução: {exc}"
+
+                    next_scene = CutsceneScene(
+                        self.scene_manager,
+                        self.window_manager,
+                        self.asset_manager,
+                        scenes=INTRO_CUTSCENE,
+                        next_scene_factory=create_tutorial,
+                        on_finish=finish_intro,
+                    )
+                else:
+                    next_scene = create_tutorial()
+
             else:
                 from src.scenes.map_scene import MapScene
 
@@ -395,10 +423,13 @@ class SaveSelectionScene(BaseScene):
                     save_manager=self.save_manager,
                     save_data=data,
                 )
+
             self.scene_manager.change_scene(next_scene)
+
         except (OSError, ValueError, SaveError) as exc:
             self.error = f"Falha ao acessar save: {exc}"
             self.refresh()
+
 
     def _request_delete(self, index):
         self.play_ui_sound("ui.click")

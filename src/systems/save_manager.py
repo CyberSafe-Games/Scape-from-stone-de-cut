@@ -14,7 +14,8 @@ from src.systems.deck_loadout import INITIAL_SLOTS, normalize_collection_and_slo
 # v9: deck equipado passa a ser uma cópia por espaço (DECK_SLOT_LIMIT).
 # Saves v8 (e anteriores) migram em normalize_collection_and_slots: cada
 # tipo equipado (3 cópias) vira três espaços individuais.
-SAVE_VERSION = 10
+# v11: registra as cutscenes vistas, com defaults em _normalize().
+SAVE_VERSION = 11
 HEALTH_UPGRADE_AMOUNT = 15
 HEALTH_UPGRADE_LIMIT = 3
 SLOT_COUNT = 3
@@ -79,6 +80,8 @@ class SaveManager:
                 "territorios_concluidos": [],
                 "guia_mapa_visto": False,
                 "tutorial_concluido": False,
+                "intro_vista": False,
+                "pos_tutorial_visto": False,
                 "moedas": INITIAL_COINS,
                 "melhorias_vida_run": 0,
                 "cartas": deck_cards(INITIAL_SLOTS),
@@ -172,6 +175,8 @@ class SaveManager:
         # Saves anteriores ao tutorial já têm jornada iniciada: não obrigá-los
         # a refazer o treinamento. Apenas novos saves recebem False.
         progress.setdefault("tutorial_concluido", True)
+        progress.setdefault("intro_vista", True)
+        progress.setdefault("pos_tutorial_visto", True)
         if "territorios_desbloqueados" not in progress:
             progress["territorios_desbloqueados"] = list(INITIAL_TERRITORIES)
         # Migração dos saves v2: andares avançados significam fases anteriores
@@ -245,6 +250,10 @@ class SaveManager:
             raise SaveCorruptedError("Indicador do guia inválido.")
         if type(progress["tutorial_concluido"]) is not bool:
             raise SaveCorruptedError("Indicador de tutorial inválido.")
+        if type(progress["intro_vista"]) is not bool:
+            raise SaveCorruptedError("Indicador de introdução inválido.")
+        if type(progress["pos_tutorial_visto"]) is not bool:
+            raise SaveCorruptedError("Indicador de pós-tutorial inválido.")
 
         for field in ("andar", "vida", "energia_maxima", "carga_ultimate", "turnos"):
             if type(progress[field]) is not int or progress[field] < 0:
@@ -298,6 +307,8 @@ class SaveManager:
         ))
         progress['ultimates_desbloqueadas'] = known_ultimate_ids()
         progress['tutorial_concluido'] = True
+        progress['intro_vista'] = True
+        progress['pos_tutorial_visto'] = True
         progress['guia_mapa_visto'] = True
         progress['vida'] = player_max_hp(progress)
 
