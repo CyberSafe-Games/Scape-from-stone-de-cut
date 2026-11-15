@@ -6,8 +6,9 @@ Use 'Jaum Manel' ou o nome exato do inimigo. Deixe () para não exibir diálogo.
 
 BOSS_DIALOGUES = {
     "guardião da pedra": (
-        ("Guardião da Pedra", "Você não irá passar!"),
-        ("Jaum Manel", "Preciso salvar meu povo."),
+        ("Guardião da Pedra", "Parece que uma das presas conseguiu sair do cativeiro..."),
+        ("Jaum Manel", "Para vocês meu povo não passa de presas? Vocês vao pagar pelo que fizeram com nossas terras!"),
+        ("Guardião da Pedra", "Uma caça sem uma luta não tem adrenalina alguma! \n Me mostre o que você sabe fazer, indiozinho!"),
     ),
     "álvaro e tex": (),
     "goblin nerd": (),
