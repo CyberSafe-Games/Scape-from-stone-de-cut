@@ -13,6 +13,10 @@ from src.ui.floating_text import FloatingTextManager
 from src.ui.coin_hud import CoinHUD
 from src.ui.energy_hud import EnergyHUD
 from src.ui.battle_hud import BattleHUD
+# BEGIN BOSS DIALOGUE INTEGRATION
+from src.config.boss_dialogues import dialogue_for
+from src.ui.boss_dialogue_overlay import BossDialogueOverlay
+# END BOSS DIALOGUE INTEGRATION
 from src.ui.enemy_intent_view import EnemyIntentView
 from src.ui.card_fx import draw_player_projectile
 from src.ui.ultimate_fx import draw_ultimate_fx
@@ -116,6 +120,14 @@ class BattleScene(BaseScene):
                 encounter_index=self.encounter_index,
             )
 
+        # Diálogos só aparecem quando há falas configuradas para este chefe.
+        boss_lines = dialogue_for(self.engine.enemy)
+        self.boss_dialogue = (
+            BossDialogueOverlay(
+                self.asset_manager, self.engine.enemy.name, boss_lines,
+                self.selected_level or self.engine.level,
+            ) if boss_lines else None
+        )
         # Sistema de moedas (instanciado apos o engine para ter acesso ao player)
         self.coin_hud = CoinHUD(self.engine.player, anchor_x=99, anchor_y=153)
         self.energy_hud = EnergyHUD(self.engine.player)
@@ -477,6 +489,11 @@ class BattleScene(BaseScene):
         self._pending_enemy_audio.append((name, action, is_attack, duration * fraction, sound_id))
 
     def update(self, dt):
+        if self.boss_dialogue is not None:
+            self.boss_dialogue.update(dt)
+            if self.boss_dialogue.finished:
+                self.boss_dialogue = None
+            return
         pending_attack = getattr(self, "_pending_attack_sound", None)
         if pending_attack is not None:
             action, start_ms, sound_id, collision_ms = pending_attack
@@ -1157,6 +1174,9 @@ class BattleScene(BaseScene):
         )
 
     def draw(self, surface):
+        if self.boss_dialogue is not None:
+            self.boss_dialogue.draw(surface)
+            return
         self._draw_background(surface)
 
         player = self._visible_player()
@@ -1598,6 +1618,13 @@ class BattleScene(BaseScene):
 
     def handle_event(self, event):
         # Trata atalho de tela cheia ou redimensionamento
+        if self.boss_dialogue is not None:
+            if self.window_manager.handle_window_event(event):
+                return
+            self.boss_dialogue.handle_event(event)
+            if self.boss_dialogue.finished:
+                self.boss_dialogue = None
+            return
         if self.window_manager.handle_window_event(event):
             return
 
