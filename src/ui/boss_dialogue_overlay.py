@@ -8,7 +8,8 @@ from src.config.settings import WIDTH, HEIGHT
 class BossDialogueOverlay:
     """Mostra cenário + retratos ampliados + falas digitadas antes da luta."""
 
-    LETTER_INTERVAL_MS = 28
+    TYPING_SPEED = 35  # Caracteres por segundo.
+    DIALOGUE_DELAY_MS = 1000  # Pausa inicial com cenário e retratos visíveis.
     PORTRAIT_SIZE = (300, 330)
 
     def __init__(self, assets, enemy_name, lines, background_level):
@@ -19,6 +20,7 @@ class BossDialogueOverlay:
         self.index = 0
         self.visible_count = 0
         self.elapsed_ms = 0.0
+        self.delay_remaining_ms = self.DIALOGUE_DELAY_MS
         self.finished = not bool(self.lines)
         self._fallback_font = None
         self._validate_lines()
@@ -38,17 +40,31 @@ class BossDialogueOverlay:
         return self.finished or self.visible_count >= len(self.current[1])
 
     def update(self, dt):
-        if self.finished or self.text_complete:
+        """Atualiza o texto com dt em milissegundos, como fornecido pelo jogo."""
+        if self.finished:
             return
-        self.elapsed_ms += max(0, dt)
-        count = int(self.elapsed_ms / self.LETTER_INTERVAL_MS)
-        if count:
-            self.visible_count = min(len(self.current[1]), self.visible_count + count)
-            self.elapsed_ms -= count * self.LETTER_INTERVAL_MS
+
+        delta_ms = max(0.0, dt)
+        if self.delay_remaining_ms > 0:
+            remaining = self.delay_remaining_ms
+            self.delay_remaining_ms = max(0.0, remaining - delta_ms)
+            delta_ms = max(0.0, delta_ms - remaining)
+
+        if self.delay_remaining_ms > 0 or self.text_complete:
+            return
+
+        self.elapsed_ms += delta_ms
+        chars = int(self.elapsed_ms * self.TYPING_SPEED / 1000.0)
+        if chars:
+            self.visible_count = min(len(self.current[1]), self.visible_count + chars)
+            self.elapsed_ms -= chars * 1000.0 / self.TYPING_SPEED
 
     def advance(self):
-        """Primeiro clique completa a fala; o seguinte avança para a próxima."""
+        """Durante a pausa mostra a caixa; depois revela ou avança a fala."""
         if self.finished:
+            return
+        if self.delay_remaining_ms > 0:
+            self.delay_remaining_ms = 0.0
             return
         if not self.text_complete:
             self.visible_count = len(self.current[1])
@@ -128,6 +144,10 @@ class BossDialogueOverlay:
         enemy_rect = portrait_rect(center_enemy_x, enemy_speaking)
         self._portrait(surface, "jaum manel", player_rect, active=player_speaking)
         self._portrait(surface, self.enemy_name, enemy_rect, active=enemy_speaking)
+
+        # A caixa aparece apenas após a pausa inicial.
+        if self.delay_remaining_ms > 0:
+            return
 
         panel = pygame.Rect(65, HEIGHT - 328, WIDTH - 130, 269)
         shadow = pygame.Surface((panel.width, panel.height), pygame.SRCALPHA)
