@@ -37,7 +37,7 @@ INTRO_CUTSCENE = [
     {
         "image": "cutscenes/intro_05.png",
         "dialogues": [
-            ("Jaum Manel", "Ao anoitecer, uma brasa das fogueiras enfraqueceu aas cordas da minha cela, parecia que nossas terras estavam tentando me ajudar..."),
+            ("Jaum Manel", "Ao anoitecer, uma brasa das fogueiras enfraqueceu as cordas da minha cela, parecia que nossas terras estavam tentando me ajudar..."),
             ("Jaum Manel", "Passei a noite inteira tentando me libertar, e ao nascer do sol consegui escapar da prisão."),
             ("Jaum Manel", "Porém um dos inimigos ainda estava de tocaia..."),
         ],
