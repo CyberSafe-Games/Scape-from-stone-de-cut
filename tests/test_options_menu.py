@@ -75,7 +75,7 @@ class PreferencesPersistenceTests(unittest.TestCase):
         self.path.write_text(
             json.dumps(
                 {
-                    "master_volume": -0.1,
+                    "master_volume": 10**400,
                     "music_volume": 1.1,
                     "combat_volume": "0.5",
                     "damage_volume": True,

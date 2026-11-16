@@ -1,4 +1,4 @@
-"""Cena reutilizável de quadrinhos, sem dependência de progressão ou save."""
+"""Cena reutilizável de quadrinhos, com diálogos e sem dependência de save."""
 
 import logging
 import os
@@ -22,7 +22,10 @@ logger = logging.getLogger(__name__)
 
 
 class CutsceneScene(BaseScene):
-    """Exibe quadros estáticos com avanço manual e transições visuais."""
+    """Exibe imagens com múltiplas falas, digitação e transições visuais."""
+
+    TYPING_SPEED = 35  # Caracteres por segundo. Ajuste para acelerar/desacelerar.
+    DIALOGUE_DELAY_MS = 1300  # Tempo para observar cada imagem antes das falas.
 
     def __init__(self, scene_manager, window_manager, asset_manager,
                  scenes, next_scene_factory, on_finish=None):
@@ -36,6 +39,10 @@ class CutsceneScene(BaseScene):
         self._elapsed_ms = 0.0
         self._previous_layer = None
         self._current_layer = None
+        self._dialogue_index = 0
+        self._visible_characters = 0
+        self._typing_elapsed = 0.0
+        self._dialogue_wait_ms = self.DIALOGUE_DELAY_MS
         self._music_context = getattr(
             getattr(scene_manager, "current_scene", None), "music_context", None
         )
@@ -82,8 +89,40 @@ class CutsceneScene(BaseScene):
             lines.append(line)
         return lines
 
+    def _dialogues(self):
+        """Devolve falas do quadro; também aceita o antigo campo 'text'."""
+        if not self.scenes or self.index >= len(self.scenes):
+            return []
+        entry = self.scenes[self.index]
+        if "dialogues" in entry:
+            result = []
+            for dialogue in entry["dialogues"] or []:
+                if isinstance(dialogue, (tuple, list)) and len(dialogue) == 2:
+                    speaker, text = dialogue
+                    result.append((str(speaker), str(text)))
+            return result
+        text = entry.get("text", "")
+        return [("Narrador", str(text))] if text else []
+
+    def _current_dialogue(self):
+        dialogues = self._dialogues()
+        if self._dialogue_index < len(dialogues):
+            return dialogues[self._dialogue_index]
+        return None
+
+    def _layout_dialogue(self, text):
+        """Quebra o texto completo antes da digitação para não saltar linhas."""
+        font = self.asset_manager.get_font("default")
+        return "\n".join(self._wrap_text(text, font, WIDTH - 220))
+
+    def _reset_dialogue(self):
+        self._dialogue_index = 0
+        self._visible_characters = 0
+        self._typing_elapsed = 0.0
+        self._dialogue_wait_ms = self.DIALOGUE_DELAY_MS
+
     def _build_layer(self, index):
-        """Prepara imagem e textos uma única vez por mudança de quadro."""
+        """Prepara imagem e dicas de controle uma vez por mudança de quadro."""
         entry = self.scenes[index]
         layer = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         layer.fill((12, 12, 16, 255))
@@ -101,26 +140,6 @@ class CutsceneScene(BaseScene):
         except (OSError, ValueError, pygame.error) as error:
             logger.warning("Imagem de cutscene indisponível: %s (%s)", filename, error)
 
-        text = entry.get("text", "")
-        if text:
-            font = self.asset_manager.get_font("default")
-            lines = self._wrap_text(text, font, WIDTH - 220)
-            line_height = font.get_linesize()
-            padding = 30
-            box_height = min(HEIGHT - 130, len(lines) * line_height + 2 * padding)
-            position = entry.get("position", "bottom")
-            box_y = 80 if position == "top" else HEIGHT - box_height - 110
-            panel = pygame.Surface((WIDTH - 140, box_height), pygame.SRCALPHA)
-            panel.fill((14, 17, 20, 210))
-            pygame.draw.rect(panel, (168, 131, 73, 210),
-                             panel.get_rect(), width=2, border_radius=8)
-            for line_index, line in enumerate(lines):
-                y = padding + line_index * line_height
-                if y + line_height > box_height:
-                    break
-                panel.blit(font.render(line, True, (237, 222, 193)), (40, y))
-            layer.blit(panel, (70, box_y))
-
         font = self.asset_manager.get_font("small")
         is_intro_end = (self.scenes is INTRO_CUTSCENE or
                         self.scenes == INTRO_CUTSCENE) and index == len(self.scenes) - 1
@@ -134,6 +153,35 @@ class CutsceneScene(BaseScene):
         layer.blit(hint_panel, hint_panel.get_rect(
             midbottom=(WIDTH // 2, HEIGHT - 18)))
         return layer
+
+    def _advance(self):
+        # Um clique durante a pausa exibe a caixa, sem pular a fala.
+        if self._dialogue_wait_ms > 0 and self._current_dialogue() is not None:
+            self._dialogue_wait_ms = 0.0
+            return
+        dialogue = self._current_dialogue()
+        if dialogue is not None:
+            full_text = self._layout_dialogue(dialogue[1])
+            if self._visible_characters < len(full_text):
+                self._visible_characters = len(full_text)
+                return
+            if self._dialogue_index + 1 < len(self._dialogues()):
+                self._dialogue_index += 1
+                self._visible_characters = 0
+                self._typing_elapsed = 0.0
+                return
+
+        if self.index == len(self.scenes) - 1:
+            self._phase = "exit"
+            self._elapsed_ms = 0.0
+            return
+
+        self._previous_layer = self._current_layer
+        self.index += 1
+        self._reset_dialogue()
+        self._current_layer = self._build_layer(self.index)
+        self._phase = "crossfade"
+        self._elapsed_ms = 0.0
 
     def handle_event(self, event):
         if self.window_manager.handle_window_event(event):
@@ -149,25 +197,37 @@ class CutsceneScene(BaseScene):
         key = (event.type == pygame.KEYDOWN and
                event.key in (pygame.K_SPACE, pygame.K_RETURN, pygame.K_KP_ENTER) and
                not getattr(event, "repeat", False))
-        if not (click or key):
-            return
-        if self.index == len(self.scenes) - 1:
-            self._phase = "exit"
-            self._elapsed_ms = 0.0
-            return
-        self._previous_layer = self._current_layer
-        self.index += 1
-        self._current_layer = self._build_layer(self.index)
-        self._phase = "crossfade"
-        self._elapsed_ms = 0.0
+        if click or key:
+            self._advance()
 
     def update(self, dt):
-        if self._finished or self._phase == "idle":
+        if self._finished:
             return
         if self._phase == "empty":
             self._finish()
             return
-        self._elapsed_ms += max(0, dt) * 1000
+
+        # O jogo fornece dt em milissegundos (clock.tick). A digitação pausa durante os fades.
+        if self._phase == "idle":
+            delta_ms = max(0, dt)
+            if self._dialogue_wait_ms > 0:
+                remaining_ms = self._dialogue_wait_ms
+                self._dialogue_wait_ms = max(0.0, remaining_ms - delta_ms)
+                # Só conta para a digitação o tempo após a pausa.
+                typing_dt = max(0.0, delta_ms - remaining_ms) / 1000.0
+            else:
+                typing_dt = max(0, dt) / 1000.0
+            dialogue = self._current_dialogue()
+            if dialogue is not None and self._dialogue_wait_ms <= 0:
+                total = len(self._layout_dialogue(dialogue[1]))
+                if self._visible_characters < total:
+                    self._typing_elapsed += typing_dt
+                    self._visible_characters = min(
+                        total, int(self._typing_elapsed * self.TYPING_SPEED)
+                    )
+            return
+
+        self._elapsed_ms += max(0, dt)
         duration = {
             "enter": FADE_IN_DURATION_MS,
             "crossfade": CROSSFADE_DURATION_MS,
@@ -181,6 +241,39 @@ class CutsceneScene(BaseScene):
                 self._previous_layer = None
                 self._elapsed_ms = 0.0
 
+    def _draw_dialogue(self, surface):
+        dialogue = self._current_dialogue()
+        if dialogue is None or self._dialogue_wait_ms > 0:
+            return
+        speaker, text = dialogue
+        full_text = self._layout_dialogue(text)
+        visible_text = full_text[:self._visible_characters]
+        font = self.asset_manager.get_font("default")
+        name_font = self.asset_manager.get_font("default")
+        padding = 24
+        box_width = WIDTH - 140
+        # Reserva espaço para até quatro linhas sem alterar a caixa enquanto digita.
+        line_height = font.get_linesize()
+        box_height = min(HEIGHT - 130, max(145, 4 * line_height + 75))
+        entry = self.scenes[self.index]
+        box_y = 80 if entry.get("position", "bottom") == "top" else HEIGHT - box_height - 110
+        panel = pygame.Surface((box_width, box_height), pygame.SRCALPHA)
+        pygame.draw.rect(panel, (14, 17, 20, 210), panel.get_rect(),
+                         border_radius=8)
+        pygame.draw.rect(panel, (168, 131, 73, 210), panel.get_rect(),
+                         width=2, border_radius=8)
+        if speaker:
+            label = name_font.render(speaker, True, (245, 200, 125))
+            panel.blit(label, (padding, 12))
+        text_y = 20 + (name_font.get_linesize() if speaker else 0)
+        for line in visible_text.split("\n"):
+            if text_y + line_height > box_height - 8:
+                break
+            rendered = font.render(line, True, (237, 222, 193))
+            panel.blit(rendered, (padding, text_y))
+            text_y += line_height + 3
+        surface.blit(panel, (70, box_y))
+
     def draw(self, surface):
         surface.fill((0, 0, 0))
         if self._finished or self._current_layer is None:
@@ -193,6 +286,11 @@ class CutsceneScene(BaseScene):
             self._current_layer.set_alpha(None)
         else:
             surface.blit(self._current_layer, (0, 0))
+
+        # A caixa é desenhada dinamicamente, sem recriar a imagem a cada letra.
+        if self._phase == "idle":
+            self._draw_dialogue(surface)
+
         if self._phase in ("enter", "exit"):
             duration = (FADE_IN_DURATION_MS if self._phase == "enter"
                         else FADE_OUT_DURATION_MS)

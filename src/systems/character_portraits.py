@@ -26,3 +26,4 @@ PORTRAITS.update({
 
 # Preserva o rosto aprovado usando a mesma moldura do protagonista.
 PORTRAITS['zanzara'] = ('bosses/zanzara-necromante-v8.png', (0, 0, 1, 1), 'framed-content')
+PORTRAITS['zanzara · diálogo'] = ('bosses/zanzara-necromante-dialogo.png', (0, 0, 1, 1), 'framed-content')

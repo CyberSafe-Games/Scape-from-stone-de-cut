@@ -5,7 +5,6 @@ opções de jogo em um único arquivo JSON.
 """
 
 import json
-import math
 import os
 from pathlib import Path
 import tempfile
@@ -37,10 +36,7 @@ def _sanitize(key, value, default):
     if key in AUDIO_PREFERENCE_KEYS:
         if isinstance(value, bool) or not isinstance(value, (int, float)):
             return default
-        if not math.isfinite(value):
-            return default
-        value = float(value)
-        return value if VOLUME_MIN <= value <= VOLUME_MAX else default
+        return float(value) if VOLUME_MIN <= value <= VOLUME_MAX else default
 
     if key in BOOLEAN_KEYS:
         return value if isinstance(value, bool) else default

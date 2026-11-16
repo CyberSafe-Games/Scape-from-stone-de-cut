@@ -79,7 +79,7 @@ class CutsceneSceneTests(unittest.TestCase):
         scene = self.create_scene()
         self.send_key(scene, pygame.K_SPACE)
         self.assertEqual(scene.index, 0)
-        scene.update(0.5)
+        scene.update(500)
         self.send_key(scene, pygame.K_SPACE, repeat=True)
         self.assertEqual(scene.index, 0)
         self.send_key(scene, pygame.K_SPACE)
@@ -87,23 +87,23 @@ class CutsceneSceneTests(unittest.TestCase):
         self.assertEqual(scene._phase, "crossfade")
         self.send_key(scene, pygame.K_RETURN)
         self.assertEqual(scene.index, 1)
-        scene.update(0.5)
+        scene.update(500)
         self.assertEqual(scene._phase, "idle")
         self.assertEqual(self.callback.call_count, 0)
 
     def test_ultimo_quadro_encerra_so_apos_fade(self):
         scene = self.create_scene([{"image": "um.png", "text": ""}])
-        scene.update(0.5)
+        scene.update(500)
         scene.handle_event(pygame.event.Event(
             pygame.MOUSEBUTTONDOWN, {"button": 1, "pos": (20, 20)}
         ))
         self.assertEqual(scene._phase, "exit")
         self.callback.assert_not_called()
-        scene.update(0.5)
+        scene.update(500)
         self.callback.assert_called_once_with()
         self.factory.assert_called_once_with()
         self.manager.change_scene.assert_called_once_with(self.destination)
-        scene.update(0.5)
+        scene.update(500)
         self.callback.assert_called_once_with()
 
     def test_esc_pula_e_finaliza_uma_unica_vez(self):
@@ -126,7 +126,7 @@ class CutsceneSceneTests(unittest.TestCase):
             scene = self.create_scene([
                 {"image": "inexistente.png", "text": "Texto de teste", "position": "top"}
             ])
-        scene.update(0.5)
+        scene.update(500)
         scene.draw(self.surface)
         self.assertEqual(scene._current_layer.get_size(), (WIDTH, HEIGHT))
 
@@ -140,7 +140,7 @@ class CutsceneSceneTests(unittest.TestCase):
             scene = self.create_scene([{"image": "quadro.png", "text": ""}])
             self.assertEqual(scale.call_count, 1)
             self.assertEqual(scale.call_args.args[1], (1440, 1080))
-            scene.update(0.5)
+            scene.update(500)
             scene.draw(self.surface)
             scene.draw(self.surface)
             self.assertEqual(scale.call_count, 1)
@@ -151,13 +151,13 @@ class CutsceneSceneTests(unittest.TestCase):
             for index in range(3)
         ]
         scene = self.create_scene(entries)
-        scene.update(0.5)
+        scene.update(500)
         for expected_index in (1, 2):
             self.send_key(scene, pygame.K_RETURN)
             self.assertEqual(scene.index, expected_index)
-            scene.update(0.5)
+            scene.update(500)
         self.send_key(scene, pygame.K_RETURN)
-        scene.update(0.5)
+        scene.update(500)
         self.callback.assert_called_once_with()
 
 
