@@ -35,10 +35,20 @@ class FloatingText:
 class FloatingTextManager:
     """Gerencia a lista de textos flutuantes ativos."""
 
-    def __init__(self):
+    def __init__(self, enabled=True):
         self.texts = []
+        self.enabled = enabled
+
+    def set_enabled(self, enabled):
+        """Liga/desliga apenas a exibição; nenhum efeito de combate é alterado."""
+        enabled = bool(enabled)
+        if self.enabled and not enabled:
+            self.clear()
+        self.enabled = enabled
 
     def spawn(self, x, y, text, color):
+        if not self.enabled:
+            return
         self.texts.append(FloatingText(x, y, text, color))
 
     def update(self, dt):

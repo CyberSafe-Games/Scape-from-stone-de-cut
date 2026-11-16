@@ -25,6 +25,20 @@ class BaseScene(ABC):
 
         return None
 
+    def open_options_modal(self):
+        """Abre o menu de Opções por cima da cena, congelando a atual."""
+        from src.scenes.options_scene import OptionsScene
+
+        self.play_ui_sound("ui.click")
+        self.scene_manager.push_modal(
+            OptionsScene(
+                self.scene_manager,
+                self.window_manager,
+                self.asset_manager,
+                modal=True,
+            )
+        )
+
     @abstractmethod
     def handle_event(self, event):
         """Processa eventos de entrada (mouse, teclado)."""

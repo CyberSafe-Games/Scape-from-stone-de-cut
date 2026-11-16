@@ -4,7 +4,10 @@ from copy import deepcopy
 from src.scenes.base_scene import BaseScene
 from src.scenes.confirmation_modal import ConfirmationModal
 from src.scenes.cemetery_modal import CemeteryModal
+from src.scenes.pause_menu_modal import PauseMenuModal
 from src.systems.combat_engine import CombatEngine
+from src.systems.game_preferences import enemy_windup_ms
+from src.config.preferences import ENEMY_SPEED_NORMAL
 from src.systems.save_manager import SaveError
 from src.systems.campaign_progress import record_victory, record_road_victory
 from src.ui.card_view import CardView
@@ -88,7 +91,10 @@ class BattleScene(BaseScene):
         self.selected_level = selected_level
         self.encounter_kind = encounter_kind
         self.encounter_index = encounter_index
-        self.floating_texts = FloatingTextManager()
+        self.preferences = getattr(scene_manager, "audio_preferences", None)
+        self.floating_texts = FloatingTextManager(
+            enabled=self._damage_numbers_enabled()
+        )
         self.entity_view = EntityView(asset_manager)
         self.battle_hud = BattleHUD(asset_manager)
         self.intent_view = EnemyIntentView(asset_manager)
@@ -477,6 +483,7 @@ class BattleScene(BaseScene):
         self._pending_enemy_audio.append((name, action, is_attack, duration * fraction, sound_id))
 
     def update(self, dt):
+        self.floating_texts.set_enabled(self._damage_numbers_enabled())
         pending_attack = getattr(self, "_pending_attack_sound", None)
         if pending_attack is not None:
             action, start_ms, sound_id, collision_ms = pending_attack
@@ -612,7 +619,7 @@ class BattleScene(BaseScene):
             combo_followup = getattr(enemy, "actions_per_turn", 1) > 1 and getattr(
                 self.engine, "enemy_actions_remaining", 0
             ) < getattr(enemy, "actions_per_turn", 1)
-            windup_ms = 270 if combo_followup else 800
+            windup_ms = self._enemy_windup_ms(combo_followup)
             if self.enemy_turn_timer >= windup_ms:
                 self.engine.enemy_turn()
                 self.entity_view.post_enemy_pause = POST_ENEMY_PAUSE
@@ -1748,24 +1755,69 @@ class BattleScene(BaseScene):
         self.scene_manager.push_modal(modal)
 
     def _open_menu_confirmation(self):
+        """Abre o menu de pausa da batalha (mesmo atalho do botão MENU e do Esc)."""
         if self.engine.state == "phase_complete":
             self._finalize_map_phase(self.engine.level)
             return
+        pause = PauseMenuModal(
+            self.scene_manager,
+            self.window_manager,
+            self.asset_manager,
+            on_options=self._open_options_modal,
+            on_exit=self._open_leave_confirmation,
+            exit_label=(
+                "VOLTAR AO MAPA"
+                if getattr(self, "map_mode", False)
+                else "MENU PRINCIPAL"
+            ),
+        )
+        self.play_ui_sound("ui.click")
+        self.scene_manager.push_modal(pause)
+
+    def _open_options_modal(self):
+        from src.scenes.options_scene import OptionsScene
+
+        self.scene_manager.push_modal(
+            OptionsScene(
+                self.scene_manager,
+                self.window_manager,
+                self.asset_manager,
+                modal=True,
+            )
+        )
+
+    def _open_leave_confirmation(self):
         if self.engine.state == "victory":
             message = "Escolha sua recompensa antes de sair para salvar a vitória."
         elif self.engine.state == "game_over":
             message = "Seu último checkpoint continuará disponível."
         else:
             message = "Seu progresso será salvo antes de sair."
+        leaving_to_map = getattr(self, "map_mode", False)
         modal = ConfirmationModal(
             self.scene_manager,
             self.window_manager,
             self.asset_manager,
             on_confirm=self._return_to_main_menu,
+            title="VOLTAR AO MAPA?" if leaving_to_map else "VOLTAR AO MENU?",
             message=message,
+            confirm_label="SIM, VOLTAR",
         )
         self.play_ui_sound("ui.click")
         self.scene_manager.push_modal(modal)
+
+    def _enemy_speed(self):
+        if self.preferences is None:
+            return ENEMY_SPEED_NORMAL
+        return self.preferences.get("enemy_speed")
+
+    def _enemy_windup_ms(self, combo_followup=False):
+        return enemy_windup_ms(self._enemy_speed(), combo_followup)
+
+    def _damage_numbers_enabled(self):
+        if self.preferences is None:
+            return True
+        return bool(self.preferences.get("damage_numbers"))
 
     def _save_progress(self):
         """Registra um checkpoint do andar atual sem modificar outro slot."""
