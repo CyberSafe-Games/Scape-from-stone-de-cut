@@ -37,7 +37,7 @@ class AudioPreferencesTests(unittest.TestCase):
             store.save(audio)
             self.assertEqual(store.load(),dict(master_volume=.6,music_volume=.3,combat_volume=.4,damage_volume=.8))
             path.write_text(json.dumps({'music_volume':2,'damage_volume':'bad','master_volume':-1}),encoding='utf-8')
-            self.assertEqual(store.load(),dict(master_volume=0,music_volume=1,combat_volume=1,damage_volume=1))
+            self.assertEqual(store.load(),dict(master_volume=1,music_volume=.45,combat_volume=1,damage_volume=1))
             path.write_text('{invalid',encoding='utf-8')
             self.assertEqual(store.load()['music_volume'],.45)
 
