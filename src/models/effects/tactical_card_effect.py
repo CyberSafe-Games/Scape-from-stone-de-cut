@@ -30,12 +30,12 @@ class TacticalCardEffect(CardEffect):
         elif rule == 'vulnerable': target.apply_status('vulnerable', 3, 25)
         elif rule == 'cleanse': user.cleanse()
         elif rule == 'totem': user.apply_status('totem', 0, 1)
-        elif rule == 'darts' and not blocked: target.apply_status('poison', 3, 5)
+        elif rule == 'darts' and not blocked: target.add_stacks('poison', 2)
         elif rule == 'break': target.block = 0
         elif rule == 'dispel': target.cleanse(all_effects=True)
-        elif rule == 'bleed' and not blocked: target.apply_status('bleed', 2, 4)
+        elif rule == 'bleed' and not blocked: target.add_stacks('bleed', 2)
         elif rule == 'fire' and not blocked: target.apply_status('fire', 3, 1)
-        elif rule == 'poison': target.apply_status('poison', 4, 5)
+        elif rule == 'poison': target.add_stacks('poison', card.value)
         elif rule == 'energy':
             user.next_turn_energy = min(8, user.next_turn_energy + card.value)
             context.spawn_player_text(f'+{card.value} energia no próximo turno', GOLD)

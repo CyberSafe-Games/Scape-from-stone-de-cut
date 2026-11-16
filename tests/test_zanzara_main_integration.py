@@ -23,7 +23,7 @@ class TestMergedZanzaraTotems(unittest.TestCase):
         self.assertEqual(engine.player.hp, 40)
         self.assertNotIn('bleed', engine.player.statuses)
         self.assertNotIn('poison', engine.player.statuses)
-        self.assertEqual(engine.enemy.statuses['poison']['potency'], 5)
+        self.assertEqual(engine.enemy.statuses['poison']['potency'], 2)
         self.assertNotIn('totem', engine.player.statuses)
 
     def test_healing_totem_still_blocks_chains_vulnerability(self):
@@ -34,5 +34,5 @@ class TestMergedZanzaraTotems(unittest.TestCase):
     def test_unprotected_scythe_keeps_two_debuffs(self):
         engine = self.execute(0)
         self.assertEqual(engine.player.hp, 20)
-        self.assertEqual(engine.player.statuses['bleed']['potency'], 5)
-        self.assertEqual(engine.player.statuses['poison']['potency'], 3)
+        self.assertEqual(engine.player.statuses['bleed']['potency'], 2)
+        self.assertEqual(engine.player.statuses['poison']['potency'], 1)

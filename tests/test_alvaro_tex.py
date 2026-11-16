@@ -41,7 +41,7 @@ class AlvaroTexCombatTests(TestCase):
         e.cemetery_swap_used = True
         hand = list(e.hand)
         piles = (list(e.draw_pile), list(e.discard_pile))
-        e.enemy.apply_status('poison', 3, 5)
+        e.enemy.add_stacks('poison', 2)
         e.enemy.hp = 0
         e._on_enemy_defeated()
         self.assertEqual(e.state, 'boss_transition')
@@ -85,14 +85,14 @@ class AlvaroTexCombatTests(TestCase):
     def test_bleed_killing_first_phase_cancels_remaining_attacks(self):
         e = self.engine
         e.enemy.hp = 1
-        e.enemy.apply_status('bleed', 2, 5)
+        e.enemy.add_stacks('bleed', 2)
         e.enemy.set_intent('attack', 9, e.enemy.actions[0])
         hp = e.player.hp
         e.end_turn()
         e.enemy_turn()
         self.assertEqual(e.state, 'boss_transition')
         self.assertEqual(e.enemy_actions_remaining, 0)
-        self.assertEqual(e.player.hp, hp)
+        self.assertEqual(e.player.hp, hp - 9)
 
     def test_lethal_player_ultimate_does_not_skip_second_phase(self):
         e = self.engine
@@ -143,7 +143,7 @@ class AlvaroTexCombatTests(TestCase):
         self.assertEqual(smoke.damage, 0)
         self.assertIsNone(smoke.status_effect)
         boss.hp = boss.max_hp-6
-        boss.apply_status('bleed',2,5)
+        boss.add_stacks('bleed', 2)
         player_hp = e.player.hp
         boss.set_intent('buff',smoke.value,smoke)
         e.end_turn()
@@ -157,7 +157,7 @@ class AlvaroTexCombatTests(TestCase):
         self.assertIn('enemy_action',names)
         self.assertNotIn('attack',names)
         self.assertNotIn('flash',names)
-        self.assertFalse(boss._bled_this_turn)
+        self.assertEqual(boss.bleed_triggers_this_turn, 0)
 
     def test_smoke_refreshes_bonus_and_lasts_full_rounds_not_actions(self):
         e = self.engine

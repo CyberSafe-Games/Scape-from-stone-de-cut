@@ -64,8 +64,8 @@ class IntentPlanningTests(unittest.TestCase):
         e.enemy_turn()
         self.assertEqual(e.enemy.block, 10)
         self.assertEqual(e.enemy.hp, e.enemy.max_hp - 5)
-        self.assertEqual(e.enemy.actions[0].status_effect, ('bleed', 2, 4))
-        self.assertEqual(e.enemy.actions[1].status_effect, ('bleed', 2, 4))
+        self.assertEqual(e.enemy.actions[0].status_effect, ('bleed', 2, 2))
+        self.assertEqual(e.enemy.actions[1].status_effect, ('bleed', 2, 2))
 
         e = self.engine(6)
         strike = e.enemy.actions[0]
@@ -189,11 +189,11 @@ class IntentInterfaceTests(unittest.TestCase):
 
     def test_zanzara_actions_match_the_four_printed_cards(self):
         boss = create_point_enemy(7)
-        scythe_status = (('bleed', 2, 5), ('poison', 2, 3))
+        scythe_status = (('bleed', 2, 2), ('poison', 2, 1))
         self.assertEqual(
             [(action.damage, action_status_effects(action)) for action in (*boss.actions, boss.special_action)],
             [(20, scythe_status), (24, scythe_status), (20, (('vulnerable', 2, 25),)),
-             (45, (('poison', 3, 6),))],
+             (45, (('poison', 2, 2),))],
         )
 
     def test_tall_intent_art_is_centered_and_counters_do_not_cover_it(self):

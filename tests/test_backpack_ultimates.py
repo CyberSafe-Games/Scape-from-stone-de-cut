@@ -25,19 +25,19 @@ class UltimatePreparationTests(unittest.TestCase):
         self.saves = SaveManager(self.folder.name)
         self.data = self.saves.create_save('slot_1')
 
-    def test_choice_persists_and_reaches_next_battle_without_spending_charge_or_deck(self):
+    def test_choice_persists_but_legacy_charge_is_discarded(self):
         before = deepcopy(self.data['progresso'])
         self.data['progresso']['carga_ultimate'] = 17
         for uid in known_ultimate_ids():
             self.assertTrue(equip_ultimate(self.saves, self.data, uid)[0])
             loaded = self.saves.load_save('slot_1')
             self.assertEqual(loaded['progresso']['ultimate_equipada'], uid)
-            self.assertEqual(loaded['progresso']['carga_ultimate'], 17)
+            self.assertNotIn('carga_ultimate', loaded['progresso'])
             self.assertEqual(loaded['progresso']['deck_slots'], before['deck_slots'])
             engine = CombatEngine(map_mode=True)
             engine.resume_from_save(loaded, self.saves, level=1, encounter_kind='road')
             self.assertEqual(engine.active_ultimate_id, uid)
-            self.assertEqual(engine.player.ultimate_charge, 17)
+            self.assertEqual(engine.player.ultimate_charge, 0)
 
     def test_invalid_choice_and_failed_write_preserve_the_previous_loadout(self):
         before = deepcopy(self.data)

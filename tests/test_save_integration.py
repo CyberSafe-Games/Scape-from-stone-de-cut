@@ -42,7 +42,8 @@ class TestSaveIntegration(unittest.TestCase):
         self.assertEqual(loaded_engine.player.coins, 125)
         self.assertEqual(loaded_engine.player.hp, 34)
         self.assertEqual(loaded_engine.player.energy_max, 2)  # Reinicia por luta
-        self.assertEqual(loaded_engine.player.ultimate_charge, 6)
+        self.assertEqual(loaded_engine.player.ultimate_charge, 0)
+        self.assertNotIn("carga_ultimate", self.manager.load_save("slot_1")["progresso"])
         self.assertEqual(len(loaded_engine.deck_manager.deck), 6)
         self.assertEqual(loaded_engine.state, "player_turn")
         self.assertEqual(self.manager.load_save("slot_2")["progresso"]["moedas"], 0)

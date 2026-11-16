@@ -9,8 +9,11 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from devtools.prepare_boss_update import import_cards, save_frames
+from devtools.prepare_boss_update import (
+    import_cards, paint_card_text, refresh_player_stack_card_texts, rules_text, save_frames,
+)
 from src.systems.animation_inbetweens import ORIGINAL_TWELVE_INDICES
+from src.systems.enemy_factory import create_zanzara
 
 
 def zanzara_cards(sheet, archive):
@@ -22,10 +25,19 @@ def zanzara_cards(sheet, archive):
         'atk3': (6, 720, 525, 1460),
         'ultimate': (535, 720, 1053, 1460),
     }
+    boss = create_zanzara()
+    updated_rules = {
+        'atk1': (boss.actions[0], 'Zanzara desfere um corte amplo com sua foice.'),
+        'atk2': (boss.actions[1], 'Desaparece em chamas verdes, golpeia e retorna.'),
+        'ultimate': (boss.special_action, 'Invoca o avatar espectral de Caronte e seu barco.'),
+    }
     for name, box in boxes.items():
         path = folder / f'{name}.png'
         # Uma reexecução com o mesmo recorte nunca arquiva a própria versão atual.
         card = sheet.crop(box)
+        if name in updated_rules:
+            action, flavor = updated_rules[name]
+            paint_card_text(card, rules_text(action) + '\n' + flavor, region=(.10, .65, .90, .94))
         if path.exists():
             with Image.open(path) as previous:
                 changed = previous.size != card.size or previous.convert('RGB').tobytes() != card.tobytes()
@@ -114,6 +126,7 @@ def main():
     with ZipFile(args.cards_zip) as cards:
         import_cards(cards)
     zanzara_cards(Image.open(args.zanzara_sheet).convert('RGB'), archive)
+    refresh_player_stack_card_texts()
     goblin_poison(Image.open(args.poison_atlas).convert('RGBA'), archive)
 
 

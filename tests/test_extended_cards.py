@@ -66,12 +66,13 @@ class ExtendedCardTests(unittest.TestCase):
     def test_poison_stacks_tick_and_purge_deals_damage_per_stack(self):
         engine = self.engine()
         self.play(engine, 'Peçonha Concentrada')
-        self.assertEqual(engine.enemy.statuses['poison']['potency'], 7)
+        self.assertEqual(engine.enemy.statuses['poison']['potency'], 2)
         engine.enemy.end_turn_statuses()
-        self.assertEqual(engine.enemy.hp, 493)
+        self.assertEqual(engine.enemy.hp, 490)
 
         engine = self.engine()
-        engine.enemy.add_stacks('poison', 4)
+        engine.enemy.add_stacks('poison', 2)
+        engine.enemy.add_stacks('poison', 2)
         self.play(engine, 'Purga da Jararaca')
         self.assertEqual(engine.enemy.hp, 492)
         self.assertNotIn('poison', engine.enemy.statuses)
@@ -120,8 +121,8 @@ class ExtendedCardTests(unittest.TestCase):
         for name, amount in (('poison', 6), ('bleed', 3), ('burn', 4)):
             engine.enemy.add_stacks(name, amount)
         self.play(engine, 'Juízo Final da Floresta')
-        self.assertEqual(engine.enemy.statuses['poison']['potency'], 12)
-        self.assertEqual(engine.enemy.statuses['bleed']['potency'], 6)
+        self.assertEqual(engine.enemy.statuses['poison']['potency'], 4)
+        self.assertEqual(engine.enemy.statuses['bleed']['potency'], 4)
         self.assertEqual(engine.enemy.statuses['burn']['potency'], 8)
         engine.deck_manager.hand = [CARD_BY_NAME['Marretada'].copy()]
         engine.player.energy = 8
@@ -143,7 +144,7 @@ class ExtendedCardTests(unittest.TestCase):
         engine.enemy.set_intent('attack', 5, engine.enemy.current_action)
         engine.end_turn()
         engine.enemy_turn()
-        self.assertEqual(engine.enemy.statuses['poison']['potency'], 5)
+        self.assertEqual(engine.enemy.statuses['poison']['potency'], 2)
 
         engine = self.engine()
         engine.player.hp -= 10

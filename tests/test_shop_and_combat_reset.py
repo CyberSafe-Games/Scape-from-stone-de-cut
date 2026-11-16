@@ -140,7 +140,7 @@ class ShopAndCombatTests(unittest.TestCase):
         self.assertEqual(engine.player.get_hand_size(), 3)
         self.assertEqual(engine.player.strength, 0)
         self.assertEqual(engine.player.coins, 99)
-        self.assertEqual(engine.player.ultimate_charge, 7)
+        self.assertEqual(engine.player.ultimate_charge, 0)
         self.assertEqual(engine.player.hp, 32)  # Combates comuns não curam; a vida persiste.
 
     def test_loading_legacy_progress_starts_at_fight_baseline(self):

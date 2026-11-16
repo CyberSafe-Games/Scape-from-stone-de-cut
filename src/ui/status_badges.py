@@ -1,11 +1,12 @@
 import pygame
 from src.ui.helpers import draw_text, draw_panel, wrap_text
+from src.models.entity import STACK_STATUS_DAMAGE, STACK_STATUS_LIMIT, BLEED_TRIGGER_LIMIT
 
 INFO = {
  'shock': ('Choque', 'Cada acúmulo retira 1 de energia no início do próximo turno e então expira.'),
  'fire': ('Fogo', '3 de dano por intensidade ao fim do turno; atinge Escudo. Máximo: 3 intensidades.'),
- 'poison': ('Veneno', 'Dano direto à vida no fim do turno; ignora Escudo. As aplicações das novas cartas acumulam acúmulos.'),
- 'bleed': ('Sangramento', 'Dano direto igual aos acúmulos no primeiro ataque de cada turno. Não repete em ações adicionais do chefe.'),
+ 'poison': ('Veneno', 'Causa dano à vida no fim do turno do afetado, ignorando Escudo.'),
+ 'bleed': ('Sangramento', f'Causa dano à vida depois que o afetado causa dano à vida do alvo. Ignora Escudo e pode disparar até {BLEED_TRIGGER_LIMIT} vezes por turno.'),
  'burn': ('Queimadura', 'Cada acúmulo causa 1 de dano direto à vida ao fim do turno; dura 3 turnos por aplicação.'),
  'vulnerable': ('Fragilidade', 'Recebe 25% a mais de dano de ataques; não amplifica efeitos de dano contínuo.'),
  'weak': ('Fraqueza', 'Causa 25% a menos de dano; a duração é contada em turnos do afetado.'),
@@ -22,8 +23,7 @@ INFO = {
  'attack_burn': ('Chuva de Faíscas', 'Cada ataque do usuário aplica Queimadura ao alvo neste turno.'),
  'burn_on_action': ('Armadilha de Brasa', 'Cada ação do afetado aplica Queimadura nele mesmo.'),
  'poison_on_damage': ('Sangue Tóxico', 'Cada dano à vida sofrido aplica Veneno ao afetado neste turno.'),
- 'poison_multiplier': ('Veneno dobrado', 'O dano de Veneno do próximo turno é duplicado.'),
- 'double_bleed': ('Dança da Lâmina Rubra', 'As cartas do usuário aplicam o dobro de Sangramento neste turno.'),
+ 'double_bleed': ('Dança da Lâmina Rubra', 'As cartas de ataque dobram os stacks de Sangramento aplicados neste turno, até 2 por carta.'),
  'attack_lock': ('Ataques bloqueados', 'Você não pode jogar cartas de ataque durante o turno indicado.'),
 }
 
@@ -45,7 +45,7 @@ def draw_status_badges(surface, combatant, x, y, width, assets, mouse):
         pygame.draw.rect(surface, (12, 20, 20), rect, border_radius=6)
         pygame.draw.rect(surface, (179, 135, 72) if hovered else (73, 72, 52), rect, 2, border_radius=6)
         icon = assets.get_status_icon(name)
-        if name == 'shock':
+        if name == 'shock' or name in STACK_STATUS_DAMAGE:
             count = potency
         if icon is not None:
             surface.blit(pygame.transform.smoothscale(icon, (32, 32)), rect.move(2, 2))
@@ -58,9 +58,15 @@ def draw_status_badges(surface, combatant, x, y, width, assets, mouse):
         if hovered:
             title, text = INFO[name]
             if name in combatant.statuses:
-                text += f" Restam {combatant.statuses[name]['turns']} turnos." if name not in ('totem', 'shock') else ''
+                turns = combatant.statuses[name]['turns']
+                if name in STACK_STATUS_DAMAGE:
+                    per_stack = STACK_STATUS_DAMAGE[name]
+                    trigger = 'por turno' if name == 'poison' else 'por ação que cause dano'
+                    text += (f' Stacks: {potency}/{STACK_STATUS_LIMIT}. Dano: {potency * per_stack} '
+                             f'{trigger} ({per_stack} por stack). Duração restante: {turns} turno(s).')
+                elif name not in ('totem', 'shock'):
+                    text += f' Restam {turns} turnos.'
                 if name == 'fire': text += f' Intensidade: {potency}.'
-                if name == 'poison': text += f' Dano por turno: {potency}.'
                 if name == 'aura': text += f' Bônus de dano: +{potency}.'
             elif name == 'shield': text += f' Duração máxima restante: {potency} turnos.'
             lines = wrap_text(text, assets.small_font, 465)

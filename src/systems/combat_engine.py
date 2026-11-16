@@ -133,9 +133,10 @@ class CombatEngine:
     def start_combat(self):
         """Cada luta reinicia o ritmo de energia e tamanho da mão.
 
-        Vida, moedas, baralho e carga da ultimate continuam sendo da RUN.
+        Vida, moedas e baralho continuam sendo da run.
         """
         self.player.energy_max = Player.INITIAL_ENERGY_MAX
+        self.player.ultimate_charge = 0
         self.player.turn_count = 0
         self.player.strength = 0  # Buffs permanentes duram a luta, não a RUN.
         self.player.weak_turns = 0
@@ -174,28 +175,13 @@ class CombatEngine:
         # Acumula carga da ultimate proporcionalmente à energia gasta
         self.player.add_ultimate_charge(card.cost)
 
-        if card.card_type == 'attack':
-            self._bleed_on_attack(self.player)
-            if not self.player.is_alive():
-                self.deck_manager.discard_card(index)
-                self.state = 'game_over'
-                self.on_event('game_over')
-                return True
-
         # A carta sai antes do efeito para que descarte/compra não altere seu índice.
         self.deck_manager.discard_card(index)
 
         # Aplica o efeito polimórfico da carta (Open/Closed Principle)
+        enemy_hp = self.enemy.hp
         card.execute(self.player, self.enemy, context=self)
-
-        if not self.player.is_alive():
-            self.state = 'game_over'
-            self.on_event('game_over')
-            return True
-
-        # Verifica condição de vitória imediata
-        if not self.enemy.is_alive():
-            self._on_enemy_defeated()
+        self._resolve_player_action(self.enemy.hp < enemy_hp)
 
         return True
 
@@ -270,19 +256,30 @@ class CombatEngine:
             self.show_message("Ultimate ainda não está pronta!")
             return False
 
-        self.ultimate.activate(self.player, self.enemy, context=self)
+        result = self.ultimate.activate(self.player, self.enemy, context=self) or {}
+        self._resolve_player_action(bool(result.get('damage')))
+        return True
 
-        # Verifica condição de vitória imediata
-        if not self.enemy.is_alive():
+    def _resolve_player_action(self, dealt_damage):
+        if dealt_damage and self.player.is_alive():
+            self._bleed_on_attack(self.player)
+        if not self.player.is_alive():
+            self._game_over()
+        elif not self.enemy.is_alive():
             self._on_enemy_defeated()
 
-        return True
+    def _game_over(self):
+        self.player.clear_damage_stacks()
+        self.enemy.clear_damage_stacks()
+        self.state = 'game_over'
+        self.on_event('game_over')
 
     def _on_enemy_defeated(self):
         """Concede recompensa de moedas e avança para a tela de vitória."""
         if self.state in ('boss_transition', 'victory', 'phase_complete'):
             return
         if getattr(self.enemy, 'boss_id', None) == 'alvaro_tex' and self.enemy.phase == 1:
+            self.enemy.clear_damage_stacks()
             self._phase_ended_enemy_turn = self.state in ('enemy_turn', 'enemy_resolving')
             self.enemy_actions_remaining = 0
             self.state = 'boss_transition'
@@ -292,6 +289,8 @@ class CombatEngine:
         if not self.is_replay:
             low = 50 if self.enemy.is_miniboss else 30
             self.on_event("coin_drop", amount=random.randint(low, low + 20), x=ENEMY_X, y=ENEMY_Y)
+        self.player.clear_damage_stacks()
+        self.enemy.clear_damage_stacks()
         self.state = "victory"
         self.generate_rewards()
         self.on_event("victory")
@@ -317,8 +316,7 @@ class CombatEngine:
 
         self._tick_statuses(self.player)
         if not self.player.is_alive():
-            self.state = 'game_over'
-            self.on_event('game_over')
+            self._game_over()
             return
         self.enemy.begin_turn()
 
@@ -336,12 +334,7 @@ class CombatEngine:
             self.state = 'enemy_resolving'
             return
         action = getattr(self.enemy, "current_action", None)
-        if (action is not None and action.action_type == 'attack') or (action is None and self.enemy.intent == 'attack'):
-            self._bleed_on_attack(self.enemy)
-            if not self.enemy.is_alive():
-                self._on_enemy_defeated()
-                return
-        attacked = False
+        actual_damage = 0
         if action is not None:
             self.enemy.use_energy(action.energy_cost)
             if action.action_type == "heal":
@@ -366,9 +359,6 @@ class CombatEngine:
                         if key == 'shock':
                             self.player.add_stacks('shock', potency, turns=1)
                             continue
-                        # Renovar o efeito sem somar nem enfraquecer um DOT maior.
-                        if key in ('bleed','poison'):
-                            potency = max(potency,self.player.statuses.get(key,{}).get('potency',0))
                         self.player.apply_status(key,turns,potency)
                 if action.self_attack_buff:
                     turns, bonus = action.self_attack_buff
@@ -377,7 +367,6 @@ class CombatEngine:
                     self.trigger_attack("enemy", action=action.visual_effect or "atk")
                 self.trigger_flash("player")
                 self.spawn_player_text(f"-{actual_damage}", RED)
-                attacked = True
             else:
                 block = action.defense
                 self.enemy.add_block(block)
@@ -392,7 +381,6 @@ class CombatEngine:
                 self.trigger_attack("enemy", action="atk")
                 self.trigger_flash("player")
                 self.spawn_player_text(f"-{actual_damage}", RED)
-                attacked = True
             else:
                 block = self.enemy.intent_value
                 self.enemy.add_block(block)
@@ -404,10 +392,14 @@ class CombatEngine:
         if 'burn_on_action' in self.enemy.statuses:
             self.enemy.add_stacks('burn', self.enemy.statuses['burn_on_action']['potency'])
         self.enemy_actions_remaining = max(0, self.enemy_actions_remaining - 1)
+        if actual_damage:
+            self._bleed_on_attack(self.enemy)
 
         if not self.player.is_alive():
-            self.state = "game_over"
-            self.on_event("game_over")
+            self._game_over()
+            return
+        if not self.enemy.is_alive():
+            self._on_enemy_defeated()
             return
 
         self.state = "enemy_resolving"
@@ -462,7 +454,7 @@ class CombatEngine:
     def _resolve_totem_trigger(self, defender, attacker):
         trigger = defender.last_totem_trigger
         if trigger == 'poison':
-            attacker.add_stacks('poison', 5)
+            attacker.add_stacks('poison', 2)
         elif trigger == 'heal':
             healed = min(8, defender.max_hp - defender.hp)
             defender.hp += healed

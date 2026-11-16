@@ -37,7 +37,7 @@ def _build_slime_actions(level):
     return [
         Action("Ataque", "attack", damage=attack_damage, energy_cost=1, weight=0.50, visual_effect="atk"),
         Action("Salpico ácido", "attack", damage=max(1, attack_damage - 3), energy_cost=1,
-               weight=0.20, visual_effect="atk", status_effect=('poison', 2, 3)),
+               weight=0.20, visual_effect="atk", status_effect=('poison', 2, 1)),
         Action("Defesa", "defend", defense=defense_amount, energy_cost=1, weight=0.30, visual_effect="def"),
     ]
 
@@ -122,7 +122,7 @@ def create_goblin_nerd(level=3):
     actions = [
         Action("Chave arremessada", "attack", damage=8 + level, energy_cost=1, weight=0.35, visual_effect="atk1"),
         Action("Descarga improvisada", "attack", damage=10 + level, energy_cost=1, weight=0.30, visual_effect="atk2", status_effect=('shock', 1, 1)),
-        Action("Baforada tóxica", "attack", damage=9 + level, energy_cost=1, weight=0.20, visual_effect="atk3", status_effect=('poison', 2, 5)),
+        Action("Baforada tóxica", "attack", damage=9 + level, energy_cost=1, weight=0.20, visual_effect="atk3", status_effect=('poison', 2, 2)),
         Action("Escudo rúnico", "defend", defense=8 + level, energy_cost=1, weight=0.15, visual_effect="healer2"),
     ]
     boss = Enemy("Goblin Nerd", hp=92 + level * 4, energy=4, max_energy=4, actions=actions, is_miniboss=True)
@@ -149,8 +149,8 @@ def create_guardiao_da_pedra(level=1):
 def create_corpo_seco(level=5):
     """Corpo Seco: duas ações por rodada; giro no 8º, 16º... ato."""
     actions = [
-        Action("Corte rápido", "attack", damage=7 + level // 2, energy_cost=1, weight=0.55, visual_effect="atk1", status_effect=('bleed', 2, 4)),
-        Action("Lâminas cruzadas", "attack", damage=10 + level // 2, energy_cost=1, weight=0.30, visual_effect="atk3", status_effect=('bleed', 2, 4)),
+        Action("Corte rápido", "attack", damage=7 + level // 2, energy_cost=1, weight=0.55, visual_effect="atk1", status_effect=('bleed', 2, 2)),
+        Action("Lâminas cruzadas", "attack", damage=10 + level // 2, energy_cost=1, weight=0.30, visual_effect="atk3", status_effect=('bleed', 2, 2)),
         Action("Postura defensiva", "defend", defense=8 + level // 2, energy_cost=1, weight=0.15, visual_effect="def", self_heal=20),
     ]
     boss = Enemy("Corpo Seco", hp=125, energy=4, max_energy=4, actions=actions, is_miniboss=True)
@@ -197,9 +197,9 @@ def create_zanzara(level=7):
     """Necromante final: foice, travessia espectral e grilhões debilitantes."""
     actions = [
         Action('Foice Sombria','attack',damage=20,energy_cost=1,weight=.40,visual_effect='atk1',
-               status_effects=(('bleed',2,5),('poison',2,3))),
+               status_effects=(('bleed',2,2),('poison',2,1))),
         Action('Passo do Barqueiro','attack',damage=24,energy_cost=1,weight=.35,visual_effect='atk2',
-               status_effects=(('bleed',2,5),('poison',2,3))),
+               status_effects=(('bleed',2,2),('poison',2,1))),
         Action('Grilhões das Almas','attack',damage=20,energy_cost=2,weight=.25,
                visual_effect='atk3',status_effect=('vulnerable',2,25)),
     ]
@@ -207,7 +207,7 @@ def create_zanzara(level=7):
     boss.boss_id = 'zanzara'
     boss.is_final_boss = True
     _configure_boss(boss,'Travessia Final',45,'atk3')
-    boss.special_action.status_effect = ('poison',3,6)
+    boss.special_action.status_effect = ('poison',2,2)
     return boss
 
 
@@ -215,7 +215,7 @@ def create_gordofera(level=4):
     """Guardião do Pântano: garras, investidas e guarda; salto no oitavo ato."""
     actions = [
         Action('Garras Dilacerantes', 'attack', damage=9, energy_cost=1,
-               weight=.35, visual_effect='atk1', status_effect=('bleed', 2, 4)),
+               weight=.35, visual_effect='atk1', status_effect=('bleed', 2, 2)),
         Action('Rugido Feroz', 'attack', damage=11, energy_cost=1,
                weight=.25, visual_effect='atk2'),
         Action('Cabeçada Brutal', 'attack', damage=14, energy_cost=2,

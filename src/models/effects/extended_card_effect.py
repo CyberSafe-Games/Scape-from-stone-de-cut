@@ -2,6 +2,7 @@ import random
 
 from src.config.colors import BLUE, RED
 from src.models.effects.base_effect import CardEffect
+from src.models.entity import STACK_STATUS_DAMAGE
 
 
 class ExtendedCardEffect(CardEffect):
@@ -104,7 +105,7 @@ class ExtendedCardEffect(CardEffect):
         elif rule == 'double_poison':
             consume_attack_totem()
             if not blocked:
-                target.apply_status('poison_multiplier', 1, 2)
+                target.add_stacks('poison', target.poison_stacks)
         elif rule == 'purge_status':
             consume_attack_totem()
             if not blocked:
@@ -242,10 +243,8 @@ class ExtendedCardEffect(CardEffect):
             if not blocked:
                 damage = 0
                 for name, status in target.statuses.items():
-                    if name == 'poison':
-                        damage += status['potency']
-                    elif name == 'bleed':
-                        damage += status['potency']
+                    if name in STACK_STATUS_DAMAGE:
+                        damage += STACK_STATUS_DAMAGE[name] * status['potency']
                     elif name == 'burn':
                         damage += status['potency']
                     elif name == 'fire':

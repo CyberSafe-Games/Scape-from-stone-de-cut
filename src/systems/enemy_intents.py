@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 import unicodedata
 from src.models.action import action_status_effects
+from src.models.entity import STACK_STATUS_DAMAGE, STACK_STATUS_LIMIT, STACK_STATUS_TURNS, BLEED_TRIGGER_LIMIT
 
 
 @dataclass(frozen=True)
@@ -67,9 +68,13 @@ def preview_intents(engine):
             statuses = action_status_effects(action)
             for key,turns,potency in statuses:
                 if key == 'bleed':
-                    text += f' Aplica Sangramento por {turns} turnos: {potency} de dano direto no primeiro ataque do alvo por turno.'
+                    noun = 'stack' if potency == 1 else 'stacks'
+                    text += (f' Aplica {potency} {noun} de Sangramento por {STACK_STATUS_TURNS} turnos. '
+                             f'Cada stack causa {STACK_STATUS_DAMAGE[key]} de dano direto após uma ação do alvo que cause dano à vida, até {BLEED_TRIGGER_LIMIT} vezes por turno.')
                 elif key == 'poison':
-                    text += f' Aplica Veneno por {turns} turnos: {potency} de dano direto à vida no fim do turno.'
+                    noun = 'stack' if potency == 1 else 'stacks'
+                    text += (f' Aplica {potency} {noun} de Veneno por {STACK_STATUS_TURNS} turnos. '
+                             f'Cada stack causa {STACK_STATUS_DAMAGE[key]} de dano direto no fim do turno do alvo.')
                 elif key == 'vulnerable':
                     text += f' Aplica Vulnerável por {turns} turnos: recebe {potency}% a mais de dano de ataques. Reaplicar renova a duração.'
                 elif key == 'fire':
@@ -80,7 +85,7 @@ def preview_intents(engine):
                 duration, extra = action.self_attack_buff
                 text += f' Após o golpe, recebe +{extra} de dano por {duration} turnos, sem acumular.'
             if any(status[0] in ('bleed','poison') for status in statuses):
-                text += ' Reaplicar renova a duração, sem acumular; mantém a maior intensidade ativa.'
+                text += f' Reaplicar soma até {STACK_STATUS_LIMIT} stacks por efeito e renova a duração.'
             # Simular só ações futuras; em enemy_resolving a atual já aconteceu.
             pending = not done and not (active and engine.state == 'enemy_resolving')
             if pending:

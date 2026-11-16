@@ -15,7 +15,8 @@ from src.systems.deck_loadout import INITIAL_SLOTS, normalize_collection_and_slo
 # Saves v8 (e anteriores) migram em normalize_collection_and_slots: cada
 # tipo equipado (3 cópias) vira três espaços individuais.
 # v11: registra as cutscenes vistas, com defaults em _normalize().
-SAVE_VERSION = 11
+# v12: abandona a carga de Ultimate persistida entre combates.
+SAVE_VERSION = 12
 HEALTH_UPGRADE_AMOUNT = 15
 HEALTH_UPGRADE_LIMIT = 3
 SLOT_COUNT = 3
@@ -92,7 +93,6 @@ class SaveManager:
                 "andar": 1,
                 "vida": Player.BASE_HP,
                 "energia_maxima": 2,
-                "carga_ultimate": 0,
                 "turnos": 1,
                 "ultimate_equipada": DEFAULT_ULTIMATE_ID,
                 "ultimates_desbloqueadas": known_ultimate_ids(),
@@ -172,6 +172,7 @@ class SaveManager:
             raise SaveCorruptedError("Identificação do save inválida.")
         base = self._new_data(data.get("nome", save_id), save_id)
         progress = data["progresso"]
+        progress.pop("carga_ultimate", None)  # Campo obsoleto dos saves anteriores.
         # Saves anteriores ao tutorial já têm jornada iniciada: não obrigá-los
         # a refazer o treinamento. Apenas novos saves recebem False.
         progress.setdefault("tutorial_concluido", True)
@@ -255,7 +256,7 @@ class SaveManager:
         if type(progress["pos_tutorial_visto"]) is not bool:
             raise SaveCorruptedError("Indicador de pós-tutorial inválido.")
 
-        for field in ("andar", "vida", "energia_maxima", "carga_ultimate", "turnos"):
+        for field in ("andar", "vida", "energia_maxima", "turnos"):
             if type(progress[field]) is not int or progress[field] < 0:
                 raise SaveCorruptedError(f"Campo de progresso inválido: {field}.")
         if progress["andar"] < 1 or progress["vida"] > player_max_hp(progress) or not 1 <= progress["energia_maxima"] <= 8:
@@ -375,7 +376,6 @@ class SaveManager:
         # Energia máxima e turno são propriedades da LUTA, não da RUN.
         # Dados antigos ficam aceitos no JSON apenas para compatibilidade.
         player.energy_max = player.INITIAL_ENERGY_MAX
-        player.ultimate_charge = min(player.ultimate_threshold, progress["carga_ultimate"])
         player.unlocked_ultimates = [DEFAULT_ULTIMATE_ID]
         for ultimate_id in progress.get("ultimates_desbloqueadas", [DEFAULT_ULTIMATE_ID]):
             player.unlock_ultimate(ultimate_id)
@@ -407,7 +407,6 @@ class SaveManager:
         progress["vida"] = player.hp
         # Cada checkpoint representa o INÍCIO da próxima luta.
         progress["energia_maxima"] = player.INITIAL_ENERGY_MAX
-        progress["carga_ultimate"] = player.ultimate_charge
         progress["turnos"] = 1
         progress["ultimate_equipada"] = getattr(player, "equipped_ultimate_id", DEFAULT_ULTIMATE_ID)
         unlocked = list(dict.fromkeys(getattr(player, "unlocked_ultimates", [DEFAULT_ULTIMATE_ID])))

@@ -32,7 +32,7 @@ NORMAL_ACTIONS = {
         ('Soco Duplo Impulsivo', 'attack', 6, .60, 'atk1', None),
         ('Chute Frontal', 'attack', 8, .40, 'atk2', None)),
     'Esqueleto Saqueador': (
-        ('Corte Enferrujado', 'attack', 5, .55, 'atk1', ('bleed', 2, 2)),
+        ('Corte Enferrujado', 'attack', 5, .55, 'atk1', ('bleed', 2, 1)),
         ('Estocada Óssea', 'attack', 9, .45, 'atk2', None)),
     'Golem das Ruínas': (
         ('Rocha Arcana', 'attack', 8, .65, 'atk1', None),
@@ -41,7 +41,7 @@ NORMAL_ACTIONS = {
         ('Flecha da Vigília', 'attack', 8, .6, 'atk1', None),
         ('Atropelo', 'attack', 12, .4, 'atk2', None)),
     'Putrefato do Pântano': (
-        ('Cuspe Parasita', 'attack', 5, .75, 'atk1', ('poison', 3, 3)),
+        ('Cuspe Parasita', 'attack', 5, .75, 'atk1', ('poison', 2, 1)),
         ('Devorar Parasitas', 'heal', 9, .25, 'healer2', None)),
     'Guerreiro da Mata': (
         ('Varredura do Mangual', 'attack', 7, .65, 'atk1', None),
@@ -50,7 +50,7 @@ NORMAL_ACTIONS = {
         ('Língua Chicote', 'attack', 7, .7, 'atk1', None),
         ('Couraça Enrolada', 'defend', 9, .3, 'def', None)),
     'Morcego Sombrio': (
-        ('Mordida Noturna', 'attack', 6, .6, 'atk1', ('bleed', 2, 2)),
+        ('Mordida Noturna', 'attack', 6, .6, 'atk1', ('bleed', 2, 1)),
         ('Onda Sônica', 'attack', 8, .4, 'atk2', None)),
     'Lutador Mascarado': (
         ('Chute do Vigia', 'attack', 9, .6, 'atk1', None),

@@ -74,12 +74,19 @@ class TacticalCardTests(unittest.TestCase):
         target.add_block(30)
         for _ in range(5): target.apply_status('fire', 3, 1)
         self.assertEqual(target.statuses['fire']['potency'], 3)
-        target.apply_status('poison', 4, 5)
+        target.add_stacks('poison', 1)
         target.end_turn_statuses()
         self.assertEqual(target.block, 21)
         self.assertEqual(target.hp, 95)
-        target.apply_status('poison', 3, 5)
-        self.assertEqual(target.statuses['poison'], {'turns': 3, 'potency': 5})
+        target.add_stacks('poison', 2)
+        target.add_stacks('poison', 2)
+        self.assertEqual((target.poison_stacks, target.poison_turns), (5, 2))
+        self.assertIn(('poison', 25), target.end_turn_statuses())
+        self.assertEqual(target.add_stacks('poison', 1), 0)
+        self.assertEqual(target.poison_turns, 2)
+        self.assertIn(('poison', 25), target.end_turn_statuses())
+        self.assertIn(('poison', 25), target.end_turn_statuses())
+        self.assertEqual((target.poison_stacks, target.poison_turns), (0, 0))
 
     def test_poison_ticks_once_after_all_boss_actions_and_kill_rewards_once(self):
         events = []
@@ -87,7 +94,7 @@ class TacticalCardTests(unittest.TestCase):
         engine.on_event = lambda name, **kw: events.append(name)
         engine.enemy.actions_per_turn = 2
         engine.enemy.hp = 7
-        engine.enemy.apply_status('poison', 2, 5)
+        engine.enemy.add_stacks('poison', 1)
         engine.end_turn()
         engine.enemy_turn()
         engine.finish_enemy_turn()
@@ -102,15 +109,65 @@ class TacticalCardTests(unittest.TestCase):
         engine.finish_enemy_turn()
         self.assertEqual(events.count('coin_drop'), 1)
 
-    def test_bleeding_first_attack_only_each_owner_turn(self):
+    def test_bleeding_only_after_damage_and_at_most_twice_for_a_boss(self):
         engine = self.engine()
-        engine.enemy.actions_per_turn = 2
-        engine.enemy.apply_status('bleed', 2, 4)
+        boss = engine.enemy
+        attack = Action('Ataque', damage=1)
+        boss.actions = [attack]
+        boss.actions_per_turn = 3
+        boss.set_intent('attack', 1, attack)
+        boss.add_block(20)
+        boss.add_stacks('bleed', 2)
         self.full_round(engine)
-        self.assertEqual(engine.enemy.hp, 496)
+        self.assertEqual(boss.hp, 488)
+        self.assertEqual(boss.block, 20)
+        self.assertEqual((boss.bleed_stacks, boss.bleed_turns), (2, 1))
         self.full_round(engine)
-        self.assertEqual(engine.enemy.hp, 492)
-        self.assertNotIn('bleed', engine.enemy.statuses)
+        self.assertEqual(boss.hp, 476)
+        self.assertEqual((boss.bleed_stacks, boss.bleed_turns), (0, 0))
+
+    def test_player_bleed_skips_defense_and_full_block_then_triggers_after_hits(self):
+        engine = self.engine()
+        player, enemy = engine.player, engine.enemy
+        player.add_stacks('bleed', 2)
+        enemy.block = 6
+        self.play(engine, 'Esfera Protetora')
+        self.play(engine, 'Soco Simples')
+        self.assertEqual(player.bleed_triggers_this_turn, 0)
+        self.assertEqual(player.hp, player.max_hp)
+        for _ in range(3):
+            self.play(engine, 'Soco Simples')
+        self.assertEqual(enemy.hp, 482)
+        self.assertEqual(player.hp, player.max_hp - 12)
+        self.assertEqual(player.bleed_triggers_this_turn, 2)
+        self.full_round(engine)
+        self.assertEqual(player.bleed_triggers_this_turn, 0)
+
+    def test_lethal_bleed_happens_after_player_action_and_clears_battle_stacks(self):
+        engine = self.engine()
+        engine.player.hp = 3
+        engine.player.add_stacks('bleed', 1)
+        engine.enemy.add_stacks('poison', 2)
+        self.play(engine, 'Soco Simples')
+        self.assertEqual(engine.enemy.hp, 494)
+        self.assertEqual(engine.state, 'game_over')
+        self.assertEqual(engine.player.bleed_stacks, 0)
+        self.assertEqual(engine.player.bleed_triggers_this_turn, 0)
+        self.assertEqual(engine.enemy.poison_stacks, 0)
+
+    def test_only_damaging_ultimate_triggers_bleed(self):
+        engine = self.engine()
+        player = engine.player
+        player.add_stacks('bleed', 1)
+        for ultimate in ('forcas_ancestrais', 'rugido_da_floresta'):
+            engine.equip_ultimate(ultimate)
+            player.ultimate_charge = player.ultimate_threshold
+            self.assertTrue(engine.activate_ultimate())
+            if ultimate == 'forcas_ancestrais':
+                self.assertEqual(player.hp, player.max_hp)
+                self.assertEqual(player.bleed_triggers_this_turn, 0)
+        self.assertEqual(player.hp, player.max_hp - 3)
+        self.assertEqual(player.bleed_triggers_this_turn, 1)
 
     def test_shield_survives_two_full_rounds_not_two_boss_actions(self):
         engine = self.engine()
@@ -150,7 +207,7 @@ class TacticalCardTests(unittest.TestCase):
     def test_totem_blocks_whole_multi_hit_attack_but_not_poison(self):
         target = Combatant('Alvo', 100)
         target.apply_status('totem', 0)
-        target.apply_status('poison', 2, 5)
+        target.add_stacks('poison', 1)
         target.end_turn_statuses()
         self.assertEqual(target.hp, 95)
         self.assertIn('totem', target.statuses)
@@ -214,14 +271,14 @@ class TacticalCardTests(unittest.TestCase):
         engine.enemy_turn()
         self.assertEqual(engine.state, 'game_over')
 
-    def test_new_fight_clears_temporary_effects_but_preserves_ultimate(self):
+    def test_new_fight_clears_temporary_effects_and_ultimate_charge(self):
         engine = self.engine()
         engine.player.ultimate_charge = 13
         engine.player.apply_status('fire', 3)
         engine.player.next_turn_energy = 2
         engine.player.add_block(10)
         engine.start_combat()
-        self.assertEqual(engine.player.ultimate_charge, 13)
+        self.assertEqual(engine.player.ultimate_charge, 0)
         self.assertFalse(engine.player.statuses)
         self.assertEqual(engine.player.next_turn_energy, 0)
         self.assertEqual(engine.player.block, 0)

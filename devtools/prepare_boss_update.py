@@ -2,7 +2,6 @@
 import argparse
 import json
 import sys
-from textwrap import wrap
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -13,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from devtools.polish_boss_sequences import boot_anchor, grade, pack, palette_for
 from src.models.action import action_status_effects
+from src.systems.card_catalog import CARD_BY_NAME
 from src.systems.boss_animation_kits import KITS
 from src.systems.enemy_factory import create_alvaro_tex, create_point_enemy
 
@@ -180,29 +180,60 @@ def rules_text(action):
     for name, turns, potency in action_status_effects(action):
         if name == 'shock':
             lines.append(f'Choque ×{potency}: −{potency} energia no próximo turno.')
-        else:
+        elif name in ('bleed', 'poison'):
             label = {'bleed': 'Sangramento', 'poison': 'Veneno'}[name]
-            lines.append(f'{label} {potency} por {turns} turnos.')
+            noun = 'stack' if potency == 1 else 'stacks'
+            lines.append(f'{potency} {noun} de {label} por {turns} turnos.')
+        elif name == 'vulnerable':
+            lines.append(f'Aplica Vulnerável por {turns} turnos (+{potency}% de dano recebido).')
     return '\n'.join(lines)
 
 
 def paint_rules(card, action):
+    paint_card_text(card, rules_text(action))
+
+
+def paint_card_text(card, text, region=(.09, .65, .91, .945), background=(15, 13, 14)):
     """Atualiza o texto impresso sem alterar a moldura, o título ou a arte."""
     w, h = card.size
     draw = ImageDraw.Draw(card)
-    draw.rounded_rectangle((round(.09*w), round(.65*h), round(.91*w), round(.945*h)),
-                           radius=round(.025*w), fill=(15, 13, 14))
-    lines = [row for rule in rules_text(action).splitlines() for row in wrap(rule, 35)]
-    font = None
-    for size in range(round(w*.055), 7, -1):
+    left, top, right, bottom = region
+    draw.rounded_rectangle((round(left*w), round(top*h), round(right*w), round(bottom*h)),
+                           radius=round(.025*w), fill=background)
+    max_width = w*(right-left-.05)
+    for size in range(round(w*.073), 7, -1):
         font = ImageFont.truetype(str(ROOT/'assets/fonts/IgarapePixel-Regular.ttf'), size)
-        if all(font.getlength(line) <= w*.77 for line in lines) and len(lines)*size*1.2 <= h*.26:
+        lines = []
+        for paragraph in text.splitlines():
+            line = ''
+            for word in paragraph.split():
+                candidate = f'{line} {word}' if line else word
+                if line and font.getlength(candidate) > max_width:
+                    lines.append(line)
+                    line = word
+                else:
+                    line = candidate
+            lines.append(line)
+        if len(lines)*size*1.2 <= h*(bottom-top-.035):
             break
     height = font.size * 1.2
-    top = .795*h - height * (len(lines) - 1) / 2
+    top = ((top+bottom)/2-.0025)*h - height * (len(lines) - 1) / 2
     for index, line in enumerate(lines):
         draw.text((w/2, top + index*height), line, fill=(244, 220, 166),
                   font=font, anchor='mm')
+
+
+def refresh_player_stack_card_texts():
+    for filename, name in (
+        ('adaga_sangrenta', 'Adaga Sangrenta'),
+        ('pocao_venenosa', 'Poção Venenosa'),
+        ('zarabatana_venenosa', 'Zarabatana Venenosa'),
+    ):
+        path = ROOT / 'assets/cards' / f'{filename}.png'
+        card = Image.open(path).convert('RGBA')
+        paint_card_text(card, CARD_BY_NAME[name].description, region=(.065, .65, .935, .94),
+                        background=card.getpixel((20, 287)))
+        card.save(path, optimize=True)
 
 
 def card_actions():
