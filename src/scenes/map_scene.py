@@ -31,6 +31,7 @@ from src.systems.territory_map import (
 from src.models.effects.ultimate_effect import ULTIMATE_METADATA, DEFAULT_ULTIMATE_ID
 from src.ui.helpers import draw_text, wrap_text
 from src.ui import dark_fantasy_theme as theme
+from src.ui.options_gear import draw_options_gear, options_gear_clicked
 from src.systems.normal_enemy_catalog import biome_enemy_names
 
 
@@ -601,6 +602,9 @@ class MapScene(BaseScene):
             )
         self._button(surface, self.guide_button, "ENTENDI, CONTINUAR")
 
+    def _draw_options_gear(self, surface):
+        draw_options_gear(surface, self.window_manager)
+
     def draw(self, surface):
         self._background(surface)
         self._routes(surface)
@@ -618,6 +622,7 @@ class MapScene(BaseScene):
         )
         self._button(surface, self.back_button, "< MENU")
         self._button(surface, self.backpack_button, "MOCHILA  /  DECK [B]")
+        self._draw_options_gear(surface)
         # Ícone de mochila/bolsa de couro estilizado, sem assets externos.
         bag = pygame.Rect(
             self.backpack_button.x + 15, self.backpack_button.y + 18, 26, 30
@@ -675,6 +680,11 @@ class MapScene(BaseScene):
                 ):
                     self._dismiss_guide()
             return
+
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if options_gear_clicked(self.window_manager.map_to_virtual(event.pos)):
+                self.open_options_modal()
+                return
 
         if event.type == pygame.KEYDOWN:
             if event.key in (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN):

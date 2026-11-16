@@ -16,6 +16,7 @@ from src.systems.shop_system import (
 from src.ui.helpers import draw_text, wrap_text
 from src.ui import dark_fantasy_theme as theme
 from src.ui.card_view import CardView
+from src.ui.options_gear import draw_options_gear, options_gear_clicked
 
 
 TYPE_NAMES = {
@@ -298,6 +299,7 @@ class ShopScene(BaseScene):
         )
 
         self._draw_coins(surface)
+        draw_options_gear(surface, self.window_manager)
 
         theme.divider(surface, 83, 1832, 168)
 
@@ -408,6 +410,11 @@ class ShopScene(BaseScene):
     def handle_event(self, event):
         if self.window_manager.handle_window_event(event):
             return
+
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if options_gear_clicked(self.window_manager.map_to_virtual(event.pos)):
+                self.open_options_modal()
+                return
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             self.play_ui_sound("ui.click")

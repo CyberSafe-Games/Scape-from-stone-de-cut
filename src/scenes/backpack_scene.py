@@ -30,6 +30,7 @@ from src.systems.card_catalog import AVAILABLE_CARD_NAMES, CARD_POOL, CARD_BY_NA
 from src.models.effects.ultimate_effect import ULTIMATE_METADATA, DEFAULT_ULTIMATE_ID
 from src.ui import dark_fantasy_theme as theme
 from src.ui.helpers import draw_text, wrap_text
+from src.ui.options_gear import draw_options_gear, options_gear_clicked
 
 
 class BackpackScene(BaseScene):
@@ -191,6 +192,7 @@ class BackpackScene(BaseScene):
             "ULTIMATES",
             prominent=self.tab == "ultimates",
         )
+        draw_options_gear(surface, self.window_manager)
         uid = p.get("ultimate_equipada", DEFAULT_ULTIMATE_ID)
         meta = ULTIMATE_METADATA[uid]
         label = "PODER EQUIPADO  ·  " + meta["name"].upper()
@@ -498,6 +500,10 @@ class BackpackScene(BaseScene):
     def handle_event(self, event):
         if self.window_manager.handle_window_event(event):
             return
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if options_gear_clicked(self.window_manager.map_to_virtual(event.pos)):
+                self.open_options_modal()
+                return
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.play_ui_sound("ui.click")
