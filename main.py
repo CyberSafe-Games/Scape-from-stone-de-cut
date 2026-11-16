@@ -1,15 +1,22 @@
 import sys
 import pygame
 
-from src.config.settings import TITLE, WIDTH, HEIGHT, FPS
+from src.config.settings import (
+    TITLE,
+    WIDTH,
+    HEIGHT,
+    FPS,
+    LEGACY_WINDOW_SIZE,
+)
 from src.core.window import WindowManager
 from src.core.asset_manager import AssetManager
 from src.core.scene_manager import SceneManager
 from src.core.audio_manager import AudioManager
 from src.config.audio_mix import SOUND_VOLUMES
 from src.config.music import MUSIC_VOLUME
-from src.systems.audio_preferences import AudioPreferences
+from src.systems.game_preferences import GamePreferences
 from src.scenes.menu_scene import MenuScene
+from src.ui.fps_counter import draw_fps
 
 
 def main():
@@ -19,10 +26,15 @@ def main():
     """
     pygame.init()
 
+    # Preferências globais do computador (áudio, vídeo e jogo), independentes
+    # dos slots de save.
+    preferences = GamePreferences()
+
     # O jogo abre em janela 1280x720 e renderiza em Full HD (1920x1080).
     # F11 alterna entre tela cheia e a janela 1280x720; F10 alterna a janela
     # entre 1280x720 e o maior tamanho 16:9 que cabe na tela.
     window_manager = WindowManager(WIDTH, HEIGHT, TITLE)
+    preferences.apply_video(window_manager)
     asset_manager = AssetManager()
     audio_manager = AudioManager(music_volume=MUSIC_VOLUME)
     audio_manager.register_sounds(
@@ -112,7 +124,7 @@ def main():
     # Ganho por efeito, multiplicado pelos volumes geral, de SFX e da chamada.
     for sound_id, gain in SOUND_VOLUMES.items():
         audio_manager.set_sound_volume(sound_id, gain)
-    audio_preferences = AudioPreferences()
+    audio_preferences = preferences
     audio_preferences.apply(audio_manager)
     scene_manager = SceneManager(audio_manager=audio_manager, audio_preferences=audio_preferences)
     clock = pygame.time.Clock()
@@ -134,6 +146,17 @@ def main():
             if window_manager.handle_window_event(event):
                 if is_window_shortcut:
                     audio_manager.play_sfx("ui.click", volume=1.0)
+                    preferences.set("fullscreen", window_manager.is_fullscreen)
+                    preferences.set(
+                        "window_size",
+                        "legacy"
+                        if window_manager.windowed_size == LEGACY_WINDOW_SIZE
+                        else "large",
+                    )
+                    try:
+                        preferences.save()
+                    except OSError:
+                        pass
                 continue
             scene_manager.handle_event(event)
 
@@ -141,6 +164,8 @@ def main():
 
         # Renderiza a cena atual na resolução virtual fixa e apresenta com escala adaptativa
         scene_manager.draw(window_manager.virtual_screen)
+        if preferences.get("show_fps"):
+            draw_fps(window_manager.virtual_screen, asset_manager.small_font, clock.get_fps())
         window_manager.present()
 
     # Persiste o checkpoint também quando a janela é fechada diretamente.

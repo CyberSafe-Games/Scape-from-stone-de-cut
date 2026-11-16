@@ -78,7 +78,7 @@ class MenuScene(BaseScene):
             639,
         )
         self.draw_button(surface, self.play_button, "INICIAR JORNADA")
-        self.draw_button(surface, self.options_button, "OPÇÕES DE ÁUDIO")
+        self.draw_button(surface, self.options_button, "OPÇÕES")
         self.draw_button(surface, self.quit_button, "SAIR DO JOGO")
 
         # Marca ornamental sobre o cenário. Não é um botão.
@@ -126,7 +126,7 @@ class MenuScene(BaseScene):
 
             if self.options_button.collidepoint(virt_pos):
                 self.play_ui_sound("ui.confirm")
-                self._open_audio_options()
+                self._open_options()
                 return
 
             if self.quit_button.collidepoint(virt_pos):
@@ -140,16 +140,27 @@ class MenuScene(BaseScene):
                 self._start_game()
             elif event.key == pygame.K_o:
                 self.play_ui_sound("ui.confirm")
-                self._open_audio_options()
+                self._open_options()
             elif event.key == pygame.K_ESCAPE:
                 self.play_ui_sound("ui.click")
                 pygame.quit()
                 sys.exit()
 
+    def _open_options(self):
+        from src.scenes.options_scene import OptionsScene
+
+        self.scene_manager.change_scene(
+            OptionsScene(
+                self.scene_manager,
+                self.window_manager,
+                self.asset_manager,
+                return_scene=self,
+            )
+        )
+
+    # Compatibilidade com chamadas antigas.
     def _open_audio_options(self):
-        from src.scenes.audio_options_scene import AudioOptionsScene
-        self.scene_manager.change_scene(AudioOptionsScene(
-            self.scene_manager, self.window_manager, self.asset_manager, return_scene=self))
+        self._open_options()
 
     def _start_game(self):
         from src.scenes.save_selection_scene import SaveSelectionScene

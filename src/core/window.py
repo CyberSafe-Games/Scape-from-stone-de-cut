@@ -83,6 +83,18 @@ class WindowManager:
         """Retorna a superfície virtual onde o jogo é desenhado."""
         return self.screen
 
+    @property
+    def is_large_window(self):
+        """Indica se a janela está no tamanho grande usado pelo F10."""
+        return not self.is_fullscreen and self.windowed_size != LEGACY_WINDOW_SIZE
+
+    def apply_display_preferences(self, fullscreen=False, large_window=False):
+        """Aplica as preferências de vídeo de forma determinística."""
+        if fullscreen:
+            self.set_fullscreen(True)
+        else:
+            self.set_window_size(large_window)
+
     def get_scale_and_offset(self):
         """Calcula a escala e o deslocamento (letterbox) da superfície
 
@@ -132,8 +144,15 @@ class WindowManager:
 
     def toggle_fullscreen(self):
         """Alterna entre tela cheia (sem barra de título) e a janela 1280x720."""
-        self.is_fullscreen = not self.is_fullscreen
-        if not self.is_fullscreen:
+        self.set_fullscreen(not self.is_fullscreen)
+
+    def set_fullscreen(self, enabled):
+        """Define tela cheia (True) ou janela 1280x720 (False)."""
+        enabled = bool(enabled)
+        if self.is_fullscreen == enabled:
+            return
+        self.is_fullscreen = enabled
+        if not enabled:
             self.windowed_size = LEGACY_WINDOW_SIZE
         self._apply_mode()
 
@@ -144,10 +163,17 @@ class WindowManager:
         janela. Em tela cheia, sai direto para a janela 1280x720.
         """
         if self.is_fullscreen or self.windowed_size != LEGACY_WINDOW_SIZE:
-            self.windowed_size = LEGACY_WINDOW_SIZE
+            self.set_window_size(False)
         else:
-            self.windowed_size = self.large_window_size
+            self.set_window_size(True)
+
+    def set_window_size(self, large):
+        """Define a janela grande (True) ou 1280x720 (False), saindo da tela cheia."""
+        target = self.large_window_size if large else LEGACY_WINDOW_SIZE
+        if not self.is_fullscreen and self.windowed_size == target:
+            return
         self.is_fullscreen = False
+        self.windowed_size = target
         self._apply_mode()
 
     def handle_window_event(self, event):
