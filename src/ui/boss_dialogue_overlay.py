@@ -20,11 +20,11 @@ class BossDialogueOverlay:
     # Esquerda: nome original do jogo, sem acentos.
     # Direita: nome que aparecerá na caixa de diálogo.
     DISPLAY_NAMES = {
-        "guardiao da pedra": "Octavius, o Predador",
-        "alvaro e tex": "Álvaro e Texx, Caçadores de Recompensas",
+        "guardiao da pedra": "Octav, o lobisomem",
+        "alvaro e tex": "Alvar & Tekks, Rastreadores",
         "gordofera": "Sir Thomas, a Besta Fera",
         "carrasco da vigilia": "Labrro, o Carrasco",
-        "corpo seco": "Corpo Seco, o Assassino",
+        "corpo seco": "Jan-Pietro, o Imortal",
         "goblin nerd": "Jozephino, o Inventor",
         "zanzara": "Zanzara, Líder do Clã Moskar",
     }
