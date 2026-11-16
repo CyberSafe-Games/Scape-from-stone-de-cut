@@ -47,3 +47,7 @@ ULTIMATE_ASSETS_DIR = os.path.join(ASSETS_DIR, "ultimates")
 
 # Um arquivo JSON por jornada (até três espaços na seleção).
 SAVES_DIR = os.path.join(BASE_DIR, "saves")
+
+# Preferências globais do computador (áudio, vídeo e jogo), independentes dos saves.
+SETTINGS_DIR = os.path.join(BASE_DIR, "settings")
+PREFERENCES_PATH = os.path.join(SETTINGS_DIR, "audio.json")
