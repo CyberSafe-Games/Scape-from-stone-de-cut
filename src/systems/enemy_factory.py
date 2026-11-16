@@ -121,12 +121,14 @@ def create_goblin_nerd(level=3):
     """Miniboss das Ruínas Ancestrais: engenhocas e duas ações por rodada."""
     actions = [
         Action("Chave arremessada", "attack", damage=8 + level, energy_cost=1, weight=0.35, visual_effect="atk1"),
-        Action("Descarga improvisada", "attack", damage=10 + level, energy_cost=1, weight=0.30, visual_effect="atk2"),
+        Action("Descarga improvisada", "attack", damage=10 + level, energy_cost=1, weight=0.30, visual_effect="atk2", status_effect=('shock', 1, 1)),
         Action("Baforada tóxica", "attack", damage=9 + level, energy_cost=1, weight=0.20, visual_effect="atk3", status_effect=('poison', 2, 5)),
         Action("Escudo rúnico", "defend", defense=8 + level, energy_cost=1, weight=0.15, visual_effect="healer2"),
     ]
     boss = Enemy("Goblin Nerd", hp=92 + level * 4, energy=4, max_energy=4, actions=actions, is_miniboss=True)
-    return _configure_boss(boss, "Descarga Sobrecarregada", 17 + level, "atk2")
+    _configure_boss(boss, "Descarga Sobrecarregada", 17 + level, "atk2")
+    boss.special_action.status_effect = ('shock', 1, 2)
+    return boss
 
 
 def create_guardiao_da_pedra(level=1):
@@ -147,9 +149,9 @@ def create_guardiao_da_pedra(level=1):
 def create_corpo_seco(level=5):
     """Corpo Seco: duas ações por rodada; giro no 8º, 16º... ato."""
     actions = [
-        Action("Corte rápido", "attack", damage=7 + level // 2, energy_cost=1, weight=0.55, visual_effect="atk1"),
-        Action("Lâminas cruzadas", "attack", damage=10 + level // 2, energy_cost=1, weight=0.30, visual_effect="atk3"),
-        Action("Postura defensiva", "defend", defense=8 + level // 2, energy_cost=1, weight=0.15, visual_effect="def"),
+        Action("Corte rápido", "attack", damage=7 + level // 2, energy_cost=1, weight=0.55, visual_effect="atk1", status_effect=('bleed', 2, 4)),
+        Action("Lâminas cruzadas", "attack", damage=10 + level // 2, energy_cost=1, weight=0.30, visual_effect="atk3", status_effect=('bleed', 2, 4)),
+        Action("Postura defensiva", "defend", defense=8 + level // 2, energy_cost=1, weight=0.15, visual_effect="def", self_heal=20),
     ]
     boss = Enemy("Corpo Seco", hp=125, energy=4, max_energy=4, actions=actions, is_miniboss=True)
     return _configure_boss(boss, "Ataque Giratório", 19, "atk4")
@@ -159,15 +161,17 @@ def create_carrasco_da_vigilia(level=6):
     """Guardião do Pico: machado pesado e recuperação com aura escarlate."""
     actions = [
         Action('Corte do Carrasco', 'attack', damage=10 + level // 2,
-               energy_cost=1, weight=0.45, visual_effect='atk1'),
+               energy_cost=1, weight=0.45, visual_effect='atk1', self_attack_buff=(2, 4)),
         Action('Varredura Escarlate', 'attack', damage=14 + level // 2,
-               energy_cost=2, weight=0.35, visual_effect='atk2'),
+               energy_cost=2, weight=0.35, visual_effect='atk2', self_attack_buff=(2, 4)),
         Action('Vigor Escarlate', 'buff', defense=14, energy_cost=1,
                weight=0.20, visual_effect='healer2', effect=CrimsonVigorEffect()),
     ]
     boss = Enemy('Carrasco da Vigília', hp=134 + 2 * level, energy=4,
                  max_energy=4, actions=actions, is_miniboss=True)
-    return _configure_boss(boss, 'Execução Escarlate', 18 + level, 'atk3')
+    _configure_boss(boss, 'Execução Escarlate', 18 + level, 'atk3')
+    boss.special_action.self_attack_buff = (2, 4)
+    return boss
 
 
 def create_point_enemy(level):

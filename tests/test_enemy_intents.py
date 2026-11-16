@@ -6,12 +6,12 @@ from types import SimpleNamespace
 os.environ.setdefault('SDL_VIDEODRIVER', 'dummy')
 os.environ.setdefault('SDL_AUDIODRIVER', 'dummy')
 import pygame
-from src.systems.enemy_factory import create_point_enemy, create_road_enemy, choose_next_action
+from src.systems.enemy_factory import create_alvaro_tex, create_point_enemy, create_road_enemy, choose_next_action
 from src.systems.combat_engine import CombatEngine
 from src.systems.enemy_intents import preview_intents
 from src.core.asset_manager import AssetManager
 from src.ui.enemy_intent_view import EnemyIntentView
-from src.models.action import Action
+from src.models.action import Action, action_status_effects
 from src.models.enemy import Enemy
 
 
@@ -31,6 +31,56 @@ class IntentPlanningTests(unittest.TestCase):
             e.enemy = create_road_enemy(level)
             choose_next_action(e.enemy)
             self.assertEqual(len(preview_intents(e)), 1, level)
+
+    def test_goblin_shock_stacks_for_one_player_turn(self):
+        e = self.engine(3)
+        shot = e.enemy.actions[1]
+        ultimate = e.enemy.special_action
+        e.enemy.action_plan = [shot, ultimate]
+        e.enemy.set_intent('attack', shot.damage, shot)
+        self.assertIn('Choque ×1', preview_intents(e)[0].description)
+        self.assertIn('Choque ×2', preview_intents(e)[1].description)
+        e.end_turn()
+        e.enemy_turn()
+        self.assertEqual(e.player.statuses['shock'], {'turns': 1, 'potency': 1})
+        e.finish_enemy_turn()
+        e.enemy_turn()
+        self.assertEqual(e.player.statuses['shock']['potency'], 3)
+        e.finish_enemy_turn()
+        self.assertEqual(e.player.energy, max(0, e.player.energy_max - 3))
+        self.assertNotIn('shock', e.player.statuses)
+        e._begin_player_turn()
+        self.assertEqual(e.player.energy, e.player.energy_max)
+        self.assertFalse(e.enemy.apply_status('shock', 1, 1))
+        self.assertEqual(e.enemy.add_stacks('shock', 1), 0)
+
+    def test_corpse_guard_and_executioner_attack_effects_match_intents(self):
+        e = self.engine(5)
+        guard = e.enemy.actions[2]
+        e.enemy.hp -= 25
+        e.enemy.set_intent(guard.action_type, guard.value, guard)
+        self.assertIn('20 de vida', preview_intents(e)[0].description)
+        e.end_turn()
+        e.enemy_turn()
+        self.assertEqual(e.enemy.block, 10)
+        self.assertEqual(e.enemy.hp, e.enemy.max_hp - 5)
+        self.assertEqual(e.enemy.actions[0].status_effect, ('bleed', 2, 4))
+        self.assertEqual(e.enemy.actions[1].status_effect, ('bleed', 2, 4))
+
+        e = self.engine(6)
+        strike = e.enemy.actions[0]
+        followup = e.enemy.special_action
+        e.enemy.action_plan = [strike, followup]
+        e.enemy.set_intent('attack', strike.damage, strike)
+        predicted = preview_intents(e)
+        self.assertEqual(predicted[0].value, strike.damage)
+        self.assertEqual(predicted[1].value, followup.damage + 4)
+        e.end_turn()
+        e.enemy_turn()
+        self.assertEqual(e.enemy.attack_bonus, 4)
+        e.finish_enemy_turn()
+        e.enemy_turn()
+        self.assertEqual(e.enemy.statuses['aura'], {'turns': 2, 'potency': 4})
 
     def test_planned_second_action_executes_without_a_new_random_draw(self):
         for level in range(1, 8):
@@ -119,6 +169,51 @@ class IntentInterfaceTests(unittest.TestCase):
     def setUpClass(cls):
         pygame.init(); pygame.display.set_mode((1, 1))
         cls.assets = AssetManager()
+
+    def test_boss_cards_load_with_a_separate_ultimate_illustration(self):
+        bosses = [create_point_enemy(level) for level in (2, 3, 4, 5, 6, 7)]
+        bosses.append(create_alvaro_tex(phase=2))
+        images = []
+        for boss in bosses:
+            for action in (*boss.actions, boss.special_action):
+                image = self.assets.get_intent_art(
+                    boss.name, action.visual_effect, special=action is boss.special_action,
+                )
+                if action.name == 'Guarda Ferrenha':
+                    self.assertIsNone(image)
+                else:
+                    self.assertIsInstance(image, pygame.Surface, action.name)
+                    images.append(pygame.image.tobytes(image, 'RGB'))
+        self.assertEqual(len(set(images)), 29)
+        self.assertIsNone(self.assets.get_intent_art(bosses[0].name, None))
+
+    def test_zanzara_actions_match_the_four_printed_cards(self):
+        boss = create_point_enemy(7)
+        scythe_status = (('bleed', 2, 5), ('poison', 2, 3))
+        self.assertEqual(
+            [(action.damage, action_status_effects(action)) for action in (*boss.actions, boss.special_action)],
+            [(20, scythe_status), (24, scythe_status), (20, (('vulnerable', 2, 25),)),
+             (45, (('poison', 3, 6),))],
+        )
+
+    def test_tall_intent_art_is_centered_and_counters_do_not_cover_it(self):
+        engine = CombatEngine()
+        engine.enemy = create_point_enemy(7)
+        choose_next_action(engine.enemy)
+        view = EnemyIntentView(self.assets)
+        surface = pygame.Surface((1920, 1080))
+        illustration = pygame.Surface((50, 100))
+        color = (250, 1, 237)
+        illustration.fill(color)
+        with patch.object(self.assets, 'get_intent_art', return_value=illustration):
+            view.draw(surface, engine, (-1, -1))
+        for slot, _ in view.entries:
+            area = pygame.Rect(slot.x+5, slot.y+5, slot.width-10, 78)
+            fitted = pygame.Rect(0, 0, 39, 78)
+            fitted.center = area.center
+            rendered = surface.subsurface(fitted)
+            expected = pygame.transform.smoothscale(illustration, fitted.size)
+            self.assertEqual(pygame.image.tobytes(rendered, 'RGB'), pygame.image.tobytes(expected, 'RGB'))
 
     def test_every_icon_has_hover_description_inside_the_window_without_randomness(self):
         for level in range(1, 8):

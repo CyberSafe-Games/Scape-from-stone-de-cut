@@ -2,6 +2,7 @@ import pygame
 from src.ui.helpers import draw_text, draw_panel, wrap_text
 
 INFO = {
+ 'shock': ('Choque', 'Cada acúmulo retira 1 de energia no início do próximo turno e então expira.'),
  'fire': ('Fogo', '3 de dano por intensidade ao fim do turno; atinge Escudo. Máximo: 3 intensidades.'),
  'poison': ('Veneno', 'Dano direto à vida no fim do turno; ignora Escudo. As aplicações das novas cartas acumulam acúmulos.'),
  'bleed': ('Sangramento', 'Dano direto igual aos acúmulos no primeiro ataque de cada turno. Não repete em ações adicionais do chefe.'),
@@ -44,13 +45,20 @@ def draw_status_badges(surface, combatant, x, y, width, assets, mouse):
         pygame.draw.rect(surface, (12, 20, 20), rect, border_radius=6)
         pygame.draw.rect(surface, (179, 135, 72) if hovered else (73, 72, 52), rect, 2, border_radius=6)
         icon = assets.get_status_icon(name)
+        if name == 'shock':
+            count = potency
         if icon is not None:
             surface.blit(pygame.transform.smoothscale(icon, (32, 32)), rect.move(2, 2))
+        elif name == 'shock':
+            pygame.draw.polygon(surface, (123, 209, 255), [
+                (rect.x + dx, rect.y + dy)
+                for dx, dy in ((20, 3), (8, 19), (17, 19), (13, 32), (28, 14), (19, 14))
+            ])
         draw_text(surface, str(count), assets.small_font, (234, 220, 184), rect.right - 17, rect.centery, center=True)
         if hovered:
             title, text = INFO[name]
             if name in combatant.statuses:
-                text += f" Restam {combatant.statuses[name]['turns']} turnos." if name != 'totem' else ''
+                text += f" Restam {combatant.statuses[name]['turns']} turnos." if name not in ('totem', 'shock') else ''
                 if name == 'fire': text += f' Intensidade: {potency}.'
                 if name == 'poison': text += f' Dano por turno: {potency}.'
                 if name == 'aura': text += f' Bônus de dano: +{potency}.'

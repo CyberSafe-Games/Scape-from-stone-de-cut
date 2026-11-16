@@ -25,6 +25,8 @@ class Action:
         effect=None,
         status_effect=None,
         status_effects=None,
+        self_heal=0,
+        self_attack_buff=None,
     ):
         self.name = name
         self.action_type = action_type  # "attack", "defend", etc.
@@ -36,6 +38,8 @@ class Action:
         self.effect = effect
         self.status_effect = status_effect
         self.status_effects = tuple(status_effects or ())
+        self.self_heal = self_heal
+        self.self_attack_buff = self_attack_buff
 
     @property
     def value(self) -> int:
@@ -55,9 +59,14 @@ class Action:
             context.spawn_player_text(f"-{actual_damage}", RED)
             return actual_damage
         elif self.action_type in ("defend", "defense"):
-            user.add_block(self.defense)
-            context.trigger_enemy_action(self.visual_effect or 'def')
             from src.config.colors import BLUE
+            user.add_block(self.defense)
+            if self.self_heal and 'no_heal' not in user.statuses:
+                recovered = min(self.self_heal, user.max_hp - user.hp)
+                user.hp += recovered
+                if recovered:
+                    context.spawn_enemy_text(f"+{recovered} vida", BLUE)
+            context.trigger_enemy_action(self.visual_effect or 'def')
             context.spawn_enemy_text(f"+{self.defense} bloqueio", BLUE)
             return self.defense
         return 0

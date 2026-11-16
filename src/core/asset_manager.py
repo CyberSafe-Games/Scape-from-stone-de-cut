@@ -1,6 +1,7 @@
 import os
 import pygame
 from src.systems.common_animation_kits import COMMON_KITS
+from src.systems.boss_animation_kits import KITS
 from src.ui.sprite_cleanup import remove_white_fringe, recolor_green_aura_red
 from src.systems.normal_enemy_catalog import NORMAL_SPRITES, NORMAL_RANGED
 
@@ -137,16 +138,23 @@ class AssetManager:
                 self._projectile_images[key] = None
         return self._projectile_images[key]
 
-    def get_intent_art(self, enemy_name, action):
-        kit = COMMON_KITS.get(enemy_name.strip().lower())
-        if kit is None or action not in kit[1]:
+    def get_intent_art(self, enemy_name, action, special=False):
+        if not action and not special:
             return None
-        key = (kit[0], action)
+        name = enemy_name.strip().lower()
+        boss_kit = KITS.get(name)
+        common_kit = COMMON_KITS.get(name)
+        if boss_kit:
+            key = (boss_kit[0], 'ultimate' if special else action)
+        elif common_kit and action in common_kit[1]:
+            key = (common_kit[0], action)
+        else:
+            return None
         if key not in self._intent_art:
-            path = os.path.join(ASSETS_DIR, 'intent_art', key[0], action + '.png')
+            path = os.path.join(ASSETS_DIR, 'intent_art', key[0], key[1] + '.png')
             try:
                 art = pygame.image.load(path).convert()
-                self._intent_art[key] = pygame.transform.smoothscale(art, (88, 81))
+                self._intent_art[key] = art
             except (pygame.error, FileNotFoundError):
                 self._intent_art[key] = None
         return self._intent_art[key]
@@ -504,7 +512,6 @@ class AssetManager:
 
     def _load_boss_eight_frame_sprites(self):
         import json
-        from src.systems.boss_animation_kits import KITS
         from src.config.settings import ASSETS_DIR
         root = os.path.join(ASSETS_DIR,'bosses','eight_frames')
         legacy_root = root

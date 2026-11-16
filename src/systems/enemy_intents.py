@@ -27,7 +27,7 @@ def icon_family(action):
     statuses = action_status_effects(action)
     status = statuses[0] if statuses else None
     if status:
-        return {'fire': 'fire', 'poison': 'poison', 'bleed': 'claw'}.get(status[0], 'strike')
+        return {'fire': 'fire', 'poison': 'poison', 'bleed': 'claw', 'shock': 'bolt'}.get(status[0], 'strike')
     for words, family in ((('moeda',), 'coins'), (('chave',), 'tool'),
                           (('descarga', 'runa'), 'bolt'), (('onda', 'rugido', 'mare'), 'wave'),
                           (('abalo', 'rocha', 'terra'), 'earth'), (('flecha', 'shuriken', 'estrela'), 'arrow'),
@@ -74,6 +74,11 @@ def preview_intents(engine):
                     text += f' Aplica Vulnerável por {turns} turnos: recebe {potency}% a mais de dano de ataques. Reaplicar renova a duração.'
                 elif key == 'fire':
                     text += f' Aplica {potency} intensidade(s) de Fogo por {turns} turnos: 3 de dano por intensidade ao fim do turno. Máximo: 3 intensidades.'
+                elif key == 'shock':
+                    text += f' Aplica Choque ×{potency}. Cada acúmulo retira 1 de energia no início do próximo turno e então expira.'
+            if action.self_attack_buff:
+                duration, extra = action.self_attack_buff
+                text += f' Após o golpe, recebe +{extra} de dano por {duration} turnos, sem acumular.'
             if any(status[0] in ('bleed','poison') for status in statuses):
                 text += ' Reaplicar renova a duração, sem acumular; mantém a maior intensidade ativa.'
             # Simular só ações futuras; em enemy_resolving a atual já aconteceu.
@@ -83,9 +88,13 @@ def preview_intents(engine):
                 predicted_totem = False
                 if any(status[0] == 'vulnerable' for status in statuses) and not protected:
                     predicted_vulnerable = True
+                if action.self_attack_buff:
+                    bonus = enemy.strength + action.self_attack_buff[1]
         elif action.action_type in ('defend', 'defense'):
             value = action.defense
             text = f'Recebe {value} de Escudo por 2 turnos completos. Esta ação não causa dano.'
+            if action.self_heal:
+                text += f' Também recupera até {action.self_heal} de vida.'
         elif action.action_type == 'heal':
             value = action.defense
             text = f'Recupera até {value} de vida, sem ultrapassar a vida máxima. Não causa dano.'
