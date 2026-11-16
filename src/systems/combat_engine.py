@@ -363,10 +363,16 @@ class CombatEngine:
                 self._resolve_totem_trigger(self.player, self.enemy)
                 if not protected and self.player.is_alive():
                     for key,turns,potency in action_status_effects(action):
+                        if key == 'shock':
+                            self.player.add_stacks('shock', potency, turns=1)
+                            continue
                         # Renovar o efeito sem somar nem enfraquecer um DOT maior.
                         if key in ('bleed','poison'):
                             potency = max(potency,self.player.statuses.get(key,{}).get('potency',0))
                         self.player.apply_status(key,turns,potency)
+                if action.self_attack_buff:
+                    turns, bonus = action.self_attack_buff
+                    self.enemy.apply_status('aura', turns, bonus)
                 if not ultimate and not animated_boss:
                     self.trigger_attack("enemy", action=action.visual_effect or "atk")
                 self.trigger_flash("player")
@@ -435,6 +441,9 @@ class CombatEngine:
         self.player.reset_energy()
         self.player.energy = min(self.player.MAX_ENERGY_LIMIT, self.player.energy + self.player.next_turn_energy)
         self.player.next_turn_energy = 0
+        shock = self.player.statuses.pop('shock', None)
+        if shock:
+            self.player.energy = max(0, self.player.energy - shock['potency'])
         self.player.turn_count += 1
         self.deck_manager.refill_hand(self.player.get_hand_size())
         self.cemetery_swap_used = False

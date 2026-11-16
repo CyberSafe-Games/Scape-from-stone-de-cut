@@ -2,6 +2,7 @@
 import pygame
 from src.ui.helpers import draw_panel, draw_text, wrap_text
 from src.systems.enemy_intents import preview_intents
+from src.systems.boss_animation_kits import KITS
 
 
 class EnemyIntentView:
@@ -10,6 +11,15 @@ class EnemyIntentView:
         self.entries = []
         self.tooltip_rect = None
         self._icons = {}
+        self._illustrations = {}
+        self._previews = {}
+
+    def _preview(self, illustration, size):
+        key = (illustration, size)
+        if key not in self._previews:
+            target = illustration.get_rect().fit(pygame.Rect((0, 0), size))
+            self._previews[key] = pygame.transform.smoothscale(illustration, target.size)
+        return self._previews[key]
 
     def icon(self, family):
         if family in self._icons: return self._icons[family]
@@ -99,44 +109,57 @@ class EnemyIntentView:
 
     def draw(self, surface, engine, mouse):
         self.entries = []
+        self._illustrations.clear()
         if engine.state in ('victory', 'game_over', 'phase_complete', 'boss_transition'): return
         intents = preview_intents(engine)
         for i, intent in enumerate(intents):
-            rect = pygame.Rect(1761-len(intents)*114+i*114, 234, 96, 89)
+            rect = pygame.Rect(1761-len(intents)*122+i*122, 234, 104, 112)
             hover = rect.collidepoint(mouse)
             border = (255, 214, 118) if hover or intent.special else (169, 124, 67) if intent.state == 'active' else (103, 96, 67)
             draw_panel(surface, rect, fill=(10, 22, 23, 242), border=border, radius=11, shadow=False)
-            illustration = self.assets.get_intent_art(engine.enemy.name, intent.action.visual_effect)
-            art = (illustration or self.icon(intent.family)).copy()
-            if intent.state == 'done': art.set_alpha(65)
-            surface.blit(art, art.get_rect(center=rect.center))
-            draw_text(surface, str(intent.order), self.assets.small_font, (227, 195, 121), rect.x+12, rect.y+9)
+            illustration = self.assets.get_intent_art(engine.enemy.name, intent.action.visual_effect, special=intent.special)
+            art_area = pygame.Rect(rect.x+5, rect.y+5, rect.width-10, 78)
+            art = self._preview(illustration, art_area.size) if illustration else self.icon(intent.family)
+            if intent.state == 'done':
+                art = art.copy()
+                art.set_alpha(65)
+            surface.blit(art, art.get_rect(center=art_area.center))
+            badge = pygame.Rect(rect.right-46, rect.bottom-27, 41, 23)
+            draw_text(surface, str(intent.order), self.assets.small_font, (227, 195, 121), rect.x+15, badge.centery, center=True)
             if intent.special:
-                pygame.draw.polygon(surface, (255, 218, 118), [(rect.right-12, rect.y+5), (rect.right-5, rect.y+12), (rect.right-12, rect.y+20), (rect.right-20, rect.y+12)])
+                x, y = rect.centerx-8, badge.centery
+                pygame.draw.polygon(surface, (255, 218, 118), [(x, y-6), (x+6, y), (x, y+6), (x-6, y)])
             if intent.state == 'done':
                 pygame.draw.lines(surface, (135, 164, 126), False, [(rect.right-30, rect.bottom-15), (rect.right-23, rect.bottom-8), (rect.right-8, rect.bottom-24)], 3)
             else:
-                badge = pygame.Rect(rect.right-44, rect.bottom-29, 41, 26)
                 pygame.draw.rect(surface, (11, 15, 15), badge, border_radius=5)
                 color = (244, 160, 130) if intent.action.action_type == 'attack' else (169, 213, 189)
                 draw_text(surface, str(intent.value), self.assets.small_font, color, badge.centerx, badge.centery, center=True)
             self.entries.append((rect, intent))
+            self._illustrations[rect.topleft] = illustration if engine.enemy.name.strip().lower() in KITS else None
         if len(intents) > 1:
             x = self.entries[0][0].right+8
-            pygame.draw.lines(surface, (192, 157, 88), False, [(x, 270), (x+8, 278), (x, 285)], 3)
+            y = self.entries[0][0].centery
+            pygame.draw.lines(surface, (192, 157, 88), False, [(x, y-7), (x+8, y), (x, y+7)], 3)
 
     def draw_tooltip(self, surface, mouse):
         self.tooltip_rect = None
         for target, intent in self.entries:
             if not target.collidepoint(mouse): continue
-            lines = wrap_text(intent.description, self.assets.small_font, 480)
-            rect = pygame.Rect(min(surface.get_width()-543, max(18, target.right-525)), 338, 525, 98+len(lines)*29)
+            illustration = self._illustrations.get(target.topleft)
+            text_offset = 189 if illustration else 21
+            text_width = 525 - text_offset - 24
+            lines = wrap_text(intent.description, self.assets.small_font, text_width)
+            rect = pygame.Rect(min(surface.get_width()-543, max(18, target.right-525)), target.bottom+10, 525, max(258 if illustration else 0, 98+len(lines)*29))
             self.tooltip_rect = rect
             draw_panel(surface, rect, fill=(8, 17, 18, 250), border=(192, 145, 76), radius=12)
-            font = self.assets.font if self.assets.font.size(intent.action.name)[0] < 480 else self.assets.small_font
-            draw_text(surface, intent.action.name, font, (245, 219, 161), rect.x+21, rect.y+15)
+            if illustration:
+                art = self._preview(illustration, (152, 214))
+                surface.blit(art, art.get_rect(midtop=(rect.x+97, rect.y+22)))
+            font = self.assets.font if self.assets.font.size(intent.action.name)[0] < text_width else self.assets.small_font
+            draw_text(surface, intent.action.name, font, (245, 219, 161), rect.x+text_offset, rect.y+15)
             state = {'pending': 'PLANEJADA', 'active': 'EM EXECUÇÃO', 'done': 'CONCLUÍDA'}[intent.state]
-            draw_text(surface, f'{intent.order}ª AÇÃO / {intent.total} · {state}', self.assets.small_font, (162, 177, 158), rect.x+21, rect.y+54)
+            draw_text(surface, f'{intent.order}ª AÇÃO / {intent.total} · {state}', self.assets.small_font, (162, 177, 158), rect.x+text_offset, rect.y+54)
             for i, text in enumerate(lines):
-                draw_text(surface, text, self.assets.small_font, (226, 225, 207), rect.x+21, rect.y+89+i*29)
+                draw_text(surface, text, self.assets.small_font, (226, 225, 207), rect.x+text_offset, rect.y+89+i*29)
             break

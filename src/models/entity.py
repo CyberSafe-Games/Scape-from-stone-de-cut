@@ -3,7 +3,7 @@ class Combatant:
     NEGATIVE_STATUSES = frozenset((
         'fire', 'poison', 'bleed', 'burn', 'vulnerable', 'weak', 'stun',
         'no_heal', 'no_block', 'poison_on_damage', 'poison_multiplier',
-        'burn_on_action',
+        'burn_on_action', 'shock',
     ))
 
     def __init__(self, name, hp):
@@ -101,6 +101,8 @@ class Combatant:
         self._block_layers = [layer for layer in self._block_layers if layer[1] > 0]
 
     def apply_status(self, name, turns, potency=1):
+        if name == 'shock' and not getattr(self, 'is_player', False):
+            return False
         if name in self.NEGATIVE_STATUSES and 'debuff_immunity' in self.statuses:
             return False
         previous = self.statuses.get(name, {})
@@ -113,6 +115,8 @@ class Combatant:
 
     def add_stacks(self, name, amount, turns=3, additional_cap=None):
         """Acrescenta acúmulos aos debuffs que usam intensidade acumulável."""
+        if name == 'shock' and not getattr(self, 'is_player', False):
+            return 0
         if amount <= 0 or name in self.NEGATIVE_STATUSES and 'debuff_immunity' in self.statuses:
             return 0
         previous = self.statuses.get(name, {})
