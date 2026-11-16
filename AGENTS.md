@@ -10,8 +10,8 @@ Onde o contexto original (design) diverge do código, o item está marcado com *
 - **Equipe:** CyberGames — projeto acadêmico, Barbacena, 2026.
 - **Repositório:** https://github.com/CyberSafe-Games/Scape-from-stone-de-cut.git
 - **Slogan:** "A floresta resiste. Escreva sua estratégia. Defenda sua terra."
-- **História:** Jaum Manel, jovem indígena, tem a tribo Stone The Cut invadida pelo Clã Moskar e a tribo capturada pelo líder Zanzara. Ele atravessa o território invadido vencendo combates por turno, monta seu baralho ao longo da run e derrota o chefe final para libertar a tribo. Há introdução em quadrinhos e encerramento ao vencer o boss final (**TODO/Verificar** — telas de quadrinhos/encerramento não encontradas no código).
-- **Controles:** exclusivamente point-and-click. Botão esquerdo seleciona cartas, habilidades e menus. Esc cancela/volta nos menus (implementado em várias telas). Botão direito como cancelar está no contexto, mas **TODO/Verificar** — não foi encontrado tratamento de `button == 3` no código.
+- **História:** Jaum Manel atravessa sete territórios para libertar a tribo Stone The Cut, capturada por Zanzara, Líder do Clã Moskar. O jogo tem cutscenes de introdução e pós-tutorial em `src/config/cutscenes.py`.
+- **Controles:** point-and-click com atalhos opcionais. Botão esquerdo seleciona cartas, habilidades e menus. Esc cancela/volta nos menus (implementado em várias telas). Botão direito como cancelar está no contexto, mas **TODO/Verificar** — não foi encontrado tratamento de `button == 3` no código.
 
 ## 2. Stack e como rodar
 
@@ -68,20 +68,28 @@ saves/                  # Saves JSON por slot (gitignored): 3 slots + save espec
 ## 4. Regras e mecânicas do jogo
 
 **Combate (por turno, Jaum Manel vs 1 inimigo por cena):**
-- Turno do jogador: a energia é restaurada e **+1 de energia máxima por turno** (começa em 2, limite 8); a mão é completada (`refill_hand`, mão inicial 3, cresce até **5**); jogar cartas gasta energia; ao encerrar, a mão é descartada.
+- Turno do jogador: a energia é restaurada e **+1 de energia máxima por turno** (começa em 2, limite 8); a mão é completada (`refill_hand`, mão inicial 3, cresce até **5**); jogar cartas gasta energia e as cartas restantes ficam na mão ao encerrar o turno.
 - Turno do inimigo: pausa ~800 ms (`windup_ms`; 270 ms em follow-up de combo), executa a ação (ataque ou defesa) e escolhe a próxima intenção. A intenção é exibida na HUD (`EnemyIntentView`).
 - Bloqueio (Escudo) é consumido antes da vida. Vida dos inimigos e o valor das ações sobem com o andar (`create_enemy(level, ...)`).
 - Baralho com três pilhas (compra/mão/descarte); ao esvaziar a compra, o descarte é reembaralhado (`DeckManager.draw_cards`).
 
 **Cemitério (confirmado no código):** no turno do jogador, descartar uma carta da mão custa **1 de energia** (sem comprar outra). Por turno, há **1 troca grátis** (troca carta da mão por carta do descarte). Abre pelo botão na UI ("Cemitério (1 E.)") ou tecla **C**; é um modal (`CemeteryModal`). Não é expulsão permanente do deck.
 
-**Ultimate (confirmado):** barra na HUD mostrando "Carga x/20" (`ultimate_threshold = 20`) e botão de ativar. A carga acumula proporcionalmente à energia gasta em cartas. São 3 ultimates: **Mana Ancestral** (padrão), **Forças Ancestrais** e **Rugido da Floresta**. Desbloqueadas persistem no save; a equipada é selecionada na Mochila.
+**Ultimate:** `ultimate_threshold = 20`. No início de toda batalha, o motor define `ultimate_charge = 0`. A carga cresce conforme a energia gasta em cartas e existe apenas durante a batalha. Preserve as Ultimates desbloqueadas e a escolha equipada no save. `SaveManager._normalize()` descarta o campo legado `carga_ultimate`. A transição para Tekks é a segunda fase do mesmo combate e conserva a carga do jogador.
+
+**Estado e debuffs** — `src/models/entity.py` e `src/systems/combat_engine.py`
+
+- **Veneno:** aplique 1 ou 2 stacks por ação, limitado a `0 <= poison_stacks <= 5`. Toda aplicação renova `poison_turns = 2`, inclusive com 5 stacks ativos. Ao fim do turno da entidade afetada, aplique `5 * poison_stacks` de dano direto que ignora Escudo e reduza `poison_turns` em 1. Ao chegar a 0, zere os stacks.
+- **Sangramento:** aplique 1 ou 2 stacks por ação, limitado a `0 <= bleed_stacks <= 5`. Toda aplicação renova `bleed_turns = 2`, inclusive no teto. Após uma ação ofensiva que tire vida do alvo, aplique `3 * bleed_stacks` de dano direto à entidade afetada se `bleed_triggers_this_turn < 2` e incremente o contador. Um ataque com vários golpes conta como uma ação. Zere o contador no início do turno da entidade. No fim do turno, reduza `bleed_turns` em 1 e zere os stacks se chegar a 0.
+- **Choque:** exclusivo de inimigos. A habilidade comum de Jozephino aplica 1 stack e sua Ultimate aplica 2. Os stacks se somam e duram 1 turno. Após restaurar a energia no início do próximo turno do jogador, aplique `max(0, energia - stacks)` e remova todos os stacks imediatamente.
+- **Ciclo da batalha:** inicialize `ultimate_charge = 0` e limpe todos os efeitos de combate na entrada. Na vitória ou derrota, o motor limpa Veneno e Sangramento de ambas as entidades, zerando stacks, durações e contador de Sangramento. Os demais efeitos e a carga são estado local do encontro e ficam fora do save. A troca de fase do chefe mantém o estado do jogador no mesmo combate.
+- **HUD de status:** mostre stacks, turnos restantes e dano por gatilho em Veneno e Sangramento. Mantenha os textos das cartas e habilidades em pt-BR, incluindo a quantidade aplicada e a duração.
 
 **Fim de run:** ao zerar a vida do herói, a cena de batalha mostra "VOCÊ MORREU" com o andar alcançado; tecla **R** reinicia a batalha **retomando o último checkpoint do save**; ESC permite voltar ao mapa/menu. **TODO/Verificar** — o contexto descreve *permadeath* com reset total da run; o código mantém o checkpoint (não apaga progresso).
 
 **Vitória no combate:** inimigos com vida 0 → tela "VITÓRIA!"; se não for revanche (`is_replay`), o jogador escolhe **1 carta entre até 3 opções sorteadas entre as que ainda não possui** ou pula; recompensas são adicionadas à coleção (não ao deck equipado).
 
-**Vitória na run:** completar os 7 territórios e derrotar Zanzara abre a sequência de encerramento (**TODO/Verificar** — tela/sequência de encerramento não encontrada no código).
+**Vitória na run:** derrote Zanzara, Líder do Clã Moskar, no Santuário de Pedra para concluir a campanha.
 
 **Moedas:** ganhas em combate (acumuladas no HUD e coletadas na vitória); usadas na Loja.
 
@@ -89,46 +97,39 @@ saves/                  # Saves JSON por slot (gitignored): 3 slots + save espec
 
 **Campanha (7 territórios)** — `src/systems/territory_map.py`, desbloqueio progressivo (só libera o próximo ao concluir o atual):
 
-| # | Território | Nível | Chefe |
-|---|------------|-------|-------|
-| 1 | Pedra do Corte | 1 | Guardião da Pedra |
-| 2 | Mata Sombria | 2 | Álvaro e Tex (boss dual, 2 fases) |
-| 3 | Ruínas Ancestrais | 3 | Goblin Nerd |
-| 4 | Pântano Abissal | 4 | Gordofera |
-| 5 | Fortaleza Caída | 5 | Corpo Seco |
-| 6 | Pico da Vigília | 6 | Carrasco da Vigília |
-| 7 | Santuário de Pedra | 7 | Zanzara (boss final, `is_final_boss`) |
+| # | Território | Nome interno | Nome de exibição |
+|---|---|---|---|
+| 1 | Pedra do Corte | `Guardião da Pedra` | Octav, o lobisomem |
+| 2 | Mata Sombria | `Álvaro e Tex` | Alvar & Tekks, Rastreadores |
+| 3 | Ruínas Ancestrais | `Goblin Nerd` | Jozephino, o Inventor |
+| 4 | Pântano Abissal | `Gordofera` | Sir Thomas, a Besta Fera |
+| 5 | Fortaleza Caída | `Corpo Seco` | Jan-Pietro, o Imortal |
+| 6 | Pico da Vigília | `Carrasco da Vigília` | Labrro, o Carrasco |
+| 7 | Santuário de Pedra | `Zanzara` | Zanzara, Líder do Clã Moskar |
 
-Cada território tem **2 encontros comuns** (`ROAD_FIGHTS = 2`, inimigos de bioma de `normal_enemy_catalog.py`) antes do chefe; minibosses são genéricos e procedurais (`create_enemy`/`is_miniboss_level`) nos primeiros andares, mas os chefes de território são nomeados e pintados à mão (`enemy_factory.py`). O contexto cita "Golenks" — no código há **Golem das Ruínas** (bioma 3) e o **Guardião da Pedra** (boss 1): **TODO/Verificar** qual é o "Golenks" do design.
+`Álvaro e Tex · Pequeno` é exibido como **Tekks** na segunda fase. Resolva os nomes visíveis com `boss_display_name()` de `src/config/boss_names.py` no HUD, mapa, diálogos e anúncios. Preserve `Enemy.name`, `boss_id`, `Territory.boss_key`, slugs e chaves de sprites, retratos, cartas de intenção, áudio e lógica de combate. A função normaliza maiúsculas e acentos para consultar o mapeamento.
+
+Cada território tem **2 encontros comuns** (`ROAD_FIGHTS = 2`) antes do chefe. `normal_enemy_catalog.py` define os inimigos comuns por bioma e `enemy_factory.py` cria os chefes.
 
 **Tutorial:** primeiro acesso a um save inicia `TutorialScene` (batalha guiada com balões/caixas de texto e recompensa fixa de +30 moedas). Conclusão libera o mapa (`tutorial_concluido` no save).
 
-**Cartas (20)** — fonte da verdade: `CARD_SPECS` em `src/systems/card_definitions.py`. O contexto cita Golpe/Defesa/Investida/Fortalecer/Fúria/Golpe Duplo; esses nomes foram **substituídos/renomeados** (migração em `LEGACY_CARD_NAMES`: Golpe→Soco Simples, Defesa→Esfera Protetora, Fortalecer→Esfera Escudo, Fúria→Aura Rubra, Golpe Duplo→Machados Gêmeos). O catálogo completo hoje: Esfera Protetora, Soco Simples, Investida, Aura Rubra, Poção Fragilizante, Poção Purificadora, Totem Protetor, Zarabatana Venenosa, Disparo de Arco, Esfera Escudo, Machado Quebra-Escudo, Amuleto Dissipador, Adaga Sangrenta, Máscara Ancestral, Machados Gêmeos, Lança Perfurante, Bola de Fogo, Poção de Cura, Surto de Energia, Poção Venenosa.
+**Cartas:** `CARD_SPECS` em `src/systems/card_definitions.py` define as 20 cartas jogáveis. O mesmo arquivo lista as 75 em desenvolvimento em `ADDITIONAL_CARD_SPECS`. O catálogo filtra as indisponíveis de recompensas, loja e montagem do deck. `LEGACY_CARD_NAMES` preserva a migração dos nomes usados em saves antigos.
 
 **Mochila/Deck:** deck por **espaços individuais** (um espaço por cópia); limite na constante `DECK_SLOT_LIMIT` (hoje 18), máximo de 3 cópias da mesma carta; clique na coleção adiciona 1 cópia ao próximo espaço livre; clique num espaço preenchido remove só aquela cópia; deck inicial preenche com até 3 cópias de cada carta inicial (`deck_loadout.py`); desbloqueio pertence à run; coleção persiste no save.
 
 **Loja ("Mercado Silencioso")** — `shop_system.py`, persistida no save:
-- Cura +15 HP por **50 moedas**, limite **3 por run** (não por território), vida máxima 60.
+- Aumento de **15 de vida máxima** por **50 moedas**, limite de **3 por run**. A vida atual persiste entre encontros comuns e a vitória sobre chefe de território recupera 30% da vida máxima.
 - Cartas do catálogo por **25 + 15 × custo de energia**; cada compra adiciona o tipo à coleção (adicione cópias na Mochila).
-- **TODO/Verificar** — compra de upgrades de vida e energia máxima prevista no contexto não existe no código.
 
-**Saves:** um JSON por slot em `saves/` (gitignored), 3 slots + `modo_teste` (Laboratório de Testes, acesso em `[T]` na tela de seleção, invulnerável). `SAVE_VERSION = 9`; `SaveManager._normalize()` valida e migra saves antigos — ao mudar o schema, incremente `SAVE_VERSION` e estenda `_normalize()`. Saves v8 (6 espaços de tipos × 3 cópias) migram em `normalize_collection_and_slots()` para 18 espaços individuais.
+**Saves:** um JSON por slot em `saves/` (gitignored), 3 slots + `modo_teste` (Laboratório de Testes, acesso em `[T]` na tela de seleção, invulnerável). `SAVE_VERSION = 12`; `SaveManager._normalize()` valida e migra saves antigos — ao mudar o schema, incremente `SAVE_VERSION` e estenda `_normalize()`. Saves v8 (6 espaços de tipos × 3 cópias) migram em `normalize_collection_and_slots()` para 18 espaços individuais.
 
 **Moedas por inimigo:** cada vitória concede moedas do inimigo derrotado (acumuladas e coletadas na vitória). Progresso por vitória: `record_victory` / `record_road_victory` em `campaign_progress.py` gravam e liberam o próximo território.
 
 ## 6. Estado atual de implementação
 
-**Implementado e com testes:** combate por turnos completo (pilhas, mão, energia, intenção, bloqueio), 20 cartas e suas regras (`CARD_SPECS` + `TacticalCardEffect`), Cemitério, 3 ultimates + barra de carga, moedas e recompensa/draft, desbloqueio progressivo dos 7 territórios, 2 lutas comuns + chefes por território, Mochila (deck por espaços individuais, limite `DECK_SLOT_LIMIT=18`), Loja (cura + compra de cartas), Tutorial guiado com caixas de texto, tela de seleção de saves, sistema de saves com migração (v9) e laboratório `modo_teste`, chefes Álvaro e Tex (2 fases), Zanzara como boss final, sprites animados (12 frames p/ jogador e chefes, 8 p/ inimigos comuns), áudio (SFX via `AudioManager`, missing files tolerados; `play_music` disponível mas **nenhuma cena chama** — soundtrack pendente no código).
+**Implementado:** campanha completa de sete territórios, cutscenes de introdução e pós-tutorial, diálogos de chefes, menu de configurações, trilha por contexto, efeitos sonoros, deck por espaços individuais, recompensas, loja, tutorial e Laboratório de Testes. Animações de espera e dano do jogador e dos chefes usam 8 quadros. Os kits também têm ações com 12 quadros. Os inimigos comuns usam 8 quadros.
 
-**TODO/Verificar (incompleto ou ausente no código):**
-- Introdução em quadrinhos; tela/sequência de encerramento após Zanzara.
-- Comportamento de Zanzara conforme a vida diminui (boss final tem fase/ultimate própria, mas ramificação de IA por % de vida não confirmada).
-- Permadeath com reset total da run (hoje: checkpoint do save é mantido).
-- Upgrades de vida/energia máxima na loja.
-- Música de fundo/soundtrack (só SFX).
-- Botão direito (RMB) como cancelar.
-- Equivalência "Golenks" (design) × criaturas reais no código.
-- Consistência entre "resolução interna 1280×720" do contexto e a superfície virtual 1920×1080 atual.
+**Pendente no design:** permadeath com reset total da run. O jogo atual retoma o último checkpoint após a derrota.
 
 **Cronograma da equipe (contexto):** sprints semanais de 23/09 a 24/11; apresentação parcial em 28/10 e final em 25/11. Loja e minibosses nas primeiras sprints; boss final e recompensas na sprint 6; balanceamento/testes na 7; bugs e polimento nas 8–9.
 
@@ -150,7 +151,7 @@ Cada território tem **2 encontros comuns** (`ROAD_FIGHTS = 2`, inimigos de biom
 - Assets: não regerar sprites "na mão"; use `python3 -B devtools/prepare_<alvo>.py` após conferir `docs/<alvo>.md`. Testes de hash/pixel (`tests/fixtures/boss_ultimate_effect_hashes.json`, pixel-identity) falham ao trocar arte — atualize fixture e arte juntos, e só com mudança intencional.
 - Adicionar/alterar carta: edite `CARD_SPECS` e forneça `assets/cards/<id>.png`, `assets/card_effects/<id>_1..4.png` e `assets/player/twelve_frames/<id>_1..12.png` — há testes que cobram todos esses arquivos.
 - Adicionar/alterar save: incremente `SAVE_VERSION`, estenda `_normalize()`, preserve a semântica de `modo_teste`.
-- Commits seguem Conventional Commits pt-BR (`feat:`, `fix:`...). `saves/` e `AGENTS.md` estão no `.gitignore` (se quiser versionar este arquivo, remova a linha correspondente).
+- Commits seguem Conventional Commits pt-BR (`feat:`, `fix:`...). `saves/` e `_arquivos_antigos_para_deletar/` ficam fora do Git.
 - `assets/` e `docs/` somam centenas de MB de binários comitados: localize arquivos específicos por nome, não varra o disco.
 
 **Fluxo da equipe (contexto):**
@@ -159,6 +160,12 @@ Cada território tem **2 encontros comuns** (`ROAD_FIGHTS = 2`, inimigos de biom
 - Mudanças pequenas, focadas e não quebrantes.
 - Decisões de escopo, identidade visual e mecânicas são **humanas**; a IA é apenas apoio.
 
+**Cartas de intenção e enquadramento**
+
+- `src/ui/enemy_intent_view.py` encaixa e centraliza a carta inteira no espaço da miniatura, com proporção preservada. Reserve espaço separado para ordem e valor. Os ícones ficam acima do inimigo, no canto superior direito.
+- O hover é determinado pelo retângulo do ícone. Com arte de carta completa, mostre apenas a carta ampliada, sem painel lateral de texto. O centro horizontal fica no meio da arena e o centro vertical em 43% da altura. Respeite os limites da superfície virtual e deixe margem para o HUD e a mão. Desenhe o preview sobre a arena e o HUD, sem área interativa própria. Quando faltar uma carta completa, use o tooltip compacto.
+- Use `assets/intent_art/<slug>/` para as artes de intenções e `assets/cards/` para as cartas jogáveis. Mantenha os valores e efeitos impressos sincronizados com o código. Um recurso `ultimate.png` pode distinguir a carta de Ultimate mesmo quando ela compartilha a animação de outra ação.
+
 ## 8. Identidade visual e narrativa
 
 - **Pixel art** com materiais orgânicos; atmosfera de invasão e contraste entre facções.
@@ -166,15 +173,17 @@ Cada território tem **2 encontros comuns** (`ROAD_FIGHTS = 2`, inimigos de biom
 - **Clã Moskar (invasores):** cinza-metal, azul-aço, preto; armaduras, armas de fogo, bandeiras de guerra. (Obs.: no jogo há outros chefes/inimigos com paletas próprias, p.ex. Zanzara em azul escuro e faixa branca.)
 - **Cartas:** ataque com moldura vermelha, defesa/habilidade com moldura azul (o código usa `RED` para attack, `BLUE` para skill e `GOLD` para power); seguir o padrão por tipo.
 - **Jaum Manel:** magricela, penas, roupas e paleta aprovadas; mantém silhueta e pivô dos pés.
-- **Boss final Zanzara:** cabelo/olhar "maré", ataques em onda de palma para a esquerda; muda a situação conforme a vida diminui (**TODO/Verificar** no código).
+- **Chefe final:** Zanzara, Líder do Clã Moskar, é um necromante de kimono preto com foice e efeitos verdes. Seu kit usa Foice Sombria, Passo do Barqueiro, Grilhões das Almas e Travessia Final.
 - Sprites gerados com auxílio de IA; há fallback visual desenhado proceduralmente no `AssetManager.get_fallback_sprite()` para sprites ausentes.
 - **Slogan:** "A floresta resiste. Escreva sua estratégia. Defenda sua terra." **Narrativa:** Jaum Manel salva a tribo da Stone The Cut das mãos de Zanzara e do Clã Moskar; o mapa de 7 territórios conta essa jornada.
 
-## 9. Decisões aprovadas de integração — 11/11/2026
+## 9. Histórico de integração — 11/11/2026
+
+As seções 9 e 10 registram o ambiente e as decisões das etapas de áudio anteriores. Consulte as seções 3 a 8 para o estado atual do projeto.
 
 Estas decisões atualizam as descrições históricas de Zanzara e áudio acima:
 
-- Projeto oficial neste computador: `C:\Users\marco\OneDrive\Desktop\Scape-from-stone-de-cut-git`; usar seu Python `.venv\Scripts\python.exe`. Não desenvolver em cópias antigas. Branch da integração: `feature/audio-enemies`.
+- Ambiente utilizado nessa etapa: `C:\Users\marco\OneDrive\Desktop\Scape-from-stone-de-cut-git`; usar seu Python `.venv\Scripts\python.exe`. Branch usada na integração: `feature/audio-enemies`.
 - Etapa 3 de áudio e redesign de Zanzara concluídos e aprovados pelo usuário no estado local anterior à conciliação. Preservar aparência, animações, escala e sons aprovados. Após integrar mudanças externas, repetir as validações pertinentes.
 - Zanzara é necromante de kimono preto, foice e efeitos verdes: Foice Sombria, Passo do Barqueiro, Grilhões das Almas e Travessia Final (avatar de Caronte no barco). Não retomar ataques de moedas, maré ou amuleto antigo. Foice e Passo têm som de lâmina e cauda de sangramento; Grilhões têm portal e almas; Travessia usa a risada enviada. O Game Over mantém voz e ambientação, com essa risada entrando aos 2,8 segundos.
 - Durante ajustes de um personagem, executar os testes direcionados e abrir apenas o piloto daquele personagem para o usuário avaliar e refinarmos. Esse fluxo faz parte da implementação autorizada; não substituir por listas de players no chat nem pedir confirmação repetida.
