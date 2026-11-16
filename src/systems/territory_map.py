@@ -4,6 +4,7 @@ Cada território corresponde a um confronto do motor atual (andares 1–7).
 A campanha tem um ponto de entrada: não é possível saltar etapas bloqueadas.
 """
 from dataclasses import dataclass
+from src.config.boss_names import boss_display_name
 
 
 @dataclass(frozen=True)
@@ -14,16 +15,21 @@ class Territory:
     description: str
     level: int
     position: tuple[int, int]
+    boss_key: str
+
+    @property
+    def boss_name(self):
+        return boss_display_name(self.boss_key)
 
 
 TERRITORIES = (
-    Territory("stone_the_cut", "Pedra do Corte", "O despertar", "O Guardião da Pedra protege os monólitos da clareira ancestral.", 1, (197, 822)),
-    Territory("mata_sombria", "Mata Sombria", "O chamado", "Álvaro e Tex espreitam entre as árvores. Derrubar a dupla é apenas o começo.", 2, (395, 678)),
-    Territory("ruinas_ancestrais", "Ruínas Ancestrais", "Ecos do passado", "O Goblin Nerd reaproveita artefatos esquecidos para construir suas engenhocas.", 3, (249, 476)),
-    Territory("pantano_abissal", "Pântano Abissal", "Águas escuras", "Gordofera protege a lama ancestral com garras, chifres e saltos devastadores.", 4, (534, 353)),
-    Territory("fortaleza_caida", "Fortaleza Caída", "O cerco", "Antigos muros guardam histórias e novos confrontos.", 5, (755, 596)),
-    Territory("pico_da_vigilia", "Pico da Vigília", "Última subida", "O Carrasco da Vigília guarda a passagem entre os picos.", 6, (962, 422)),
-    Territory("santuario_de_pedra", "Santuário de Pedra", "O destino", "Zanzara guarda o último portal. Moedas, energia e um amuleto dourado protegem o soberano do santuário.", 7, (1182, 246)),
+    Territory("stone_the_cut", "Pedra do Corte", "O despertar", "Monólitos ancestrais marcam a clareira.", 1, (197, 822), "Guardião da Pedra"),
+    Territory("mata_sombria", "Mata Sombria", "O chamado", "A dupla espreita entre as árvores.", 2, (395, 678), "Álvaro e Tex"),
+    Territory("ruinas_ancestrais", "Ruínas Ancestrais", "Ecos do passado", "Artefatos esquecidos alimentam engenhocas no meio das ruínas.", 3, (249, 476), "Goblin Nerd"),
+    Territory("pantano_abissal", "Pântano Abissal", "Águas escuras", "Garras e chifres guardam a lama ancestral.", 4, (534, 353), "Gordofera"),
+    Territory("fortaleza_caida", "Fortaleza Caída", "O cerco", "Antigos muros guardam os segredos da fortaleza.", 5, (755, 596), "Corpo Seco"),
+    Territory("pico_da_vigilia", "Pico da Vigília", "Última subida", "Um carrasco guarda a passagem entre os picos.", 6, (962, 422), "Carrasco da Vigília"),
+    Territory("santuario_de_pedra", "Santuário de Pedra", "O destino", "Uma foice e artes espectrais guardam o último portal.", 7, (1182, 246), "Zanzara"),
 )
 
 TERRITORY_IDS = tuple(item.id for item in TERRITORIES)

@@ -480,9 +480,14 @@ class MapScene(BaseScene):
             self.asset_manager.small_font,
             GRAY,
             center,
-            657,
+            646 if self.selected_encounter is None else 657,
             center=True,
         )
+        if self.selected_encounter is None:
+            draw_text(
+                surface, selected_territory.boss_name, self.asset_manager.small_font,
+                GOLD, center, 674, center=True,
+            )
         label, color = {
             "locked": ("BLOQUEADA", (159, 101, 96)),
             "available": ("DISPONÍVEL", (177, 143, 87)),

@@ -2,6 +2,7 @@ import random
 from src.models.action import action_status_effects
 
 from src.config.settings import MINIBOSS_HEAL_PERCENT
+from src.config.boss_names import boss_display_name
 from src.models.player import Player
 from src.models.deck import DeckManager
 from src.models.effects.ultimate_effect import create_ultimate, ULTIMATE_METADATA, DEFAULT_ULTIMATE_ID
@@ -284,7 +285,7 @@ class CombatEngine:
             self.enemy_actions_remaining = 0
             self.state = 'boss_transition'
             self.on_event('boss_phase_transition')
-            self.show_message('A dupla caiu... mas o pequeno ainda quer lutar!', duration=4000)
+            self.show_message('A dupla caiu... mas Tekks ainda quer lutar!', duration=4000)
             return
         if not self.is_replay:
             low = 50 if self.enemy.is_miniboss else 30
@@ -305,7 +306,7 @@ class CombatEngine:
             self._begin_player_turn()
         else:
             self.state = 'player_turn'
-        self.show_message('FASE 2/2 · O pequeno luta sozinho!', duration=3000)
+        self.show_message('FASE 2/2 · Tekks luta sozinho!', duration=3000)
         self.on_event('boss_phase_started', phase=2)
         return True
 
@@ -540,7 +541,7 @@ class CombatEngine:
 
         if self.enemy.is_miniboss:
             self._apply_miniboss_heal()
-            self.show_message(f"MINIBOSS: {self.enemy.name}!")
+            self.show_message(f"MINIBOSS: {boss_display_name(self.enemy.name)}!")
 
         self.start_combat()
         self.state = "player_turn"

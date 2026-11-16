@@ -215,6 +215,25 @@ class IntentInterfaceTests(unittest.TestCase):
             expected = pygame.transform.smoothscale(illustration, fitted.size)
             self.assertEqual(pygame.image.tobytes(rendered, 'RGB'), pygame.image.tobytes(expected, 'RGB'))
 
+    def test_boss_card_hover_only_draws_the_enlarged_card_inside_the_screen(self):
+        engine = CombatEngine()
+        engine.enemy = create_point_enemy(7)
+        choose_next_action(engine.enemy)
+        view = EnemyIntentView(self.assets)
+        surface = pygame.Surface((1920, 1080))
+        view.draw(surface, engine, (-1, -1))
+        slot, intent = view.entries[-1]
+        illustration = view._illustrations[slot.topleft]
+        with patch('src.ui.enemy_intent_view.draw_panel') as panel, patch('src.ui.enemy_intent_view.draw_text') as text:
+            view.draw_tooltip(surface, slot.center)
+            panel.assert_not_called()
+            text.assert_not_called()
+        self.assertTrue(surface.get_rect().contains(view.tooltip_rect))
+        self.assertGreater(view.tooltip_rect.height, 500)
+        fitted = surface.subsurface(view.tooltip_rect)
+        expected = pygame.transform.smoothscale(illustration, view.tooltip_rect.size)
+        self.assertEqual(pygame.image.tobytes(fitted, 'RGB'), pygame.image.tobytes(expected, 'RGB'))
+
     def test_every_icon_has_hover_description_inside_the_window_without_randomness(self):
         for level in range(1, 8):
             e = CombatEngine()

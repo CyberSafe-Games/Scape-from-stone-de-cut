@@ -1,11 +1,10 @@
 
 """Diálogos de introdução de chefes, sem executar lógica de combate."""
 
-import unicodedata
-
 import pygame
 
 from src.config.settings import WIDTH, HEIGHT
+from src.config.boss_names import boss_display_name, normalize_character_name
 
 
 class BossDialogueOverlay:
@@ -15,34 +14,6 @@ class BossDialogueOverlay:
     TYPING_SPEED = 35
     DIALOGUE_DELAY_MS = 1000
     PORTRAIT_SIZE = (300, 330)
-
-    # NOMES PERSONALIZADOS DOS CHEFES
-    # Esquerda: nome original do jogo, sem acentos.
-    # Direita: nome que aparecerá na caixa de diálogo.
-    DISPLAY_NAMES = {
-        "guardiao da pedra": "Octav, o lobisomem",
-        "alvaro e tex": "Alvar & Tekks, Rastreadores",
-        "gordofera": "Sir Thomas, a Besta Fera",
-        "carrasco da vigilia": "Labrro, o Carrasco",
-        "corpo seco": "Jan-Pietro, o Imortal",
-        "goblin nerd": "Jozephino, o Inventor",
-        "zanzara": "Zanzara, Líder do Clã Moskar",
-    }
-
-    @staticmethod
-    def _normalize_name(name):
-        """Remove diferenças de acentos, maiúsculas e espaços."""
-        normalized = unicodedata.normalize(
-            "NFKD",
-            name.strip().casefold()
-        )
-
-        normalized = "".join(
-            char for char in normalized
-            if not unicodedata.combining(char)
-        )
-
-        return " ".join(normalized.split())
 
     def __init__(self, assets, enemy_name, lines, background_level):
         self.assets = assets
@@ -165,7 +136,7 @@ class BossDialogueOverlay:
 
     def _portrait(self, surface, name, rect, *, active=True):
         """Desenha retratos com destaque para quem está falando."""
-        portrait_name = "zanzara · diálogo" if self._normalize_name(name) == "zanzara" else name
+        portrait_name = "zanzara · diálogo" if normalize_character_name(name) == "zanzara" else name
         image = self.assets.get_character_portrait(
             portrait_name,
             rect.size
@@ -186,7 +157,7 @@ class BossDialogueOverlay:
                 image,
                 image.get_rect(),
                 name,
-                player=self._normalize_name(name) == "jaum manel"
+                player=normalize_character_name(name) == "jaum manel"
             )
 
         if not active:
@@ -220,15 +191,6 @@ class BossDialogueOverlay:
 
         return lines
 
-    def _get_display_name(self, name):
-        """Retorna o nome personalizado sem alterar o nome interno."""
-        normalized_name = self._normalize_name(name)
-
-        return self.DISPLAY_NAMES.get(
-            normalized_name,
-            name
-        )
-
     def draw(self, surface):
         if self.finished:
             return
@@ -255,8 +217,8 @@ class BossDialogueOverlay:
         # Os retratos continuam usando os nomes originais.
         name, full_text = self.current
 
-        speaker = self._normalize_name(name)
-        enemy_internal_name = self._normalize_name(
+        speaker = normalize_character_name(name)
+        enemy_internal_name = normalize_character_name(
             self.enemy_name
         )
 
@@ -341,7 +303,7 @@ class BossDialogueOverlay:
 
         # NOME PERSONALIZADO
         # Apenas este nome será exibido na caixa.
-        display_name = self._get_display_name(name)
+        display_name = boss_display_name(name)
 
         name_font = self.assets.menu_font
         text_font = self.assets.font

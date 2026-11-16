@@ -4,7 +4,9 @@ import os
 import tempfile
 import unittest
 
+from src.config.boss_names import boss_display_name
 from src.systems.combat_engine import CombatEngine
+from src.systems.enemy_factory import create_point_enemy
 from src.systems.campaign_progress import record_victory
 from src.systems.save_manager import SaveManager, SaveCorruptedError
 from src.systems.territory_map import (
@@ -28,6 +30,21 @@ class TestTerritoryMap(unittest.TestCase):
         for t in TERRITORIES:
             self.assertIs(by_id(t.id), t)
             self.assertIs(by_level(t.level), t)
+
+    def test_map_titles_match_boss_names_without_changing_combat_keys(self):
+        expected = (
+            'Octav, o lobisomem', 'Alvar & Tekks, Rastreadores',
+            'Jozephino, o Inventor', 'Sir Thomas, a Besta Fera',
+            'Jan-Pietro, o Imortal', 'Labrro, o Carrasco',
+            'Zanzara, Líder do Clã Moskar',
+        )
+        self.assertEqual(tuple(territory.boss_name for territory in TERRITORIES), expected)
+        for territory in TERRITORIES:
+            self.assertEqual(create_point_enemy(territory.level).name, territory.boss_key)
+        self.assertEqual(boss_display_name('  ALVARO E TEX '), expected[1])
+        self.assertEqual(boss_display_name(' Carrasco da VIGÍLIA '), expected[5])
+        self.assertEqual(boss_display_name('Álvaro e Tex · Pequeno'), 'Tekks')
+        self.assertEqual(boss_display_name('Slime'), 'Slime')
 
     def test_new_save_only_first_is_open(self):
         data = self.saves.create_save('slot_1')

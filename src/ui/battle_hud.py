@@ -2,6 +2,7 @@
 import pygame
 
 from src.config.colors import WHITE, GOLD
+from src.config.boss_names import boss_display_name
 from src.ui.helpers import draw_text
 from src.ui.status_badges import draw_status_badges
 from src.systems.normal_enemy_catalog import NORMAL_PORTRAITS
@@ -65,16 +66,20 @@ class BattleHUD:
         self.portrait(surface, portrait, name, player=not enemy)
         track = pygame.Rect(rect.left if enemy else portrait.right + 6, rect.top + 45,
                             rect.width - 144, 63)
-        label = name + ('  ·  MINIBOSS' if boss else '')
+        display_name = boss_display_name(name) if enemy else name
+        label = display_name + ('  ·  MINIBOSS' if boss else '')
         if getattr(combatant, 'is_final_boss', False):
-            label = name + ' · BOSS FINAL'
+            label = display_name + ' · BOSS FINAL'
         if getattr(combatant, 'total_phases', 0):
-            label = f'{name} · {combatant.phase}/{combatant.total_phases}'
+            label = f'{display_name} · {combatant.phase}/{combatant.total_phases}'
         title = self.assets.menu_font
         if title.size(label)[0] > track.width:
             title = self.assets.small_font
-        draw_text(surface, label, title, GOLD if boss else WHITE,
-                  track.centerx, rect.top + 23, center=True)
+        heading = title.render(label, True, GOLD if boss else WHITE)
+        if heading.get_width() > track.width:
+            height = round(heading.get_height() * track.width / heading.get_width())
+            heading = pygame.transform.smoothscale(heading, (track.width, height))
+        surface.blit(heading, heading.get_rect(center=(track.centerx, rect.top + 23)))
         if not self.art(surface, 'hud_health', track):
             pygame.draw.rect(surface, (119, 92, 50), track, 3)
         bar = pygame.Rect(track.x + round(track.width * 0.18), track.y + round(track.height * 0.30),

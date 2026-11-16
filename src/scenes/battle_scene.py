@@ -2,6 +2,7 @@ import pygame
 from copy import deepcopy
 
 from src.scenes.base_scene import BaseScene
+from src.config.boss_names import boss_display_name
 from src.scenes.confirmation_modal import ConfirmationModal
 from src.scenes.cemetery_modal import CemeteryModal
 from src.scenes.pause_menu_modal import PauseMenuModal
@@ -1034,8 +1035,11 @@ class BattleScene(BaseScene):
             )
             title_y += 24
         name_font = self.asset_manager.menu_font
+        label = boss_display_name(name) if align == "right" else name
+        if name_font.size(label)[0] > rect.width - 42:
+            name_font = self.asset_manager.small_font
         draw_text(
-            surface, name, name_font, title_color, name_center, title_y + 8, center=True
+            surface, label, name_font, title_color, name_center, title_y + 8, center=True
         )
         draw_health_bar(
             surface,

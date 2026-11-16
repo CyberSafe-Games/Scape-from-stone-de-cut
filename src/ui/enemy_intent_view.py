@@ -144,22 +144,31 @@ class EnemyIntentView:
 
     def draw_tooltip(self, surface, mouse):
         self.tooltip_rect = None
+        bounds = surface.get_rect().inflate(-32, -32)
         for target, intent in self.entries:
-            if not target.collidepoint(mouse): continue
+            if not target.collidepoint(mouse):
+                continue
+
             illustration = self._illustrations.get(target.topleft)
-            text_offset = 189 if illustration else 21
-            text_width = 525 - text_offset - 24
-            lines = wrap_text(intent.description, self.assets.small_font, text_width)
-            rect = pygame.Rect(min(surface.get_width()-543, max(18, target.right-525)), target.bottom+10, 525, max(258 if illustration else 0, 98+len(lines)*29))
-            self.tooltip_rect = rect
+            if illustration is not None:
+                art = self._preview(illustration, (min(440, bounds.width), min(519, bounds.height)))
+                center = (bounds.centerx, round(surface.get_height() * .43))
+                rect = art.get_rect(center=center).clamp(bounds)
+                surface.blit(art, rect)
+                self.tooltip_rect = rect
+                return
+
+            # Sem uma carta completa, mantém as regras em uma ficha única.
+            width = min(475, bounds.width)
+            lines = wrap_text(intent.description, self.assets.small_font, width-36)
+            rect = pygame.Rect(0, target.bottom+10, width, 66+len(lines)*29)
+            rect.centerx = target.centerx
+            rect.clamp_ip(bounds)
             draw_panel(surface, rect, fill=(8, 17, 18, 250), border=(192, 145, 76), radius=12)
-            if illustration:
-                art = self._preview(illustration, (152, 214))
-                surface.blit(art, art.get_rect(midtop=(rect.x+97, rect.y+22)))
-            font = self.assets.font if self.assets.font.size(intent.action.name)[0] < text_width else self.assets.small_font
-            draw_text(surface, intent.action.name, font, (245, 219, 161), rect.x+text_offset, rect.y+15)
-            state = {'pending': 'PLANEJADA', 'active': 'EM EXECUÇÃO', 'done': 'CONCLUÍDA'}[intent.state]
-            draw_text(surface, f'{intent.order}ª AÇÃO / {intent.total} · {state}', self.assets.small_font, (162, 177, 158), rect.x+text_offset, rect.y+54)
+            draw_text(surface, intent.action.name, self.assets.small_font,
+                      (245, 219, 161), rect.x+18, rect.y+16)
             for i, text in enumerate(lines):
-                draw_text(surface, text, self.assets.small_font, (226, 225, 207), rect.x+text_offset, rect.y+89+i*29)
-            break
+                draw_text(surface, text, self.assets.small_font,
+                          (226, 230, 207), rect.x+18, rect.y+53+i*29)
+            self.tooltip_rect = rect
+            return
