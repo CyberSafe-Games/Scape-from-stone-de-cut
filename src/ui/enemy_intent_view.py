@@ -118,6 +118,14 @@ class EnemyIntentView:
             border = (255, 214, 118) if hover or intent.special else (169, 124, 67) if intent.state == 'active' else (103, 96, 67)
             draw_panel(surface, rect, fill=(10, 22, 23, 242), border=border, radius=11, shadow=False)
             illustration = self.assets.get_intent_art(engine.enemy.name, intent.action.visual_effect, special=intent.special)
+            if illustration is not None:
+                from src.ui.card_rules import with_rules
+                if not hasattr(self, '_rule_art'):
+                    self._rule_art = {}
+                key = (id(illustration), intent.description)
+                if key not in self._rule_art:
+                    self._rule_art[key] = with_rules(illustration, intent.description)
+                illustration = self._rule_art[key]
             art_area = pygame.Rect(rect.x+5, rect.y+5, rect.width-10, 78)
             art = self._preview(illustration, art_area.size) if illustration else self.icon(intent.family)
             if intent.state == 'done':

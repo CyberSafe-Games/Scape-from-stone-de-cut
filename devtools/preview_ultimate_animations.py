@@ -30,7 +30,7 @@ def main():
         choose_enemy_intent(scene.engine.enemy)
         scene.engine.equip_ultimate(spec.ultimate_id)
         scene.engine.player.ultimate_charge = 20
-        scene.engine.player.energy = 0
+        scene.engine.player.energy = 5
         scene.engine.activate_ultimate()
         canvas = pygame.Surface((1280, 720))
         last = None

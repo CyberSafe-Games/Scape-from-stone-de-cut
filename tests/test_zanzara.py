@@ -26,7 +26,7 @@ class ZanzaraTests(unittest.TestCase):
         self.assertEqual(boss.boss_id, 'zanzara')
         self.assertTrue(boss.is_final_boss)
         self.assertTrue(boss.is_miniboss)
-        self.assertEqual(boss.max_hp, 190)
+        self.assertEqual(boss.max_hp, 175)
         self.assertEqual(boss.actions_per_turn, 2)
         for level in range(1, 7):
             self.assertNotEqual(create_point_enemy(level).name, 'Zanzara')

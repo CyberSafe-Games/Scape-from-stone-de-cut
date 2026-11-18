@@ -1,0 +1,6423 @@
+{
+  "versao_bot": 2,
+  "script_sha256": "db7dcd0b4e1bfda8778fa10219d5edaf6f0615190647d07c3f32c19360f7edcb",
+  "limites": "Heurística sem bônus permanentes ou melhorias de vida temporárias. Não substitui playtest.",
+  "politica": "prepared",
+  "ultimate": "forcas_ancestrais",
+  "evolucoes_habilitadas": false,
+  "cura_loja_habilitada": true,
+  "runs": [
+    {
+      "seed": 0,
+      "estrategia": "dano_aura",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 2,
+          "ouro": 45,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Disparo de Arco",
+              "ouro": 55
+            }
+          ]
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 5,
+          "ouro": 60,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Purificadora",
+              "ouro": 45
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 2,
+          "ouro": 100,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [],
+          "recompensa": "Poção de Cura"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 52,
+          "turnos": 2,
+          "ouro": 75,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Aura Rubra",
+              "ouro": 65
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 52,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 140,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 180,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 220,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 45,
+          "turnos": 7,
+          "ouro": 290,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 335,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 42,
+          "turnos": 3,
+          "ouro": 380,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 3,
+          "turnos": 6,
+          "ouro": 425,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 18,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 5,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 40,
+          "turnos": 3,
+          "ouro": 410,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            },
+            {
+              "tipo": "cura",
+              "valor": 19,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 5,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 425,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 5,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 11,
+          "turnos": 6,
+          "ouro": 505,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": 0,
+          "vida_entrada": 49,
+          "vida_saida": 48,
+          "turnos": 5,
+          "ouro": 525,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 6,
+          "encontro": 1,
+          "vida_entrada": 48,
+          "vida_saida": 50,
+          "turnos": 4,
+          "ouro": 575,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": null,
+          "vida_entrada": 50,
+          "vida_saida": 0,
+          "turnos": 4,
+          "ouro": 575,
+          "resultado": "game_over",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "estrategia": "dano_aura",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 2,
+          "ouro": 45,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Disparo de Arco",
+              "ouro": 55
+            }
+          ],
+          "recompensa": "Poção Purificadora"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 49,
+          "turnos": 4,
+          "ouro": 105,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 52,
+          "turnos": 2,
+          "ouro": 80,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Aura Rubra",
+              "ouro": 65
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 52,
+          "vida_saida": 49,
+          "turnos": 3,
+          "ouro": 45,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção de Cura",
+              "ouro": 75
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 49,
+          "vida_saida": 57,
+          "turnos": 6,
+          "ouro": 110,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 48,
+          "turnos": 3,
+          "ouro": 150,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 48,
+          "vida_saida": 48,
+          "turnos": 3,
+          "ouro": 190,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 48,
+          "vida_saida": 0,
+          "turnos": 5,
+          "ouro": 190,
+          "resultado": "game_over",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "estrategia": "dano_aura",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 55,
+          "vida_saida": 55,
+          "turnos": 2,
+          "ouro": 45,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Disparo de Arco",
+              "ouro": 55
+            }
+          ]
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 55,
+          "vida_saida": 46,
+          "turnos": 5,
+          "ouro": 60,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Purificadora",
+              "ouro": 45
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 100,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [],
+          "recompensa": "Aura Rubra"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 52,
+          "turnos": 2,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção de Cura",
+              "ouro": 75
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 52,
+          "vida_saida": 59,
+          "turnos": 6,
+          "ouro": 130,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 48,
+          "turnos": 3,
+          "ouro": 170,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 48,
+          "vida_saida": 48,
+          "turnos": 3,
+          "ouro": 210,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 48,
+          "vida_saida": 20,
+          "turnos": 6,
+          "ouro": 280,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 58,
+          "vida_saida": 45,
+          "turnos": 3,
+          "ouro": 295,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 56,
+          "turnos": 4,
+          "ouro": 310,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 15,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 56,
+          "vida_saida": 0,
+          "turnos": 4,
+          "ouro": 310,
+          "resultado": "game_over",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "estrategia": "dano_aura",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 55,
+          "vida_saida": 48,
+          "turnos": 2,
+          "ouro": 45,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Disparo de Arco",
+              "ouro": 55
+            }
+          ]
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 48,
+          "vida_saida": 48,
+          "turnos": 5,
+          "ouro": 60,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Purificadora",
+              "ouro": 45
+            }
+          ],
+          "recompensa": "Poção de Cura"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 51,
+          "turnos": 2,
+          "ouro": 100,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 51,
+          "vida_saida": 49,
+          "turnos": 3,
+          "ouro": 75,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Aura Rubra",
+              "ouro": 65
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 49,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 140,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 50,
+          "turnos": 3,
+          "ouro": 180,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 50,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 220,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 45,
+          "turnos": 7,
+          "ouro": 290,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 335,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 380,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 54,
+          "turnos": 6,
+          "ouro": 455,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 42,
+          "turnos": 3,
+          "ouro": 500,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 515,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 18,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 5,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 38,
+          "turnos": 7,
+          "ouro": 595,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": 0,
+          "vida_entrada": 56,
+          "vida_saida": 33,
+          "turnos": 3,
+          "ouro": 645,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": 1,
+          "vida_entrada": 53,
+          "vida_saida": 44,
+          "turnos": 5,
+          "ouro": 665,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 6,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 0,
+          "turnos": 5,
+          "ouro": 635,
+          "resultado": "game_over",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 16,
+              "ouro": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "estrategia": "dano_aura",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 2,
+          "ouro": 45,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Disparo de Arco",
+              "ouro": 55
+            }
+          ]
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 53,
+          "turnos": 5,
+          "ouro": 60,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Purificadora",
+              "ouro": 45
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 2,
+          "ouro": 100,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 75,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Aura Rubra",
+              "ouro": 65
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 48,
+          "turnos": 6,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção de Cura",
+              "ouro": 75
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 59,
+          "turnos": 4,
+          "ouro": 105,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 59,
+          "vida_saida": 49,
+          "turnos": 2,
+          "ouro": 145,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 49,
+          "vida_saida": 0,
+          "turnos": 5,
+          "ouro": 145,
+          "resultado": "game_over",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Aura Rubra",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        }
+      ]
+    },
+    {
+      "seed": 0,
+      "estrategia": "defesa_cura",
+      "venceu": true,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 2,
+          "ouro": 45,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Disparo de Arco",
+              "ouro": 55
+            }
+          ]
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 56,
+          "turnos": 5,
+          "ouro": 60,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Purificadora",
+              "ouro": 45
+            }
+          ],
+          "recompensa": "Esfera Escudo"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 51,
+          "turnos": 2,
+          "ouro": 100,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 51,
+          "vida_saida": 51,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção de Cura",
+              "ouro": 75
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 51,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Aura Rubra",
+              "ouro": 65
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 105,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 145,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 215,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 260,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 305,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 9,
+          "ouro": 380,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 52,
+          "turnos": 4,
+          "ouro": 425,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": 1,
+          "vida_entrada": 52,
+          "vida_saida": 57,
+          "turnos": 5,
+          "ouro": 470,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": null,
+          "vida_entrada": 57,
+          "vida_saida": 57,
+          "turnos": 7,
+          "ouro": 550,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 600,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 650,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 9,
+          "ouro": 735,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 7,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 785,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 7,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 835,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 7,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 54,
+          "turnos": 10,
+          "ouro": 935,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "estrategia": "defesa_cura",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 2,
+          "ouro": 45,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Disparo de Arco",
+              "ouro": 55
+            }
+          ],
+          "recompensa": "Poção de Cura"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 51,
+          "turnos": 5,
+          "ouro": 60,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Purificadora",
+              "ouro": 45
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 100,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 75,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Esfera Escudo",
+              "ouro": 65
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 75,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Aura Rubra",
+              "ouro": 65
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 115,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 155,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 0,
+          "turnos": 4,
+          "ouro": 155,
+          "resultado": "game_over",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "estrategia": "defesa_cura",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 55,
+          "vida_saida": 55,
+          "turnos": 3,
+          "ouro": 45,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Disparo de Arco",
+              "ouro": 55
+            }
+          ]
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 55,
+          "vida_saida": 47,
+          "turnos": 5,
+          "ouro": 60,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Purificadora",
+              "ouro": 45
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 100,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção de Cura",
+              "ouro": 75
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 9,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Esfera Escudo",
+              "ouro": 65
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 40,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Aura Rubra",
+              "ouro": 65
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 80,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 9,
+          "ouro": 150,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 195,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 240,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 315,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 360,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 405,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 9,
+          "ouro": 485,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 535,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 585,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 9,
+          "ouro": 670,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 7,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 45,
+          "turnos": 3,
+          "ouro": 720,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 7,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 57,
+          "turnos": 5,
+          "ouro": 740,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 15,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 7,
+          "encontro": null,
+          "vida_entrada": 57,
+          "vida_saida": 0,
+          "turnos": 8,
+          "ouro": 740,
+          "resultado": "game_over",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "estrategia": "defesa_cura",
+      "venceu": true,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 55,
+          "vida_saida": 55,
+          "turnos": 3,
+          "ouro": 45,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Disparo de Arco",
+              "ouro": 55
+            }
+          ]
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 55,
+          "vida_saida": 55,
+          "turnos": 6,
+          "ouro": 60,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Purificadora",
+              "ouro": 45
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 100,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 58,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção de Cura",
+              "ouro": 75
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 58,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Esfera Escudo",
+              "ouro": 65
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 40,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Aura Rubra",
+              "ouro": 65
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 80,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 150,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 195,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 240,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 54,
+          "turnos": 8,
+          "ouro": 315,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 57,
+          "turnos": 5,
+          "ouro": 360,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": 1,
+          "vida_entrada": 57,
+          "vida_saida": 46,
+          "turnos": 3,
+          "ouro": 405,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": null,
+          "vida_entrada": 46,
+          "vida_saida": 48,
+          "turnos": 8,
+          "ouro": 485,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 54,
+          "turnos": 5,
+          "ouro": 535,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": 1,
+          "vida_entrada": 54,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 585,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 9,
+          "ouro": 670,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 7,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 720,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 7,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 770,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 7,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 23,
+          "turnos": 9,
+          "ouro": 870,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "estrategia": "defesa_cura",
+      "venceu": true,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 45,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Disparo de Arco",
+              "ouro": 55
+            }
+          ],
+          "recompensa": "Esfera Escudo"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 53,
+          "turnos": 6,
+          "ouro": 60,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Purificadora",
+              "ouro": 45
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 52,
+          "turnos": 2,
+          "ouro": 100,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 52,
+          "vida_saida": 52,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção de Cura",
+              "ouro": 75
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 52,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Aura Rubra",
+              "ouro": 65
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 105,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 145,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 8,
+          "ouro": 215,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 260,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 305,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 54,
+          "turnos": 8,
+          "ouro": 380,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 43,
+          "turnos": 3,
+          "ouro": 425,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 44,
+          "turnos": 3,
+          "ouro": 440,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 17,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 5,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 51,
+          "turnos": 11,
+          "ouro": 490,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 16,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 6,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 540,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 590,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 9,
+          "ouro": 675,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 7,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 56,
+          "turnos": 5,
+          "ouro": 725,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 7,
+          "encontro": 1,
+          "vida_entrada": 56,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 775,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 7,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 10,
+          "ouro": 875,
+          "resultado": "victory",
+          "deck": [
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Disparo de Arco",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Escudo",
+            "Esfera Escudo",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Aura Rubra",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        }
+      ]
+    },
+    {
+      "seed": 0,
+      "estrategia": "veneno_sangramento",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 2,
+          "ouro": 50,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Venenosa",
+              "ouro": 50
+            }
+          ],
+          "recompensa": "Poção de Cura"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 59,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Purificadora",
+              "ouro": 45
+            }
+          ],
+          "recompensa": "Adaga Sangrenta"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 105,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 38,
+          "turnos": 2,
+          "ouro": 70,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Zarabatana Venenosa",
+              "ouro": 75
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 58,
+          "vida_saida": 58,
+          "turnos": 7,
+          "ouro": 105,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 40,
+          "turnos": 3,
+          "ouro": 145,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 40,
+          "turnos": 2,
+          "ouro": 155,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 30,
+          "turnos": 5,
+          "ouro": 195,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 48,
+          "vida_saida": 30,
+          "turnos": 3,
+          "ouro": 240,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 50,
+          "vida_saida": 41,
+          "turnos": 3,
+          "ouro": 255,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 300,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 19,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 5,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 56,
+          "turnos": 3,
+          "ouro": 345,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": 1,
+          "vida_entrada": 56,
+          "vida_saida": 39,
+          "turnos": 3,
+          "ouro": 390,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": null,
+          "vida_entrada": 59,
+          "vida_saida": 51,
+          "turnos": 7,
+          "ouro": 440,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 6,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 36,
+          "turnos": 4,
+          "ouro": 490,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": 1,
+          "vida_entrada": 56,
+          "vida_saida": 30,
+          "turnos": 5,
+          "ouro": 510,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 6,
+          "encontro": null,
+          "vida_entrada": 50,
+          "vida_saida": 0,
+          "turnos": 4,
+          "ouro": 480,
+          "resultado": "game_over",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "estrategia": "veneno_sangramento",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": [],
+          "recompensa": "Poção Venenosa"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 2,
+          "ouro": 40,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Adaga Sangrenta",
+              "ouro": 60
+            }
+          ],
+          "recompensa": "Poção de Cura"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 56,
+          "turnos": 5,
+          "ouro": 100,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 44,
+          "turnos": 2,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Zarabatana Venenosa",
+              "ouro": 75
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 59,
+          "turnos": 3,
+          "ouro": 75,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 16,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 59,
+          "vida_saida": 52,
+          "turnos": 6,
+          "ouro": 95,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Purificadora",
+              "ouro": 45
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 135,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 175,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 0,
+          "turnos": 5,
+          "ouro": 175,
+          "resultado": "game_over",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "estrategia": "veneno_sangramento",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": [],
+          "recompensa": "Adaga Sangrenta"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 55,
+          "vida_saida": 48,
+          "turnos": 2,
+          "ouro": 50,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Venenosa",
+              "ouro": 50
+            }
+          ],
+          "recompensa": "Poção de Cura"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 48,
+          "vida_saida": 46,
+          "turnos": 6,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Purificadora",
+              "ouro": 45
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 44,
+          "turnos": 3,
+          "ouro": 105,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 44,
+          "turnos": 2,
+          "ouro": 40,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 16,
+              "ouro": 30
+            },
+            {
+              "tipo": "carta",
+              "nome": "Zarabatana Venenosa",
+              "ouro": 75
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 22,
+          "turnos": 6,
+          "ouro": 75,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 16,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 47,
+          "turnos": 3,
+          "ouro": 85,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 47,
+          "vida_saida": 38,
+          "turnos": 4,
+          "ouro": 125,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 58,
+          "vida_saida": 16,
+          "turnos": 6,
+          "ouro": 165,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 54,
+          "vida_saida": 36,
+          "turnos": 5,
+          "ouro": 180,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 56,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 195,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 0,
+          "turnos": 5,
+          "ouro": 195,
+          "resultado": "game_over",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "estrategia": "veneno_sangramento",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": [],
+          "recompensa": "Zarabatana Venenosa"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 55,
+          "vida_saida": 48,
+          "turnos": 2,
+          "ouro": 50,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Venenosa",
+              "ouro": 50
+            }
+          ]
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 48,
+          "vida_saida": 48,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção Purificadora",
+              "ouro": 45
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 56,
+          "turnos": 3,
+          "ouro": 45,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Adaga Sangrenta",
+              "ouro": 60
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 56,
+          "vida_saida": 56,
+          "turnos": 3,
+          "ouro": 85,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 56,
+          "vida_saida": 25,
+          "turnos": 6,
+          "ouro": 75,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Poção de Cura",
+              "ouro": 75
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 40,
+          "turnos": 2,
+          "ouro": 85,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 17,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 50,
+          "turnos": 3,
+          "ouro": 95,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 50,
+          "vida_saida": 20,
+          "turnos": 6,
+          "ouro": 165,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 58,
+          "vida_saida": 35,
+          "turnos": 3,
+          "ouro": 180,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 55,
+          "vida_saida": 31,
+          "turnos": 3,
+          "ouro": 195,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 51,
+          "vida_saida": 0,
+          "turnos": 4,
+          "ouro": 165,
+          "resultado": "game_over",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "estrategia": "veneno_sangramento",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Soco Simples",
+            "Soco Simples",
+            "Soco Simples"
+          ],
+          "evolucoes": 0,
+          "compras": [],
+          "recompensa": "Poção Venenosa"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 46,
+          "turnos": 2,
+          "ouro": 40,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Adaga Sangrenta",
+              "ouro": 60
+            }
+          ]
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 46,
+          "vida_saida": 24,
+          "turnos": 4,
+          "ouro": 100,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 44,
+          "turnos": 2,
+          "ouro": 65,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 18,
+              "ouro": 30
+            },
+            {
+              "tipo": "carta",
+              "nome": "Poção Purificadora",
+              "ouro": 45
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 35,
+          "turnos": 3,
+          "ouro": 75,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 16,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 55,
+          "vida_saida": 22,
+          "turnos": 6,
+          "ouro": 110,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 57,
+          "turnos": 4,
+          "ouro": 45,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            },
+            {
+              "tipo": "carta",
+              "nome": "Poção de Cura",
+              "ouro": 75
+            }
+          ]
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 57,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 85,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 41,
+          "turnos": 7,
+          "ouro": 80,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "carta",
+              "nome": "Zarabatana Venenosa",
+              "ouro": 75
+            }
+          ]
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 59,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 125,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 50,
+          "turnos": 4,
+          "ouro": 170,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 50,
+          "vida_saida": 20,
+          "turnos": 6,
+          "ouro": 245,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": 0,
+          "vida_entrada": 58,
+          "vida_saida": 46,
+          "turnos": 3,
+          "ouro": 260,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 5,
+          "encontro": 1,
+          "vida_entrada": 46,
+          "vida_saida": 31,
+          "turnos": 4,
+          "ouro": 305,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 5,
+          "encontro": null,
+          "vida_entrada": 51,
+          "vida_saida": 35,
+          "turnos": 6,
+          "ouro": 355,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 6,
+          "encontro": 0,
+          "vida_entrada": 53,
+          "vida_saida": 31,
+          "turnos": 3,
+          "ouro": 405,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": []
+        },
+        {
+          "territorio": 6,
+          "encontro": 1,
+          "vida_entrada": 51,
+          "vida_saida": 10,
+          "turnos": 3,
+          "ouro": 425,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 6,
+          "encontro": null,
+          "vida_entrada": 50,
+          "vida_saida": 26,
+          "turnos": 7,
+          "ouro": 450,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            },
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 7,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 22,
+          "turnos": 3,
+          "ouro": 470,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 16,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 7,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 18,
+          "turnos": 5,
+          "ouro": 460,
+          "resultado": "victory",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            },
+            {
+              "tipo": "cura",
+              "valor": 18,
+              "ouro": 30
+            }
+          ]
+        },
+        {
+          "territorio": 7,
+          "encontro": null,
+          "vida_entrada": 58,
+          "vida_saida": 0,
+          "turnos": 3,
+          "ouro": 400,
+          "resultado": "game_over",
+          "deck": [
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Poção Venenosa",
+            "Adaga Sangrenta",
+            "Adaga Sangrenta",
+            "Poção de Cura",
+            "Poção de Cura",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Esfera Protetora",
+            "Zarabatana Venenosa",
+            "Zarabatana Venenosa",
+            "Poção Purificadora"
+          ],
+          "evolucoes": 0,
+          "compras": [
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            },
+            {
+              "tipo": "cura",
+              "valor": 20,
+              "ouro": 30
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

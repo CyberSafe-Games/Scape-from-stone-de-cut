@@ -15,8 +15,9 @@ class CardView:
         rect = pygame.Rect(min(WIDTH - 585, max(15, int(point[0]) - 285)),
                            max(18, min(HEIGHT - height - 18, int(point[1]) - height - 30)), 570, height)
         draw_panel(surface, rect, fill=(8, 16, 16, 250), border=(169, 127, 66), radius=11)
-        title_font = assets.font if assets.font.size(card.name)[0] < 450 else assets.small_font
-        draw_text(surface, card.name, title_font, WHITE, rect.x + 23, rect.y + 18)
+        label = card.name + (f' · LV{card.level}' if getattr(card, 'copy_id', None) else '')
+        title_font = assets.font if assets.font.size(label)[0] < 450 else assets.small_font
+        draw_text(surface, label, title_font, WHITE, rect.x + 23, rect.y + 18)
         draw_text(surface, cost_label or f'{card.cost} E', assets.small_font, (239, 199, 111), rect.right - 72, rect.y + 23)
         for i, line in enumerate(lines):
             draw_text(surface, line, assets.font, (218, 220, 202), rect.x + 23, rect.y + 63 + i * 35)
@@ -31,6 +32,15 @@ class CardView:
 
         image = asset_manager.get_card_image(card.name)
         if image is not None:
+            if getattr(card, 'level', 1) == 2:
+                from src.ui.card_rules import with_rules
+                cache = getattr(asset_manager, '_leveled_card_images', None)
+                if not isinstance(cache, dict):
+                    cache = asset_manager._leveled_card_images = {}
+                key = (card.name, card.description, card.cost)
+                if key not in cache:
+                    cache[key] = with_rules(image, card.description, card.cost, 2)
+                image = cache[key]
             scaled = pygame.transform.smoothscale(image, draw_rect.size)
             surface.blit(scaled, draw_rect)
             if hovered:

@@ -16,8 +16,9 @@ class TacticalCardEffect(CardEffect):
             context._resolve_totem_trigger(target, user)
             context.spawn_damage_text(target, f"-{result['damage']}", RED)
         if rule in ('shield', 'mask'):
-            user.add_block(card.value)
-            context.spawn_player_text(f'+{card.value} Escudo', BLUE)
+            block = (28 if card.level == 2 else 22) if rule == 'mask' else card.value
+            user.add_block(block)
+            context.spawn_player_text(f'+{block} Escudo', BLUE)
         if rule in ('heal', 'mask'):
             healed = min(card.value, user.max_hp - user.hp)
             if 'no_heal' not in user.statuses:
@@ -39,6 +40,16 @@ class TacticalCardEffect(CardEffect):
         elif rule == 'energy':
             user.next_turn_energy = min(8, user.next_turn_energy + card.value)
             context.spawn_player_text(f'+{card.value} energia no próximo turno', GOLD)
+        if card.level == 2:
+            from src.systems.roguelite import EXTRA_BLOCK
+            extra = EXTRA_BLOCK.get(card.name, 0)
+            user.add_block(extra)
+            if extra:
+                context.spawn_player_text(f'+{extra} Escudo', BLUE)
+            if rule == 'cleanse':
+                healed = min(6, user.max_hp - user.hp)
+                user.hp += healed
+                result['heal'] = healed
         if animation in ('melee', 'ranged'):
             context.trigger_attack('player', card.name)
             context.trigger_flash('enemy')

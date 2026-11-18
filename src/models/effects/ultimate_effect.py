@@ -16,6 +16,7 @@ class UltimateAbility(ABC):
     description = ""
     accent_color = GOLD
     charge_requirement = 20
+    energy_cost = 5
 
     @abstractmethod
     def activate(self, user, target, context):

@@ -3,16 +3,21 @@
 As ofertas usam cartas JÁ existentes no catálogo. Novas cartas podem ser
 incluídas futuramente no catálogo e em CARD_PRICES sem alterar a loja.
 """
-from copy import deepcopy
 from dataclasses import dataclass
 
 from src.systems.card_catalog import AVAILABLE_CARD_POOL
-from src.systems.save_manager import HEALTH_UPGRADE_AMOUNT, HEALTH_UPGRADE_LIMIT, SaveError
+from src.systems.save_manager import player_max_hp
+from src.config.shop_balance import HEAL_AMOUNT, HEAL_PRICES, HEAL_LIMIT
 
-HEALTH_UPGRADE_PRICE = 50
+def next_heal_price(progress):
+    """Retorna o preço da próxima cura ou None quando a oferta esgotou."""
+    count = progress.get('curas_loja_run', 0)
+    if type(count) is not int or not 0 <= count <= HEAL_LIMIT:
+        raise ValueError('Contador de curas da loja inválido.')
+    return HEAL_PRICES[count] if count < HEAL_LIMIT else None
 
 # Preços iniciais, editáveis; não criam novas cartas nem dependem de novas artes.
-CARD_PRICES = {card.name: 25 + card.cost * 15 for card in AVAILABLE_CARD_POOL}
+from src.systems.roguelite import CARD_PRICES
 
 @dataclass(frozen=True)
 class ShopResult:
@@ -27,36 +32,43 @@ CARD_OFFERS = {card.name: card for card in AVAILABLE_CARD_POOL if card.name in C
 
 def _commit_progress(save_manager, data, mutate):
     """Garante que falha de gravação não desconte saldo apenas em memória."""
-    original = deepcopy(data["progresso"])
-    try:
-        mutate(data["progresso"])
-        save_manager.save(data)
-    except (OSError, ValueError, TypeError, SaveError):
-        data["progresso"] = original
-        return False
-    return True
+    from src.systems.roguelite import transact
+    def operation():
+        mutate(data['progresso'])
+        return 'Compra gravada.'
+    return transact(save_manager, data, operation)[0]
 
 
-def purchase_health_upgrade(save_manager, data):
-    """Aumenta o limite de vida sem alterar a vida atual."""
+def purchase_heal(save_manager, data):
+    """Recupera vida atual na loja, sem alterar o máximo nem o perfil."""
     progress = data["progresso"]
-    purchases = progress["melhorias_vida_run"]
-    if purchases >= HEALTH_UPGRADE_LIMIT:
-        return ShopResult(False, "Limite de três melhorias de vida por run atingido.")
-    if progress["moedas"] < HEALTH_UPGRADE_PRICE:
-        return ShopResult(False, "Moedas insuficientes para comprar a melhoria.")
+    if progress.get('estado', 'ativa') != 'ativa' or progress.get('combat_snapshot'):
+        return ShopResult(False, 'Conclua o combate de uma run ativa antes de comprar.')
+    if progress['vida'] <= 0:
+        return ShopResult(False, 'Uma run encerrada não pode ser recuperada pela loja.')
+    price = next_heal_price(progress)
+    if price is None:
+        return ShopResult(False, 'As três curas desta run foram usadas. Oferta esgotada.')
+    amount = min(HEAL_AMOUNT, player_max_hp(progress) - progress['vida'])
+    if amount <= 0:
+        return ShopResult(False, 'Sua vida já está cheia. Nada foi cobrado.')
+    if progress["moedas"] < price:
+        return ShopResult(False, "Moedas insuficientes para comprar a cura.")
 
     def mutate(progress):
-        progress["moedas"] -= HEALTH_UPGRADE_PRICE
-        progress["melhorias_vida_run"] += 1
+        progress["moedas"] -= price
+        progress['vida'] += amount
+        progress['curas_loja_run'] = progress.get('curas_loja_run', 0) + 1
 
     if not _commit_progress(save_manager, data, mutate):
         return ShopResult(False, "Não foi possível salvar a compra. Nada foi cobrado.")
-    return ShopResult(True, f"+{HEALTH_UPGRADE_AMOUNT} de vida máxima!", HEALTH_UPGRADE_AMOUNT)
+    return ShopResult(True, f'+{amount} de vida recuperada!', amount)
 
 
 def purchase_card(save_manager, data, card_name):
     """Adiciona uma carta do catálogo ao baralho persistente mediante pagamento."""
+    if data['progresso'].get('estado', 'ativa') != 'ativa' or data['progresso'].get('combat_snapshot'):
+        return ShopResult(False, 'Conclua o combate de uma run ativa antes de comprar.')
     if card_name not in CARD_OFFERS:
         return ShopResult(False, "Esta carta ainda não está disponível na loja.")
     price = CARD_PRICES[card_name]

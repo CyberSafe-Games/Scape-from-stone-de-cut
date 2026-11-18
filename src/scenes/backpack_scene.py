@@ -31,6 +31,7 @@ from src.models.effects.ultimate_effect import ULTIMATE_METADATA, DEFAULT_ULTIMA
 from src.ui import dark_fantasy_theme as theme
 from src.ui.helpers import draw_text, wrap_text
 from src.ui.options_gear import draw_options_gear, options_gear_clicked
+from src.ui.card_view import CardView
 
 
 class BackpackScene(BaseScene):
@@ -256,6 +257,12 @@ class BackpackScene(BaseScene):
             surface, self.filter_rect, "OBTIDAS" if self.owned_only else "TODAS"
         )
         mouse = self.window_manager.get_virtual_mouse_pos()
+        from copy import deepcopy
+        from src.systems.roguelite import normalize_inventory, instance_card
+        draft = deepcopy(p)
+        draft['deck_slots'] = list(self.draft_slots)
+        normalize_inventory(draft)
+        copies_by_id = {c['id']: c for c in draft['copies']}
         for i, rect in enumerate(self.slots):
             name = self.draft_slots[i]
             hovered = rect.collidepoint(mouse)
@@ -266,8 +273,12 @@ class BackpackScene(BaseScene):
                     highlighted=hovered,
                     fill=(34, 37, 27, 245) if not hovered else (44, 48, 33, 245),
                 )
-                self._image(surface, name, pygame.Rect(rect.x + 8, rect.y + 4, 56, 80))
+                copy = copies_by_id[draft['copy_slots'][i]]
+                CardView.draw_card(surface, pygame.Rect(rect.x + 8, rect.y + 4, 56, 80),
+                                   instance_card(copy), a)
                 lines = wrap_text(name, a.small_font, rect.width - 78)
+                draw_text(surface, f"LV{copy['level']}", a.small_font, GOLD,
+                          rect.right - 43, rect.y + 5)
                 text_y = rect.y + rect.height // 2 - (len(lines) * 27) // 2
                 for row, text in enumerate(lines):
                     draw_text(
@@ -393,6 +404,11 @@ class BackpackScene(BaseScene):
                 center=True,
             )
         self._draw_detail(surface, filled)
+        for i, rect in enumerate(self.slots):
+            if self.draft_slots[i] and rect.collidepoint(mouse):
+                copy = copies_by_id[draft['copy_slots'][i]]
+                CardView.draw_tooltip(surface, instance_card(copy), a, mouse)
+                break
 
     def _draw_detail(self, surface, filled):
         a, p = self.asset_manager, self.save_data["progresso"]
@@ -421,6 +437,9 @@ class BackpackScene(BaseScene):
         owned = card.name in p["cartas_colecao"]
         available = card.name in AVAILABLE_CARD_NAMES
         copies = counts.get(card.name, 0)
+        materials = p.get('materials', {}).get(card.name, 0)
+        draw_text(surface, f'RESERVA: {materials}/9 · evolução na loja',
+                  a.small_font, GOLD, 1425, 846)
         deck_full = filled >= DECK_SLOT_LIMIT
         maxed = copies >= COPIES_PER_CARD
         draw_text(

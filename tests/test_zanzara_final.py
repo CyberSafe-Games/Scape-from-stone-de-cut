@@ -15,9 +15,9 @@ class FinalKitTests(unittest.TestCase):
     def test_final_kit_names_and_no_old_healing_buff(self):
         boss = create_zanzara()
         self.assertEqual([a.name for a in boss.actions],['Foice Sombria','Passo do Barqueiro','Grilhões das Almas'])
-        self.assertEqual([a.damage for a in boss.actions],[20,24,20])
+        self.assertEqual([a.damage for a in boss.actions],[12,15,10])
         self.assertEqual(boss.special_action.name,'Travessia Final')
-        self.assertEqual(boss.special_action.damage,45)
+        self.assertEqual(boss.special_action.damage,26)
         self.assertFalse(any(a.action_type in ('buff','heal') for a in boss.actions))
 
     def test_chains_damage_vulnerability_and_totem_protection(self):
@@ -31,7 +31,7 @@ class FinalKitTests(unittest.TestCase):
             if protected: engine.player.apply_status('totem',2,1)
             hp = engine.player.hp
             engine.enemy_turn()
-            self.assertEqual(engine.player.hp,hp if protected else hp-20)
+            self.assertEqual(engine.player.hp,hp if protected else hp-10)
             if protected:
                 self.assertNotIn('vulnerable',engine.player.statuses)
             else:
@@ -50,7 +50,7 @@ class FinalKitTests(unittest.TestCase):
             engine.enemy.set_intent('attack',20,chains)
             if protected:engine.player.apply_status('totem',2,1)
             intents=preview_intents(engine)
-            self.assertEqual([i.value for i in intents],[20,20 if protected else 25])
+            self.assertEqual([i.value for i in intents],[10,12 if protected else 15])
 
     def test_intent_describes_chains_and_new_skill_icons(self):
         engine = CombatEngine();engine.enemy = create_zanzara()

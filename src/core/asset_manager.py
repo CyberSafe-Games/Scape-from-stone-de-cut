@@ -575,6 +575,10 @@ class AssetManager:
             path = os.path.join(CARD_ASSETS_DIR, filename)
             try:
                 self._card_images[filename] = pygame.image.load(path).convert_alpha()
+                from src.systems.card_catalog import CARD_BY_NAME
+                from src.ui.card_rules import with_rules
+                card = CARD_BY_NAME[card_name]
+                self._card_images[filename] = with_rules(self._card_images[filename], card.description, card.cost, 1)
             except (pygame.error, FileNotFoundError):
                 self._card_images[filename] = None
 

@@ -52,6 +52,7 @@ class TutorialScene(BattleScene):
         # BattleScene configura o chefe do nível 1 antes da troca pelo Slime.
         # O tutorial nunca deve mostrar o diálogo daquele chefe.
         self.boss_dialogue = None
+        self.engine.training = True
         # Configura o inimigo didático específico do tutorial
         self._setup_tutorial_enemy()
 

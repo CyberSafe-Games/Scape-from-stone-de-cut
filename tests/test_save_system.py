@@ -97,9 +97,13 @@ class TestSaveSystem(unittest.TestCase):
     def test_unknown_cards_are_ignored_when_applying(self):
         data = self.manager.create_save("Gabriel")
         data["progresso"]["cartas"] = ["Golpe", "CartaQueNaoExiste"]
+        data['progresso']['deck_slots'] = ['Golpe', 'CartaQueNaoExiste'] + [None] * 16
+        self.manager._normalize(data, data['id'])
         new_deck = DeckManager()
         self.manager.apply_to_game(data, Player("Herói", 60), new_deck)
-        self.assertEqual([c.name for c in new_deck.deck], ["Soco Simples"])
+        self.assertNotIn('CartaQueNaoExiste', [c.name for c in new_deck.deck])
+        self.assertEqual(len(new_deck.deck), 6)  # fallback jogável após remover nomes inválidos
+        self.assertTrue(all(c.copy_id for c in new_deck.deck))
 
     def test_list_saves(self):
         self.manager.create_save("A")

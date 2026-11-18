@@ -26,6 +26,8 @@ class Card:
         self.color = color
         self.effect = effect or self._create_default_effect()
         self.available = available
+        self.level = 1
+        self.copy_id = None
 
     def _create_default_effect(self):
         """Atribui o efeito padrão adequado caso nenhum tenha sido explicitado."""
@@ -45,7 +47,7 @@ class Card:
 
     def copy(self):
         """Retorna uma nova instância idêntica da carta."""
-        return Card(
+        result = Card(
             self.name,
             self.cost,
             self.card_type,
@@ -55,3 +57,6 @@ class Card:
             self.effect,
             available=self.available,
         )
+        result.level = self.level
+        result.copy_id = self.copy_id
+        return result

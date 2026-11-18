@@ -31,7 +31,9 @@ class CutsceneSaveFlagsTests(unittest.TestCase):
     def test_old_save_without_flags_migrates_to_true(self):
         self.manager.create_save('Antigo')
         path = Path(self.temp_dir.name) / 'antigo.json'
-        data = json.loads(path.read_text(encoding='utf-8'))
+        data = self.manager.load_save('Antigo')
+        data.pop('perfil')
+        data.pop('run')
         data['versao'] = SAVE_VERSION - 1
         data['progresso'].pop('intro_vista')
         data['progresso'].pop('pos_tutorial_visto')

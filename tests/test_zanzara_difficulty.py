@@ -19,21 +19,25 @@ class ZanzaraDifficultyTests(unittest.TestCase):
         engine.enemy_turn()
         return engine,before-engine.player.hp
 
-    def test_both_scythe_attacks_apply_bleed_and_poison(self):
-        for index,damage in ((0,20),(1,24)):
+    def test_scythe_and_step_have_separate_status_roles(self):
+        for index,damage in ((0,12),(1,15)):
             engine,dealt=self.execute(index)
             self.assertEqual(dealt,damage)
-            self.assertEqual(engine.player.statuses['bleed'],{'turns':2,'potency':2})
-            self.assertEqual(engine.player.statuses['poison'],{'turns':2,'potency':1})
-            self.assertEqual(engine.player.on_attack(),6)
-            self.assertEqual(engine.player.on_attack(),6)
-            self.assertEqual(engine.player.on_attack(),0)
-            self.assertIn(('poison',5),engine.player.end_turn_statuses())
+            if index == 0:
+                self.assertEqual(engine.player.statuses['bleed'],{'turns':2,'potency':1})
+                self.assertNotIn('poison', engine.player.statuses)
+                self.assertEqual(engine.player.on_attack(),3)
+                self.assertEqual(engine.player.on_attack(),3)
+                self.assertEqual(engine.player.on_attack(),0)
+            else:
+                self.assertNotIn('bleed', engine.player.statuses)
+                self.assertEqual(engine.player.statuses['poison'],{'turns':2,'potency':1})
+                self.assertIn(('poison',5),engine.player.end_turn_statuses())
 
-    def test_ultimate_is_massive_and_applies_two_poison_stacks(self):
+    def test_ultimate_applies_one_poison_stack(self):
         engine,dealt=self.execute(3)
-        self.assertEqual(dealt,45)
-        self.assertEqual(engine.player.statuses['poison'],{'turns':2,'potency':2})
+        self.assertEqual(dealt,26)
+        self.assertEqual(engine.player.statuses['poison'],{'turns':2,'potency':1})
         self.assertNotIn('bleed',engine.player.statuses)
 
     def test_totem_blocks_damage_and_every_attached_debuff(self):
@@ -45,18 +49,19 @@ class ZanzaraDifficultyTests(unittest.TestCase):
     def test_scythe_and_ultimate_add_stacks_and_refresh_duration(self):
         engine,_=self.execute(3)
         engine.player.end_turn_statuses()
+        engine,_=self.execute(1,engine=engine)
+        self.assertEqual(engine.player.statuses['poison'],{'turns':2,'potency':2})
         engine,_=self.execute(0,engine=engine)
-        self.assertEqual(engine.player.statuses['poison'],{'turns':2,'potency':3})
         engine,_=self.execute(0,engine=engine)
-        self.assertEqual(engine.player.statuses['bleed'],{'turns':2,'potency':4})
+        self.assertEqual(engine.player.statuses['bleed'],{'turns':2,'potency':2})
 
     def test_intents_show_both_scythe_debuffs(self):
         engine=CombatEngine();engine.enemy=create_zanzara()
         engine.enemy.action_plan=[engine.enemy.actions[0],engine.enemy.special_action]
         texts=[p.description for p in preview_intents(engine)]
         self.assertIn('Sangramento',texts[0])
-        self.assertIn('Veneno',texts[0])
-        self.assertIn('2 stacks de Veneno',texts[1])
+        self.assertNotIn('Veneno',texts[0])
+        self.assertIn('1 stack de Veneno',texts[1])
 
     def test_legacy_single_status_actions_still_work(self):
         engine=CombatEngine();engine.enemy=create_zanzara()

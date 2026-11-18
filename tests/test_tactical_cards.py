@@ -62,9 +62,9 @@ class TacticalCardTests(unittest.TestCase):
                 self.assertLessEqual(engine.player.hp, engine.player.max_hp)
 
     def test_attacks_match_printed_damage_and_darts_total_ten(self):
-        for name, damage in (('Soco Simples', 6), ('Investida', 10), ('Disparo de Arco', 20),
+        for name, damage in (('Soco Simples', 6), ('Investida', 18), ('Disparo de Arco', 20),
                              ('Zarabatana Venenosa', 10), ('Machados Gêmeos', 40),
-                             ('Lança Perfurante', 30), ('Adaga Sangrenta', 5), ('Bola de Fogo', 10)):
+                             ('Lança Perfurante', 30), ('Adaga Sangrenta', 8), ('Bola de Fogo', 12)):
             engine = self.engine()
             self.play(engine, name)
             self.assertEqual(engine.enemy.hp, 500 - damage, name)
@@ -162,6 +162,7 @@ class TacticalCardTests(unittest.TestCase):
         for ultimate in ('forcas_ancestrais', 'rugido_da_floresta'):
             engine.equip_ultimate(ultimate)
             player.ultimate_charge = player.ultimate_threshold
+            player.energy = 5
             self.assertTrue(engine.activate_ultimate())
             if ultimate == 'forcas_ancestrais':
                 self.assertEqual(player.hp, player.max_hp)
@@ -247,7 +248,7 @@ class TacticalCardTests(unittest.TestCase):
         self.play(engine, 'Aura Rubra')
         self.play(engine, 'Poção Fragilizante')
         self.play(engine, 'Soco Simples')
-        self.assertEqual(engine.enemy.hp, 482)  # ceil((6+8)*1.25)
+        self.assertEqual(engine.enemy.hp, 485)  # ceil((6+6)*1.25)
         for _ in range(3): self.full_round(engine)
         self.assertEqual(engine.player.attack_bonus, 0)
         self.assertNotIn('vulnerable', engine.enemy.statuses)
@@ -255,7 +256,7 @@ class TacticalCardTests(unittest.TestCase):
         engine.player.energy = 3
         engine.deck_manager.hand = [CARD_BY_NAME['Surto de Energia'].copy()]
         self.assertTrue(engine.play_card(0))
-        self.assertEqual(engine.energy, 1)
+        self.assertEqual(engine.energy, 2)
         self.full_round(engine)
         self.assertEqual(engine.energy_max, 4)
         self.assertEqual(engine.energy, 6)

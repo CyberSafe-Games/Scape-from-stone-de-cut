@@ -1,0 +1,1820 @@
+{
+  "limites": "Heurística com Forças Ancestrais; sem bônus permanentes, sem N2 e sem melhorias de vida temporárias. Não substitui playtest.",
+  "runs": [
+    {
+      "seed": 0,
+      "estrategia": "dano_aura",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 35,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 53,
+          "turnos": 8,
+          "ouro": 95,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 52,
+          "turnos": 2,
+          "ouro": 80,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 52,
+          "vida_saida": 52,
+          "turnos": 2,
+          "ouro": 120,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 52,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 185,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 50,
+          "turnos": 6,
+          "ouro": 225,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 50,
+          "vida_saida": 49,
+          "turnos": 5,
+          "ouro": 265,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 49,
+          "vida_saida": 0,
+          "turnos": 6,
+          "ouro": 265,
+          "resultado": "game_over"
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "estrategia": "dano_aura",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 35,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 95,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 60,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 55,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 120,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 48,
+          "turnos": 3,
+          "ouro": 160,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 48,
+          "vida_saida": 49,
+          "turnos": 5,
+          "ouro": 200,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 49,
+          "vida_saida": 0,
+          "turnos": 5,
+          "ouro": 200,
+          "resultado": "game_over"
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "estrategia": "dano_aura",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 55,
+          "vida_saida": 55,
+          "turnos": 3,
+          "ouro": 35,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 55,
+          "vida_saida": 42,
+          "turnos": 7,
+          "ouro": 95,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 38,
+          "turnos": 3,
+          "ouro": 80,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 38,
+          "vida_saida": 30,
+          "turnos": 2,
+          "ouro": 45,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 30,
+          "vida_saida": 0,
+          "turnos": 4,
+          "ouro": 0,
+          "resultado": "game_over"
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "estrategia": "dano_aura",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 55,
+          "vida_saida": 48,
+          "turnos": 3,
+          "ouro": 35,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 48,
+          "vida_saida": 33,
+          "turnos": 6,
+          "ouro": 95,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 51,
+          "vida_saida": 42,
+          "turnos": 3,
+          "ouro": 80,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 42,
+          "vida_saida": 43,
+          "turnos": 4,
+          "ouro": 45,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 43,
+          "vida_saida": 26,
+          "turnos": 7,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 44,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 105,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 59,
+          "turnos": 3,
+          "ouro": 145,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 59,
+          "vida_saida": 0,
+          "turnos": 3,
+          "ouro": 145,
+          "resultado": "game_over"
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "estrategia": "dano_aura",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 35,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 9,
+          "ouro": 95,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 51,
+          "turnos": 2,
+          "ouro": 80,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 51,
+          "vida_saida": 51,
+          "turnos": 2,
+          "ouro": 45,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 51,
+          "vida_saida": 49,
+          "turnos": 7,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 105,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 145,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 47,
+          "turnos": 8,
+          "ouro": 215,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 46,
+          "turnos": 4,
+          "ouro": 260,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 46,
+          "vida_saida": 41,
+          "turnos": 3,
+          "ouro": 305,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 41,
+          "vida_saida": 0,
+          "turnos": 6,
+          "ouro": 305,
+          "resultado": "game_over"
+        }
+      ]
+    },
+    {
+      "seed": 0,
+      "estrategia": "defesa_cura",
+      "venceu": true,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 100,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 10,
+          "ouro": 85,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 70,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 51,
+          "turnos": 3,
+          "ouro": 45,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 51,
+          "vida_saida": 60,
+          "turnos": 10,
+          "ouro": 110,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 150,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 190,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 46,
+          "turnos": 9,
+          "ouro": 260,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 305,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 350,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 11,
+          "ouro": 425,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 44,
+          "turnos": 3,
+          "ouro": 470,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": 1,
+          "vida_entrada": 44,
+          "vida_saida": 57,
+          "turnos": 6,
+          "ouro": 515,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": null,
+          "vida_entrada": 57,
+          "vida_saida": 60,
+          "turnos": 11,
+          "ouro": 595,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 6,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 645,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 6,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 7,
+          "ouro": 695,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 6,
+          "encontro": null,
+          "vida_entrada": 55,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 780,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 7,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 830,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 7,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 880,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 7,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 50,
+          "turnos": 10,
+          "ouro": 980,
+          "resultado": "victory"
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "estrategia": "defesa_cura",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 4,
+          "ouro": 100,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 55,
+          "vida_saida": 60,
+          "turnos": 10,
+          "ouro": 85,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 60,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 52,
+          "turnos": 3,
+          "ouro": 100,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 52,
+          "vida_saida": 60,
+          "turnos": 11,
+          "ouro": 100,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 140,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 180,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 12,
+          "ouro": 250,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 295,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 340,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 415,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 460,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 54,
+          "turnos": 7,
+          "ouro": 505,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": null,
+          "vida_entrada": 54,
+          "vida_saida": 54,
+          "turnos": 11,
+          "ouro": 585,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 6,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 635,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 6,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 52,
+          "turnos": 4,
+          "ouro": 685,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 6,
+          "encontro": null,
+          "vida_entrada": 52,
+          "vida_saida": 32,
+          "turnos": 9,
+          "ouro": 770,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 7,
+          "encontro": 0,
+          "vida_entrada": 50,
+          "vida_saida": 38,
+          "turnos": 5,
+          "ouro": 820,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 7,
+          "encontro": 1,
+          "vida_entrada": 38,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 870,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 7,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 0,
+          "turnos": 5,
+          "ouro": 870,
+          "resultado": "game_over"
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "estrategia": "defesa_cura",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 55,
+          "vida_saida": 55,
+          "turnos": 4,
+          "ouro": 100,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 55,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 85,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 70,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 45,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 110,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 40,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 80,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 12,
+          "ouro": 150,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 195,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 10,
+          "ouro": 240,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 54,
+          "turnos": 9,
+          "ouro": 315,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 54,
+          "turnos": 5,
+          "ouro": 360,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": 1,
+          "vida_entrada": 54,
+          "vida_saida": 32,
+          "turnos": 4,
+          "ouro": 405,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": null,
+          "vida_entrada": 32,
+          "vida_saida": 60,
+          "turnos": 9,
+          "ouro": 485,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 6,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 58,
+          "turnos": 7,
+          "ouro": 535,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 6,
+          "encontro": 1,
+          "vida_entrada": 58,
+          "vida_saida": 55,
+          "turnos": 5,
+          "ouro": 585,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 6,
+          "encontro": null,
+          "vida_entrada": 55,
+          "vida_saida": 60,
+          "turnos": 9,
+          "ouro": 670,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 7,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 720,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 7,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 5,
+          "ouro": 770,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 7,
+          "encontro": null,
+          "vida_entrada": 55,
+          "vida_saida": 0,
+          "turnos": 4,
+          "ouro": 770,
+          "resultado": "game_over"
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "estrategia": "defesa_cura",
+      "venceu": true,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 55,
+          "vida_saida": 55,
+          "turnos": 4,
+          "ouro": 100,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 55,
+          "vida_saida": 60,
+          "turnos": 9,
+          "ouro": 85,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 70,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 11,
+          "ouro": 130,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 170,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 59,
+          "turnos": 6,
+          "ouro": 210,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 59,
+          "vida_saida": 60,
+          "turnos": 10,
+          "ouro": 280,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 325,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 370,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 10,
+          "ouro": 445,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 490,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 535,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 48,
+          "turnos": 7,
+          "ouro": 615,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 6,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 665,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 6,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 54,
+          "turnos": 8,
+          "ouro": 715,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 6,
+          "encontro": null,
+          "vida_entrada": 54,
+          "vida_saida": 60,
+          "turnos": 11,
+          "ouro": 800,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 7,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 850,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 7,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 900,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 7,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 31,
+          "turnos": 10,
+          "ouro": 1000,
+          "resultado": "victory"
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "estrategia": "defesa_cura",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 100,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 9,
+          "ouro": 85,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 51,
+          "turnos": 2,
+          "ouro": 70,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 51,
+          "vida_saida": 54,
+          "turnos": 3,
+          "ouro": 45,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 54,
+          "vida_saida": 60,
+          "turnos": 9,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 105,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 145,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 11,
+          "ouro": 215,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 260,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 6,
+          "ouro": 305,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 11,
+          "ouro": 380,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 57,
+          "turnos": 6,
+          "ouro": 425,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": 1,
+          "vida_entrada": 57,
+          "vida_saida": 60,
+          "turnos": 7,
+          "ouro": 470,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 51,
+          "turnos": 11,
+          "ouro": 550,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 6,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 8,
+          "ouro": 600,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 6,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 56,
+          "turnos": 5,
+          "ouro": 650,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 6,
+          "encontro": null,
+          "vida_entrada": 56,
+          "vida_saida": 0,
+          "turnos": 6,
+          "ouro": 650,
+          "resultado": "game_over"
+        }
+      ]
+    },
+    {
+      "seed": 0,
+      "estrategia": "veneno_sangramento",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 2,
+          "ouro": 50,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 59,
+          "turnos": 5,
+          "ouro": 110,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 90,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 38,
+          "turnos": 2,
+          "ouro": 55,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 38,
+          "vida_saida": 0,
+          "turnos": 3,
+          "ouro": 10,
+          "resultado": "game_over"
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "estrategia": "veneno_sangramento",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 2,
+          "ouro": 40,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 39,
+          "turnos": 5,
+          "ouro": 100,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 57,
+          "vida_saida": 49,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 49,
+          "vida_saida": 60,
+          "turnos": 4,
+          "ouro": 105,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 60,
+          "vida_saida": 45,
+          "turnos": 6,
+          "ouro": 95,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 40,
+          "turnos": 3,
+          "ouro": 135,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 40,
+          "vida_saida": 20,
+          "turnos": 2,
+          "ouro": 175,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 20,
+          "vida_saida": 0,
+          "turnos": 3,
+          "ouro": 175,
+          "resultado": "game_over"
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "estrategia": "veneno_sangramento",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 55,
+          "vida_saida": 48,
+          "turnos": 2,
+          "ouro": 50,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 48,
+          "vida_saida": 27,
+          "turnos": 5,
+          "ouro": 110,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 45,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 75,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 44,
+          "turnos": 2,
+          "ouro": 40,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 44,
+          "vida_saida": 28,
+          "turnos": 7,
+          "ouro": 105,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 46,
+          "vida_saida": 49,
+          "turnos": 5,
+          "ouro": 145,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 49,
+          "vida_saida": 29,
+          "turnos": 2,
+          "ouro": 185,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 29,
+          "vida_saida": 0,
+          "turnos": 2,
+          "ouro": 185,
+          "resultado": "game_over"
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "estrategia": "veneno_sangramento",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 55,
+          "turnos": 4,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 55,
+          "vida_saida": 48,
+          "turnos": 2,
+          "ouro": 50,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 48,
+          "vida_saida": 48,
+          "turnos": 4,
+          "ouro": 110,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 44,
+          "turnos": 3,
+          "ouro": 90,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 44,
+          "vida_saida": 52,
+          "turnos": 4,
+          "ouro": 55,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 52,
+          "vida_saida": 0,
+          "turnos": 4,
+          "ouro": 10,
+          "resultado": "game_over"
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "estrategia": "veneno_sangramento",
+      "venceu": false,
+      "encontros": [
+        {
+          "territorio": 1,
+          "encontro": 0,
+          "vida_entrada": 60,
+          "vida_saida": 60,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 46,
+          "turnos": 2,
+          "ouro": 40,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 1,
+          "encontro": null,
+          "vida_entrada": 46,
+          "vida_saida": 24,
+          "turnos": 5,
+          "ouro": 100,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 0,
+          "vida_entrada": 42,
+          "vida_saida": 28,
+          "turnos": 3,
+          "ouro": 65,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": 1,
+          "vida_entrada": 28,
+          "vida_saida": 21,
+          "turnos": 3,
+          "ouro": 105,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 2,
+          "encontro": null,
+          "vida_entrada": 21,
+          "vida_saida": 23,
+          "turnos": 8,
+          "ouro": 95,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 0,
+          "vida_entrada": 41,
+          "vida_saida": 60,
+          "turnos": 5,
+          "ouro": 135,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": 1,
+          "vida_entrada": 60,
+          "vida_saida": 40,
+          "turnos": 2,
+          "ouro": 175,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 3,
+          "encontro": null,
+          "vida_entrada": 40,
+          "vida_saida": 10,
+          "turnos": 7,
+          "ouro": 245,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": 0,
+          "vida_entrada": 28,
+          "vida_saida": 43,
+          "turnos": 3,
+          "ouro": 290,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": 1,
+          "vida_entrada": 43,
+          "vida_saida": 44,
+          "turnos": 4,
+          "ouro": 335,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 4,
+          "encontro": null,
+          "vida_entrada": 44,
+          "vida_saida": 3,
+          "turnos": 7,
+          "ouro": 410,
+          "resultado": "victory"
+        },
+        {
+          "territorio": 5,
+          "encontro": 0,
+          "vida_entrada": 21,
+          "vida_saida": 0,
+          "turnos": 4,
+          "ouro": 410,
+          "resultado": "game_over"
+        }
+      ]
+    }
+  ]
+}

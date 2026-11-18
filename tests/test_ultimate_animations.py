@@ -107,6 +107,7 @@ class UltimateAnimationTests(unittest.TestCase):
         scene = self.scene()
         scene.engine.equip_ultimate('rugido_da_floresta')
         scene.engine.player.ultimate_charge = 20
+        scene.engine.player.energy = 5
         self.assertTrue(scene.engine.activate_ultimate())
         self.assertEqual(scene.engine.enemy.hp, 140)
         self.assertEqual(scene._visible_enemy().hp, 200)
@@ -126,7 +127,7 @@ class UltimateAnimationTests(unittest.TestCase):
             spec = ULTIMATE_ANIMATIONS[name]
             scene.engine.equip_ultimate(spec.ultimate_id)
             scene.engine.player.ultimate_charge = 20
-            scene.engine.player.energy = 0
+            scene.engine.player.energy = 5
             scene.engine.activate_ultimate()
             self.assertTrue(scene._ultimate_events)
             self.assertFalse(scene.floating_texts.texts)
@@ -139,6 +140,7 @@ class UltimateAnimationTests(unittest.TestCase):
     def test_lethal_roar_keeps_victory_effects_until_hit_and_cast_ends(self):
         scene = self.scene()
         scene.engine.enemy.hp = 10
+        scene.engine.player.energy = 5
         scene.engine.equip_ultimate('rugido_da_floresta')
         scene.engine.player.ultimate_charge = 20
         scene.engine.activate_ultimate()
