@@ -16,7 +16,7 @@
       "modulo": "tests.test_audio_gameplay",
       "exit_code": 0,
       "testes": 26,
-      "segundos": 0.47
+      "segundos": 0.62
     },
     {
       "modulo": "tests.test_audio_manager",
@@ -58,13 +58,13 @@
       "modulo": "tests.test_backpack_ultimates",
       "exit_code": 0,
       "testes": 12,
-      "segundos": 11.33
+      "segundos": 12.02
     },
     {
       "modulo": "tests.test_balance_simulation",
       "exit_code": 0,
       "testes": 4,
-      "segundos": 0.42
+      "segundos": 0.31
     },
     {
       "modulo": "tests.test_boss_twelve_frames",
@@ -88,7 +88,7 @@
       "modulo": "tests.test_card_collection_pages",
       "exit_code": 0,
       "testes": 4,
-      "segundos": 0.45
+      "segundos": 0.53
     },
     {
       "modulo": "tests.test_carrasco_da_vigilia",
@@ -154,7 +154,7 @@
       "modulo": "tests.test_deck_archetype_comparison",
       "exit_code": 0,
       "testes": 6,
-      "segundos": 0.31
+      "segundos": 0.17
     },
     {
       "modulo": "tests.test_deck_clear_and_minimum",
@@ -184,13 +184,13 @@
       "modulo": "tests.test_energy_system",
       "exit_code": 0,
       "testes": 11,
-      "segundos": 9.98
+      "segundos": 11.33
     },
     {
       "modulo": "tests.test_extended_cards",
       "exit_code": 0,
       "testes": 10,
-      "segundos": 0.38
+      "segundos": 0.62
     },
     {
       "modulo": "tests.test_goblin_monge",
@@ -292,7 +292,7 @@
       "modulo": "tests.test_roguelite",
       "exit_code": 0,
       "testes": 18,
-      "segundos": 0.58
+      "segundos": 0.53
     },
     {
       "modulo": "tests.test_route_boss_and_backpack",
@@ -327,8 +327,8 @@
     {
       "modulo": "tests.test_tactical_cards",
       "exit_code": 0,
-      "testes": 21,
-      "segundos": 0.74
+      "testes": 23,
+      "segundos": 0.61
     },
     {
       "modulo": "tests.test_territory_map",
@@ -364,13 +364,13 @@
       "modulo": "tests.test_ultimate_animations",
       "exit_code": 0,
       "testes": 7,
-      "segundos": 17.06
+      "segundos": 12.53
     },
     {
       "modulo": "tests.test_ultimates",
       "exit_code": 0,
-      "testes": 8,
-      "segundos": 0.41
+      "testes": 9,
+      "segundos": 0.17
     },
     {
       "modulo": "tests.test_window_modes",
@@ -409,9 +409,9 @@
       "segundos": 3.67
     }
   ],
-  "total_testes": 658,
+  "total_testes": 661,
   "falhas": 0,
   "concluido": true,
   "retomado": true,
-  "segundos": 22.25
+  "segundos": 26.94
 }

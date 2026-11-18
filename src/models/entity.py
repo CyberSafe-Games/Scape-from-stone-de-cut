@@ -117,6 +117,18 @@ class Combatant:
         if amount > 0 and 'no_block' not in self.statuses:
             self._block_layers.append([amount, 2])
 
+    def remove_block(self, amount):
+        """Remove Escudo sem dano nem renovação das durações existentes."""
+        remaining = max(0, int(amount))
+        removed = 0
+        for layer in self._block_layers:
+            consumed = min(layer[0], remaining)
+            layer[0] -= consumed
+            remaining -= consumed
+            removed += consumed
+        self._block_layers = [layer for layer in self._block_layers if layer[0] > 0]
+        return removed
+
     def begin_turn(self):
         self.bleed_triggers_this_turn = 0
         for layer in self._block_layers:
@@ -170,6 +182,15 @@ class Combatant:
             self.next_turn_energy = 0
             self.attack_lock_turns = 0
             self.attack_lock_pending = 0
+
+    def remove_positive_effects(self):
+        """Dissipa benefícios sem apagar os debuffs aplicados pelo adversário."""
+        self.statuses = {key: value for key, value in self.statuses.items()
+                         if key in self.NEGATIVE_STATUSES}
+        self.block = 0
+        self.strength = 0
+        self._strength_buffs.clear()
+        self.next_turn_energy = 0
 
     def on_attack(self):
         if self.bleed_stacks and self.bleed_triggers_this_turn < BLEED_TRIGGER_LIMIT:

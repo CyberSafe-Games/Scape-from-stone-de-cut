@@ -2,6 +2,15 @@ from src.models.effects.base_effect import CardEffect
 from src.config.colors import RED, BLUE, GOLD
 
 
+def next_turn_energy_gain(user, amount):
+    """Ganho adicional sob o teto, antes de Choque e ações futuras do inimigo."""
+    limit = user.MAX_ENERGY_LIMIT
+    base = min(limit, user.energy_max + 1)
+    before = min(limit, base + user.next_turn_energy)
+    after = min(limit, base + min(8, user.next_turn_energy + amount))
+    return max(0, after - before)
+
+
 class TacticalCardEffect(CardEffect):
     """Efeitos das cartas comuns, sem alterar as habilidades ultimate."""
     def __init__(self, spec):
@@ -15,6 +24,11 @@ class TacticalCardEffect(CardEffect):
             result['damage'] = target.receive_attack(card.value + user.attack_bonus, hits=3 if rule == 'darts' else 1)
             context._resolve_totem_trigger(target, user)
             context.spawn_damage_text(target, f"-{result['damage']}", RED)
+        if rule == 'charge_break' and not blocked:
+            removed = target.remove_block(target.block // 4)
+            result['shield_removed'] = removed
+            if removed:
+                context.spawn_enemy_text(f'-{removed} Escudo', BLUE)
         if rule in ('shield', 'mask'):
             block = (28 if card.level == 2 else 22) if rule == 'mask' else card.value
             user.add_block(block)
@@ -33,13 +47,16 @@ class TacticalCardEffect(CardEffect):
         elif rule == 'totem': user.apply_status('totem', 0, 1)
         elif rule == 'darts' and not blocked: target.add_stacks('poison', 2)
         elif rule == 'break': target.block = 0
-        elif rule == 'dispel': target.cleanse(all_effects=True)
+        elif rule == 'dispel': target.remove_positive_effects()
         elif rule == 'bleed' and not blocked: target.add_stacks('bleed', 2)
         elif rule == 'fire' and not blocked: target.apply_status('fire', 3, 1)
         elif rule == 'poison': target.add_stacks('poison', card.value)
         elif rule == 'energy':
+            gain = next_turn_energy_gain(user, card.value)
             user.next_turn_energy = min(8, user.next_turn_energy + card.value)
-            context.spawn_player_text(f'+{card.value} energia no próximo turno', GOLD)
+            context.spawn_player_text(f'+{gain} energia no próximo turno', GOLD)
+            if gain == 0:
+                context.show_message('Surto sem ganho: o próximo turno já atinge o limite de energia.')
         if card.level == 2:
             from src.systems.roguelite import EXTRA_BLOCK
             extra = EXTRA_BLOCK.get(card.name, 0)

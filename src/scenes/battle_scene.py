@@ -1371,6 +1371,14 @@ class BattleScene(BaseScene):
                     self.engine.state == "player_turn"
                 )
                 CardView.draw_card(surface, rect, card, self.asset_manager, hovered)
+                if card.name == 'Surto de Energia' and self.engine.state == 'player_turn':
+                    from src.models.effects.tactical_card_effect import next_turn_energy_gain
+                    gain = next_turn_energy_gain(self.engine.player, card.value)
+                    badge = pygame.Rect(rect.x + 3, rect.y + 35, rect.width - 6, 28)
+                    pygame.draw.rect(surface, (20, 22, 30), badge, border_radius=5)
+                    draw_text(surface, 'SEM GANHO' if gain == 0 else f'+{gain} PRÓX.',
+                              self.asset_manager.small_font, RED if gain == 0 else GOLD,
+                              badge.centerx, badge.centery, center=True)
             if self._ultimate_in_hand() and hand_rects:
                 self.ultimate_hand_rect = hand_rects[-1]
                 hovered = self.ultimate_hand_rect.collidepoint(mouse_pos) and (

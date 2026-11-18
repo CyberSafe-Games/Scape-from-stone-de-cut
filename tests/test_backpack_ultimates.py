@@ -56,7 +56,7 @@ class UltimatePreparationTests(unittest.TestCase):
         self.assertEqual(set(p['ultimates_desbloqueadas']), set(known_ultimate_ids()))
         self.assertEqual(p['ultimate_equipada'], 'forcas_ancestrais')
 
-    def test_mana_purifies_only_negative_effects_and_reports_actual_draws(self):
+    def test_mana_restores_energy_and_cleanses_without_draw(self):
         engine = CombatEngine()
         user = engine.player
         user.energy = 0
@@ -67,8 +67,11 @@ class UltimatePreparationTests(unittest.TestCase):
         user.weak_turns = 2
         engine.deck_manager.draw_pile.clear()
         engine.deck_manager.discard_pile = [engine.hand[0].copy()]
+        hand_before = list(engine.hand)
         result = create_ultimate('mana_ancestral').activate(user, engine.enemy, engine)
-        self.assertEqual(result['cards_drawn'], 1)
+        self.assertEqual(result, {'energy_restored': 8})
+        self.assertEqual(engine.hand, hand_before)
+        self.assertEqual(len(engine.deck_manager.discard_pile), 1)
         self.assertEqual(result['energy_restored'], 8)
         self.assertEqual(user.energy, 8)
         self.assertEqual(user.energy_max, 2)
