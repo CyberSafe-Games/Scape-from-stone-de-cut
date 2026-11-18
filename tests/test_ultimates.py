@@ -18,7 +18,7 @@ class TestUltimates(unittest.TestCase):
 
     def test_mana_ancestral_restores_energy_and_draws_cards(self):
         engine = CombatEngine()
-        engine.player.use_energy(2)
+        engine.player.energy = 5
         engine.player.ultimate_charge = engine.player.ultimate_threshold
         engine.deck_manager.draw_pile.extend([engine.hand[0].copy() for _ in range(5)])
         hand_before = len(engine.hand)
@@ -31,19 +31,23 @@ class TestUltimates(unittest.TestCase):
         engine = CombatEngine()
         engine.player.unlock_ultimate("forcas_ancestrais")
         self.assertTrue(engine.equip_ultimate("forcas_ancestrais"))
+        engine.player.energy = 8
         engine.player.ultimate_charge = engine.player.ultimate_threshold
         self.assertTrue(engine.activate_ultimate())
         self.assertEqual(engine.player.strength, 12)
         self.assertEqual(engine.player.block, 40)
+        self.assertEqual(engine.energy, 3)
 
     def test_rugido_applies_weakness_for_three_full_enemy_turns(self):
         engine = CombatEngine()
         engine.player.unlock_ultimate("rugido_da_floresta")
         self.assertTrue(engine.equip_ultimate("rugido_da_floresta"))
+        engine.player.energy = 7
         engine.player.ultimate_charge = engine.player.ultimate_threshold
         engine.enemy.hp = engine.enemy.max_hp = 200
         target_hp = engine.enemy.hp
         self.assertTrue(engine.activate_ultimate())
+        self.assertEqual(engine.energy, 2)
         self.assertLess(engine.enemy.hp, target_hp)
         self.assertEqual(engine.enemy.weak_turns, 3)
 
@@ -68,6 +72,44 @@ class TestUltimates(unittest.TestCase):
         self.assertEqual(engine.enemy.weak_turns, 2)
         engine.finish_enemy_turn()
         self.assertEqual(engine.enemy.weak_turns, 1)
+
+
+    def test_insufficient_energy_preserves_charge_and_effects_for_all_specials(self):
+        for ultimate in known_ultimate_ids():
+            with self.subTest(ultimate=ultimate):
+                engine = CombatEngine()
+                engine.equip_ultimate(ultimate)
+                engine.player.ultimate_charge = 20
+                engine.player.energy = 4
+                before = (engine.enemy.hp, engine.player.strength, engine.player.block, len(engine.hand))
+                self.assertFalse(engine.activate_ultimate())
+                self.assertEqual(engine.player.ultimate_charge, 20)
+                self.assertEqual(engine.energy, 4)
+                self.assertEqual(before, (engine.enemy.hp, engine.player.strength, engine.player.block, len(engine.hand)))
+                engine.end_turn()
+                while engine.state in ('enemy_turn', 'enemy_resolving'):
+                    if engine.state == 'enemy_turn':
+                        engine.enemy_turn()
+                    else:
+                        engine.finish_enemy_turn()
+                self.assertEqual(engine.player.ultimate_charge, 20)
+                engine.player.energy = 5
+                self.assertTrue(engine.activate_ultimate())
+                self.assertEqual(engine.player.ultimate_charge, 0)
+                self.assertEqual(engine.energy, 8 if ultimate == 'mana_ancestral' else 0)
+                self.assertFalse(engine.activate_ultimate())
+
+    def test_incomplete_charge_or_wrong_turn_does_not_spend_energy(self):
+        engine = CombatEngine()
+        engine.player.energy = 8
+        engine.player.ultimate_charge = 19
+        self.assertFalse(engine.activate_ultimate())
+        self.assertEqual(engine.energy, 8)
+        engine.player.ultimate_charge = 20
+        engine.state = 'enemy_turn'
+        self.assertFalse(engine.activate_ultimate())
+        self.assertEqual(engine.energy, 8)
+        self.assertEqual(engine.player.ultimate_charge, 20)
 
 
 class TestUltimateSaveMigration(unittest.TestCase):

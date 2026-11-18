@@ -236,13 +236,17 @@ def commit_deck(save_manager, data, slots):
             f"O deck precisa de pelo menos {DECK_MIN_CARDS} cartas para ser salvo."
         )
     p = data['progresso']
-    before = deepcopy(p)
+    if p.get('estado', 'ativa') != 'ativa' or p.get('combat_snapshot'):
+        return False, 'Não é possível mudar o deck durante um combate ou após o fim da run.'
+    before = deepcopy(data)
     p['deck_slots'] = candidate
     p['cartas'] = deck_cards(candidate)
     try:
         save_manager.save(data)
     except (OSError, ValueError, TypeError, SaveError):
-        data['progresso'] = before
+        data.clear()
+        data.update(before)
+        data['run'] = data['progresso']
         return False, "Falha ao gravar a alteração; deck preservado."
     return True, "Deck salvo."
 
@@ -272,13 +276,17 @@ def equip_ultimate(save_manager, data, ultimate_id):
     from src.models.effects.ultimate_effect import ULTIMATE_METADATA
     from src.systems.save_manager import SaveError
     progress = data['progresso']
+    if progress.get('combat_snapshot') or progress.get('estado', 'ativa') != 'ativa':
+        return False, 'Troque a Ultimate entre combates de uma run ativa.'
     if ultimate_id not in ULTIMATE_METADATA or ultimate_id not in progress.get('ultimates_desbloqueadas', []):
         return False, 'Ultimate indisponível.'
-    before = deepcopy(progress)
+    before = deepcopy(data)
     progress['ultimate_equipada'] = ultimate_id
     try:
         save_manager.save(data)
     except (OSError, ValueError, TypeError, SaveError):
-        data['progresso'] = before
+        data.clear()
+        data.update(before)
+        data['run'] = data['progresso']
         return False, 'Não foi possível salvar. Sua ultimate anterior foi mantida.'
     return True, ULTIMATE_METADATA[ultimate_id]['name'] + ' equipada para os próximos combates.'

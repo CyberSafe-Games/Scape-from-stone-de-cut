@@ -26,6 +26,16 @@ from src.systems.combat_engine import CombatEngine
 from src.systems.save_manager import SaveManager
 from src.ui.tutorial_overlay import TutorialOverlay, TutorialStep, draw_tutorial_arrow, draw_tutorial_spotlight
 
+_SHARED_ASSETS = None
+
+
+def tutorial_assets():
+    """Compartilha o cache pesado somente dentro deste processo de testes."""
+    global _SHARED_ASSETS
+    if _SHARED_ASSETS is None:
+        _SHARED_ASSETS = AssetManager()
+    return _SHARED_ASSETS
+
 
 class TestTutorialOverlay(unittest.TestCase):
     """Testa a lógica de passos, navegação e conteúdos do guia do tutorial."""
@@ -95,7 +105,7 @@ class TestTutorialSceneIntegration(unittest.TestCase):
 
         self.scene_manager = MagicMock()
         self.window_manager = WindowManager()
-        self.asset_manager = AssetManager()
+        self.asset_manager = tutorial_assets()
 
         self.tutorial_scene = TutorialScene(
             self.scene_manager,
@@ -269,7 +279,7 @@ class TestSaveSelectionRouting(unittest.TestCase):
         self.save_manager = SaveManager(saves_dir=self._tmp.name)
         self.scene_manager = MagicMock()
         self.window_manager = WindowManager()
-        self.asset_manager = AssetManager()
+        self.asset_manager = tutorial_assets()
 
     def tearDown(self):
         self._tmp.cleanup()

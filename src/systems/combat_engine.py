@@ -136,7 +136,7 @@ class CombatEngine:
 
         Vida, moedas e baralho continuam sendo da run.
         """
-        self.player.energy_max = Player.INITIAL_ENERGY_MAX
+        self.player.energy_max = getattr(self.player, 'initial_energy', Player.INITIAL_ENERGY_MAX)
         self.player.ultimate_charge = 0
         self.player.turn_count = 0
         self.player.strength = 0  # Buffs permanentes duram a luta, não a RUN.
@@ -253,9 +253,16 @@ class CombatEngine:
         if self.state != "player_turn":
             return False
 
-        if not self.player.consume_ultimate():
+        if not self.player.is_ultimate_ready():
             self.show_message("Ultimate ainda não está pronta!")
             return False
+
+        if self.player.energy < self.ultimate.energy_cost:
+            self.show_message(f"Especial exige {self.ultimate.energy_cost} de energia. Carga preservada!")
+            return False
+
+        self.player.use_energy(self.ultimate.energy_cost)
+        self.player.consume_ultimate()
 
         result = self.ultimate.activate(self.player, self.enemy, context=self) or {}
         self._resolve_player_action(bool(result.get('damage')))
@@ -287,9 +294,11 @@ class CombatEngine:
             self.on_event('boss_phase_transition')
             self.show_message('A dupla caiu... mas Tekks ainda quer lutar!', duration=4000)
             return
-        if not self.is_replay:
-            low = 50 if self.enemy.is_miniboss else 30
-            self.on_event("coin_drop", amount=random.randint(low, low + 20), x=ENEMY_X, y=ENEMY_Y)
+        if not self.is_replay and not getattr(self, 'training', False):
+            from src.systems.roguelite import ROAD_GOLD, BOSS_GOLD
+            amount = (BOSS_GOLD if self.enemy.is_miniboss else ROAD_GOLD)[min(6, getattr(self, 'level', 1) - 1)]
+            self.player.add_coins(amount)
+            self.on_event("coin_drop", amount=amount, x=ENEMY_X, y=ENEMY_Y)
         self.player.clear_damage_stacks()
         self.enemy.clear_damage_stacks()
         self.state = "victory"
@@ -486,18 +495,34 @@ class CombatEngine:
             return
         owned = self.owned_card_names | {card.name for card in self.deck_manager.deck}
         available = [card for card in AVAILABLE_CARD_POOL if card.name not in owned]
-        self.reward_cards = [card.copy() for card in random.sample(available, min(3, len(available)))]
+        self.reward_cards = [card.copy() for card in random.sample(available, min(2, len(available)))]
+        self.material_reward = None
+        self.reward_selection = None
 
     def choose_reward(self, index):
         """Seleciona recompensa; no modo mapa, retorna ao mapa após a fase."""
         if self.state != "victory":
             return
         if 0 <= index < len(self.reward_cards):
+            self.reward_selection = self.reward_cards[index].name
             self.deck_manager.add_to_deck(self.reward_cards[index])
             if self.map_mode:
                 self.finish_map_phase()
             else:
                 self.next_level()
+
+    def choose_material(self, name):
+        """Escolhe materiais direcionados em lugar de um tipo novo."""
+        progress = getattr(self, 'run_progress', None)
+        if self.state != 'victory' or self.is_replay or progress is None:
+            return False
+        amount = 3 if self.enemy.is_miniboss else 1
+        if name not in progress['cartas_colecao'] or progress['materials'].get(name, 0) + amount > 9:
+            self.show_message('Escolha um tipo possuído com espaço na reserva (máximo 9).')
+            return False
+        self.material_reward = (name, amount)
+        self.finish_map_phase()
+        return True
 
     def skip_reward(self):
         """Pula recompensa; no modo mapa, retorna ao mapa após a fase."""
@@ -526,7 +551,7 @@ class CombatEngine:
             return
         # Regra de cura: só lutas contra miniboss recuperam 30% da vida máxima;
         # combates comuns preservam a vida exatamente como terminou.
-        if self.enemy.is_miniboss:
+        if self.enemy.is_miniboss and not self.is_replay:
             self._apply_miniboss_heal()
         self.player.reset_energy()
         self.state = "phase_complete"
@@ -559,6 +584,9 @@ class CombatEngine:
         self.encounter_kind = encounter_kind
         self.encounter_index = encounter_index
         progress = data["progresso"]
+        self.run_progress = progress
+        self.material_reward = None
+        self.reward_selection = None
         self.owned_card_names = set(progress.get("cartas_colecao", ()))
         self.is_replay = False
         if self.map_mode:
@@ -575,6 +603,13 @@ class CombatEngine:
             self.enemy = create_enemy(self.level, is_miniboss_level(self.level))
         choose_next_action(self.enemy)
         self.start_combat()
+        snapshot = progress.get('combat_snapshot')
+        if snapshot and not self.is_replay:
+            if (snapshot['level'], snapshot['kind'], snapshot['index']) != (
+                    self.level, encounter_kind, self.encounter_index):
+                raise ValueError('Retome o encontro salvo antes de iniciar outro.')
+            from src.systems.combat_snapshot import restore
+            restore(self, snapshot)
 
     # ========================================================
     # NOTIFICAÇÕES VISUAIS E CONTEXTO DE EFEITOS

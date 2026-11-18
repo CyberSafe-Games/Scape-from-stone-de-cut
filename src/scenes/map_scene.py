@@ -67,10 +67,17 @@ class MapScene(BaseScene):
         self.backpack_button = pygame.Rect(1431, 30, 396, 66)
         self.guide_button = pygame.Rect(765, 722, 390, 83)
         self.guide_open = not save_data["progresso"].get("guia_mapa_visto", False)
-        self.error = ""
+        self.error = ('Save antigo: o próximo encontro reinicia com a vida legada; '
+                      'as próximas saídas guardarão o turno.'
+                      if save_data['progresso'].get('retomada_legada') else '')
         self.elapsed = 0
 
     def update(self, dt):
+        if self.save_data['progresso'].get('estado') in ('morta', 'concluida'):
+            from src.scenes.roguelite_scene import RogueliteScene
+            self.scene_manager.change_scene(RogueliteScene(self.scene_manager, self.window_manager,
+                self.asset_manager, self.save_manager, self.save_data, preparation=True))
+            return
         self.elapsed += min(dt, 100)
 
     def _button(self, surface, rect, title, enabled=True, outline=GOLD):
@@ -408,6 +415,8 @@ class MapScene(BaseScene):
             center - 44,
             275,
         )
+        draw_text(surface, f"{self.save_data.get('perfil', {}).get('fragmentos', 0)} FRAGMENTOS · PERMANENTES",
+                  self.asset_manager.small_font, GOLD, center, 320, center=True)
         completed = completed_count(self.save_data)
         pygame.draw.rect(
             surface, (36, 46, 42), pygame.Rect(1431, 339, 402, 18), border_radius=9
@@ -572,6 +581,8 @@ class MapScene(BaseScene):
             if self.selected_encounter is not None
             else "CONFRONTO DO TERRITÓRIO"
         )
+        if self.save_data['progresso'].get('combat_snapshot'):
+            play_label = 'RETOMAR COMBATE SALVO'
         self._button(surface, self.play_button, play_label, enabled=state != "locked")
         self._button(surface, self.shop_button, "ACESSAR LOJA")
 
@@ -762,6 +773,9 @@ class MapScene(BaseScene):
                 return
 
             if self.shop_button.collidepoint(point):
+                if self.save_data['progresso'].get('combat_snapshot'):
+                    self.error = 'Retome o combate salvo antes de visitar a loja.'
+                    return
                 from src.scenes.shop_scene import ShopScene
 
                 self.play_ui_sound("ui.navigate")
@@ -798,6 +812,9 @@ class MapScene(BaseScene):
                     return
 
     def _open_backpack(self):
+        if self.save_data['progresso'].get('combat_snapshot'):
+            self.error = 'Retome o combate salvo antes de mudar o deck.'
+            return
         from src.scenes.backpack_scene import BackpackScene
 
         self.play_ui_sound("ui.navigate")
@@ -823,6 +840,10 @@ class MapScene(BaseScene):
             self.error = f"Não foi possível salvar o guia: {exc}"
 
     def _start_selected(self):
+        snapshot = self.save_data['progresso'].get('combat_snapshot')
+        if snapshot:
+            self.selected = TERRITORIES[snapshot['level'] - 1].id
+            self.selected_encounter = snapshot['index']
         territory = next(t for t in TERRITORIES if t.id == self.selected)
 
         if (

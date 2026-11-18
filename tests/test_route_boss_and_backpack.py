@@ -103,7 +103,7 @@ class RouteBossDeckTests(unittest.TestCase):
         import json
         slot = Path(self.folder.name) / 'slot_1.json'
         old = json.loads(slot.read_text(encoding='utf-8'))
-        old['progresso']['encontros_por_territorio'][TERRITORY_IDS[0]] = 3
+        old['run']['encontros_por_territorio'][TERRITORY_IDS[0]] = 3
         slot.write_text(json.dumps(old), encoding='utf-8')
         loaded = self.saves.load_save('slot_1')
         self.assertEqual(loaded['progresso']['encontros_por_territorio'][TERRITORY_IDS[0]], 2)

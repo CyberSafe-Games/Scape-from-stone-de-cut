@@ -1,10 +1,13 @@
 import json
 import os
 import re
+from copy import deepcopy
+from uuid import uuid4
 from datetime import datetime
 
 from src.config.settings import SAVES_DIR
 from src.models.player import Player
+from src.config.shop_balance import HEAL_LIMIT
 from src.systems.card_catalog import AVAILABLE_CARD_POOL, create_starting_deck
 from src.systems.card_definitions import migrate_card_name
 from src.systems.territory_map import TERRITORY_IDS, FIRST_TERRITORY_ID, ROAD_FIGHTS
@@ -16,7 +19,10 @@ from src.systems.deck_loadout import INITIAL_SLOTS, normalize_collection_and_slo
 # tipo equipado (3 cópias) vira três espaços individuais.
 # v11: registra as cutscenes vistas, com defaults em _normalize().
 # v12: abandona a carga de Ultimate persistida entre combates.
-SAVE_VERSION = 12
+# v14: persiste as três compras de cura e seus preços progressivos por run.
+SAVE_VERSION = 14
+# Somente compatibilidade: bônus comprados antes da troca da loja por cura.
+# Nenhuma compra nova incrementa este contador; new_run() o zera.
 HEALTH_UPGRADE_AMOUNT = 15
 HEALTH_UPGRADE_LIMIT = 3
 SLOT_COUNT = 3
@@ -28,7 +34,8 @@ TEST_SAVE_ID = 'modo_teste'
 
 
 def player_max_hp(progress):
-    return Player.BASE_HP + HEALTH_UPGRADE_AMOUNT * progress.get("melhorias_vida_run", 0)
+    return (Player.BASE_HP + progress.get('bonus_vida_permanente', 0)
+            + HEALTH_UPGRADE_AMOUNT * progress.get("melhorias_vida_run", 0))
 
 
 def is_test_save(data):
@@ -85,6 +92,7 @@ class SaveManager:
                 "pos_tutorial_visto": False,
                 "moedas": INITIAL_COINS,
                 "melhorias_vida_run": 0,
+                "curas_loja_run": 0,
                 "cartas": deck_cards(INITIAL_SLOTS),
                 "cartas_colecao": ["Soco Simples", "Esfera Protetora"],
                 "deck_slots": list(INITIAL_SLOTS),
@@ -161,10 +169,32 @@ class SaveManager:
                 data = json.load(f)
         except (OSError, UnicodeError, json.JSONDecodeError) as exc:
             raise SaveCorruptedError(f"Não foi possível ler '{path}'.") from exc
+        if not isinstance(data, dict):
+            raise SaveCorruptedError('Estrutura de save inválida.')
+        if type(data.get('versao', 0)) is not int:
+            raise SaveCorruptedError('Versão de save inválida.')
+        if data.get('versao', 0) < SAVE_VERSION:
+            backup = path + f".v{data.get('versao', 0)}.bak"
+            if not os.path.exists(backup):
+                import shutil
+                shutil.copy2(path, backup)
         return self._normalize(data, os.path.splitext(os.path.basename(path))[0])
 
     def _normalize(self, data, save_id):
         """Valida o conteúdo e completa campos que estejam faltando."""
+        if isinstance(data, dict) and 'perfil' in data and not isinstance(data['perfil'], dict):
+            raise SaveCorruptedError('Perfil inválido.')
+        if isinstance(data, dict) and type(data.get('versao', 0)) is not int:
+            raise SaveCorruptedError('Versão de save inválida.')
+        legacy = isinstance(data, dict) and data.get('versao', 0) < SAVE_VERSION
+        if isinstance(data, dict) and isinstance(data.get('run'), dict) and 'progresso' not in data:
+            data['progresso'] = data['run']
+            from src.systems.roguelite import PROFILE_FIELDS
+            for key in PROFILE_FIELDS:
+                if key in data.get('perfil', {}):
+                    data['progresso'][key] = deepcopy(data['perfil'][key])
+        if isinstance(data, dict) and data.get('versao', 0) > SAVE_VERSION:
+            raise SaveCorruptedError('Versão futura de save não suportada.')
         if not isinstance(data, dict) or not isinstance(data.get("progresso"), dict):
             raise SaveCorruptedError("Estrutura de save inválida.")
 
@@ -172,6 +202,9 @@ class SaveManager:
             raise SaveCorruptedError("Identificação do save inválida.")
         base = self._new_data(data.get("nome", save_id), save_id)
         progress = data["progresso"]
+        progress.setdefault('retomada_legada', legacy)
+        if 'perfil' in data:
+            progress['bonus_vida_permanente'] = 5 * data['perfil'].get('vida', 0)
         progress.pop("carga_ultimate", None)  # Campo obsoleto dos saves anteriores.
         # Saves anteriores ao tutorial já têm jornada iniciada: não obrigá-los
         # a refazer o treinamento. Apenas novos saves recebem False.
@@ -227,6 +260,9 @@ class SaveManager:
 
         if type(progress["moedas"]) is not int or progress["moedas"] < 0:
             raise SaveCorruptedError("Valor de moedas inválido.")
+        heals = progress['curas_loja_run']
+        if type(heals) is not int or not 0 <= heals <= HEAL_LIMIT:
+            raise SaveCorruptedError('Contador de curas da loja inválido.')
         upgrades = progress["melhorias_vida_run"]
         if type(upgrades) is not int or not 0 <= upgrades <= HEALTH_UPGRADE_LIMIT:
             raise SaveCorruptedError("Contador de melhorias de vida da run inválido.")
@@ -273,6 +309,14 @@ class SaveManager:
             raise SaveCorruptedError('Indicador de modo de teste inválido.')
         if is_test_save(data):
             self._unlock_test_progress(progress)
+        from src.systems.roguelite import normalize_profile
+        try:
+            normalize_profile(data)
+            if progress['combat_snapshot'] is not None:
+                from src.systems.combat_snapshot import validate
+                validate(progress['combat_snapshot'])
+        except (ValueError, KeyError, TypeError) as exc:
+            raise SaveCorruptedError(str(exc)) from exc
         data.setdefault("nome", save_id)
         data.setdefault("criado_em", base["criado_em"])
         data.setdefault("atualizado_em", base["atualizado_em"])
@@ -339,7 +383,6 @@ class SaveManager:
         """Grava os dados no arquivo do próprio save (e só nele)."""
         os.makedirs(self.saves_dir, exist_ok=True)
         data["atualizado_em"] = self._now()
-        data["versao"] = SAVE_VERSION
 
         # Impede criação de caminhos arbitrários via um dicionário manipulado.
         save_id = data.get("id")
@@ -347,17 +390,72 @@ class SaveManager:
             raise SaveCorruptedError("Identificador do save inválido.")
         self._normalize(data, save_id)
         path = self._path(save_id)
+        revision = 0
+        if os.path.exists(path):
+            with open(path, encoding='utf-8') as current_file:
+                current = json.load(current_file)
+            revision = current.get('revisao', 0)
+            if data.get('revisao', 0) != revision:
+                raise SaveError('Save desatualizado; recarregue o slot antes de continuar.')
+            current_run = current.get('run', current.get('progresso', {}))
+            if (current_run.get('run_id') == data['progresso']['run_id']
+                    and current_run.get('estado') in ('morta', 'concluida')
+                    and data['progresso']['estado'] == 'ativa'):
+                raise SaveError('Esta run já foi encerrada; inicie uma nova jornada.')
         tmp_path = path + ".tmp"
         # Grava num arquivo temporário e troca no final, para que um
         # fechamento inesperado do jogo não corrompa o save.
         with open(tmp_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=4, ensure_ascii=False)
+            payload = {k: v for k, v in data.items() if k != 'progresso'}
+            from src.systems.roguelite import PROFILE_FIELDS
+            payload['run'] = {k: v for k, v in data['progresso'].items() if k not in PROFILE_FIELDS}
+            payload['revisao'] = revision + 1
+            json.dump(payload, f, indent=4, ensure_ascii=False)
+            f.flush()
+            os.fsync(f.fileno())
         os.replace(tmp_path, path)
+        data['revisao'] = revision + 1
 
     def delete_save(self, name):
         path = self._path(self._make_id(name))
         if os.path.exists(path):
             os.remove(path)
+
+    def end_run(self, data, level):
+        """Confirma a morte em disco antes de permitir outra jornada."""
+        from src.systems.roguelite import transact
+        def mutate():
+            p = data['progresso']
+            if is_test_save(data):
+                return 'Laboratório preservado.'
+            p['estado'] = 'morta'
+            p['vida'] = 0
+            p['combat_snapshot'] = None
+            data['perfil']['melhor_territorio'] = max(level, data['perfil']['melhor_territorio'])
+            return 'Run encerrada. Fragmentos e melhorias permanentes preservados.'
+        return transact(self, data, mutate)
+
+    def new_run(self, data):
+        """Reinicia apenas o estado temporário, mantendo o perfil do slot."""
+        from src.systems.roguelite import PROFILE_FIELDS, PREPARATION, transact
+        def mutate():
+            if data['progresso']['estado'] == 'ativa':
+                raise ValueError('A jornada atual ainda está ativa.')
+            profile = data['perfil']
+            fresh = self._new_data(data['nome'], data['id'])['progresso']
+            for key in PROFILE_FIELDS:
+                fresh[key] = deepcopy(profile[key])
+            fresh.update(run_id=uuid4().hex, estado='ativa', moedas=30,
+                         bonus_vida_permanente=5 * profile['vida'])
+            fresh['vida'] = player_max_hp(fresh)
+            choice = profile.get('preparada')
+            choices = PREPARATION[:3 if profile['preparacao'] == 1 else 6]
+            if profile['preparacao'] and choice in choices:
+                fresh['cartas_colecao'].append(choice)
+            data['progresso'] = fresh
+            data['run'] = fresh
+            return 'Nova run iniciada com vida cheia.'
+        return transact(self, data, mutate)
 
     # ========================================================
     # PROGRESSO: JOGO <-> SAVE
@@ -366,6 +464,8 @@ class SaveManager:
     def apply_to_game(self, data, player, deck_manager):
         """Aplica o progresso salvo ao jogador e ao baralho."""
         progress = data["progresso"]
+        if progress.get('estado', 'ativa') != 'ativa' and not is_test_save(data):
+            raise SaveError('A run terminou. Inicie uma nova jornada.')
         player.invulnerable = is_test_save(data)
         player.coins = progress["moedas"]
 
@@ -376,6 +476,7 @@ class SaveManager:
         # Energia máxima e turno são propriedades da LUTA, não da RUN.
         # Dados antigos ficam aceitos no JSON apenas para compatibilidade.
         player.energy_max = player.INITIAL_ENERGY_MAX
+        player.initial_energy = progress.get('energia_inicial', 2)
         player.unlocked_ultimates = [DEFAULT_ULTIMATE_ID]
         for ultimate_id in progress.get("ultimates_desbloqueadas", [DEFAULT_ULTIMATE_ID]):
             player.unlock_ultimate(ultimate_id)
@@ -383,11 +484,10 @@ class SaveManager:
         # start_combat inicia a mão/energia do primeiro turno do novo combate.
         player.turn_count = 0
         # Apenas cartas disponíveis entram no combate, inclusive em saves antigos.
-        deck_manager.deck = [
-            self._card_catalog[migrate_card_name(name)].copy()
-            for name in progress["cartas"]
-            if migrate_card_name(name) in self._card_catalog
-        ]
+        from src.systems.roguelite import normalize_inventory, instance_card
+        normalize_inventory(progress)
+        copies = {c['id']: c for c in progress['copies']}
+        deck_manager.deck = [instance_card(copies[cid]) for cid in progress['copy_slots'] if cid]
         if not deck_manager.deck:
             deck_manager.deck = create_starting_deck()
 

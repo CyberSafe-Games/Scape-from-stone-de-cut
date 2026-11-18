@@ -55,7 +55,7 @@ class MapEncounterTests(unittest.TestCase):
         engine.resume_from_save(self.data, self.saves, level=1, encounter_kind='road', encounter_index=0)
         engine._on_enemy_defeated()
         names = [card.name for card in engine.reward_cards]
-        self.assertEqual(len(set(names)), 3)
+        self.assertEqual(len(set(names)), 2)
         self.assertTrue(set(names).isdisjoint(progress['cartas_colecao']))
         engine.choose_reward(0)
         record_road_victory(self.saves, self.data, engine, lambda: None)

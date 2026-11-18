@@ -59,13 +59,13 @@ class IntentPlanningTests(unittest.TestCase):
         guard = e.enemy.actions[2]
         e.enemy.hp -= 25
         e.enemy.set_intent(guard.action_type, guard.value, guard)
-        self.assertIn('20 de vida', preview_intents(e)[0].description)
+        self.assertIn('10 de vida', preview_intents(e)[0].description)
         e.end_turn()
         e.enemy_turn()
         self.assertEqual(e.enemy.block, 10)
-        self.assertEqual(e.enemy.hp, e.enemy.max_hp - 5)
-        self.assertEqual(e.enemy.actions[0].status_effect, ('bleed', 2, 2))
-        self.assertEqual(e.enemy.actions[1].status_effect, ('bleed', 2, 2))
+        self.assertEqual(e.enemy.hp, e.enemy.max_hp - 15)
+        self.assertEqual(e.enemy.actions[0].status_effect, ('bleed', 2, 1))
+        self.assertEqual(e.enemy.actions[1].status_effect, ('bleed', 2, 1))
 
         e = self.engine(6)
         strike = e.enemy.actions[0]
@@ -74,13 +74,13 @@ class IntentPlanningTests(unittest.TestCase):
         e.enemy.set_intent('attack', strike.damage, strike)
         predicted = preview_intents(e)
         self.assertEqual(predicted[0].value, strike.damage)
-        self.assertEqual(predicted[1].value, followup.damage + 4)
+        self.assertEqual(predicted[1].value, followup.damage + 3)
         e.end_turn()
         e.enemy_turn()
-        self.assertEqual(e.enemy.attack_bonus, 4)
+        self.assertEqual(e.enemy.attack_bonus, 3)
         e.finish_enemy_turn()
         e.enemy_turn()
-        self.assertEqual(e.enemy.statuses['aura'], {'turns': 2, 'potency': 4})
+        self.assertEqual(e.enemy.statuses['aura'], {'turns': 2, 'potency': 3})
 
     def test_planned_second_action_executes_without_a_new_random_draw(self):
         for level in range(1, 8):
@@ -153,7 +153,7 @@ class IntentPlanningTests(unittest.TestCase):
         e.enemy.weak_turns = 1
         e.player.apply_status('vulnerable', 2)
         intents = preview_intents(e)
-        expected = ( (int(round(attack.damage*.75))+2+4)*125+99)//100
+        expected = ( (int(round(attack.damage*.75))+2+3)*125+99)//100
         self.assertEqual(intents[1].value, expected)
         self.assertIn('Não causa dano', intents[0].description)
         self.assertEqual(e.enemy.hp, e.enemy.max_hp)
@@ -189,11 +189,10 @@ class IntentInterfaceTests(unittest.TestCase):
 
     def test_zanzara_actions_match_the_four_printed_cards(self):
         boss = create_point_enemy(7)
-        scythe_status = (('bleed', 2, 2), ('poison', 2, 1))
         self.assertEqual(
             [(action.damage, action_status_effects(action)) for action in (*boss.actions, boss.special_action)],
-            [(20, scythe_status), (24, scythe_status), (20, (('vulnerable', 2, 25),)),
-             (45, (('poison', 2, 2),))],
+            [(12, (('bleed', 2, 1),)), (15, (('poison', 2, 1),)), (10, (('vulnerable', 2, 25),)),
+             (26, (('poison', 2, 1),))],
         )
 
     def test_tall_intent_art_is_centered_and_counters_do_not_cover_it(self):
@@ -207,12 +206,13 @@ class IntentInterfaceTests(unittest.TestCase):
         illustration.fill(color)
         with patch.object(self.assets, 'get_intent_art', return_value=illustration):
             view.draw(surface, engine, (-1, -1))
-        for slot, _ in view.entries:
+        for slot, intent in view.entries:
             area = pygame.Rect(slot.x+5, slot.y+5, slot.width-10, 78)
             fitted = pygame.Rect(0, 0, 39, 78)
             fitted.center = area.center
             rendered = surface.subsurface(fitted)
-            expected = pygame.transform.smoothscale(illustration, fitted.size)
+            from src.ui.card_rules import with_rules
+            expected = pygame.transform.smoothscale(with_rules(illustration, intent.description), fitted.size)
             self.assertEqual(pygame.image.tobytes(rendered, 'RGB'), pygame.image.tobytes(expected, 'RGB'))
 
     def test_boss_card_hover_only_draws_the_enlarged_card_inside_the_screen(self):

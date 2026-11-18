@@ -1,17 +1,20 @@
-"""O Mercado Silencioso: melhoria de vida máxima e compra de cartas existentes."""
+"""O Mercado Silencioso: cura da vida atual e compras temporárias da run."""
 
 import pygame
 
 from src.config.colors import WHITE, GOLD, GRAY
 from src.config.settings import WIDTH, HEIGHT
 from src.scenes.base_scene import BaseScene
-from src.systems.save_manager import HEALTH_UPGRADE_AMOUNT, HEALTH_UPGRADE_LIMIT, player_max_hp
+from src.systems.save_manager import player_max_hp
 from src.systems.shop_system import (
     CARD_OFFERS,
     CARD_PRICES,
-    HEALTH_UPGRADE_PRICE,
+    HEAL_AMOUNT,
+    HEAL_PRICES,
+    HEAL_LIMIT,
+    next_heal_price,
     purchase_card,
-    purchase_health_upgrade,
+    purchase_heal,
 )
 from src.ui.helpers import draw_text, wrap_text
 from src.ui import dark_fantasy_theme as theme
@@ -46,8 +49,9 @@ class ShopScene(BaseScene):
         self.save_manager = save_manager
         self.save_data = save_data
 
-        self.health_upgrade_button = pygame.Rect(1398, 264, 384, 68)
+        self.heal_button = pygame.Rect(1398, 264, 384, 68)
         self.back_button = pygame.Rect(1418, 984, 413, 65)
+        self.workshop_button = pygame.Rect(85, 975, 510, 65)
 
         self.offer_rects = {}
         self.page = 0
@@ -109,7 +113,7 @@ class ShopScene(BaseScene):
             90,
         )
 
-    def _draw_health_upgrade(self, surface):
+    def _draw_heal(self, surface):
         p = self.save_data["progresso"]
 
         rect = pygame.Rect(83, 198, 1749, 191)
@@ -117,7 +121,7 @@ class ShopScene(BaseScene):
 
         draw_text(
             surface,
-            "AUMENTO DE VIDA MÁXIMA",
+            "RECUPERAR VIDA",
             self.asset_manager.menu_font,
             WHITE,
             rect.x + 39,
@@ -127,7 +131,7 @@ class ShopScene(BaseScene):
         draw_text(
             surface,
             (
-                f"Aumenta a vida máxima em {HEALTH_UPGRADE_AMOUNT} até o fim da run."
+                f"Recupere até {HEAL_AMOUNT} de vida atual, sem ultrapassar o máximo."
             ),
             self.asset_manager.font,
             (199, 205, 188),
@@ -144,30 +148,34 @@ class ShopScene(BaseScene):
             rect.y + 134,
         )
 
-        remaining = HEALTH_UPGRADE_LIMIT - p["melhorias_vida_run"]
-
         draw_text(
             surface,
-            (f"MELHORIAS RESTANTES NESTA RUN  {remaining}/{HEALTH_UPGRADE_LIMIT}"),
+            f"CURAS NESTA RUN: {p.get('curas_loja_run', 0)}/{HEAL_LIMIT}  ·  "
+            + ' / '.join(str(price) for price in HEAL_PRICES) + ' OURO',
             self.asset_manager.small_font,
             GOLD,
             rect.x + 417,
             rect.y + 134,
         )
+        draw_text(surface, 'VIDA MÁXIMA: MELHORE COM FRAGMENTOS ENTRE RUNS',
+                  self.asset_manager.small_font, GRAY, rect.x + 417, rect.y + 159)
 
-        hovered = self.health_upgrade_button.collidepoint(
+        hovered = self.heal_button.collidepoint(
             self.window_manager.get_virtual_mouse_pos()
         )
 
-        enabled = remaining > 0 and p["moedas"] >= HEALTH_UPGRADE_PRICE
+        amount = min(HEAL_AMOUNT, player_max_hp(p) - p['vida'])
+        price = next_heal_price(p)
+        enabled = price is not None and amount > 0 and p["moedas"] >= price
         label = (
-            "LIMITE ATINGIDO" if remaining <= 0
-            else f"VIDA MÁX. +{HEALTH_UPGRADE_AMOUNT}  ·  {HEALTH_UPGRADE_PRICE} MOEDAS"
+            'ESGOTADO NESTA RUN' if price is None else
+            "VIDA CHEIA" if amount <= 0
+            else f"CURAR +{amount}  ·  {price} OURO"
         )
 
         theme.button(
             surface,
-            self.health_upgrade_button,
+            self.heal_button,
             label,
             self.asset_manager.small_font,
             hover=hovered,
@@ -299,11 +307,14 @@ class ShopScene(BaseScene):
         )
 
         self._draw_coins(surface)
+        theme.button(surface, self.workshop_button, 'MATERIAIS / EVOLUIR CÓPIAS',
+                     self.asset_manager.small_font,
+                     hover=self.workshop_button.collidepoint(self.window_manager.get_virtual_mouse_pos()))
         draw_options_gear(surface, self.window_manager)
 
         theme.divider(surface, 83, 1832, 168)
 
-        self._draw_health_upgrade(surface)
+        self._draw_heal(surface)
 
         draw_text(
             surface,
@@ -425,6 +436,11 @@ class ShopScene(BaseScene):
             return
 
         pos = self.window_manager.map_to_virtual(event.pos)
+        if self.workshop_button.collidepoint(pos):
+            from src.scenes.roguelite_scene import RogueliteScene
+            self.scene_manager.change_scene(RogueliteScene(self.scene_manager, self.window_manager,
+                self.asset_manager, self.save_manager, self.save_data))
+            return
 
         if self.previous_page_rect.collidepoint(pos):
             if self.page > 0:
@@ -440,9 +456,9 @@ class ShopScene(BaseScene):
             self.play_ui_sound("ui.click")
             self._back()
 
-        elif self.health_upgrade_button.collidepoint(pos):
+        elif self.heal_button.collidepoint(pos):
             self._notify(
-                purchase_health_upgrade(
+                purchase_heal(
                     self.save_manager,
                     self.save_data,
                 )

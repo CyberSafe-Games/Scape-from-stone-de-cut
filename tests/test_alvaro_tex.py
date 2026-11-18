@@ -62,7 +62,7 @@ class AlvaroTexCombatTests(TestCase):
         e._on_enemy_defeated()
         e._on_enemy_defeated()
         self.assertEqual(e.state, 'victory')
-        self.assertEqual(len(e.reward_cards), 3)
+        self.assertEqual(len(e.reward_cards), 2)
         self.assertEqual([x[0] for x in self.events].count('coin_drop'), 1)
 
     def test_poison_and_fire_end_of_enemy_round_transition(self):
@@ -98,6 +98,7 @@ class AlvaroTexCombatTests(TestCase):
         e = self.engine
         e.equip_ultimate('rugido_da_floresta')
         e.player.ultimate_charge = e.player.ultimate_threshold
+        e.player.energy = 5
         e.enemy.hp = 1
         self.assertTrue(e.activate_ultimate())
         self.assertEqual(e.state, 'boss_transition')

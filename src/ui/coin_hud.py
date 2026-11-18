@@ -110,6 +110,8 @@ class CoinHUD:
             oy = origin_y + random.randint(-30, 30)
             delay = i * PARTICLE_STAGGER
             self._particles.append(CoinParticle(ox, oy, delay, value, self.anchor_x + HUD_ICON_SIZE // 2, self.anchor_y + HUD_ICON_SIZE // 2))
+            # O saldo já foi creditado pelo motor; esta partícula é só visual.
+            self._particles[-1].credited = True
 
     def update(self, dt):
         """Atualiza particulas e credita moedas ao chegar no destino."""

@@ -440,7 +440,7 @@ class SaveSelectionScene(BaseScene):
                 self.asset_manager,
                 on_confirm=lambda: self._delete(index),
                 title="EXCLUIR SAVE?",
-                message=f"Espaço {index + 1:02d}: esta ação não pode ser desfeita.",
+                message=f"Espaço {index + 1:02d}: apaga run, fragmentos e melhorias permanentes deste perfil.",
                 confirm_label="SIM, EXCLUIR",
             )
         )

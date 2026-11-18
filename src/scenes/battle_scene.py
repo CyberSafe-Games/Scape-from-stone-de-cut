@@ -151,6 +151,17 @@ class BattleScene(BaseScene):
         self.ultimate_hand_rect = None
         self._hovered_hand_card = None
         self._last_card_hover_sound_at = -120
+        self.material_page = 0
+        self.material_chooser = False
+        self.material_button = pygame.Rect(WIDTH // 2 - 330, HEIGHT - 285, 660, 66)
+        self.material_rects = {}
+        self._logical_saved = None
+        self._save_failed = False
+        self.new_run_rect = pygame.Rect(WIDTH // 2 - 220, HEIGHT // 2 + 145, 440, 66)
+        if self.map_mode:
+            if self.engine.state == 'boss_transition':
+                self._phase_transition_pending = True
+            self._persist_logical_state()
 
     def _handle_combat_event(self, event_name, **kwargs):
         """Reage a eventos emitidos pelo motor de combate."""
@@ -173,6 +184,11 @@ class BattleScene(BaseScene):
             return
         if event_name == "game_over":
             self.play_ui_sound("gameplay.game_over")
+            if getattr(self, 'map_mode', False) and self.save_manager and not self.engine.is_replay:
+                ok, message = self.save_manager.end_run(self.save_data, self.engine.level)
+                self._save_failed = not ok
+                if not ok:
+                    self.engine.show_message(message, 6000)
         elif event_name == "victory":
             self.play_ui_sound("gameplay.victory")
         elif event_name == "boss_phase_transition":
@@ -499,6 +515,8 @@ class BattleScene(BaseScene):
         self._pending_enemy_audio.append((name, action, is_attack, duration * fraction, sound_id))
 
     def update(self, dt):
+        if getattr(self, 'map_mode', False) and not self._persist_logical_state():
+            return
         if self.boss_dialogue is not None:
             self.boss_dialogue.update(dt)
             if self.boss_dialogue.finished:
@@ -654,6 +672,47 @@ class BattleScene(BaseScene):
         if self.engine.state == "enemy_resolving":
             if self.entity_view.is_enemy_resolving_done():
                 self.engine.finish_enemy_turn()
+        if getattr(self, 'map_mode', False):
+            self._persist_logical_state()
+
+    def _persist_logical_state(self):
+        """Salva só quando a consequência lógica mudou, nunca por quadro visual."""
+        if not self.save_manager or not self.save_data or self.engine.is_replay:
+            return True
+        if self.engine.state == 'phase_complete':
+            return True
+        if self.engine.state == 'game_over':
+            if self.save_data['progresso'].get('estado') == 'morta':
+                self._save_failed = False
+                return True
+            ok, message = self.save_manager.end_run(self.save_data, self.engine.level)
+            self._save_failed = not ok
+            if not ok:
+                self.engine.show_message(message, 6000)
+            return ok
+        from src.systems.combat_snapshot import capture
+        from src.systems.roguelite import transact
+        signature = capture(self.engine, include_random=False)
+        if signature == self._logical_saved:
+            return True
+        def mutate():
+            self.save_manager.update_from_game(self.save_data, self.engine.player,
+                                               self.engine.deck_manager)
+            p = self.save_data['progresso']
+            if self.engine.state == 'victory':
+                from src.systems.campaign_progress import confirm_victory
+                confirm_victory(self.save_data, self.engine)
+            p['combat_snapshot'] = capture(self.engine)
+            p['retomada_legada'] = False
+            return 'Combate salvo.'
+        ok, message = transact(self.save_manager, self.save_data, mutate)
+        self.engine.run_progress = self.save_data['progresso']
+        self._save_failed = not ok
+        if ok:
+            self._logical_saved = signature
+        else:
+            self.engine.show_message(f'Falha ao salvar; tente novamente: {message}', 6000)
+        return ok
 
     def _draw_background(self, surface):
         bg = self.asset_manager.get_battle_background(
@@ -794,6 +853,15 @@ class BattleScene(BaseScene):
                     draw_rect.centery + 15 + i * 21,
                     center=True,
                 )
+        cost_rect = pygame.Rect(draw_rect.x + 6, draw_rect.y + 6, draw_rect.width - 12, 30)
+        pygame.draw.rect(surface, (20, 22, 30), cost_rect, border_radius=6)
+        draw_text(surface, f"{self.engine.ultimate.energy_cost} ENERGIA",
+                  self.asset_manager.small_font,
+                  GOLD if self.engine.energy >= self.engine.ultimate.energy_cost else RED,
+                  cost_rect.centerx, cost_rect.centery, center=True)
+        # Encobre a legenda legada "SEM CUSTO" sem modificar o PNG original.
+        footer = pygame.Rect(draw_rect.x + 6, draw_rect.bottom - 23, draw_rect.width - 12, 17)
+        pygame.draw.rect(surface, (20, 22, 30), footer, border_radius=4)
         glow = pygame.Surface(
             (draw_rect.width + 27, draw_rect.height + 27), pygame.SRCALPHA
         )
@@ -950,7 +1018,7 @@ class BattleScene(BaseScene):
             f"Ultimate: {self.engine.ultimate_charge}/{self.engine.ultimate_threshold}"
         )
         if self.engine.ultimate_ready:
-            label = f"Ultimate pronta — {self.engine.active_ultimate_name}"
+            label = f"Ultimate pronta — custo {self.engine.ultimate.energy_cost} energia"
         draw_text(
             surface,
             label,
@@ -1331,7 +1399,7 @@ class BattleScene(BaseScene):
                 self.engine.ultimate,
                 self.asset_manager,
                 mouse,
-                cost_label="ULT",
+                cost_label=f"{self.engine.ultimate.energy_cost} E",
             )
 
         self._draw_top_message(surface)
@@ -1526,7 +1594,7 @@ class BattleScene(BaseScene):
         )
         draw_text(
             surface,
-            "R para tentar novamente  |  MENU para voltar ao mapa"
+            "A run terminou. Fragmentos e melhorias permanentes foram preservados."
             if self.map_mode
             else "Pressione R para reiniciar",
             self.asset_manager.font,
@@ -1535,6 +1603,8 @@ class BattleScene(BaseScene):
             HEIGHT // 2 + 90,
             center=True,
         )
+        self._draw_action_button(surface, self.new_run_rect, 'PREPARAR NOVA RUN',
+                                 (55, 57, 63), GOLD, text_color=WHITE)
 
     def _draw_victory(self, surface):
         has_rewards = bool(self.engine.reward_cards)
@@ -1544,6 +1614,9 @@ class BattleScene(BaseScene):
             description = "Recompensa da fase concluída"
         else:
             description = "Sua coleção já tem todas as cartas disponíveis."
+        if self.map_mode and not self.engine.is_replay and self.engine.enemy.is_miniboss:
+            from src.systems.roguelite import FRAGMENTS
+            description = f"+{FRAGMENTS[self.engine.level - 1]} fragmento(s) permanente(s) · escolha tipo ou materiais"
 
         overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         overlay.fill((6, 7, 14, 228))
@@ -1586,6 +1659,29 @@ class BattleScene(BaseScene):
             (148, 148, 148),
             text_color=WHITE,
         )
+        if self.map_mode and not self.engine.is_replay:
+            amount = 3 if self.engine.enemy.is_miniboss else 1
+            self._draw_action_button(surface, self.material_button,
+                f'OU ESCOLHER {amount} MATERIAL(IS) DE UM TIPO', (35, 45, 38), GOLD, text_color=WHITE)
+            if self.material_chooser:
+                self._draw_material_options(surface, amount)
+
+    def _draw_material_options(self, surface, amount):
+        panel = pygame.Rect(80, 200, WIDTH - 160, 700)
+        draw_panel(surface, panel, fill=(8, 18, 16, 255), border=GOLD, radius=15)
+        draw_text(surface, f'ESCOLHA UM TIPO · +{amount} MATERIAL(IS) NA RESERVA',
+                  self.asset_manager.menu_font, GOLD, WIDTH // 2, 245, center=True)
+        self.material_rects = {}
+        p = self.save_data['progresso']
+        for i, name in enumerate(p['cartas_colecao']):
+            rect = pygame.Rect(110 + (i % 4) * 425, 300 + (i // 4) * 100, 400, 75)
+            self.material_rects[name] = rect
+            count = p['materials'].get(name, 0)
+            theme.button(surface, rect, f'{name} ({count}/9)', self.asset_manager.small_font,
+                         hover=rect.collidepoint(self.window_manager.get_virtual_mouse_pos()),
+                         enabled=count + amount <= 9)
+        self._draw_action_button(surface, self.material_button, 'CANCELAR ESCOLHA DE MATERIAL',
+                                 (35, 45, 38), GOLD, text_color=WHITE)
 
     def _draw_pending_save(self, surface):
         """Recuperação caso falhe a gravação do desbloqueio após a vitória."""
@@ -1631,6 +1727,30 @@ class BattleScene(BaseScene):
             )
 
     def handle_event(self, event):
+        if getattr(self, 'map_mode', False) and self.engine.state == 'victory' and not self.engine.is_replay:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                point = self.window_manager.map_to_virtual(event.pos)
+                if self.material_button.collidepoint(point):
+                    if self._persist_logical_state():
+                        self.material_chooser = not self.material_chooser
+                    return
+                if self.material_chooser:
+                    for name, rect in self.material_rects.items():
+                        if rect.collidepoint(point) and self._persist_logical_state():
+                            self.engine.choose_material(name)
+                            return
+                    return
+        if getattr(self, 'map_mode', False) and self.engine.state == 'game_over':
+            restart = (event.type == pygame.KEYDOWN and event.key == pygame.K_r)
+            restart = restart or (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1
+                and self.new_run_rect.collidepoint(self.window_manager.map_to_virtual(event.pos)))
+            if restart:
+                if self._persist_logical_state():
+                    self._return_to_map()
+                return
+        if getattr(self, 'map_mode', False) and getattr(self, '_save_failed', False):
+            self._persist_logical_state()
+            return
         # Trata atalho de tela cheia ou redimensionamento
         if self.window_manager.handle_window_event(event):
             return
@@ -1688,8 +1808,8 @@ class BattleScene(BaseScene):
                 if self._ultimate_in_hand() and hand_rects:
                     ultimate_rect = hand_rects[-1]
                     if ultimate_rect.collidepoint(virt_pos):
-                        self.engine.activate_ultimate()
-                        self.play_ui_sound("gameplay.ultimate_activate")
+                        if self.engine.activate_ultimate():
+                            self.play_ui_sound("gameplay.ultimate_activate")
                         return
                     hand_rects = hand_rects[:normal_count]
 
@@ -1857,6 +1977,8 @@ class BattleScene(BaseScene):
         """Registra um checkpoint do andar atual sem modificar outro slot."""
         if self.save_manager is None or self.save_data is None:
             return True
+        if self.map_mode:
+            return self._persist_logical_state()
         # Se o herói morreu, mantém o último checkpoint: nunca grava HP zero.
         # Em phase_complete, "_finalize_map_phase"/"record_*" gravam a vitória;
         # regravar aqui causaria desbloqueio duplicado. No estado de vitória,
@@ -1883,6 +2005,9 @@ class BattleScene(BaseScene):
     def _finalize_map_phase(self, level):
         """Grava vitória, recompensa e desbloqueio antes de trocar de cena."""
         if not self.map_mode or self.save_manager is None or self.save_data is None:
+            return
+        if self.engine.is_replay:
+            self._return_to_map()
             return
         try:
             recorder = (
