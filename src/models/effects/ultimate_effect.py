@@ -24,31 +24,24 @@ class UltimateAbility(ABC):
 
 
 class ManaAncestralUltimate(UltimateAbility):
-    """Ultimate padrão: restaura a energia e compra cartas."""
+    """Ultimate padrão: restaura energia e remove efeitos negativos."""
 
     ultimate_id = DEFAULT_ULTIMATE_ID
     name = "Mana Ancestral"
     action_name = "Mana Ancestral"
-    description = "Restaure sua energia até 8, compre 5 cartas e remova todos os seus efeitos negativos."
+    description = "Restaure sua energia para 8 e remova todos os seus efeitos negativos."
     accent_color = (110, 190, 255)
-
-    def __init__(self, draw_count=5):
-        self.draw_count = draw_count
 
     def activate(self, user, target, context):
         previous_energy = user.energy
         user.energy = user.MAX_ENERGY_LIMIT
         user.cleanse()
-        previous_hand = len(context.deck_manager.hand)
-        context.deck_manager.draw_cards(self.draw_count)
-        drawn = len(context.deck_manager.hand) - previous_hand
         context.trigger_player_action(self.action_name)
         restored = max(0, user.energy - previous_energy)
         if restored:
             context.spawn_player_text(f"+{restored} energia", self.accent_color)
-        context.spawn_player_text(f"+{drawn} cartas", WHITE)
         context.show_message("Mana Ancestral ativada!", duration=1800)
-        return {"energy_restored": restored, "cards_drawn": drawn}
+        return {"energy_restored": restored}
 
 
 class ForcasAncestraisUltimate(UltimateAbility):
@@ -136,6 +129,7 @@ ULTIMATE_METADATA = {
         "description": cls.description,
         "accent_color": cls.accent_color,
         "charge_requirement": cls.charge_requirement,
+        "energy_cost": cls.energy_cost,
     }
     for ultimate_id, cls in ULTIMATE_REGISTRY.items()
 }

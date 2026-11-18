@@ -37,7 +37,7 @@ def build_ultimate_card(art, meta, assets):
     for i, line in enumerate(lines):
         draw_text(card, line, assets.font, (231, 225, 200), 225, top+i*step, center=True)
     pygame.draw.line(card, dark, (42, 614), (408, 614))
-    draw_text(card, 'ULTIMATE  ·  SEM CUSTO', assets.small_font, accent, 225, 632, center=True)
+    draw_text(card, f"ULTIMATE  ·  {meta['energy_cost']} ENERGIA", assets.small_font, accent, 225, 632, center=True)
     for x in (138, 312):
         pygame.draw.polygon(card, light, [(x, 17), (x+8, 24), (x, 32), (x-8, 24)])
     return card

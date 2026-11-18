@@ -207,7 +207,7 @@ class RogueliteTests(unittest.TestCase):
         for name, expected_block, expected_hp in (
                 ('Poção Purificadora', 0, 26), ('Poção Venenosa', 6, 20),
                 ('Poção Fragilizante', 5, 20), ('Totem Protetor', 8, 20),
-                ('Máscara Ancestral', 28, 44)):
+                ('Máscara Ancestral', 28, 38)):
             with self.subTest(name=name):
                 engine = CombatEngine()
                 engine.player.hp = 20

@@ -1,5 +1,7 @@
 # Playtest do balanceamento roguelite
 
+> Para a revisão posterior de cartas, usar `feature/refino-cartas-roguelite` e o roteiro [playtest_refino_cartas.md](playtest_refino_cartas.md). A PR #24 já foi integrada; as observações abaixo descrevem o primeiro playtest.
+
 Esta branch é uma versão experimental para avaliação do grupo. O objetivo é observar dificuldade e variedade de estratégias antes de integrar na main.
 
 ## Baixar e executar

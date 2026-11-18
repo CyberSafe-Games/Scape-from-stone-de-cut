@@ -133,8 +133,9 @@ class UltimateAnimationTests(unittest.TestCase):
             self.assertFalse(scene.floating_texts.texts)
             scene.update(spec.duration*spec.impact+1)
             texts = scene.floating_texts.texts
-            self.assertEqual(len(texts), 2)
-            self.assertNotEqual(texts[0].y, texts[1].y)
+            self.assertEqual(len(texts), 1 if name == 'Mana Ancestral' else 2)
+            if len(texts) == 2:
+                self.assertNotEqual(texts[0].y, texts[1].y)
             scene.draw(pygame.Surface((1920, 1080)))
 
     def test_lethal_roar_keeps_victory_effects_until_hit_and_cast_ends(self):

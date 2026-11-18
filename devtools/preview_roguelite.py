@@ -106,8 +106,25 @@ def main():
         battle.engine.player.energy = 5
         battle.draw(window.screen)
         pygame.image.save(window.screen, output / 'especial_custo5.png')
+        battle.engine.equip_ultimate('mana_ancestral')
+        from src.systems.roguelite import instance_card
+        battle.engine.deck_manager.hand = [instance_card({
+            'id': f'preview-axes-{level}', 'name': 'Machados Gêmeos', 'level': level})
+            for level in (1, 2)]
+        battle.draw(window.screen)
+        pygame.image.save(window.screen, output / 'mana_machados_custo5.png')
         battle.engine.player.ultimate_charge = 0
         battle.engine.player.energy = original_energy
+        revised_names = ('Investida', 'Máscara Ancestral', 'Amuleto Dissipador', 'Surto de Energia')
+        battle.engine.deck_manager.hand = [instance_card({
+            'id': f'preview-revised-{i}', 'name': name, 'level': 2})
+            for i, name in enumerate(revised_names)]
+        battle.engine.player.energy_max = battle.engine.player.energy = 8
+        battle.draw(window.screen)
+        pygame.image.save(window.screen, output / 'cartas_revisadas_surto_sem_ganho.png')
+        battle.engine.player.energy_max = battle.engine.player.energy = 5
+        battle.draw(window.screen)
+        pygame.image.save(window.screen, output / 'cartas_revisadas_surto_ganho.png')
         battle.engine.enemy.hp = 0
         battle.engine._on_enemy_defeated()
         assert battle._persist_logical_state()

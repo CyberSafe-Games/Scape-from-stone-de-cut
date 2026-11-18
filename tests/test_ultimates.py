@@ -16,16 +16,43 @@ class TestUltimates(unittest.TestCase):
         self.assertEqual(engine.active_ultimate_name, "Mana Ancestral")
         self.assertIn(DEFAULT_ULTIMATE_ID, engine.unlocked_ultimates)
 
-    def test_mana_ancestral_restores_energy_and_draws_cards(self):
+    def test_mana_restores_energy_and_cleanses_without_drawing(self):
         engine = CombatEngine()
         engine.player.energy = 5
         engine.player.ultimate_charge = engine.player.ultimate_threshold
         engine.deck_manager.draw_pile.extend([engine.hand[0].copy() for _ in range(5)])
         hand_before = len(engine.hand)
+        piles_before = [list(pile) for pile in (engine.deck_manager.hand,
+            engine.deck_manager.draw_pile, engine.deck_manager.discard_pile)]
+        engine.player.add_stacks('poison', 2)
+        engine.player.add_stacks('bleed', 1)
+        engine.player.apply_status('vulnerable', 2, 25)
         self.assertTrue(engine.activate_ultimate())
         self.assertEqual(engine.energy, engine.player.MAX_ENERGY_LIMIT)
-        self.assertEqual(len(engine.hand), hand_before + 5)
+        self.assertEqual(len(engine.hand), hand_before)
+        self.assertEqual(piles_before, [list(pile) for pile in (engine.deck_manager.hand,
+            engine.deck_manager.draw_pile, engine.deck_manager.discard_pile)])
+        self.assertEqual(engine.player.poison_stacks, 0)
+        self.assertEqual(engine.player.bleed_stacks, 0)
+        self.assertNotIn('vulnerable', engine.player.statuses)
         self.assertEqual(engine.player.ultimate_charge, 0)
+
+    def test_twin_axes_cost_prevents_two_hits_with_eight_energy(self):
+        from src.systems.roguelite import instance_card
+        for level, damage in ((1, 40), (2, 50)):
+            with self.subTest(level=level):
+                engine = CombatEngine()
+                card = instance_card({'id': 'axes-test', 'name': 'Machados Gêmeos', 'level': level})
+                self.assertEqual(card.cost, 5)
+                self.assertEqual(card.value, damage)
+                engine.deck_manager.hand = [card, card.copy()]
+                engine.enemy.hp = engine.enemy.max_hp = 300
+                engine.player.energy = 8
+                self.assertTrue(engine.play_card(0))
+                self.assertEqual(engine.enemy.hp, 300 - damage)
+                self.assertEqual(engine.energy, 3)
+                self.assertFalse(engine.play_card(0))
+                self.assertEqual(engine.player.ultimate_charge, 5)
 
     def test_forcas_ancestrais_grants_strength_and_block(self):
         engine = CombatEngine()

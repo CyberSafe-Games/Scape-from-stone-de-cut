@@ -224,7 +224,7 @@ class TacticalCardTests(unittest.TestCase):
             self.assertEqual(engine.enemy.hp, 500)
             self.assertFalse(engine.enemy.statuses)
 
-    def test_cleanse_preserves_positive_effects_and_dispel_removes_everything(self):
+    def test_cleanse_preserves_buffs_and_dispel_preserves_debuffs(self):
         engine = self.engine()
         engine.player.add_block(10)
         engine.player.apply_status('aura', 3, 8)
@@ -238,8 +238,19 @@ class TacticalCardTests(unittest.TestCase):
         engine.enemy.strength = 4
         engine.enemy.apply_status('poison', 2, 5)
         engine.enemy.apply_status('totem', 0)
+        for name in ('bleed', 'fire', 'vulnerable', 'weak'):
+            engine.enemy.apply_status(name, 2, 1)
+        engine.enemy.apply_strength(6, 2)
+        engine.enemy.next_turn_energy = 2
+        engine.enemy.attack_lock_turns = 2
+        negative_before = {key: dict(value) for key, value in engine.enemy.statuses.items()
+                           if key in Combatant.NEGATIVE_STATUSES}
         self.play(engine, 'Amuleto Dissipador')
-        self.assertFalse(engine.enemy.statuses)
+        self.assertEqual(engine.enemy.statuses, negative_before)
+        self.assertEqual(engine.enemy.weak_turns, 2)
+        self.assertEqual(engine.enemy.attack_lock_turns, 2)
+        self.assertEqual(engine.enemy.next_turn_energy, 0)
+        self.assertEqual(engine.enemy.temporary_strength, 0)
         self.assertEqual(engine.enemy.block, 0)
         self.assertEqual(engine.enemy.strength, 0)
 
@@ -262,6 +273,70 @@ class TacticalCardTests(unittest.TestCase):
         self.assertEqual(engine.energy, 6)
         self.full_round(engine)
         self.assertEqual(engine.energy, 5)
+
+    def test_surge_forecast_handles_partial_gain_and_existing_bonus(self):
+        from src.models.effects.tactical_card_effect import next_turn_energy_gain
+        for maximum, pending, amount, expected in (
+                (3, 0, 2, 2), (5, 0, 3, 2), (5, 2, 2, 0),
+                (6, 0, 2, 1), (7, 0, 2, 0), (8, 0, 3, 0)):
+            with self.subTest(maximum=maximum, pending=pending):
+                engine = self.engine()
+                engine.player.energy_max = maximum
+                engine.player.next_turn_energy = pending
+                self.assertEqual(next_turn_energy_gain(engine.player, amount), expected)
+                before = min(8, maximum + 1 + pending)
+                engine.player.next_turn_energy += amount
+                self.full_round(engine)
+                self.assertEqual(engine.energy - before, expected)
+
+    def test_updated_mask_and_charge_at_both_levels(self):
+        from src.systems.roguelite import instance_card
+        for level, heal, damage in ((1, 14, 18), (2, 18, 24)):
+            engine = self.engine()
+            engine.player.hp = 20
+            engine.deck_manager.hand = [instance_card({'id': 'mask', 'name': 'Máscara Ancestral', 'level': level})]
+            self.assertTrue(engine.play_card(0))
+            self.assertEqual(engine.player.hp, 20 + heal)
+            self.assertEqual(engine.player.block, 22 if level == 1 else 28)
+            self.assertEqual(engine.energy, 4)
+            engine.player.energy = 8
+            engine.deck_manager.hand = [instance_card({'id': 'charge', 'name': 'Investida', 'level': level})]
+            self.assertTrue(engine.play_card(0))
+            self.assertEqual(engine.enemy.hp, 500 - damage)
+            self.assertEqual(engine.energy, 6)
+
+    def test_charge_removes_quarter_of_remaining_shield_after_damage(self):
+        from src.systems.roguelite import instance_card
+        for level, expected in ((1, 17), (2, 12)):
+            engine = self.engine()
+            engine.enemy.add_block(40)
+            engine.deck_manager.hand = [instance_card({'id': 'charge', 'name': 'Investida', 'level': level})]
+            self.assertTrue(engine.play_card(0))
+            self.assertEqual(engine.enemy.hp, 500)
+            self.assertEqual(engine.enemy.block, expected)
+            self.assertEqual(engine.energy, 6)
+
+    def test_charge_does_not_pierce_or_break_through_totem(self):
+        for initial, expected_hp, expected_block, totem in (
+                (0, 482, 0, False), (10, 492, 0, False),
+                (21, 500, 3, False), (40, 500, 40, True)):
+            engine = self.engine()
+            engine.enemy.add_block(initial)
+            if totem:
+                engine.enemy.apply_status('totem', 0)
+            self.play(engine, 'Investida')
+            self.assertEqual(engine.enemy.hp, expected_hp)
+            self.assertEqual(engine.enemy.block, expected_block)
+
+    def test_charge_preserves_remaining_shield_layer_durations(self):
+        engine = self.engine()
+        engine.enemy.add_block(30)
+        engine.enemy.begin_turn()
+        engine.enemy.add_block(20)
+        self.play(engine, 'Investida')
+        self.assertEqual(engine.enemy._block_layers, [[4, 1], [20, 2]])
+        engine.enemy.begin_turn()
+        self.assertEqual(engine.enemy.block, 20)
 
     def test_poison_death_on_player_end_prevents_enemy_acting(self):
         engine = self.engine()

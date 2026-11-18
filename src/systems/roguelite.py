@@ -22,7 +22,7 @@ CARD_PRICES = dict(zip(
 UPGRADE_PRICES = dict(zip(CARD_PRICES,
     (40, 40, 45, 55, 60, 70, 65, 50, 50, 65, 65, 55, 55, 55, 60, 40, 55, 65, 75, 45)))
 LEVEL_TWO_VALUES = dict(zip(CARD_PRICES,
-    (9, 14, 24, 26, 38, 50, 8, 3, 0, 1, 16, 2, 14, 18, 42, 0, 0, 26, 24, 3)))
+    (9, 14, 24, 26, 38, 50, 8, 3, 0, 1, 16, 2, 14, 18, 42, 0, 0, 26, 18, 3)))
 EXTRA_BLOCK = {'Poção Fragilizante': 5, 'Totem Protetor': 8,
                'Poção Venenosa': 6, 'Machado Quebra-Escudo': 8, 'Amuleto Dissipador': 8}
 PREPARATION = ('Investida', 'Disparo de Arco', 'Poção Purificadora',
@@ -112,7 +112,7 @@ def instance_card(copy):
         if card.name == 'Poção Purificadora':
             card.description += ' Recupere 6 de vida.'
         if card.name == 'Máscara Ancestral':
-            card.description = 'Recupere 24 de vida e receba 28 de Escudo por 2 turnos.'
+            card.description = 'Recupere 18 de vida e receba 28 de Escudo por 2 turnos.'
     return card
 
 
