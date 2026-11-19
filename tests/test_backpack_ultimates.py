@@ -186,7 +186,9 @@ class UltimateCardArtTests(unittest.TestCase):
         assets = AssetManager()
         for uid, meta in ULTIMATE_METADATA.items():
             image = assets.get_ultimate_image(uid)
-            self.assertEqual(image.get_size(), (450, 660))
+            self.assertEqual(image.get_size(), assets.get_card_image('Esfera Protetora', 2).get_size())
+            self.assertEqual(image.get_at((0, 0)).a, 0)
+            self.assertEqual(meta['energy_cost'], 2)
             self.assertGreater(image.get_bounding_rect().width, 290)
             self.assertEqual(meta['charge_requirement'], 20)
         window = MagicMock()

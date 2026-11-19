@@ -1,4 +1,5 @@
 import os
+import json
 import pygame
 from src.systems.common_animation_kits import COMMON_KITS
 from src.systems.boss_animation_kits import KITS
@@ -69,6 +70,8 @@ class AssetManager:
         self._projectile_images = {}
         self._intent_art = {}
         self._ultimate_images = {}
+        self._ultimate_sources = {}
+        self._ultimate_layouts = {}
         self._ultimate_effect_sprites = {}
         self._boss_ultimate_sprites = {}
         self._boss_ultimate_effects = {}
@@ -283,16 +286,17 @@ class AssetManager:
                 self._ui_images[key] = None
 
     def _load_ultimate_images(self):
-        """Compõe cartas lendárias com regras sempre atualizadas."""
+        """Carrega as cartas completas no molde LV2; regras são compostas sob demanda."""
         from src.models.effects.ultimate_effect import ULTIMATE_METADATA
-        from src.ui.ultimate_card_art import build_ultimate_card
-        for key, meta in ULTIMATE_METADATA.items():
-            path = os.path.join(ULTIMATE_ASSETS_DIR, key + '_art_v2.png')
+        path = os.path.join(ULTIMATE_ASSETS_DIR, 'art_manifest.json')
+        with open(path, encoding='utf-8') as source:
+            self._ultimate_layouts = json.load(source)['cards']
+        for key in ULTIMATE_METADATA:
+            path = os.path.join(ULTIMATE_ASSETS_DIR, self._ultimate_layouts[key]['file'])
             try:
-                art = pygame.image.load(path).convert_alpha()
+                self._ultimate_sources[key] = pygame.image.load(path).convert_alpha()
             except (pygame.error, FileNotFoundError):
-                art = None
-            self._ultimate_images[key] = build_ultimate_card(art, meta, self)
+                self._ultimate_sources[key] = None
 
     def get_ui_image(self, key):
         return self._ui_images.get(key)
@@ -336,8 +340,20 @@ class AssetManager:
             self._map_icons[key] = icon
         return self._map_icons[key]
 
-    def get_ultimate_image(self, ultimate_id):
-        return self._ultimate_images.get(ultimate_id)
+    def get_ultimate_image(self, ultimate_id, *, energy_cost=None):
+        from src.models.effects.ultimate_effect import ULTIMATE_METADATA
+        from src.ui.ultimate_card_art import build_ultimate_card
+        if ultimate_id not in ULTIMATE_METADATA:
+            return None
+        meta = dict(ULTIMATE_METADATA[ultimate_id])
+        if energy_cost is not None:
+            meta['energy_cost'] = energy_cost
+        key = (ultimate_id, meta['energy_cost'], meta['description'])
+        if key not in self._ultimate_images:
+            self._ultimate_images[key] = build_ultimate_card(
+                self._ultimate_sources.get(ultimate_id), meta, self,
+                self._ultimate_layouts[ultimate_id])
+        return self._ultimate_images[key]
 
 
     @staticmethod

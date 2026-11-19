@@ -51,7 +51,7 @@ Jaum Manel, jovem indígena da aldeia Stone The Cut, vê sua terra invadida pelo
 - **Baralho com três pilhas:** compra, mão e descarte. Se a pilha de compra esvazia, o descarte é reembaralhado.
 - **Cartas:** 20 cartas jogáveis com artes e animações próprias. As 75 cartas em desenvolvimento ficam indisponíveis para recompensas, compras e montagem do deck.
 - **Cemitério:** descarte uma carta da mão por 1 de energia, ou faça 1 troca grátis por turno com uma carta do descarte.
-- **Ultimates:** a carga começa em **0/20** em toda batalha e sobe conforme a energia gasta em cartas. Ao atingir 20, você pode ativar a Ultimate equipada: **Mana Ancestral**, **Forças Ancestrais** ou **Rugido da Floresta**. A escolha equipada é salva. A carga vale somente para a batalha atual.
+- **Ultimates:** a carga começa em **0/20** em toda batalha e sobe conforme a energia gasta em cartas. Ao atingir 20, você pode ativar a Ultimate equipada: **Mana Ancestral**, **Forças Ancestrais** ou **Rugido da Floresta**. A escolha equipada é salva. A carga vale somente para a batalha atual. Todas custam **2 de energia**. Mana restaura a energia para 8 e remove negativos; Forças concede +12 de Força até o fim do combate e 40 de Escudo por 2 turnos; Rugido destrói o Escudo inimigo, causa 60 de dano base e aplica Fraqueza por 3 turnos.
 - **Mercado Silencioso:** compre cartas ou aumente a vida máxima em 15 por 50 moedas, até 3 vezes por run.
 - **Mochila:** monte seu deck em espaços individuais (até 18, com no máximo 3 cópias da mesma carta) e escolha a Ultimate equipada.
 - **Tutorial guiado:** primeiro acesso a um save ensina as regras com balões e textos na tela.

@@ -814,11 +814,13 @@ class BattleScene(BaseScene):
             shadow, (0, 0, 0, 120), (11, 11, rect.width, rect.height), border_radius=21
         )
         surface.blit(shadow, (rect.x - 11, rect.y - 8))
-        image = self.asset_manager.get_ultimate_image(self.engine.active_ultimate_id)
+        image = self.asset_manager.get_ultimate_image(
+            self.engine.active_ultimate_id, energy_cost=self.engine.ultimate.energy_cost)
         draw_rect = rect.move(0, -18 if hovered else 0)
         if image is not None:
-            scaled = pygame.transform.smoothscale(image, draw_rect.size)
-            surface.blit(scaled, draw_rect)
+            fitted = image.get_rect().fit(draw_rect)
+            scaled = pygame.transform.smoothscale(image, fitted.size)
+            surface.blit(scaled, fitted)
         else:
             draw_panel(
                 surface,
@@ -853,15 +855,6 @@ class BattleScene(BaseScene):
                     draw_rect.centery + 15 + i * 21,
                     center=True,
                 )
-        cost_rect = pygame.Rect(draw_rect.x + 6, draw_rect.y + 6, draw_rect.width - 12, 30)
-        pygame.draw.rect(surface, (20, 22, 30), cost_rect, border_radius=6)
-        draw_text(surface, f"{self.engine.ultimate.energy_cost} ENERGIA",
-                  self.asset_manager.small_font,
-                  GOLD if self.engine.energy >= self.engine.ultimate.energy_cost else RED,
-                  cost_rect.centerx, cost_rect.centery, center=True)
-        # Encobre a legenda legada "SEM CUSTO" sem modificar o PNG original.
-        footer = pygame.Rect(draw_rect.x + 6, draw_rect.bottom - 23, draw_rect.width - 12, 17)
-        pygame.draw.rect(surface, (20, 22, 30), footer, border_radius=4)
         glow = pygame.Surface(
             (draw_rect.width + 27, draw_rect.height + 27), pygame.SRCALPHA
         )
@@ -1167,10 +1160,12 @@ class BattleScene(BaseScene):
 
     def _draw_ultimate_card(self, surface):
         card_rect = pygame.Rect(51, HEIGHT - 228, 144, 204)
-        card_img = self.asset_manager.get_ultimate_image(self.engine.active_ultimate_id)
+        card_img = self.asset_manager.get_ultimate_image(
+            self.engine.active_ultimate_id, energy_cost=self.engine.ultimate.energy_cost)
         if card_img is not None:
-            scaled = pygame.transform.smoothscale(card_img, card_rect.size)
-            surface.blit(scaled, card_rect)
+            fitted = card_img.get_rect().fit(card_rect)
+            scaled = pygame.transform.smoothscale(card_img, fitted.size)
+            surface.blit(scaled, fitted)
         else:
             draw_panel(
                 surface,

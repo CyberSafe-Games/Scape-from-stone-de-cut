@@ -16,7 +16,7 @@ class UltimateAbility(ABC):
     description = ""
     accent_color = GOLD
     charge_requirement = 20
-    energy_cost = 5
+    energy_cost = 2
 
     @abstractmethod
     def activate(self, user, target, context):
@@ -29,7 +29,7 @@ class ManaAncestralUltimate(UltimateAbility):
     ultimate_id = DEFAULT_ULTIMATE_ID
     name = "Mana Ancestral"
     action_name = "Mana Ancestral"
-    description = "Restaure sua energia para 8 e remova todos os seus efeitos negativos."
+    description = "Restaura sua energia para 8 e remove todos os seus efeitos negativos."
     accent_color = (110, 190, 255)
 
     def activate(self, user, target, context):
@@ -50,7 +50,7 @@ class ForcasAncestraisUltimate(UltimateAbility):
     ultimate_id = "forcas_ancestrais"
     name = "Forças Ancestrais"
     action_name = "Forças Ancestrais"
-    description = "Ganhe 12 de Força até o fim do combate e 40 de Escudo por 2 turnos."
+    description = "Ganhe 12 de força ate o fim do combate e 40 de escudo por 2 turnos"
     accent_color = GOLD
 
     def __init__(self, strength_gain=12, block_gain=40):
@@ -77,7 +77,7 @@ class RugidoDaFlorestaUltimate(UltimateAbility):
     ultimate_id = "rugido_da_floresta"
     name = "Rugido da Floresta"
     action_name = "Rugido da Floresta"
-    description = "Destrua o Escudo dos inimigos, cause 60 de dano a cada um e aplique Fraqueza por 3 turnos."
+    description = "Destrua o escudo inimigo, cause 60 de dano e aplique Fraqueza por 3 turnos."
     accent_color = GREEN
 
     def __init__(self, damage=60, weak_turns=3):
@@ -102,8 +102,8 @@ class RugidoDaFlorestaUltimate(UltimateAbility):
             protected = 'totem' in enemy.statuses
             actual = enemy.receive_attack(damage)
             if not protected:
-                enemy.weak_turns = max(getattr(enemy, "weak_turns", 0), self.weak_turns)
-                weakened_targets += 1
+                if enemy.apply_status("weak", self.weak_turns, 25):
+                    weakened_targets += 1
             total_damage += actual
             hits += 1
         if targets:

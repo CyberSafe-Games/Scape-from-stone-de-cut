@@ -502,7 +502,7 @@ class BackpackScene(BaseScene):
             )
             draw_text(
                 surface,
-                f"{meta['charge_requirement']} DE CARGA  ·  CUSTO ZERO",
+                f"{meta['charge_requirement']} DE CARGA  ·  {meta['energy_cost']} ENERGIA",
                 a.small_font,
                 GOLD,
                 rect.centerx,

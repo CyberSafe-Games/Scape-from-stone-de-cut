@@ -95,24 +95,24 @@ def main():
         original_energy = battle.engine.energy
         battle.engine.equip_ultimate('rugido_da_floresta')
         battle.engine.player.ultimate_charge = 20
-        battle.engine.player.energy = 4
+        battle.engine.player.energy = 1
         battle.draw(window.screen)
         pygame.image.save(window.screen, output / 'especial_sem_energia.png')
         rect = battle.ultimate_hand_rect
         battle.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN,
             button=1, pos=(round(rect.centerx * 2 / 3), round(rect.centery * 2 / 3))))
         assert battle.engine.player.ultimate_charge == 20
-        assert battle.engine.energy == 4
-        battle.engine.player.energy = 5
+        assert battle.engine.energy == 1
+        battle.engine.player.energy = 2
         battle.draw(window.screen)
-        pygame.image.save(window.screen, output / 'especial_custo5.png')
+        pygame.image.save(window.screen, output / 'especial_custo2.png')
         battle.engine.equip_ultimate('mana_ancestral')
         from src.systems.roguelite import instance_card
         battle.engine.deck_manager.hand = [instance_card({
             'id': f'preview-axes-{level}', 'name': 'Machados Gêmeos', 'level': level})
             for level in (1, 2)]
         battle.draw(window.screen)
-        pygame.image.save(window.screen, output / 'mana_machados_custo5.png')
+        pygame.image.save(window.screen, output / 'mana_custo2_machados_custo5.png')
         battle.engine.player.ultimate_charge = 0
         battle.engine.player.energy = original_energy
         revised_names = ('Investida', 'Máscara Ancestral', 'Amuleto Dissipador', 'Surto de Energia')

@@ -1,0 +1,184 @@
+{
+  "version": 1,
+  "reference": "cards/lv2/esfera_protetora.png",
+  "size": [
+    316,
+    489
+  ],
+  "cards": {
+    "mana_ancestral": {
+      "cost_center": [
+        53,
+        52
+      ],
+      "cost_polygon": [
+        [
+          14,
+          51
+        ],
+        [
+          53,
+          12
+        ],
+        [
+          71,
+          30
+        ],
+        [
+          92,
+          52
+        ],
+        [
+          54,
+          90
+        ],
+        [
+          52,
+          90
+        ],
+        [
+          14,
+          52
+        ]
+      ],
+      "cost_radius": 32,
+      "file": "mana_ancestral.png",
+      "description": "Restaura sua energia para 8 e remove todos os seus efeitos negativos.",
+      "energy_cost": 2,
+      "text_area": [
+        0.11075949367088607,
+        0.6175869120654397,
+        0.7658227848101266,
+        0.24335378323108384
+      ],
+      "size": [
+        316,
+        489
+      ],
+      "footer_rect": [
+        35,
+        441,
+        242,
+        25
+      ]
+    },
+    "forcas_ancestrais": {
+      "cost_center": [
+        53,
+        52
+      ],
+      "cost_polygon": [
+        [
+          14,
+          51
+        ],
+        [
+          53,
+          12
+        ],
+        [
+          71,
+          30
+        ],
+        [
+          92,
+          52
+        ],
+        [
+          54,
+          90
+        ],
+        [
+          52,
+          90
+        ],
+        [
+          14,
+          52
+        ]
+      ],
+      "cost_radius": 32,
+      "file": "forcas_ancestrais.png",
+      "description": "Ganhe 12 de força ate o fim do combate e 40 de escudo por 2 turnos",
+      "energy_cost": 2,
+      "text_area": [
+        0.11075949367088607,
+        0.6175869120654397,
+        0.7658227848101266,
+        0.24335378323108384
+      ],
+      "size": [
+        316,
+        489
+      ],
+      "footer_rect": [
+        35,
+        441,
+        242,
+        25
+      ]
+    },
+    "rugido_da_floresta": {
+      "cost_center": [
+        53,
+        52
+      ],
+      "cost_polygon": [
+        [
+          14,
+          51
+        ],
+        [
+          53,
+          12
+        ],
+        [
+          71,
+          30
+        ],
+        [
+          92,
+          52
+        ],
+        [
+          54,
+          90
+        ],
+        [
+          52,
+          90
+        ],
+        [
+          14,
+          52
+        ]
+      ],
+      "cost_radius": 32,
+      "file": "rugido_da_floresta.png",
+      "description": "Destrua o escudo inimigo, cause 60 de dano e aplique Fraqueza por 3 turnos.",
+      "energy_cost": 2,
+      "text_area": [
+        0.11075949367088607,
+        0.6175869120654397,
+        0.7658227848101266,
+        0.24335378323108384
+      ],
+      "size": [
+        316,
+        489
+      ],
+      "footer_rect": [
+        35,
+        441,
+        242,
+        25
+      ]
+    }
+  },
+  "source_sha256": {
+    "frame": "3409dd34ee32e271b131e3931c2206ec3f6670526eff2fd5df3b5e3abd1f0b91",
+    "mana": "34f15b9e5b77e0b4f48b582ee5012925fb6a475c1ae625c25a32c2c710508bc8",
+    "forcas": "303ee1aa287d681ba2d623ad7c6e1949ba7888a7dbf350e2889a85e3bd88ebb6",
+    "rugido": "782a7ed4aa0fab339881270651ebb8ef74230bdf4ce317bedeaecd5290f5a6d2"
+  }
+}

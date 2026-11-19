@@ -63,7 +63,7 @@ class TestUltimates(unittest.TestCase):
         self.assertTrue(engine.activate_ultimate())
         self.assertEqual(engine.player.strength, 12)
         self.assertEqual(engine.player.block, 40)
-        self.assertEqual(engine.energy, 3)
+        self.assertEqual(engine.energy, 6)
 
     def test_rugido_applies_weakness_for_three_full_enemy_turns(self):
         engine = CombatEngine()
@@ -74,8 +74,8 @@ class TestUltimates(unittest.TestCase):
         engine.enemy.hp = engine.enemy.max_hp = 200
         target_hp = engine.enemy.hp
         self.assertTrue(engine.activate_ultimate())
-        self.assertEqual(engine.energy, 2)
-        self.assertLess(engine.enemy.hp, target_hp)
+        self.assertEqual(engine.energy, 5)
+        self.assertEqual(engine.enemy.hp, target_hp - 60)
         self.assertEqual(engine.enemy.weak_turns, 3)
 
         player_hp = engine.player.hp
@@ -107,11 +107,11 @@ class TestUltimates(unittest.TestCase):
                 engine = CombatEngine()
                 engine.equip_ultimate(ultimate)
                 engine.player.ultimate_charge = 20
-                engine.player.energy = 4
+                engine.player.energy = 1
                 before = (engine.enemy.hp, engine.player.strength, engine.player.block, len(engine.hand))
                 self.assertFalse(engine.activate_ultimate())
                 self.assertEqual(engine.player.ultimate_charge, 20)
-                self.assertEqual(engine.energy, 4)
+                self.assertEqual(engine.energy, 1)
                 self.assertEqual(before, (engine.enemy.hp, engine.player.strength, engine.player.block, len(engine.hand)))
                 engine.end_turn()
                 while engine.state in ('enemy_turn', 'enemy_resolving'):
@@ -120,7 +120,7 @@ class TestUltimates(unittest.TestCase):
                     else:
                         engine.finish_enemy_turn()
                 self.assertEqual(engine.player.ultimate_charge, 20)
-                engine.player.energy = 5
+                engine.player.energy = 2
                 self.assertTrue(engine.activate_ultimate())
                 self.assertEqual(engine.player.ultimate_charge, 0)
                 self.assertEqual(engine.energy, 8 if ultimate == 'mana_ancestral' else 0)

@@ -269,3 +269,10 @@ Estas decisões atualizam as descrições históricas de Zanzara e áudio acima:
 - Reproduza recortes por devtools/prepare_player_card_packs.py após consultar docs/cartas_packs_lv1_lv2.md. As 20 artes anteriores estão no arquivo local ignorado pelo Git. As regras de combate e os custos continuam definidos no catálogo e na lógica de upgrade.
 
 - Alinhamento revisado dos custos das 40 artes: o manifesto v2 registra cost_polygon e o centroide por imagem. O preparo detecta o interior fechado do losango e o renderizador usa esse contorno, preservando as proporções de cada arte. Centralize a área visível do glifo sobre o centro detectado. A regressão da Aura Rubra e a preservação dos pixels externos têm cobertura em tests/test_player_card_art.py.
+
+
+## 14. Cartas Ultimate no molde LV2 — 19/11/2026
+
+- Mana, Forças e Rugido custam 2 de energia e 20 de carga. Mana restaura para 8 e limpa todos os negativos; Forças dá +12 Força até o fim da luta e 40 Escudo/2 turnos; Rugido remove Escudo antes de 60 de dano base e aplica Fraqueza/3 turnos. Esta regra substitui os relatos experimentais históricos de custo 5.
+- assets/ultimates/<id>.png são cartas completas 316×489, ouro ornamentado e exterior transparente. art_manifest.json registra a mesma posição de custo da Esfera Protetora LV2. get_ultimate_image compõe custo/descrição reais, com cache por regras; não adicionar faixa/badge duplicado no combate.
+- Originais substituídos somente no arquivo local ignorado. Preparo reproduzível em devtools/prepare_ultimate_cards.py e fontes/prompts em docs/cartas_ultimate_lv2.md. Preserve animações e sprites de batalha.

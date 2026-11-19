@@ -175,13 +175,13 @@ class Combatant:
         self.statuses = {k: v for k, v in self.statuses.items()
                          if not all_effects and k not in self.NEGATIVE_STATUSES}
         self.weak_turns = 0
+        self.attack_lock_turns = 0
+        self.attack_lock_pending = 0
         if all_effects:
             self.block = 0
             self.strength = 0
             self._strength_buffs.clear()
             self.next_turn_energy = 0
-            self.attack_lock_turns = 0
-            self.attack_lock_pending = 0
 
     def remove_positive_effects(self):
         """Dissipa benefícios sem apagar os debuffs aplicados pelo adversário."""
