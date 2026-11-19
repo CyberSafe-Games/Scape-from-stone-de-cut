@@ -21,10 +21,28 @@ def with_rules(image, description, cost=None, level=None):
         result.blit(text, text.get_rect(centerx=area.centerx, top=y))
         y += font.get_linesize()
     if cost is not None:
-        box = pygame.Rect(round(w * .052), round(h * .041), round(w * .09), round(h * .055))
-        pygame.draw.rect(result, (17, 16, 10), box)
-        text = pygame.font.Font(None, max(14, round(w * .1))).render(str(cost), True, (255, 223, 158))
-        result.blit(text, text.get_rect(center=box.center))
+        # Oculta a região inteira dos dois badges impressos nos PNGs antigos.
+        # O recobrimento é opaco e idempotente, inclusive ao recompor LV1 em LV2.
+        corner = [(2, 2), (round(w * .33), 2),
+                  (round(w * .33), round(h * .10)),
+                  (round(w * .20), round(h * .20)), (2, round(h * .20))]
+        pygame.draw.polygon(result, (7, 15, 14), corner)
+        center = (round(w * .14), round(h * .095))
+        radius = round(w * .12)
+        diamond = [(center[0], center[1] - radius),
+                   (center[0] + radius, center[1]),
+                   (center[0], center[1] + radius),
+                   (center[0] - radius, center[1])]
+        pygame.draw.polygon(result, (19, 22, 15), diamond)
+        pygame.draw.polygon(result, (215, 173, 91), diamond, max(1, round(w * .007)))
+        font = pygame.font.Font(None, max(14, round(w * .115)))
+        text = font.render(str(cost), True, (255, 223, 158))
+        if text.get_width() > radius * 1.25:
+            ratio = radius * 1.25 / text.get_width()
+            text = pygame.transform.smoothscale(text, (
+                max(1, round(text.get_width() * ratio)),
+                max(1, round(text.get_height() * ratio))))
+        result.blit(text, text.get_rect(center=center))
     if level is not None:
         text = pygame.font.Font(None, max(14, round(w * .07))).render(f'LV{level}', True, (255, 216, 118))
         box = text.get_rect(topright=(w - 18, 15)).inflate(8, 4)

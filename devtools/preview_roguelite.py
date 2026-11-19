@@ -82,7 +82,7 @@ def main():
                 assert data['progresso']['moedas'] == before
                 assert data['progresso']['curas_loja_run'] == 3
             if name == 'oficina':
-                rect = scene.buttons[0][0]
+                rect = scene.material_button
                 before = data['progresso']['moedas']
                 scene.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN,
                     button=1, pos=(round(rect.centerx * 2 / 3), round(rect.centery * 2 / 3))))

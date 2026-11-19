@@ -251,3 +251,11 @@ Estas decisões atualizam as descrições históricas de Zanzara e áudio acima:
 - N1/N2/preços e chefes usam valores da proposta. Regras globais de status e Ultimates preservadas. PNGs, sprites e áudio originais intactos; textos numéricos são compostos ao renderizar para manter a arte sincronizada com o código.
 - Validação consolidada: 636 testes em 66 módulos, incluindo 18 novos, aprovados; relatório `docs/validacao_balanceamento_por_modulo.json`. Runner suporta `--report`, `--resume` e `--recheck`. Prévia `devtools/preview_roguelite.py --smoke` usa saves temporários. Não sobrescrever relatório histórico da main.
 - Balanceamento ainda experimental: 15 campanhas de bot com N1 e zero melhorias permanentes deram 2 vitórias, ambas defesa/cura. Dano/Aura e Veneno/Sangramento não completaram nessa política. Isso não substitui playtest nem prova impossibilidade humana; conferir diversidade, sustentação por cura, Jozephino e chefes finais no jogo. Não alegar campanha humana completa, escuta crítica ou aprovação perceptual automática.
+
+
+## 12. Loja e altar ilustrados — 19/11/2026
+
+- Redesign autorizado pelo usuário para Loja e Aprimoramento. Cenários e ornamentos em assets/ui/shop/ e assets/ui/workshop/, carregados sob demanda por AssetManager.get_service_image(). A moldura da loja também é usada no altar.
+- Loja com quatro cartas por página, preço em ouro, disponibilidade, preview ampliado central sem captura de eventos e efeitos de aquisição/cura. A oficina seleciona uma cópia individual e compara LV1/LV2 a partir de instance_card(), com preço, materiais e limite da run visíveis.
+- src/ui/merchant_workshop_view.py compartilha composição e cache. As compras e evoluções usam as transações existentes de shop_system.py e roguelite.py. Preserve a conversão do mouse para coordenadas virtuais e o fluxo de preparação entre runs.
+- Fontes das artes, prompts e roteiro de conferência em docs/loja_altar_visual.md. Preview com saves temporários por devtools/preview_roguelite.py --smoke. Cobertura específica em tests/test_merchant_workshop.py.

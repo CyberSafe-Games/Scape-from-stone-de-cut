@@ -119,6 +119,17 @@ class AssetManager:
     def get_font(self, name="default"):
         return self._fonts.get(name, self._fonts["default"])
 
+    def get_service_image(self, name):
+        """Carrega sob demanda as ilustrações da loja e da oficina."""
+        key = "service/" + name
+        if key not in self._ui_images:
+            path = os.path.join(UI_ASSETS_DIR, *name.split("/")) + ".png"
+            try:
+                self._ui_images[key] = pygame.image.load(path).convert_alpha()
+            except (pygame.error, FileNotFoundError, OSError):
+                self._ui_images[key] = None
+        return self._ui_images[key]
+
     def get_status_icon(self, name):
         if name not in self._status_icons:
             path = os.path.join(os.path.dirname(BACKGROUND_PATH), 'status', name + '.png')
