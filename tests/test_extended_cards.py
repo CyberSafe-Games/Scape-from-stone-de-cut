@@ -40,7 +40,7 @@ class ExtendedCardTests(unittest.TestCase):
         class Assets:
             small_font = font
 
-            def get_card_image(self, name):
+            def get_card_image(self, name, level=1, **kwargs):
                 return None
 
         class RecordingFont:

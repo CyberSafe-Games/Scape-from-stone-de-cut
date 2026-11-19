@@ -30,19 +30,14 @@ class CardView:
         pygame.draw.rect(shadow, (0, 0, 0, 110), (8, 8, draw_rect.width, draw_rect.height), border_radius=18)
         surface.blit(shadow, (draw_rect.x - 8, draw_rect.y - 5))
 
-        image = asset_manager.get_card_image(card.name)
+        image = asset_manager.get_card_image(
+            card.name, level=getattr(card, "level", 1),
+            cost=card.cost, description=card.description)
         if image is not None:
-            if getattr(card, 'level', 1) == 2:
-                from src.ui.card_rules import with_rules
-                cache = getattr(asset_manager, '_leveled_card_images', None)
-                if not isinstance(cache, dict):
-                    cache = asset_manager._leveled_card_images = {}
-                key = (card.name, card.description, card.cost)
-                if key not in cache:
-                    cache[key] = with_rules(image, card.description, card.cost, 2)
-                image = cache[key]
-            scaled = pygame.transform.smoothscale(image, draw_rect.size)
-            surface.blit(scaled, draw_rect)
+            scale = min(draw_rect.width / image.get_width(), draw_rect.height / image.get_height())
+            scaled = pygame.transform.smoothscale(image, (
+                round(image.get_width() * scale), round(image.get_height() * scale)))
+            surface.blit(scaled, scaled.get_rect(center=draw_rect.center))
             if hovered:
                 pygame.draw.rect(surface, (245, 222, 160), draw_rect, 3, border_radius=15)
             return

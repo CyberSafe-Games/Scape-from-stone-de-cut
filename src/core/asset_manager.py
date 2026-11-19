@@ -576,24 +576,39 @@ class AssetManager:
     def get_card_action_sprites(self, action_name):
         return self._card_action_sprites.get(action_name, [])
 
-    def get_card_image(self, card_name):
-        """Retorna a textura gráfica de uma carta pelo seu nome."""
+    def get_card_image(self, card_name, level=1, *, cost=None, description=None):
+        """Resolve a arte da cópia e compõe seu custo atual sobre o losango original."""
         filename = self.CARD_IMAGE_FILES.get(card_name)
-        if not filename:
+        if not filename or level not in (1, 2):
             return None
-
-        if filename not in self._card_images:
-            path = os.path.join(CARD_ASSETS_DIR, filename)
+        from src.systems.roguelite import instance_card
+        card = instance_card({"id": "ui-preview", "name": card_name, "level": level})
+        cost = card.cost if cost is None else cost
+        description = card.description if description is None else description
+        raw_key = ("raw", filename, level)
+        if raw_key not in self._card_images:
+            folder = os.path.join(CARD_ASSETS_DIR, "lv2") if level == 2 else CARD_ASSETS_DIR
             try:
-                self._card_images[filename] = pygame.image.load(path).convert_alpha()
-                from src.systems.card_catalog import CARD_BY_NAME
-                from src.ui.card_rules import with_rules
-                card = CARD_BY_NAME[card_name]
-                self._card_images[filename] = with_rules(self._card_images[filename], card.description, card.cost, 1)
-            except (pygame.error, FileNotFoundError):
-                self._card_images[filename] = None
-
-        return self._card_images[filename]
+                self._card_images[raw_key] = pygame.image.load(
+                    os.path.join(folder, filename)).convert_alpha()
+            except (pygame.error, FileNotFoundError, OSError):
+                self._card_images[raw_key] = None
+        source = self._card_images[raw_key]
+        if source is None:
+            return None
+        key = (filename, level, cost, description)
+        if key not in self._card_images:
+            import json
+            manifest = getattr(self, "_card_art_manifest", None)
+            if manifest is None:
+                path = os.path.join(CARD_ASSETS_DIR, "art_manifest.json")
+                with open(path, encoding="utf-8") as file:
+                    manifest = self._card_art_manifest = json.load(file)["cards"]
+            from src.ui.card_rules import with_player_rules
+            slug = filename.removesuffix(".png")
+            self._card_images[key] = with_player_rules(
+                source, manifest[f"{slug}:{level}"], cost, description, level)
+        return self._card_images[key]
 
     @staticmethod
     def _prepare_uniform_enemy_frame(image, render_scale):

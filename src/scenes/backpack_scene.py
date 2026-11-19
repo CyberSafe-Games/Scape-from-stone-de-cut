@@ -145,11 +145,14 @@ class BackpackScene(BaseScene):
             )
             if source is None:
                 return
-            image = pygame.transform.smoothscale(source, rect.size)
+            scale = min(rect.width / source.get_width(), rect.height / source.get_height())
+            image = pygame.transform.smoothscale(source, (
+                round(source.get_width() * scale), round(source.get_height() * scale)))
             if dim:
                 image.fill((100, 100, 100), special_flags=pygame.BLEND_RGB_MULT)
             self._thumbs[key] = image
-        surface.blit(self._thumbs[key], rect)
+        image = self._thumbs[key]
+        surface.blit(image, image.get_rect(center=rect.center))
 
     def _button(
         self, surface, rect, label, enabled=True, prominent=False, danger=False

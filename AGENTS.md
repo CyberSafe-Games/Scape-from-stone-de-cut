@@ -259,3 +259,13 @@ Estas decisões atualizam as descrições históricas de Zanzara e áudio acima:
 - Loja com quatro cartas por página, preço em ouro, disponibilidade, preview ampliado central sem captura de eventos e efeitos de aquisição/cura. A oficina seleciona uma cópia individual e compara LV1/LV2 a partir de instance_card(), com preço, materiais e limite da run visíveis.
 - src/ui/merchant_workshop_view.py compartilha composição e cache. As compras e evoluções usam as transações existentes de shop_system.py e roguelite.py. Preserve a conversão do mouse para coordenadas virtuais e o fluxo de preparação entre runs.
 - Fontes das artes, prompts e roteiro de conferência em docs/loja_altar_visual.md. Preview com saves temporários por devtools/preview_roguelite.py --smoke. Cobertura específica em tests/test_merchant_workshop.py.
+
+
+## 13. Artes de cartas LV1/LV2 — integração de Cartas.zip
+
+- As 20 cartas disponíveis têm PNG LV1 em assets/cards/<id>.png e LV2 prateado em assets/cards/lv2/<id>.png. assets/cards/art_manifest.json registra a identidade e a geometria dos recortes. O ZIP tem os nomes dos packs 1 e 2 LV2 invertidos; o importador os associa pelo conteúdo.
+- Encaminhe level, cost e description reais da cópia para AssetManager.get_card_image(). O custo é recomposto no interior do losango original, preservando sua borda. O cache inclui nível, custo e descrição.
+- Use with_player_rules para os novos packs. with_rules atende intenções e composição legada. Preserve a moldura prateada ao exibir LV2 e o espaçamento externo da loja/altar.
+- Reproduza recortes por devtools/prepare_player_card_packs.py após consultar docs/cartas_packs_lv1_lv2.md. As 20 artes anteriores estão no arquivo local ignorado pelo Git. As regras de combate e os custos continuam definidos no catálogo e na lógica de upgrade.
+
+- Alinhamento revisado dos custos das 40 artes: o manifesto v2 registra cost_polygon e o centroide por imagem. O preparo detecta o interior fechado do losango e o renderizador usa esse contorno, preservando as proporções de cada arte. Centralize a área visível do glifo sobre o centro detectado. A regressão da Aura Rubra e a preservação dos pixels externos têm cobertura em tests/test_player_card_art.py.

@@ -5,7 +5,6 @@ import pygame
 from src.config.colors import GOLD, WHITE
 from src.config.settings import WIDTH, HEIGHT
 from src.ui import dark_fantasy_theme as theme
-from src.ui.card_rules import with_rules
 from src.ui.helpers import draw_text, wrap_text
 
 MUTED = (174, 174, 147)
@@ -113,10 +112,10 @@ class MerchantWorkshopView:
         rect = pygame.Rect(rect)
         key = (card.name, card.description, card.cost, getattr(card, "level", 1), rect.size)
         if key not in self.cards:
-            image = self.assets.get_card_image(card.name)
+            image = self.assets.get_card_image(
+                card.name, level=getattr(card, "level", 1),
+                cost=card.cost, description=card.description)
             if image is not None:
-                image = with_rules(image, card.description, card.cost,
-                                   getattr(card, "level", 1))
                 scale = min(rect.width / image.get_width(), rect.height / image.get_height())
                 self.cards[key] = pygame.transform.smoothscale(
                     image, (round(image.get_width() * scale), round(image.get_height() * scale)))
