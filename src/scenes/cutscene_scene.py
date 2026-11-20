@@ -125,6 +125,9 @@ class CutsceneScene(BaseScene):
         """Prepara imagem e dicas de controle uma vez por mudança de quadro."""
         entry = self.scenes[index]
         layer = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        if entry.get("image", "") is None:
+            layer.fill((0, 0, 0, 255))
+            return layer
         layer.fill((12, 12, 16, 255))
         filename = os.path.join(ASSETS_DIR, entry.get("image", ""))
         try:

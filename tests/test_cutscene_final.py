@@ -37,25 +37,36 @@ class FinalCutsceneTests(unittest.TestCase):
         self.level = TERRITORIES[-1].level
 
     def test_vitoria_final_abre_dez_imagens_em_ordem_e_volta_ao_mapa(self):
-        # Carrega as imagens reais, deixando eventuais falas fora deste teste.
-        with patch("src.scenes.battle_scene.record_victory") as record, patch.object(
-            CutsceneScene, "_dialogues", return_value=[]
-        ), patch("src.scenes.cutscene_scene.logger.warning") as missing_image:
+        with patch("src.scenes.battle_scene.record_victory") as record, patch(
+            "src.scenes.cutscene_scene.logger.warning"
+        ) as missing_image:
             self.battle._finalize_map_phase(self.level)
             record.assert_called_once()
             destination = self.battle.scene_manager.change_scene
             scene = destination.call_args.args[0]
             self.assertIsInstance(scene, CutsceneScene)
-            self.assertEqual(
-                [frame["image"] for frame in scene.scenes],
-                [f"cutscenes/final_{number:02d}.png" for number in range(1, 11)],
-            )
+            images = [f"cutscenes/final_{number:02d}.png" for number in range(1, 11)]
+            images.insert(2, None)
+            self.assertEqual([frame["image"] for frame in scene.scenes], images)
             space = pygame.event.Event(pygame.KEYDOWN, key=pygame.K_SPACE)
             click = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)
-            for index in range(10):
+            for index in range(len(images)):
                 scene.update(500)
                 self.assertEqual(scene.index, index)
-                scene.handle_event(space if index % 2 == 0 else click)
+                if images[index] is None:
+                    surface = pygame.Surface((32, 32))
+                    surface.fill("white")
+                    scene.draw(surface)
+                    self.assertEqual(surface.get_at((16, 16)), pygame.Color("black"))
+                event = space if index % 2 == 0 else click
+                dialogues = scene.scenes[index]["dialogues"]
+                for speaker, line in dialogues:
+                    scene.update(scene.DIALOGUE_DELAY_MS)
+                    self.assertEqual(scene._current_dialogue(), (speaker, line))
+                    scene.update(1000 * len(line))
+                    scene.handle_event(event)
+                if not dialogues:
+                    scene.handle_event(event)
             scene.update(500)
             destination.assert_called_with(self.battle._make_map_scene.return_value)
             missing_image.assert_not_called()
