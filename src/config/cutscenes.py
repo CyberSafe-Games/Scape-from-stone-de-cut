@@ -58,6 +58,30 @@ POST_TUTORIAL_CUTSCENE = [
     }
 ]
 
+# Em cada lista, adicione pares como ("Jaum Manel", "Sua fala aqui.").
+FINAL_CUTSCENE = [
+    {
+        "image": f"cutscenes/final_{number:02d}.png",
+        "dialogues": dialogues,
+        "position": "bottom",
+    }
+    for number, dialogues in enumerate(
+        [
+            [],  # 01
+            [],  # 02
+            [],  # 03
+            [],  # 04
+            [],  # 05
+            [],  # 06
+            [],  # 07
+            [],  # 08
+            [],  # 09
+            [],  # 10
+        ],
+        start=1,
+    )
+]
+
 CROSSFADE_DURATION_MS = 500
 FADE_IN_DURATION_MS = 500
 FADE_OUT_DURATION_MS = 500

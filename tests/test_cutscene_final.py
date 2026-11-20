@@ -1,0 +1,93 @@
+"""Verifica a entrada no epílogo e o retorno ao mapa."""
+
+import os
+import unittest
+from unittest.mock import Mock, patch
+
+os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
+
+import pygame
+
+from src.scenes.battle_scene import BattleScene
+from src.scenes.cutscene_scene import CutsceneScene
+from src.systems.save_manager import SaveError, TEST_SAVE_ID
+from src.systems.territory_map import TERRITORIES
+
+
+class FinalCutsceneTests(unittest.TestCase):
+    def setUp(self):
+        pygame.display.init()
+        pygame.font.init()
+        pygame.display.set_mode((1, 1))
+        self.addCleanup(pygame.quit)
+        self.battle = BattleScene.__new__(BattleScene)
+        self.battle.map_mode = True
+        self.battle.save_data = {}
+        self.battle.save_manager = Mock()
+        self.battle.engine = Mock(is_replay=False)
+        self.battle.coin_hud = Mock()
+        self.battle.encounter_kind = "point"
+        self.battle.scene_manager = Mock(current_scene=self.battle)
+        self.battle.window_manager = Mock()
+        self.battle.window_manager.handle_window_event.return_value = False
+        self.battle.asset_manager = Mock()
+        self.battle.asset_manager.get_font.return_value = pygame.font.Font(None, 32)
+        self.battle._make_map_scene = Mock()
+        self.level = TERRITORIES[-1].level
+
+    def test_vitoria_final_abre_dez_imagens_em_ordem_e_volta_ao_mapa(self):
+        # Carrega as imagens reais, deixando eventuais falas fora deste teste.
+        with patch("src.scenes.battle_scene.record_victory") as record, patch.object(
+            CutsceneScene, "_dialogues", return_value=[]
+        ), patch("src.scenes.cutscene_scene.logger.warning") as missing_image:
+            self.battle._finalize_map_phase(self.level)
+            record.assert_called_once()
+            destination = self.battle.scene_manager.change_scene
+            scene = destination.call_args.args[0]
+            self.assertIsInstance(scene, CutsceneScene)
+            self.assertEqual(
+                [frame["image"] for frame in scene.scenes],
+                [f"cutscenes/final_{number:02d}.png" for number in range(1, 11)],
+            )
+            space = pygame.event.Event(pygame.KEYDOWN, key=pygame.K_SPACE)
+            click = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)
+            for index in range(10):
+                scene.update(500)
+                self.assertEqual(scene.index, index)
+                scene.handle_event(space if index % 2 == 0 else click)
+            scene.update(500)
+            destination.assert_called_with(self.battle._make_map_scene.return_value)
+            missing_image.assert_not_called()
+
+    def test_laboratorio_exibe_epilogo_sem_registrar_recompensa(self):
+        self.battle.save_data = {"id": TEST_SAVE_ID, "modo_teste": True}
+        self.battle.engine.is_replay = True
+        with patch("src.scenes.battle_scene.record_victory") as record:
+            self.battle._finalize_map_phase(self.level)
+        record.assert_not_called()
+        self.assertIsInstance(
+            self.battle.scene_manager.change_scene.call_args.args[0], CutsceneScene
+        )
+
+    def test_falha_ao_salvar_mantem_a_batalha(self):
+        with patch("src.scenes.battle_scene.record_victory", side_effect=SaveError):
+            self.battle._finalize_map_phase(self.level)
+        self.battle.scene_manager.change_scene.assert_not_called()
+
+    def test_outros_encontros_e_revanche_voltam_ao_mapa(self):
+        for level, kind, replay in [
+            (self.level - 1, "point", False),
+            (self.level, "road", False),
+            (self.level, "point", True),
+        ]:
+            with self.subTest(level=level, kind=kind, replay=replay), patch(
+                "src.scenes.battle_scene.record_victory"
+            ), patch("src.scenes.battle_scene.record_road_victory"):
+                self.battle.encounter_kind = kind
+                self.battle.engine.is_replay = replay
+                self.battle.scene_manager.change_scene.reset_mock()
+                self.battle._finalize_map_phase(level)
+                self.battle.scene_manager.change_scene.assert_called_once_with(
+                    self.battle._make_map_scene.return_value
+                )
