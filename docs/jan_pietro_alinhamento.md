@@ -46,3 +46,10 @@ externos, o reparo anatômico já aprovado e os outros dois chefes foram preserv
   os módulos afetados foram reexecutados, os demais resultados foram preservados.
 - Atlas estático inspecionado e comparação animada antes/depois exportada.
   Isso não substitui a avaliação perceptual do usuário durante a partida.
+
+## Validação após integrar a PR #26
+
+A main a06dec3 (epílogo e diálogos finais) foi integrada à branch de sprites
+sem conflitos. A suíte inteira foi executada novamente, por processos isolados:
+**702 testes em 74 módulos, zero falhas**, incluindo os quatro testes novos
+do epílogo. Nenhum arquivo das cutscenes foi alterado por esta integração.
