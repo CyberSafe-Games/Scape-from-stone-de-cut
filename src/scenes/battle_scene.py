@@ -9,8 +9,9 @@ from src.scenes.pause_menu_modal import PauseMenuModal
 from src.systems.combat_engine import CombatEngine
 from src.systems.game_preferences import enemy_windup_ms
 from src.config.preferences import ENEMY_SPEED_NORMAL
-from src.systems.save_manager import SaveError
+from src.systems.save_manager import SaveError, is_test_save
 from src.systems.campaign_progress import record_victory, record_road_victory
+from src.systems.territory_map import TERRITORIES
 from src.ui.card_view import CardView
 from src.ui.entity_view import EntityView
 from src.ui.floating_text import FloatingTextManager
@@ -2009,8 +2010,12 @@ class BattleScene(BaseScene):
         """Grava vitória, recompensa e desbloqueio antes de trocar de cena."""
         if not self.map_mode or self.save_manager is None or self.save_data is None:
             return
+        final_boss = self.encounter_kind == "point" and level == TERRITORIES[-1].level
         if self.engine.is_replay:
-            self._return_to_map()
+            if final_boss and is_test_save(self.save_data):
+                self._show_final_cutscene()
+            else:
+                self._return_to_map()
             return
         try:
             recorder = (
@@ -2025,20 +2030,38 @@ class BattleScene(BaseScene):
         except (OSError, ValueError, SaveError) as exc:
             self.engine.show_message(f"Erro ao salvar: {exc}", duration=6000)
             return
-        self._return_to_map()
+        if final_boss:
+            self._show_final_cutscene()
+        else:
+            self._return_to_map()
 
-    def _return_to_map(self):
-        from src.scenes.map_scene import MapScene
+    def _show_final_cutscene(self):
+        from src.config.cutscenes import FINAL_CUTSCENE
+        from src.scenes.cutscene_scene import CutsceneScene
 
         self.scene_manager.change_scene(
-            MapScene(
+            CutsceneScene(
                 self.scene_manager,
                 self.window_manager,
                 self.asset_manager,
-                self.save_manager,
-                self.save_data,
+                scenes=FINAL_CUTSCENE,
+                next_scene_factory=self._make_map_scene,
             )
         )
+
+    def _make_map_scene(self):
+        from src.scenes.map_scene import MapScene
+
+        return MapScene(
+            self.scene_manager,
+            self.window_manager,
+            self.asset_manager,
+            self.save_manager,
+            self.save_data,
+        )
+
+    def _return_to_map(self):
+        self.scene_manager.change_scene(self._make_map_scene())
 
     def save_on_exit(self):
         """Salva ao fechar a janela, inclusive após um desbloqueio pendente."""
