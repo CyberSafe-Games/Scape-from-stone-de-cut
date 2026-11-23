@@ -48,6 +48,32 @@ def main():
         for name, scene in zip(('loja', 'oficina', 'mochila'), gallery):
             scene.draw(window.screen)
             pygame.image.save(window.screen, output / f'{name}.png')
+            if name == 'mochila':
+                scene.window_manager.get_virtual_mouse_pos = lambda: scene.slots[0].center
+                scene.draw(window.screen)
+                pygame.image.save(window.screen, output / 'mochila_hover_lv2.png')
+                scene.window_manager.get_virtual_mouse_pos = lambda: (-1, -1)
+                scene.tab = 'ultimates'
+                scene.draw(window.screen)
+                pygame.image.save(window.screen, output / 'mochila_ultimates.png')
+                scene.tab = 'deck'
+                original = list(scene.draft_slots)
+                scene.draft_slots = [None] * len(original)
+                scene.draw(window.screen)
+                pygame.image.save(window.screen, output / 'mochila_vazia.png')
+                from src.systems.deck_loadout import build_random_deck
+                scene.draft_slots = build_random_deck(p['cartas_colecao'])
+                scene.draw(window.screen)
+                pygame.image.save(window.screen, output / 'mochila_completa.png')
+                scene.draft_slots = original
+                scene.level_filter = 2
+                scene._set_page(0)
+                scene.draw(window.screen)
+                pygame.image.save(window.screen, output / 'mochila_filtro_lv2.png')
+                scene.level_filter = None
+                scene._set_page(0)
+                # Restaura o método real; o piloto continua clicável.
+                del scene.window_manager.get_virtual_mouse_pos
             if name == 'loja':
                 rect = scene.heal_button
                 before = data['progresso']['moedas']

@@ -152,7 +152,7 @@ class TestBackpackAudio(unittest.TestCase):
         self.assertEqual(scene.selected_card, card_name)
         scene_manager.audio_manager.play_sfx.assert_called_once_with(
             "ui.confirm",
-            volume=1.0,
+            volume=0.65,
         )
 
     def test_ultimate_tab_plays_click_sound(self):
@@ -361,7 +361,7 @@ class TestBackpackAudio(unittest.TestCase):
         )
         scene_manager.audio_manager.play_sfx.assert_called_once_with(
             "ui.confirm",
-            volume=1.0,
+            volume=0.65,
         )
 
     def test_add_card_success_plays_confirm_sound(self):
@@ -395,7 +395,7 @@ class TestBackpackAudio(unittest.TestCase):
 
         scene_manager.audio_manager.play_sfx.assert_called_once_with(
             "ui.confirm",
-            volume=1.0,
+            volume=0.65,
         )
 
     def test_add_card_failure_does_not_play_confirm_sound(self):
@@ -465,7 +465,7 @@ class TestBackpackAudio(unittest.TestCase):
 
         scene_manager.audio_manager.play_sfx.assert_called_once_with(
             "ui.confirm",
-            volume=1.0,
+            volume=0.65,
         )
 
     def test_filter_button_plays_click_sound(self):
@@ -550,7 +550,7 @@ class TestBackpackAudio(unittest.TestCase):
 
         scene_manager.audio_manager.play_sfx.assert_called_once_with(
             "ui.confirm",
-            volume=1.0,
+            volume=0.65,
         )
 
     def test_equip_ultimate_failure_does_not_play_sound(self):
@@ -706,7 +706,7 @@ class TestBackpackAudio(unittest.TestCase):
 
         scene_manager.audio_manager.play_sfx.assert_called_once_with(
             "ui.confirm",
-            volume=1.0,
+            volume=0.65,
         )
 
     def test_right_arrow_plays_click_sound(self):
@@ -817,7 +817,7 @@ class TestBackpackAudio(unittest.TestCase):
 
         scene_manager.audio_manager.play_sfx.assert_called_once_with(
             "ui.confirm",
-            volume=1.0,
+            volume=0.65,
         )
 
     def test_mouse_wheel_page_change_plays_click_sound(self):

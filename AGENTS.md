@@ -288,3 +288,10 @@ Estas decisões atualizam as descrições históricas de Zanzara e áudio acima:
 - Conferência isolada de Jan-Pietro: os seis anexos posteriores são pixel-identicos ao Boss5 do ZIP já integrado. Preservar as seis folhas atuais e o reparo da estocada 4. O piloto agora respeita --boss 5 também em --smoke; em modo visível repete a animação e pausa/continua por clique. Regressões de corpo opaco e cores em test_corpo_seco_visual_scale.
 
 - Correção posterior de tremida de Jan-Pietro: o idle deste chefe substitui os 225 ms gerais por 160 ms/pose (6,25 FPS), com ordem de respiração/ida e volta em src/systems/jan_pietro_animation.py. Apoio preparado (224,318), botas do idle pixel-idênticas, sem zoom por quadro ou segundo align_stance no idle/dano. Preserve a guarda comum nos extremos das ações, a orientação já espelhada da folha e o avanço melee existente. Regenerar por prepare_boss_sheet_update.py --boss Boss5; auditoria de 48 apoios e regras em docs/jan_pietro_alinhamento.md.
+
+## 16. Mochila Ancestral — 23/11/2026
+
+- Composição em src/ui/backpack_view.py; eventos e transações permanecem em BackpackScene. Cenário e compartimento em assets/ui/backpack/, fontes em art_manifest.json e decisões em docs/mochila_visual.md.
+- Reutilizar o renderizador de cartas da Loja/Altar com nível, custo e descrição da cópia real; manter padding e custo único. Preview de hover é visual, fixo no painel à direita e separado dos botões.
+- Filtros de custo/nível usam a próxima cópia livre com prioridade LV2 existente; recalcular após mutações do deck. Não mudar limites, rascunho válido, bloqueio de cartas indisponíveis ou persistência para acomodar o layout.
+- Piloto com saves temporários em preview_roguelite.py --smoke; testes em test_backpack_visual e regressões de deck/ultimates.

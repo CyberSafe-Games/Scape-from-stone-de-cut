@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "tool": "image_gen built-in",
+  "assets": [
+    {
+      "file": "assets/ui/backpack/expedition_background.png",
+      "sha256": "815a26fd7c49065657db1c549e2c87c61c9fbc51496db3cab60806c9a2d42538",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "source": "exec-9ea1440e-9fe2-45bc-a566-cb0f16e76e2f.png",
+      "prompt": "Production game environment asset, wide landscape 16:9, detailed handcrafted pixel art matching Scape From Stone dark fantasy deckbuilder. An ancestral expedition camp in mossy forest temple ruins at night, warm amber brass lanterns at far left and far right, dark near-black moss green shadows, weathered gold trim, brown leather, bone charms and feathers. Main scene an ancient broad wooden camp preparation table with an open expedition leather satchel laid across it. Composition intended for UI overlays: very broad dark usable flat leather surfaces through middle 80 percent, a large dark leather organizing panel on left, calm dark timber in center, small empty ritual reading stand on right. Tall silhouette stone arches and hanging vines behind, distant muted jungle mist. Table and leather occupy bottom two thirds, objects and lanterns confined to outer edges, restrained details in middle for cards to remain readable. Same rich pixel art texture and aged gold ornament as supplied merchant reference, earthy low key illumination. NO cards drawn, NO text, NO labels, NO buttons, NO UI frames, NO characters, NO watermark. Full immersive illustrated raster environment, not photograph or 3D.",
+      "transparent_background": false
+    },
+    {
+      "file": "assets/ui/backpack/leather_slot.png",
+      "sha256": "d60fcb77fc546a496cf17b341429aed4cdaa3a3a949e2328e595464220309a42",
+      "size": [
+        1942,
+        809
+      ],
+      "mode": "RGBA",
+      "source": "exec-98ae1708-1055-4052-8ec2-137cd251f27a.png",
+      "prompt": "Production isolated UI sprite, handcrafted detailed pixel art for Scape From Stone dark fantasy tribal deckbuilder. One FRONT FACING rectangular horizontal leather compartment frame, width to height ratio about 2.4:1. Worn dark brown leather edge, neatly sewn ochre threads, narrow aged gold bronze corner caps engraved with simple ancestral geometric runes, subtle moss, tactile old leather. Very thin decorative rim leaving more than 85 percent center EMPTY AND TRANSPARENT. Outside frame completely transparent too, clean alpha. No backing panel in the center. Crisp straight aligned edges so it can be scaled into a game card inventory slot. Restrained warm amber highlights, near black green shadows, same palette as ancient forest merchant and expedition camp. No text, no numbers, no cards, no symbols floating in center, no checkerboard, no background. Transparent hollow stitched leather frame only.",
+      "transparent_background": true
+    }
+  ]
+}
