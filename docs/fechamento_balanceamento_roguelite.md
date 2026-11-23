@@ -1,5 +1,7 @@
 # Fechamento técnico e roteiro de avaliação
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 > Atualização posterior: a comparação estrita encontrou campanhas sem cartas de cura. Ver [resultado de dano/híbrido/defesa](resultado_decks_dano_hibrido_defesa.md). As taxas da matriz inicial abaixo continuam como registro histórico, não como conclusão de que cura em cartas seja obrigatória.
 
 Branch: `feature/balanceamento-roguelite`. Esta rodada melhora a ferramenta de avaliação e a documentação; **não altera valores, regras, arte ou áudio do jogo**. Sprite do fragmento permanece uma entrega externa e não bloqueia o trabalho abaixo.

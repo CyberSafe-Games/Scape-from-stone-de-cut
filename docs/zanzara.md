@@ -1,44 +1,24 @@
-# Zanzara — boss final
+# Zanzara, Líder do Clã Moskar
 
-O confronto principal do Santuário de Pedra (nível 7) agora usa Zanzara.
-Os encontros comuns da região continuam com Vinimuth e Mago do Santuário.
-O retrato e o título da batalha identificam o novo boss final.
+> Referência vigente — auditoria de 23/11/2026. [Estado atual](estado_atual.md). Relatos de validações datadas abaixo representam somente aquela execução.
 
-O desenho conserva rosto, cabelo, barba, sorriso e porte das duas referências.
-A roupa é azul-marinho escuro, a faixa é branca e os bordados e acessórios
-continuam dourados. Os personagens estão voltados para a esquerda, com
-fundo transparente, paleta compartilhada e pés alinhados.
+Santuário de Pedra; ID interno: Zanzara.
+175 HP, 4 energia, duas ações/turno e especial a cada oito ações.
+Valores base, antes de bônus/proteções; efeitos seguem regras de stacks atuais.
 
-Sete sequências com oito frames (56 poses): repouso, dano, investida,
-arremesso de moedas, onda de energia, amuleto e ultimate própria.
-As moedas e a onda têm quatro desenhos independentes de projétil cada.
-A ultimate tem quatro camadas próprias de carga, voo e impacto azul/dourado.
+| Ação | Tipo | Valor | Energia | Efeitos |
+|---|---|---:|---:|---|
+| Foice Sombria | attack | 12 | 1 | bleed: 1 stack(s), 2 turno(s) |
+| Passo do Barqueiro | attack | 15 | 1 | poison: 1 stack(s), 2 turno(s) |
+| Grilhões das Almas | attack | 10 | 2 | vulnerable: 25, 2 turnos |
+| Travessia Final | attack | 26 | 1 | poison: 1 stack(s), 2 turno(s) |
 
-## Kit
+## Apresentação
 
-190 de vida, 4 de energia e duas ações por turno completo.
-
-| Ação | Efeito | Peso |
-| --- | --- | --- |
-| Investida Soberana | 15 de dano, corpo a corpo | 35% |
-| Chuva de Moedas | 17 de dano, à distância | 25% |
-| Onda Imperial | 20 de dano, à distância | 25% |
-| Amuleto Dourado | Recupera até 16 de vida e renova +4 de dano por 2 turnos | 15% |
-| Maré Soberana | 32 de dano, especial a cada 8 ações | Especial |
-
-O amuleto não ataca e não acumula bônus de reaplicações. Durações seguem
-os turnos completos do dono, preservando as regras existentes de combate.
-Os projéteis surgem no lançamento e viajam até o jogador; flash, vida e
-texto de dano aguardam o impacto. A ultimate dura 2900 ms, lança em 44%
-e atinge em 80%. Ao derrotar Zanzara, a campanha segue a conclusão existente
-do último território, sem adicionar outra fase ou alterar saves.
-
-## Arquivos
-
-- Sprites: `assets/bosses/eight_frames/zanzara`.
-- Efeitos da ultimate: `assets/boss_ultimate_effects/zanzara`.
-- Fontes preservadas: `assets/bosses/eight_frames/zanzara/source`.
-- Geração pela ferramenta integrada de imagens; prompts: `docs/zanzara_prompts.json`.
-- Exportação: `python -B devtools/prepare_zanzara.py`.
-- Prévia sem saves: `python -B devtools/preview_zanzara.py`.
-- Prévia animada: `docs/zanzara_em_acao.gif`.
+Necromante de kimono preto, foice e efeitos verdes; Travessia invoca Caronte
+no barco. Renderizador zanzara_necromancer.py, faixas próprias de oito poses em
+bosses/zanzara_necromancer_v2 e estados em zanzara_necromancer_v12. Retrato
+zanzara-necromante-v8 com moldura do protagonista. Não restaurar moedas/palma/
+amuleto antigos. Vitória final abre o epílogo.
+Dano: [registro de apoio e reação segura](reacoes_dano.md).
+[Regras e UI vigentes](estado_atual.md).

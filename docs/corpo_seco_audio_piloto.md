@@ -1,5 +1,7 @@
 # Corpo Seco — piloto de áudio
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Quatro ações integradas usando somente o repertório existente.
 Fontes, filtros e hashes em `corpo_seco_audio_fontes_v1.json`.
 Originais, variantes anteriores e bosses aprovados preservados.

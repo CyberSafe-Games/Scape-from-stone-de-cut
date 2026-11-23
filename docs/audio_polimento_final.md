@@ -1,5 +1,7 @@
 # Polimento antes da PR final — 11/11/2026
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 ## Main remota
 
 Conferida por `git ls-remote` e `git fetch origin`: `87456fdd16d3a663b78791b9096df586a2c8f04b`.

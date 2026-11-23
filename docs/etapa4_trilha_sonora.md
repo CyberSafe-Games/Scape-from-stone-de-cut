@@ -1,4 +1,6 @@
-﻿# Etapa final — trilha sonora
+# Etapa final — trilha sonora
+
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
 
 Branch: feature/trilha-sonora. Direção aprovada: fantasia sombria com percussão e elementos da floresta. As 75 cartas novas estão fora do escopo.
 

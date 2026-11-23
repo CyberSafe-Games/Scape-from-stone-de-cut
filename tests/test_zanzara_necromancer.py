@@ -163,19 +163,25 @@ class NecromancerTests(unittest.TestCase):
         self.assertEqual(actor_x("atk2", .78, 5), PLAYER_X + APPROACH_GAP)
         self.assertEqual(actor_x("atk3", .8, 5), ENEMY_X)
 
-    def test_damage_reaction_uses_all_frames_across_shared_flash_duration(self):
+    def test_damage_reaction_preserves_approved_idle_anchor_and_duration(self):
         from types import SimpleNamespace
         from unittest.mock import patch
-        from src.config.layout import FLASH_DURATION
+        from src.config.layout import FLASH_DURATION, ENEMY_X
+        from src.ui.enemy_reactions import support
         import src.ui.zanzara_necromancer as module
-        frames = module.state_frames('dano')
         screen = pygame.Surface((1,1), pygame.SRCALPHA)
-        for index in range(8):
-            elapsed = FLASH_DURATION * (index + .5) / 8
+        ready = module.reaction_ready()
+        anchor = support(ready)[:2]
+        for elapsed in (0,70,140,280,420,559,560):
             view = SimpleNamespace(enemy_flash=FLASH_DURATION-elapsed)
-            with self.subTest(index=index), patch.object(module, '_blit') as draw:
+            with self.subTest(elapsed=elapsed), patch.object(module, '_blit') as draw:
                 module.draw_hit_reaction(screen, view)
-                self.assertIs(draw.call_args.args[1], frames[index])
+                frame = draw.call_args.args[1]
+                self.assertEqual(support(frame)[:2], anchor)
+                self.assertGreaterEqual(draw.call_args.args[2], ENEMY_X)
+                self.assertLessEqual(draw.call_args.args[2], ENEMY_X+12)
+                if elapsed in (0,560):
+                    self.assertEqual(pygame.image.tobytes(frame,'RGBA'),pygame.image.tobytes(ready,'RGBA'))
 
 if __name__ == "__main__":
     unittest.main()

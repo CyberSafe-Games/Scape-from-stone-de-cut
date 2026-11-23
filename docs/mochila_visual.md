@@ -1,5 +1,7 @@
 # Mochila Ancestral — mesa de expedição
 
+> Referência vigente — auditoria de 23/11/2026. [Estado atual](estado_atual.md). Relatos de validações datadas abaixo representam somente aquela execução.
+
 Redesign de 23/11/2026. Cenário de acampamento entre ruínas, bolsa aberta e
 bancada de madeira; couro costurado, bronze/ouro envelhecido, verde-musgo e
 luz âmbar. A composição reutiliza os componentes aprovados do Mercado Silencioso

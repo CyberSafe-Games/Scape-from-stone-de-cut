@@ -178,3 +178,37 @@ class MerchantWorkshopTests(unittest.TestCase):
         images = list(view.cards.values())
         self.assertNotEqual(pygame.image.tobytes(images[0], "RGBA"),
                             pygame.image.tobytes(images[1], "RGBA"))
+
+
+    def test_upgraded_saved_copy_keeps_lv2_across_backpack_altar_and_base_shop_offer(self):
+        from src.scenes.backpack_scene import BackpackScene
+        from src.systems.roguelite import upgrade_copy
+        from unittest.mock import patch
+        p = self.data["progresso"]
+        copy = next(c for c in p["copies"] if c["name"] == "Soco Simples")
+        self.assertTrue(upgrade_copy(self.manager, self.data, copy["id"])[0])
+        reloaded = self.manager.load_save(self.data["id"])
+        backpack = BackpackScene(MagicMock(), self.window, self.assets, self.manager, reloaded)
+        draft = backpack._inventory_preview()
+        slot = draft["copy_slots"].index(copy["id"])
+        self.window.get_virtual_mouse_pos.return_value = backpack.slots[slot].center
+        with patch.object(self.assets, "get_card_image", wraps=self.assets.get_card_image) as image:
+            backpack.draw(self.surface)
+            requests = [c for c in image.call_args_list
+                        if c.args[0] == "Soco Simples" and c.kwargs.get("level") == 2]
+            self.assertTrue(requests)
+            self.assertEqual(requests[-1].kwargs["cost"], 1)
+            self.assertIn("9", requests[-1].kwargs["description"])
+        altar = RogueliteScene(MagicMock(), self.window, self.assets, self.manager, reloaded)
+        altar.selected_copy_id = copy["id"]
+        self.assertEqual(altar._selected_copy()["level"], 2)
+        altar.draw(self.surface)
+        self.window.get_virtual_mouse_pos.return_value = (-1, -1)
+        shop = ShopScene(MagicMock(), self.window, self.assets, self.manager, reloaded)
+        with patch.object(self.assets, "get_card_image", wraps=self.assets.get_card_image) as image:
+            shop.draw(self.surface)
+            requests = [c for c in image.call_args_list if c.args[0] == "Soco Simples"]
+            self.assertTrue(requests)
+            self.assertTrue(all(c.kwargs.get("level") == 1 for c in requests))
+        persisted = self.manager.load_save(self.data["id"])["progresso"]
+        self.assertEqual(next(c["level"] for c in persisted["copies"] if c["id"] == copy["id"]), 2)

@@ -1,5 +1,7 @@
 # Comparação de Mana Ancestral e Machados Gêmeos — 18/11/2026
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 > Comparação histórica: posteriormente o usuário aprovou devolver a limpeza de efeitos à Mana, mantendo a remoção da compra de cartas. Os resultados abaixo refletem a alternativa anterior sem limpeza.
 
 Proposta implementada localmente para avaliação, sem commit/push/merge nesta rodada. A PR #24 continua com a versão anterior.

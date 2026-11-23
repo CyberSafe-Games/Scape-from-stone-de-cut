@@ -660,7 +660,7 @@ class BattleScene(BaseScene):
                 self.engine, "enemy_actions_remaining", 0
             ) < getattr(enemy, "actions_per_turn", 1)
             windup_ms = self._enemy_windup_ms(combo_followup)
-            if self.enemy_turn_timer >= windup_ms:
+            if self.enemy_turn_timer >= windup_ms and self.entity_view.enemy_flash <= 0:
                 self.engine.enemy_turn()
                 self.entity_view.post_enemy_pause = POST_ENEMY_PAUSE
                 self.enemy_turn_timer = 0

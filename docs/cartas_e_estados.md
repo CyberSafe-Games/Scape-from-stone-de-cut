@@ -1,136 +1,64 @@
-# Cartas comuns e estados
+# Cartas disponíveis, evolução e estados
 
-O catálogo mantém as cartas comuns já existentes e adiciona as 75 cartas deste arquivo. “Soco MUITO Simples” é uma carta nova; “Soco Simples” permanece inalterada. As três ultimates, suas artes e regras permanecem iguais.
+> Referência vigente — auditoria de 23/11/2026. [Estado atual](estado_atual.md). Relatos de validações datadas abaixo representam somente aquela execução.
 
-## Turnos e Escudo
+20 tipos disponíveis, 75 definições bloqueadas para compra, drops e deck.
+Tabela extraída de CARD_SPECS e instance_card, sem inventar redução de custo LV2.
+Artes completas LV1 padrão em assets/cards/ e LV2 prateadas em assets/cards/lv2/.
+O manifesto geométrico registra contorno/centro do losango por arte; custo,
+nível e descrição vêm da cópia real, com um único indicador dinâmico.
 
-Um turno é a vez inteira de um combatente, incluindo todas as ações de um chefe. Cada camada de Escudo protege contra as duas próximas vezes do oponente e expira no começo da terceira vez do dono. O Escudo é consumido pelo dano, a camada mais antiga primeiro. Adicionar Escudo cria uma nova camada com duração própria; não renova as antigas.
+## Catálogo LV1 → LV2
 
-## Efeitos distintos
+| ID | Nome | Energia LV1 | Descrição LV1 | Energia LV2 | Descrição LV2 |
+|---|---|---:|---|---:|---|
+| esfera_protetora | Esfera Protetora | 1 | Receba 10 de Escudo por 2 turnos. | 1 | Receba 14 de Escudo por 2 turnos. |
+| soco_simples | Soco Simples | 1 | Cause 6 de dano. | 1 | Cause 9 de dano. |
+| investida | Investida | 2 | Cause 18 de dano. Depois, remova 25% do Escudo restante do inimigo, arredondando para baixo. | 2 | Cause 24 de dano. Depois, remova 25% do Escudo restante do inimigo, arredondando para baixo. |
+| aura_rubra | Aura Rubra | 2 | Seus ataques causam +6 de dano por 3 turnos. Reaplicar renova a duração. | 2 | Seus ataques causam +8 de dano por 3 turnos. Reaplicar renova a duração. |
+| pocao_fragilizante | Poção Fragilizante | 1 | Por 3 turnos, o inimigo recebe 25% a mais de dano de ataques. | 1 | Por 3 turnos, o inimigo recebe 25% a mais de dano de ataques. Receba também 5 de Escudo. |
+| pocao_purificadora | Poção Purificadora | 1 | Remova todos os seus efeitos negativos. | 1 | Remova todos os seus efeitos negativos. Recupere 6 de vida. |
+| totem_protetor | Totem Protetor | 3 | Ignore o próximo ataque inimigo inteiro. Não bloqueia dano de efeitos. | 3 | Ignore o próximo ataque inimigo inteiro. Não bloqueia dano de efeitos. Receba também 8 de Escudo. |
+| zarabatana_venenosa | Zarabatana Venenosa | 3 | Dispare 3 dardos. Cause 10 de dano total e aplique 2 stacks de Veneno por 2 turnos. | 3 | Dispare 3 dardos. Cause 16 de dano total e aplique 2 stacks de Veneno por 2 turnos. |
+| disparo_de_arco | Disparo de Arco | 2 | Cause 20 de dano à distância. | 2 | Cause 26 de dano à distância. |
+| esfera_escudo | Esfera Escudo | 3 | Receba 32 de Escudo por 2 turnos. | 3 | Receba 42 de Escudo por 2 turnos. |
+| machado_quebra_escudo | Machado Quebra-Escudo | 1 | Destrua todo o Escudo do inimigo. | 1 | Destrua todo o Escudo do inimigo. Receba também 8 de Escudo. |
+| amuleto_dissipador | Amuleto Dissipador | 2 | Remova os efeitos positivos do inimigo, incluindo Escudo e Força. Preserve os efeitos negativos. | 2 | Remova os efeitos positivos do inimigo, incluindo Escudo e Força. Preserve os efeitos negativos. Receba também 8 de Escudo. |
+| adaga_sangrenta | Adaga Sangrenta | 2 | Cause 8 de dano e aplique 2 stacks de Sangramento por 2 turnos. | 2 | Cause 14 de dano e aplique 2 stacks de Sangramento por 2 turnos. |
+| mascara_ancestral | Máscara Ancestral | 4 | Recupere 14 de vida e receba 22 de Escudo por 2 turnos. | 4 | Recupere 18 de vida e receba 28 de Escudo por 2 turnos. |
+| machados_gemeos | Machados Gêmeos | 5 | Cause 40 de dano. | 5 | Cause 50 de dano. |
+| lanca_perfurante | Lança Perfurante | 3 | Cause 30 de dano. | 3 | Cause 38 de dano. |
+| bola_de_fogo | Bola de Fogo | 2 | Cause 12 de dano e Fogo por 3 turnos: 3 de dano por intensidade ao fim do turno. Acumula até 3 intensidades e atinge Escudo primeiro. | 2 | Cause 18 de dano e Fogo por 3 turnos: 3 de dano por intensidade ao fim do turno. Acumula até 3 intensidades e atinge Escudo primeiro. |
+| pocao_de_cura | Poção de Cura | 3 | Recupere 20 de vida, sem ultrapassar a vida máxima. | 3 | Recupere 26 de vida, sem ultrapassar a vida máxima. |
+| surto_de_energia | Surto de Energia | 1 | Ganhe 2 de energia extra no próximo turno, até o limite de 8. Não aumenta sua energia máxima. | 1 | Ganhe 3 de energia extra no próximo turno, até o limite de 8. Não aumenta sua energia máxima. |
+| pocao_venenosa | Poção Venenosa | 2 | Aplique 2 stacks de Veneno por 2 turnos. | 2 | Aplique 2 stacks de Veneno por 2 turnos. Receba também 6 de Escudo. |
 
-- **Fogo:** 3 de dano por intensidade no fim da vez do afetado. Reaplicar adiciona uma intensidade (máximo 3) e renova para no mínimo 3 turnos. Consome Escudo antes da vida.
-- **Veneno:** dano direto à vida no fim da vez do afetado. Ignora Escudo e Totem. Reaplicar renova a duração para a maior entre a atual e a nova; o dano não soma. A zarabatana aplica 5 por 3 turnos; a poção aplica 5 por 4. O Slime também pode envenenar com Salpico Ácido (3 por 2 turnos) e o Goblin Nerd com Baforada Tóxica (5 por 2).
-- **Sangramento:** 4 de dano direto à vida antes do primeiro ataque de cada vez do afetado, durante 2 turnos. Não repete nas outras ações do chefe. Se o dano for fatal, o ataque não acontece.
-- **Fragilidade:** ataques recebidos causam +25% de dano, arredondado para cima. Não amplia os danos contínuos.
-- **Aura Rubra:** +8 de dano por ataque por 3 turnos, incluindo a vez de aplicação. Reaplicar renova; não acumula o bônus. A força permanente das ultimates soma normalmente.
-- **Totem:** anula o próximo ataque completo, mesmo com vários projéteis, e é consumido. Não anula efeitos contínuos. Impede o envenenamento de um ataque bloqueado.
-- **Energia futura:** o Surto concede energia apenas na próxima vez do jogador. Não aumenta a energia máxima; o total disponível é limitado a 8.
-- **Novas cartas:** Veneno, Sangramento e Queimadura aplicados pelas novas cartas acumulam acúmulos e duram 3 turnos, salvo quando o texto especifica uma duração diferente. Cada acúmulo de Veneno causa 1 de dano direto ao fim do turno; cada acúmulo de Queimadura causa 1 de dano direto ao fim do turno; cada acúmulo de Sangramento causa 1 de dano direto antes do primeiro ataque de cada turno. Fraqueza reduz em 25% o dano causado. Atordoamento pula o próximo turno inteiro.
-- Efeitos sem duração indicada usam 3 turnos para debuffs acumuláveis. Efeitos descritos como “neste turno” ou “próximo turno” duram somente o turno indicado. “Negociação” descarta aleatoriamente uma carta restante na mão.
+## Evolução e disponibilidade
 
-A Poção Purificadora remove negativos e Fraqueza do usuário, preservando Escudo e bônus. O Amuleto Dissipador remove positivos e negativos do inimigo, incluindo Escudo e Força. Todos os efeitos de combate são limpos ao iniciar outra luta. As durações da Fraqueza da ultimate conservam o comportamento anterior.
+Três materiais do tipo + ouro de UPGRADE_PRICES evoluem somente a cópia escolhida.
+Limite de três upgrades/run; material custa 15 ouro, reserva até nove por tipo.
+O Altar compara Antes/Depois reais; Mochila/combate preservam o ID e nível.
+As 75 definições adicionais não ficam disponíveis por existir fallback de arte;
+seus textos experimentais não são regras de cartas jogáveis.
 
-## Catálogo
+## Estados
 
-| Carta | Energia | Efeito |
-| --- | ---: | --- |
-| Esfera Protetora | 1 | Receba 10 de Escudo por 2 turnos. |
-| Soco Simples | 1 | Cause 6 de dano. |
-| Investida | 2 | Cause 10 de dano. |
-| Aura Rubra | 3 | Seus ataques causam +8 de dano por 3 turnos. Reaplicar renova a duração. |
-| Poção Fragilizante | 3 | Por 3 turnos, o inimigo recebe 25% a mais de dano de ataques. |
-| Poção Purificadora | 3 | Remova todos os seus efeitos negativos. |
-| Totem Protetor | 5 | Ignore o próximo ataque inimigo inteiro. Não bloqueia dano de efeitos. |
-| Zarabatana Venenosa | 3 | Dispare 3 dardos: 10 de dano total e Veneno 5 por 3 turnos. |
-| Disparo de Arco | 2 | Cause 20 de dano à distância. |
-| Esfera Escudo | 4 | Receba 30 de Escudo por 2 turnos. |
-| Machado Quebra-Escudo | 5 | Destrua todo o Escudo do inimigo. |
-| Amuleto Dissipador | 4 | Remova todos os efeitos do inimigo, positivos e negativos, incluindo Escudo e Força. |
-| Adaga Sangrenta | 3 | Cause 5 de dano. Por 2 turnos, o primeiro ataque do alvo causa 4 de Sangramento nele, ignorando Escudo. |
-| Máscara Ancestral | 6 | Recupere 20 de vida e receba 20 de Escudo por 2 turnos. |
-| Machados Gêmeos | 4 | Cause 40 de dano. |
-| Lança Perfurante | 3 | Cause 30 de dano. |
-| Bola de Fogo | 4 | Cause 10 de dano e Fogo por 3 turnos: 3 de dano por intensidade ao fim do turno. Acumula até 3 intensidades e atinge Escudo primeiro. |
-| Poção de Cura | 3 | Recupere 20 de vida, sem ultrapassar a vida máxima. |
-| Surto de Energia | 2 | Ganhe 2 de energia extra no próximo turno, até o limite de 8. Não aumenta sua energia máxima. |
-| Poção Venenosa | 4 | Veneno: 5 de dano direto à vida ao fim do turno por 4 turnos. Reaplicar renova a duração, sem acumular dano. |
+- Veneno: 1–2 stacks/aplicação, máximo 5, duração renovada para 2 turnos.
+  Fim do turno: 5×stacks direto, ignora Escudo, decrementa duração e zera ao expirar.
+- Sangramento: 1–2 stacks, máximo 5, duração 2 renovável. Após ação ofensiva que
+  tire vida do alvo: 3×stacks direto, no máximo duas ativações/turno. Multigolpe
+  conta uma ação; reset do contador no início; duração decresce no fim sem tick.
+- Choque: somente inimigo contra jogador; perde uma energia por stack no próximo
+  início, mínimo zero; todos os stacks removidos após aplicar.
+- Fogo segue intensidades/duração em entity.py e consome Escudo antes da vida.
+  Vulnerável aumenta ataques em 25%; Fraqueza reduz dano base em 25%.
+- Escudo usa camadas com duração própria. Totem bloqueia o próximo ataque inteiro,
+  não dano contínuo. Purificação limpa negativos e preserva benefícios.
+- Amuleto Dissipador remove positivos do inimigo, preservando negativos.
 
-### Novas cartas sem arte
-
-| Carta | Energia | Efeito |
-| --- | ---: | --- |
-| Soco MUITO Simples | 0 | Cause 3 de dano. |
-| Bisbilhotar | 2 | Compre 2 cartas. |
-| Negociação | 1 | Descarte 1 carta, compre 2 cartas. |
-| Sem Dor, Sem Ganho | 1 | Ganhe 1 de energia e receba 3 de dano. |
-| Marretada | 2 | Cause 12 de dano. |
-| Proteção | 2 | Receba 12 de Escudo. |
-| A Melhor Defesa é o Ataque | 2 | Cause dano igual ao seu Escudo atual. |
-| Justiça | 3 | Cause 7 de dano e receba 7 de Escudo. |
-| Banho de Ervas | 3 | Remova todos os debuffs e fique imune a debuffs por 2 turnos. |
-| Fôlego da Mata | 2 | Receba 2 de energia extra no próximo turno. |
-| Pacto Doloroso | 2 | Receba 4 de dano e restaure 2 de energia. |
-| Bênção da Mãe-Terra | 8 | Recupere 20 de vida; não jogue ataques no próximo turno. |
-| Flecha Envenenada | 1 | Cause 5 de dano e aplique 2 de Veneno. |
-| Casca Venenosa | 1 | Receba 5 de Escudo e aplique 2 de Veneno. |
-| Sangue Tóxico | 1 | Cada dano à vida sofrido pelo oponente neste turno aplica 1 de Veneno. |
-| Peçonha Concentrada | 2 | Aplique 7 de Veneno. |
-| Dose Letal | 2 | Cause 4 de dano; se o alvo tiver pelo menos 5 de Veneno, cause 10. |
-| Erva-Dobro | 4 | Dobre o dano de Veneno recebido pelo alvo no próximo turno dele. |
-| Muralha de Cipó Tóxico | 3 | Receba 15 de Escudo e aplique 8 de Veneno. |
-| Purga da Jararaca | 3 | Remova o Veneno; cause 2 de dano por acúmulo removido. |
-| Mistura Peçonhenta | 1 | Aplique 3 de Veneno, mais 3 se o alvo estiver sangrando. |
-| Corte Contaminado | 3 | Aplique 4 de Sangramento e 4 de Veneno. |
-| Talho de Caçador | 1 | Cause 5 de dano e aplique 3 de Sangramento. |
-| Dança da Lâmina Rubra | 1 | Suas cartas aplicam o dobro de Sangramento neste turno. |
-| Rasga-Carne | 2 | Cause 8 de dano e aplique 5 de Sangramento. |
-| Banquete do Curupira | 3 | Cause 8 de dano; se o alvo tiver pelo menos 10 de Sangramento, cause 16. |
-| Ritual do Sacrifício | 5 | Remova o Sangramento; cause o dobro do dano correspondente. |
-| Ferida que Não Fecha | 4 | Compre 2 cartas; o oponente não pode se curar no próximo turno. |
-| Brasa de Arco e Flecha | 1 | Cause 4 de dano e aplique 2 de Queimadura. |
-| Carvão em Brasa | 1 | Receba 5 de Escudo e aplique 2 de Queimadura. |
-| Chuva de Faíscas | 1 | Cada ataque seu aplica 1 de Queimadura neste turno. |
-| Fogo-Fátuo | 2 | Aplique 5 de Queimadura. |
-| Labareda Selvagem | 2 | Cause 8 de dano e aplique 3 de Queimadura. |
-| Sopro de Boitatá | 2 | Dobre a Queimadura do alvo, adicionando no máximo 10 acúmulos. |
-| Fumaça Reveladora | 2 | Compre 1 carta por cada 3 de Queimadura no alvo (máximo 4). |
-| Explosão da Mata | 3 | Cause dano igual ao dobro da Queimadura do alvo. |
-| Armadilha de Brasa | 3 | Receba 12 de Escudo; cada ação do oponente no próximo turno aplica 2 de Queimadura nele. |
-| Fogo que Cobra seu Preço | 4 | Aplique 10 de Queimadura e receba 5 de dano. |
-| Cinzas Impiedosas | 2 | O oponente não pode receber Escudo no próximo turno; aplique 2 de Queimadura. |
-| Cheiro de Medo | 1 | Cause 4 de dano; se houver Veneno, Sangramento ou Queimadura, aplique 1 de Fraqueza. |
-| Mau Agouro | 2 | Aplique 1 de Fraqueza. |
-| Olhar do Anhangá | 2 | Receba 8 de Escudo e aplique 1 de Fraqueza. |
-| Maldição da Caipora | 3 | Aplique 2 de Fraqueza. |
-| Ponto Fraco | 4 | Aplique 1 de Fraqueza; se o alvo já estiver fraco, cause 15 de dano. |
-| Fúria de Jaum Manel | 0 | Ganhe +2 de Força até o fim do turno e receba 3 de dano. |
-| Grito de Guerra | 2 | Ganhe +2 de Força por 2 turnos. |
-| Ataque Encorajado | 1 | Cause 5 de dano e ganhe +1 de Força por 2 turnos. |
-| Casca de Guerreiro | 2 | Receba 8 de Escudo e ganhe +2 de Força por 2 turnos. |
-| Combo do Javali | 2 | Cause 3 de dano duas vezes e ganhe +2 de Força por 2 turnos. |
-| Fúria Multiplicada | 2 | Dobre sua Força até o fim do turno. |
-| Três Golpes da Onça | 3 | Cause 4 de dano três vezes. |
-| Espírito do Guerreiro | 5 | Ganhe +1 de Força permanente neste combate, até 5 acúmulos. |
-| Força a Qualquer Custo | 4 | Ganhe +4 de Força por 3 turnos; não receba Escudo nesse período. |
-| Garras da Iara | 3 | Cause 1 de dano cinco vezes. |
-| Instinto de Caça | 2 | Compre 1 carta e ganhe +1 de Força por 2 turnos. |
-| Pancada de Tacape | 2 | Cause 5 de dano; 30% de chance de atordoar. |
-| Escudo Trovejante | 2 | Receba 8 de Escudo; 25% de chance de atordoar. |
-| Confusão dos Espíritos | 3 | Cause 6 de dano; chance de atordoar de 10% por tipo de debuff (máximo 50%). |
-| Golpe do Trovão | 4 | Cause 10 de dano; 40% de chance de atordoar. Se falhar, compre 1 carta. |
-| Totem Ancestral | 5 | Receba 1 Totem. |
-| Totem Guardião | 6 | Receba 1 Totem e 6 de Escudo. |
-| Totem da Serpente | 6 | Receba 1 Totem; quando ativado, aplique 5 de Veneno ao oponente. |
-| Totem da Cura | 7 | Receba 1 Totem; quando ativado, cure 8 de vida. |
-| Proteção das Quatro Ervas | 1 | Receba 4 de Escudo por tipo de debuff no oponente. |
-| Fumaça Venenosa | 2 | Cause 6 de dano, aplique 2 de Veneno e 2 de Queimadura. |
-| Ritual da Caçada | 2 | Cause 5 de dano, aplique 2 de Sangramento e 2 de Veneno. |
-| Castigo da Floresta | 2 | Cause 4 de dano por tipo de debuff no oponente. |
-| Praga Multiplicada | 2 | Aplique 2 acúmulos de cada debuff acumulável que oponente já tiver. |
-| Tríplice Maldição | 3 | Aplique 3 de Veneno, 3 de Sangramento e 3 de Queimadura. |
-| Despertar das Pragas | 3 | Cause imediatamente o dano dos debuffs do oponente, sem remover acúmulos. |
-| Conhecimento Proibido | 3 | Compre 1 carta por tipo de debuff no oponente. |
-| Dança de Guerra Selvagem | 3 | Cause 8 de dano, aplique 3 de Sangramento e ganhe +2 de Força por 2 turnos. |
-| Investida do Mapinguari | 4 | Cause 10 de dano, aplique 4 de Queimadura e tenha 30% de chance de atordoar. |
-| Praga da Mata Fechada | 4 | Aplique 4 de Veneno, 4 de Sangramento e 4 de Queimadura. |
-| Juízo Final da Floresta | 5 | Dobre Veneno, Sangramento e Queimadura (máximo de 10 acúmulos adicionais por tipo); não jogue mais ataques neste turno. |
-
-## Coleção, loja e saves
-
-O deck inicial contém três Socos Simples e três Esferas Protetoras. As 95 cartas aparecem nas recompensas e na loja; o preço é 25 + 15 vezes o custo de energia. Loja e mochila mostram seis cartas por página, com paginação calculada pelo catálogo. Cada tipo equipado continua fornecendo três cópias.
-
-Saves anteriores são migrados ao carregar, sem apagar moedas, territórios ou ultimates: Golpe → Soco Simples, Defesa → Esfera Protetora, Fortalecer → Esfera Escudo, Fúria → Aura Rubra e Golpe Duplo → Machados Gêmeos. Investida mantém o nome, com nova arte e animação. Slots e coleção conservam os equivalentes adquiridos.
-
-## Arte e animação
-
-As ilustrações e 80 poses existentes foram extraídas das oito referências fornecidas. As 75 cartas novas ainda não têm sprites e usam o visual substituto. Fundos brancos e quadriculados são removidos, poses vizinhas são isoladas por contorno e a escala corporal é mantida. Custos e descrições das cartas existentes correspondem às regras. Flechas, dardos, poções, fogo e dissipação viajam como projéteis independentes, com impacto visual sincronizado. Há dez ícones de estado em `assets/status/`. Passe o mouse sobre cartas ou estados para ler as regras completas.
+Resetar estados temporários ao iniciar/encerrar combate. Artes substituídas
+ficam no arquivo local ignorado, fora das pastas ativas.
+[Regras e ultimates vigentes](estado_atual.md).
+Fontes: card_definitions.py, card_catalog.py, roguelite.py, tactical_card_effect.py
+e entity.py. Testes: test_tactical_cards, test_roguelite, test_player_card_art,
+test_merchant_workshop, test_backpack_visual e test_documentation_contract.

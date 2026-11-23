@@ -1,19 +1,23 @@
 # Áudio do jogo
 
-Coloque os efeitos sonoros e músicas nesta pasta. Os arquivos de áudio ainda não foram adicionados nesta etapa.
+> Referência vigente — auditoria de 23/11/2026. [Estado atual](../../docs/estado_atual.md). Relatos de validações datadas abaixo representam somente aquela execução.
 
-## Como registrar sons
+Efeitos e trilha já estão integrados. IDs estáveis registrados em main.py pelo
+AudioManager; acesso via scene_manager.audio_manager. Ganho por som/categoria
+em src/config/audio_mix.py; preferências separam música, efeitos, interface e dano.
 
-No ponto de inicialização do jogo, registre os efeitos com identificadores estáveis:
+| Contexto | Arquivo relativo a assets/audio |
+|---|---|
+| Menu/mapa/Mochila/Loja/Altar | music/menu_floresta_v1.ogg |
+| Combates comuns/tutorial | music/combate_tambores_v1.ogg |
+| Chefes | music/chefes_jungle_chase_v2.ogg |
+| Zanzara | music/chefes_jungle_tribe_v2.ogg |
 
-```python
-audio_manager.register_sounds({
-    "ui.confirm": "ui/confirm.wav",
-    "card.play": "cards/card_play.wav",
-    "combat.hit": "combat/hit.wav",
-})
-```
+Configuração: src/config/music.py. Volume inicial 45%, saída 350 ms e entrada
+600 ms; a fase da dupla não reinicia a faixa. Novos derivados em OGG com
+origem/licença/composição registradas; preservar originais e recursos aprovados.
+Não registrar IDs/arquivos exemplificativos inexistentes. Fallback tolerado
+pelo runtime não substitui teste de presença do asset.
 
-Os caminhos acima são exemplos e só funcionarão depois que os respectivos arquivos forem adicionados. Para reproduzir um efeito, use `audio_manager.play_sfx("ui.confirm")`. As cenas podem acessar o serviço compartilhado por `scene_manager.audio_manager`.
-
-Formatos recomendados para efeitos: WAV ou OGG. Para música de fundo, prefira OGG. Confira a licença de cada arquivo antes de incluí-lo no jogo.
+Validação: testes de áudio, mix, opções, UI e MusicDirector. Confirmação da
+Mochila é atenuada a 65%. Ver [estado atual](../../docs/estado_atual.md).

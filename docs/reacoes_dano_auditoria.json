@@ -1,0 +1,4931 @@
+{
+  "Guardião da Pedra": {
+    "display": "Octav, o lobisomem",
+    "level": 1,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          -1,
+          0
+        ],
+        "overlap": 0.7606,
+        "accepted": false,
+        "anchor": [
+          221,
+          318
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.7028,
+        "accepted": false,
+        "anchor": [
+          221,
+          318
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          -3,
+          0
+        ],
+        "overlap": 0.4448,
+        "accepted": false,
+        "anchor": [
+          221,
+          318
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.4727,
+        "accepted": false,
+        "anchor": [
+          221,
+          318
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          -1,
+          0
+        ],
+        "overlap": 0.824,
+        "accepted": true,
+        "anchor": [
+          221,
+          318
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          -1,
+          0
+        ],
+        "overlap": 0.8982,
+        "accepted": true,
+        "anchor": [
+          221,
+          318
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.7219,
+        "accepted": false,
+        "anchor": [
+          221,
+          318
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          -1,
+          0
+        ],
+        "overlap": 0.9017,
+        "accepted": true,
+        "anchor": [
+          221,
+          318
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1526,
+        "floor": 627,
+        "bbox": [
+          1403,
+          392,
+          223,
+          235
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1537,
+        "floor": 627,
+        "bbox": [
+          1430,
+          399,
+          215,
+          228
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1538,
+        "floor": 627,
+        "bbox": [
+          1407,
+          378,
+          236,
+          249
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1538,
+        "floor": 627,
+        "bbox": [
+          1407,
+          378,
+          236,
+          249
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1535,
+        "floor": 627,
+        "bbox": [
+          1404,
+          378,
+          236,
+          249
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1529,
+        "floor": 627,
+        "bbox": [
+          1393,
+          387,
+          240,
+          240
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1526,
+        "floor": 627,
+        "bbox": [
+          1403,
+          392,
+          223,
+          235
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1526,
+        "floor": 627,
+        "bbox": [
+          1403,
+          392,
+          223,
+          235
+        ]
+      }
+    ]
+  },
+  "Álvaro e Tex": {
+    "display": "Alvar & Tekks, Rastreadores",
+    "level": 2,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          5,
+          0
+        ],
+        "overlap": 0.9287,
+        "accepted": true,
+        "anchor": [
+          225,
+          318
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          8,
+          0
+        ],
+        "overlap": 0.8304,
+        "accepted": true,
+        "anchor": [
+          225,
+          318
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          6,
+          0
+        ],
+        "overlap": 0.7818,
+        "accepted": false,
+        "anchor": [
+          225,
+          318
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.7603,
+        "accepted": false,
+        "anchor": [
+          225,
+          318
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          2,
+          0
+        ],
+        "overlap": 0.7745,
+        "accepted": false,
+        "anchor": [
+          225,
+          318
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          -3,
+          0
+        ],
+        "overlap": 0.8045,
+        "accepted": false,
+        "anchor": [
+          225,
+          318
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          4,
+          0
+        ],
+        "overlap": 0.8865,
+        "accepted": true,
+        "anchor": [
+          225,
+          318
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.9723,
+        "accepted": true,
+        "anchor": [
+          225,
+          318
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1531,
+        "floor": 627,
+        "bbox": [
+          1472,
+          345,
+          148,
+          282
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1543,
+        "floor": 627,
+        "bbox": [
+          1475,
+          347,
+          164,
+          280
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1544,
+        "floor": 627,
+        "bbox": [
+          1467,
+          348,
+          170,
+          279
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1544,
+        "floor": 627,
+        "bbox": [
+          1467,
+          348,
+          170,
+          279
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1540,
+        "floor": 627,
+        "bbox": [
+          1473,
+          344,
+          165,
+          283
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1536,
+        "floor": 627,
+        "bbox": [
+          1476,
+          347,
+          150,
+          280
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1531,
+        "floor": 627,
+        "bbox": [
+          1472,
+          345,
+          148,
+          282
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1531,
+        "floor": 627,
+        "bbox": [
+          1472,
+          345,
+          148,
+          282
+        ]
+      }
+    ]
+  },
+  "Goblin Nerd": {
+    "display": "Jozephino, o Inventor",
+    "level": 3,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          -5,
+          0
+        ],
+        "overlap": 0.8966,
+        "accepted": true,
+        "anchor": [
+          233,
+          318
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          26,
+          0
+        ],
+        "overlap": 0.7359,
+        "accepted": false,
+        "anchor": [
+          233,
+          318
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          35,
+          0
+        ],
+        "overlap": 0.6252,
+        "accepted": false,
+        "anchor": [
+          233,
+          318
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          26,
+          0
+        ],
+        "overlap": 0.7305,
+        "accepted": false,
+        "anchor": [
+          233,
+          318
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          -8,
+          0
+        ],
+        "overlap": 0.7972,
+        "accepted": false,
+        "anchor": [
+          233,
+          318
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          -8,
+          0
+        ],
+        "overlap": 0.7731,
+        "accepted": false,
+        "anchor": [
+          233,
+          318
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          -3,
+          0
+        ],
+        "overlap": 0.8609,
+        "accepted": true,
+        "anchor": [
+          233,
+          318
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.9672,
+        "accepted": true,
+        "anchor": [
+          233,
+          318
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1544,
+        "floor": 627,
+        "bbox": [
+          1484,
+          443,
+          121,
+          184
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1555,
+        "floor": 627,
+        "bbox": [
+          1487,
+          438,
+          137,
+          189
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1556,
+        "floor": 627,
+        "bbox": [
+          1493,
+          446,
+          126,
+          181
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1556,
+        "floor": 627,
+        "bbox": [
+          1493,
+          446,
+          126,
+          181
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1553,
+        "floor": 627,
+        "bbox": [
+          1490,
+          446,
+          126,
+          181
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1548,
+        "floor": 627,
+        "bbox": [
+          1488,
+          440,
+          121,
+          187
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1544,
+        "floor": 627,
+        "bbox": [
+          1484,
+          443,
+          121,
+          184
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1544,
+        "floor": 627,
+        "bbox": [
+          1484,
+          443,
+          121,
+          184
+        ]
+      }
+    ]
+  },
+  "Gordofera": {
+    "display": "Sir Thomas, a Besta Fera",
+    "level": 4,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          -8,
+          0
+        ],
+        "overlap": 0.8784,
+        "accepted": false,
+        "anchor": [
+          205,
+          318
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          2,
+          0
+        ],
+        "overlap": 0.8236,
+        "accepted": false,
+        "anchor": [
+          205,
+          318
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          7,
+          0
+        ],
+        "overlap": 0.8354,
+        "accepted": false,
+        "anchor": [
+          205,
+          318
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          9,
+          0
+        ],
+        "overlap": 0.8002,
+        "accepted": false,
+        "anchor": [
+          205,
+          318
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          5,
+          0
+        ],
+        "overlap": 0.8013,
+        "accepted": false,
+        "anchor": [
+          205,
+          318
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          4,
+          0
+        ],
+        "overlap": 0.8553,
+        "accepted": false,
+        "anchor": [
+          205,
+          318
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          -10,
+          0
+        ],
+        "overlap": 0.8652,
+        "accepted": false,
+        "anchor": [
+          205,
+          318
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          5,
+          0
+        ],
+        "overlap": 0.8831,
+        "accepted": false,
+        "anchor": [
+          205,
+          318
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1502,
+        "floor": 627,
+        "bbox": [
+          1383,
+          420,
+          243,
+          207
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1513,
+        "floor": 627,
+        "bbox": [
+          1394,
+          420,
+          243,
+          207
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1514,
+        "floor": 627,
+        "bbox": [
+          1395,
+          420,
+          243,
+          207
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1514,
+        "floor": 627,
+        "bbox": [
+          1395,
+          420,
+          243,
+          207
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1511,
+        "floor": 627,
+        "bbox": [
+          1392,
+          420,
+          243,
+          207
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1506,
+        "floor": 627,
+        "bbox": [
+          1387,
+          420,
+          243,
+          207
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1502,
+        "floor": 627,
+        "bbox": [
+          1383,
+          420,
+          243,
+          207
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1502,
+        "floor": 627,
+        "bbox": [
+          1383,
+          420,
+          243,
+          207
+        ]
+      }
+    ]
+  },
+  "Corpo Seco": {
+    "display": "Jan-Pietro, o Imortal",
+    "level": 5,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.7324,
+        "accepted": false,
+        "anchor": [
+          224,
+          318
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.6841,
+        "accepted": false,
+        "anchor": [
+          224,
+          318
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          8,
+          0
+        ],
+        "overlap": 0.6358,
+        "accepted": false,
+        "anchor": [
+          224,
+          318
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.6906,
+        "accepted": false,
+        "anchor": [
+          224,
+          318
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.6758,
+        "accepted": false,
+        "anchor": [
+          224,
+          318
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.7149,
+        "accepted": false,
+        "anchor": [
+          224,
+          318
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.6941,
+        "accepted": false,
+        "anchor": [
+          224,
+          318
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.7324,
+        "accepted": false,
+        "anchor": [
+          224,
+          318
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1530,
+        "floor": 627,
+        "bbox": [
+          1469,
+          426,
+          138,
+          201
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1541,
+        "floor": 627,
+        "bbox": [
+          1480,
+          426,
+          138,
+          201
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1542,
+        "floor": 627,
+        "bbox": [
+          1481,
+          426,
+          138,
+          201
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1542,
+        "floor": 627,
+        "bbox": [
+          1481,
+          426,
+          138,
+          201
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1539,
+        "floor": 627,
+        "bbox": [
+          1478,
+          426,
+          138,
+          201
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1534,
+        "floor": 627,
+        "bbox": [
+          1473,
+          426,
+          138,
+          201
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1530,
+        "floor": 627,
+        "bbox": [
+          1469,
+          426,
+          138,
+          201
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1530,
+        "floor": 627,
+        "bbox": [
+          1469,
+          426,
+          138,
+          201
+        ]
+      }
+    ]
+  },
+  "Carrasco da Vigília": {
+    "display": "Labrro, o Carrasco",
+    "level": 6,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.9444,
+        "accepted": true,
+        "anchor": [
+          215,
+          318
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          -8,
+          0
+        ],
+        "overlap": 0.8352,
+        "accepted": true,
+        "anchor": [
+          215,
+          318
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          -3,
+          0
+        ],
+        "overlap": 0.8353,
+        "accepted": true,
+        "anchor": [
+          215,
+          318
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          -5,
+          0
+        ],
+        "overlap": 0.7661,
+        "accepted": false,
+        "anchor": [
+          215,
+          318
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.9177,
+        "accepted": true,
+        "anchor": [
+          215,
+          318
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          -9,
+          0
+        ],
+        "overlap": 0.7719,
+        "accepted": false,
+        "anchor": [
+          215,
+          318
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          -9,
+          0
+        ],
+        "overlap": 0.7569,
+        "accepted": false,
+        "anchor": [
+          215,
+          318
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.9177,
+        "accepted": true,
+        "anchor": [
+          215,
+          318
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1516,
+        "floor": 627,
+        "bbox": [
+          1377,
+          371,
+          270,
+          256
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1528,
+        "floor": 627,
+        "bbox": [
+          1400,
+          350,
+          233,
+          277
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1528,
+        "floor": 627,
+        "bbox": [
+          1404,
+          396,
+          245,
+          231
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1528,
+        "floor": 627,
+        "bbox": [
+          1404,
+          396,
+          245,
+          231
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1526,
+        "floor": 627,
+        "bbox": [
+          1394,
+          371,
+          255,
+          256
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1521,
+        "floor": 627,
+        "bbox": [
+          1389,
+          371,
+          255,
+          256
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1516,
+        "floor": 627,
+        "bbox": [
+          1377,
+          371,
+          270,
+          256
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1516,
+        "floor": 627,
+        "bbox": [
+          1377,
+          371,
+          270,
+          256
+        ]
+      }
+    ]
+  },
+  "Zanzara": {
+    "display": "Zanzara, Líder do Clã Moskar",
+    "level": 7,
+    "renderer": "necromante",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 1.0,
+        "accepted": true,
+        "anchor": [
+          198,
+          277
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          7,
+          -1
+        ],
+        "overlap": 0.7727,
+        "accepted": false,
+        "anchor": [
+          198,
+          277
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          1,
+          -1
+        ],
+        "overlap": 0.7727,
+        "accepted": false,
+        "anchor": [
+          198,
+          277
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          -2,
+          -1
+        ],
+        "overlap": 0.7727,
+        "accepted": false,
+        "anchor": [
+          198,
+          277
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          1,
+          -1
+        ],
+        "overlap": 0.7727,
+        "accepted": false,
+        "anchor": [
+          198,
+          277
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          5,
+          -1
+        ],
+        "overlap": 0.7727,
+        "accepted": false,
+        "anchor": [
+          198,
+          277
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          9,
+          -1
+        ],
+        "overlap": 0.7727,
+        "accepted": false,
+        "anchor": [
+          198,
+          277
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 1.0,
+        "accepted": true,
+        "anchor": [
+          198,
+          277
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1538,
+        "floor": 629,
+        "bbox": [
+          1393,
+          334,
+          215,
+          295
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1549,
+        "floor": 629,
+        "bbox": [
+          1404,
+          334,
+          215,
+          295
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1550,
+        "floor": 629,
+        "bbox": [
+          1405,
+          334,
+          215,
+          295
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1550,
+        "floor": 629,
+        "bbox": [
+          1405,
+          334,
+          215,
+          295
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1547,
+        "floor": 629,
+        "bbox": [
+          1402,
+          334,
+          215,
+          295
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1542,
+        "floor": 629,
+        "bbox": [
+          1397,
+          334,
+          215,
+          295
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1538,
+        "floor": 629,
+        "bbox": [
+          1393,
+          334,
+          215,
+          295
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1538,
+        "floor": 630,
+        "bbox": [
+          1393,
+          335,
+          215,
+          295
+        ]
+      }
+    ]
+  },
+  "Álvaro e Tex · Pequeno": {
+    "display": "Tekks",
+    "level": 2,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          -29,
+          0
+        ],
+        "overlap": 0.8724,
+        "accepted": true,
+        "anchor": [
+          205,
+          318
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          3,
+          0
+        ],
+        "overlap": 0.7639,
+        "accepted": false,
+        "anchor": [
+          205,
+          318
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          -20,
+          0
+        ],
+        "overlap": 0.5103,
+        "accepted": false,
+        "anchor": [
+          205,
+          318
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          -21,
+          0
+        ],
+        "overlap": 0.3874,
+        "accepted": false,
+        "anchor": [
+          205,
+          318
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          -23,
+          0
+        ],
+        "overlap": 0.3769,
+        "accepted": false,
+        "anchor": [
+          205,
+          318
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          1,
+          0
+        ],
+        "overlap": 0.8031,
+        "accepted": false,
+        "anchor": [
+          205,
+          318
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          1,
+          0
+        ],
+        "overlap": 0.7993,
+        "accepted": false,
+        "anchor": [
+          205,
+          318
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.9504,
+        "accepted": true,
+        "anchor": [
+          205,
+          318
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1501,
+        "floor": 627,
+        "bbox": [
+          1446,
+          479,
+          134,
+          148
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1513,
+        "floor": 627,
+        "bbox": [
+          1460,
+          479,
+          123,
+          148
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1514,
+        "floor": 627,
+        "bbox": [
+          1461,
+          479,
+          123,
+          148
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1514,
+        "floor": 627,
+        "bbox": [
+          1461,
+          479,
+          123,
+          148
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1510,
+        "floor": 627,
+        "bbox": [
+          1455,
+          477,
+          134,
+          150
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1505,
+        "floor": 627,
+        "bbox": [
+          1450,
+          477,
+          134,
+          150
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1501,
+        "floor": 627,
+        "bbox": [
+          1446,
+          479,
+          134,
+          148
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1501,
+        "floor": 627,
+        "bbox": [
+          1446,
+          479,
+          134,
+          148
+        ]
+      }
+    ]
+  },
+  "Slime": {
+    "display": "Slime",
+    "level": 1,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          -11,
+          0
+        ],
+        "overlap": 0.8695,
+        "accepted": false,
+        "anchor": [
+          225,
+          258
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          -5,
+          0
+        ],
+        "overlap": 0.9049,
+        "accepted": false,
+        "anchor": [
+          225,
+          258
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          -7,
+          0
+        ],
+        "overlap": 0.8556,
+        "accepted": false,
+        "anchor": [
+          225,
+          258
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          -1,
+          0
+        ],
+        "overlap": 0.7304,
+        "accepted": false,
+        "anchor": [
+          225,
+          258
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          3,
+          0
+        ],
+        "overlap": 0.7734,
+        "accepted": false,
+        "anchor": [
+          225,
+          258
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          9,
+          0
+        ],
+        "overlap": 0.8568,
+        "accepted": false,
+        "anchor": [
+          225,
+          258
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          11,
+          0
+        ],
+        "overlap": 0.8937,
+        "accepted": false,
+        "anchor": [
+          225,
+          258
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          -12,
+          0
+        ],
+        "overlap": 0.8775,
+        "accepted": false,
+        "anchor": [
+          225,
+          258
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1532,
+        "floor": 627,
+        "bbox": [
+          1454,
+          500,
+          154,
+          127
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1543,
+        "floor": 627,
+        "bbox": [
+          1465,
+          500,
+          154,
+          127
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1544,
+        "floor": 627,
+        "bbox": [
+          1466,
+          500,
+          154,
+          127
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1544,
+        "floor": 627,
+        "bbox": [
+          1466,
+          500,
+          154,
+          127
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1541,
+        "floor": 627,
+        "bbox": [
+          1463,
+          500,
+          154,
+          127
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1536,
+        "floor": 627,
+        "bbox": [
+          1458,
+          500,
+          154,
+          127
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1532,
+        "floor": 627,
+        "bbox": [
+          1454,
+          500,
+          154,
+          127
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1532,
+        "floor": 627,
+        "bbox": [
+          1454,
+          500,
+          154,
+          127
+        ]
+      }
+    ]
+  },
+  "Viniurgo": {
+    "display": "Viniurgo",
+    "level": 1,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          -4,
+          0
+        ],
+        "overlap": 0.7634,
+        "accepted": false,
+        "anchor": [
+          232,
+          258
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          -13,
+          0
+        ],
+        "overlap": 0.7086,
+        "accepted": false,
+        "anchor": [
+          232,
+          258
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          -12,
+          0
+        ],
+        "overlap": 0.6151,
+        "accepted": false,
+        "anchor": [
+          232,
+          258
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          8,
+          0
+        ],
+        "overlap": 0.5734,
+        "accepted": false,
+        "anchor": [
+          232,
+          258
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          -13,
+          0
+        ],
+        "overlap": 0.7074,
+        "accepted": false,
+        "anchor": [
+          232,
+          258
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          -10,
+          0
+        ],
+        "overlap": 0.7686,
+        "accepted": false,
+        "anchor": [
+          232,
+          258
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          -10,
+          0
+        ],
+        "overlap": 0.8089,
+        "accepted": false,
+        "anchor": [
+          232,
+          258
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          -4,
+          0
+        ],
+        "overlap": 0.7634,
+        "accepted": false,
+        "anchor": [
+          232,
+          258
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1543,
+        "floor": 627,
+        "bbox": [
+          1482,
+          396,
+          134,
+          231
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1554,
+        "floor": 627,
+        "bbox": [
+          1493,
+          396,
+          134,
+          231
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1555,
+        "floor": 627,
+        "bbox": [
+          1494,
+          396,
+          134,
+          231
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1555,
+        "floor": 627,
+        "bbox": [
+          1494,
+          396,
+          134,
+          231
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1552,
+        "floor": 627,
+        "bbox": [
+          1491,
+          396,
+          134,
+          231
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1547,
+        "floor": 627,
+        "bbox": [
+          1486,
+          396,
+          134,
+          231
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1543,
+        "floor": 627,
+        "bbox": [
+          1482,
+          396,
+          134,
+          231
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1543,
+        "floor": 627,
+        "bbox": [
+          1482,
+          396,
+          134,
+          231
+        ]
+      }
+    ]
+  },
+  "Macaco Selvagem": {
+    "display": "Macaco Selvagem",
+    "level": 2,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          -1,
+          0
+        ],
+        "overlap": 0.7803,
+        "accepted": false,
+        "anchor": [
+          231,
+          258
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          14,
+          0
+        ],
+        "overlap": 0.5257,
+        "accepted": false,
+        "anchor": [
+          231,
+          258
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          15,
+          0
+        ],
+        "overlap": 0.5602,
+        "accepted": false,
+        "anchor": [
+          231,
+          258
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          22,
+          0
+        ],
+        "overlap": 0.581,
+        "accepted": false,
+        "anchor": [
+          231,
+          258
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          26,
+          0
+        ],
+        "overlap": 0.4673,
+        "accepted": false,
+        "anchor": [
+          231,
+          258
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          -1,
+          0
+        ],
+        "overlap": 0.712,
+        "accepted": false,
+        "anchor": [
+          231,
+          258
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          -2,
+          0
+        ],
+        "overlap": 0.7177,
+        "accepted": false,
+        "anchor": [
+          231,
+          258
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.7972,
+        "accepted": false,
+        "anchor": [
+          231,
+          258
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1541,
+        "floor": 627,
+        "bbox": [
+          1454,
+          468,
+          175,
+          159
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1552,
+        "floor": 627,
+        "bbox": [
+          1465,
+          468,
+          175,
+          159
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1553,
+        "floor": 627,
+        "bbox": [
+          1466,
+          468,
+          175,
+          159
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1553,
+        "floor": 627,
+        "bbox": [
+          1466,
+          468,
+          175,
+          159
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1550,
+        "floor": 627,
+        "bbox": [
+          1463,
+          468,
+          175,
+          159
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1545,
+        "floor": 627,
+        "bbox": [
+          1458,
+          468,
+          175,
+          159
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1541,
+        "floor": 627,
+        "bbox": [
+          1454,
+          468,
+          175,
+          159
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1541,
+        "floor": 627,
+        "bbox": [
+          1454,
+          468,
+          175,
+          159
+        ]
+      }
+    ]
+  },
+  "Guerreiro da Mata": {
+    "display": "Guerreiro da Mata",
+    "level": 2,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          4,
+          0
+        ],
+        "overlap": 0.8473,
+        "accepted": true,
+        "anchor": [
+          250,
+          258
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          4,
+          0
+        ],
+        "overlap": 0.7039,
+        "accepted": false,
+        "anchor": [
+          250,
+          258
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          24,
+          0
+        ],
+        "overlap": 0.5931,
+        "accepted": false,
+        "anchor": [
+          250,
+          258
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          31,
+          0
+        ],
+        "overlap": 0.4122,
+        "accepted": false,
+        "anchor": [
+          250,
+          258
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          46,
+          0
+        ],
+        "overlap": 0.2878,
+        "accepted": false,
+        "anchor": [
+          250,
+          258
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          -3,
+          0
+        ],
+        "overlap": 0.6419,
+        "accepted": false,
+        "anchor": [
+          250,
+          258
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          -3,
+          0
+        ],
+        "overlap": 0.64,
+        "accepted": false,
+        "anchor": [
+          250,
+          258
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          4,
+          0
+        ],
+        "overlap": 0.8439,
+        "accepted": true,
+        "anchor": [
+          250,
+          258
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1564,
+        "floor": 627,
+        "bbox": [
+          1473,
+          416,
+          174,
+          211
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1581,
+        "floor": 627,
+        "bbox": [
+          1478,
+          419,
+          198,
+          208
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1582,
+        "floor": 627,
+        "bbox": [
+          1479,
+          419,
+          198,
+          208
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1582,
+        "floor": 627,
+        "bbox": [
+          1479,
+          419,
+          198,
+          208
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1578,
+        "floor": 627,
+        "bbox": [
+          1476,
+          416,
+          198,
+          211
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1573,
+        "floor": 627,
+        "bbox": [
+          1471,
+          416,
+          198,
+          211
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1564,
+        "floor": 627,
+        "bbox": [
+          1473,
+          416,
+          174,
+          211
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1564,
+        "floor": 627,
+        "bbox": [
+          1473,
+          416,
+          174,
+          211
+        ]
+      }
+    ]
+  },
+  "Golem das Ruínas": {
+    "display": "Golem das Ruínas",
+    "level": 3,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          7,
+          0
+        ],
+        "overlap": 0.8158,
+        "accepted": false,
+        "anchor": [
+          246,
+          258
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          29,
+          0
+        ],
+        "overlap": 0.5777,
+        "accepted": false,
+        "anchor": [
+          246,
+          258
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          4,
+          0
+        ],
+        "overlap": 0.646,
+        "accepted": false,
+        "anchor": [
+          246,
+          258
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          6,
+          0
+        ],
+        "overlap": 0.6567,
+        "accepted": false,
+        "anchor": [
+          246,
+          258
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          12,
+          3
+        ],
+        "overlap": 0.5982,
+        "accepted": false,
+        "anchor": [
+          246,
+          258
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          2,
+          0
+        ],
+        "overlap": 0.6301,
+        "accepted": false,
+        "anchor": [
+          246,
+          258
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          -11,
+          0
+        ],
+        "overlap": 0.6902,
+        "accepted": false,
+        "anchor": [
+          246,
+          258
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          4,
+          0
+        ],
+        "overlap": 0.823,
+        "accepted": true,
+        "anchor": [
+          246,
+          258
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1564,
+        "floor": 627,
+        "bbox": [
+          1433,
+          413,
+          258,
+          214
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1575,
+        "floor": 627,
+        "bbox": [
+          1475,
+          411,
+          192,
+          216
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1576,
+        "floor": 627,
+        "bbox": [
+          1476,
+          411,
+          192,
+          216
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1576,
+        "floor": 627,
+        "bbox": [
+          1476,
+          411,
+          192,
+          216
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1573,
+        "floor": 627,
+        "bbox": [
+          1473,
+          411,
+          192,
+          216
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1568,
+        "floor": 627,
+        "bbox": [
+          1437,
+          413,
+          258,
+          214
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1564,
+        "floor": 627,
+        "bbox": [
+          1433,
+          413,
+          258,
+          214
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1564,
+        "floor": 627,
+        "bbox": [
+          1433,
+          413,
+          258,
+          214
+        ]
+      }
+    ]
+  },
+  "Lagarto Couraçado": {
+    "display": "Lagarto Couraçado",
+    "level": 3,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          -1,
+          0
+        ],
+        "overlap": 0.8333,
+        "accepted": false,
+        "anchor": [
+          213,
+          258
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          5,
+          0
+        ],
+        "overlap": 0.7215,
+        "accepted": false,
+        "anchor": [
+          213,
+          258
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          -15,
+          0
+        ],
+        "overlap": 0.6091,
+        "accepted": false,
+        "anchor": [
+          213,
+          258
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          39,
+          0
+        ],
+        "overlap": 0.3021,
+        "accepted": false,
+        "anchor": [
+          213,
+          258
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          22,
+          0
+        ],
+        "overlap": 0.4797,
+        "accepted": false,
+        "anchor": [
+          213,
+          258
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          26,
+          0
+        ],
+        "overlap": 0.5832,
+        "accepted": false,
+        "anchor": [
+          213,
+          258
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          -1,
+          0
+        ],
+        "overlap": 0.6602,
+        "accepted": false,
+        "anchor": [
+          213,
+          258
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          -2,
+          0
+        ],
+        "overlap": 0.8154,
+        "accepted": false,
+        "anchor": [
+          213,
+          258
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1514,
+        "floor": 627,
+        "bbox": [
+          1386,
+          474,
+          251,
+          153
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1525,
+        "floor": 627,
+        "bbox": [
+          1397,
+          474,
+          251,
+          153
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1526,
+        "floor": 627,
+        "bbox": [
+          1398,
+          474,
+          251,
+          153
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1526,
+        "floor": 627,
+        "bbox": [
+          1398,
+          474,
+          251,
+          153
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1523,
+        "floor": 627,
+        "bbox": [
+          1395,
+          474,
+          251,
+          153
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1518,
+        "floor": 627,
+        "bbox": [
+          1390,
+          474,
+          251,
+          153
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1514,
+        "floor": 627,
+        "bbox": [
+          1386,
+          474,
+          251,
+          153
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1514,
+        "floor": 627,
+        "bbox": [
+          1386,
+          474,
+          251,
+          153
+        ]
+      }
+    ]
+  },
+  "Putrefato do Pântano": {
+    "display": "Putrefato do Pântano",
+    "level": 4,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          -7,
+          0
+        ],
+        "overlap": 0.794,
+        "accepted": false,
+        "anchor": [
+          223,
+          258
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          2,
+          0
+        ],
+        "overlap": 0.8166,
+        "accepted": false,
+        "anchor": [
+          223,
+          258
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          49,
+          0
+        ],
+        "overlap": 0.2719,
+        "accepted": false,
+        "anchor": [
+          223,
+          258
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          12,
+          0
+        ],
+        "overlap": 0.5493,
+        "accepted": false,
+        "anchor": [
+          223,
+          258
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          13,
+          0
+        ],
+        "overlap": 0.534,
+        "accepted": false,
+        "anchor": [
+          223,
+          258
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          11,
+          0
+        ],
+        "overlap": 0.6216,
+        "accepted": false,
+        "anchor": [
+          223,
+          258
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          -6,
+          0
+        ],
+        "overlap": 0.7501,
+        "accepted": false,
+        "anchor": [
+          223,
+          258
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          -3,
+          0
+        ],
+        "overlap": 0.792,
+        "accepted": false,
+        "anchor": [
+          223,
+          258
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1529,
+        "floor": 627,
+        "bbox": [
+          1434,
+          465,
+          161,
+          162
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1540,
+        "floor": 627,
+        "bbox": [
+          1445,
+          465,
+          161,
+          162
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1541,
+        "floor": 627,
+        "bbox": [
+          1446,
+          465,
+          161,
+          162
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1541,
+        "floor": 627,
+        "bbox": [
+          1446,
+          465,
+          161,
+          162
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1538,
+        "floor": 627,
+        "bbox": [
+          1443,
+          465,
+          161,
+          162
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1533,
+        "floor": 627,
+        "bbox": [
+          1438,
+          465,
+          161,
+          162
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1529,
+        "floor": 627,
+        "bbox": [
+          1434,
+          465,
+          161,
+          162
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1529,
+        "floor": 627,
+        "bbox": [
+          1434,
+          465,
+          161,
+          162
+        ]
+      }
+    ]
+  },
+  "Crocodilo Abissal": {
+    "display": "Crocodilo Abissal",
+    "level": 4,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          4,
+          0
+        ],
+        "overlap": 0.8873,
+        "accepted": true,
+        "anchor": [
+          205,
+          258
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          -5,
+          0
+        ],
+        "overlap": 0.7838,
+        "accepted": false,
+        "anchor": [
+          205,
+          258
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          26,
+          0
+        ],
+        "overlap": 0.6084,
+        "accepted": false,
+        "anchor": [
+          205,
+          258
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          49,
+          0
+        ],
+        "overlap": 0.3804,
+        "accepted": false,
+        "anchor": [
+          205,
+          258
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          45,
+          0
+        ],
+        "overlap": 0.3465,
+        "accepted": false,
+        "anchor": [
+          205,
+          258
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          8,
+          0
+        ],
+        "overlap": 0.7872,
+        "accepted": false,
+        "anchor": [
+          205,
+          258
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.821,
+        "accepted": true,
+        "anchor": [
+          205,
+          258
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          0,
+          0
+        ],
+        "overlap": 0.8832,
+        "accepted": true,
+        "anchor": [
+          205,
+          258
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1502,
+        "floor": 627,
+        "bbox": [
+          1410,
+          408,
+          203,
+          219
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1514,
+        "floor": 627,
+        "bbox": [
+          1415,
+          413,
+          221,
+          214
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1514,
+        "floor": 627,
+        "bbox": [
+          1415,
+          425,
+          231,
+          202
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1514,
+        "floor": 627,
+        "bbox": [
+          1415,
+          425,
+          231,
+          202
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1511,
+        "floor": 627,
+        "bbox": [
+          1412,
+          425,
+          231,
+          202
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1506,
+        "floor": 627,
+        "bbox": [
+          1402,
+          410,
+          224,
+          217
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1502,
+        "floor": 627,
+        "bbox": [
+          1410,
+          408,
+          203,
+          219
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1502,
+        "floor": 627,
+        "bbox": [
+          1410,
+          408,
+          203,
+          219
+        ]
+      }
+    ]
+  },
+  "Esqueleto Saqueador": {
+    "display": "Esqueleto Saqueador",
+    "level": 5,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          1,
+          0
+        ],
+        "overlap": 0.7014,
+        "accepted": false,
+        "anchor": [
+          242,
+          258
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          4,
+          0
+        ],
+        "overlap": 0.6233,
+        "accepted": false,
+        "anchor": [
+          242,
+          258
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          10,
+          0
+        ],
+        "overlap": 0.509,
+        "accepted": false,
+        "anchor": [
+          242,
+          258
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          11,
+          0
+        ],
+        "overlap": 0.4994,
+        "accepted": false,
+        "anchor": [
+          242,
+          258
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          7,
+          0
+        ],
+        "overlap": 0.5644,
+        "accepted": false,
+        "anchor": [
+          242,
+          258
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          5,
+          0
+        ],
+        "overlap": 0.674,
+        "accepted": false,
+        "anchor": [
+          242,
+          258
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          1,
+          0
+        ],
+        "overlap": 0.7259,
+        "accepted": false,
+        "anchor": [
+          242,
+          258
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          3,
+          0
+        ],
+        "overlap": 0.7149,
+        "accepted": false,
+        "anchor": [
+          242,
+          258
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1557,
+        "floor": 627,
+        "bbox": [
+          1443,
+          426,
+          180,
+          201
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1568,
+        "floor": 627,
+        "bbox": [
+          1454,
+          426,
+          180,
+          201
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1569,
+        "floor": 627,
+        "bbox": [
+          1455,
+          426,
+          180,
+          201
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1569,
+        "floor": 627,
+        "bbox": [
+          1455,
+          426,
+          180,
+          201
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1566,
+        "floor": 627,
+        "bbox": [
+          1452,
+          426,
+          180,
+          201
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1561,
+        "floor": 627,
+        "bbox": [
+          1447,
+          426,
+          180,
+          201
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1557,
+        "floor": 627,
+        "bbox": [
+          1443,
+          426,
+          180,
+          201
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1557,
+        "floor": 627,
+        "bbox": [
+          1443,
+          426,
+          180,
+          201
+        ]
+      }
+    ]
+  },
+  "Morcego Sombrio": {
+    "display": "Morcego Sombrio",
+    "level": 5,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          25,
+          -2
+        ],
+        "overlap": 0.5111,
+        "accepted": false,
+        "anchor": [
+          253,
+          204
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          71,
+          -3
+        ],
+        "overlap": 0.5211,
+        "accepted": false,
+        "anchor": [
+          253,
+          204
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          107,
+          -43
+        ],
+        "overlap": 0.378,
+        "accepted": false,
+        "anchor": [
+          253,
+          204
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          92,
+          -42
+        ],
+        "overlap": 0.4147,
+        "accepted": false,
+        "anchor": [
+          253,
+          204
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          23,
+          8
+        ],
+        "overlap": 0.6643,
+        "accepted": false,
+        "anchor": [
+          253,
+          204
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          57,
+          29
+        ],
+        "overlap": 0.6214,
+        "accepted": false,
+        "anchor": [
+          253,
+          204
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          19,
+          -4
+        ],
+        "overlap": 0.6124,
+        "accepted": false,
+        "anchor": [
+          253,
+          204
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          23,
+          -6
+        ],
+        "overlap": 0.5141,
+        "accepted": false,
+        "anchor": [
+          253,
+          204
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1574,
+        "floor": 501,
+        "bbox": [
+          1400,
+          392,
+          228,
+          109
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1585,
+        "floor": 501,
+        "bbox": [
+          1411,
+          392,
+          228,
+          109
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1586,
+        "floor": 501,
+        "bbox": [
+          1412,
+          392,
+          228,
+          109
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1586,
+        "floor": 501,
+        "bbox": [
+          1412,
+          392,
+          228,
+          109
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1583,
+        "floor": 501,
+        "bbox": [
+          1409,
+          392,
+          228,
+          109
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1578,
+        "floor": 501,
+        "bbox": [
+          1404,
+          392,
+          228,
+          109
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1574,
+        "floor": 501,
+        "bbox": [
+          1400,
+          392,
+          228,
+          109
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1574,
+        "floor": 501,
+        "bbox": [
+          1400,
+          392,
+          228,
+          109
+        ]
+      }
+    ]
+  },
+  "Centauro Vigia": {
+    "display": "Centauro Vigia",
+    "level": 6,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          8,
+          0
+        ],
+        "overlap": 0.7571,
+        "accepted": false,
+        "anchor": [
+          224,
+          258
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          6,
+          0
+        ],
+        "overlap": 0.6578,
+        "accepted": false,
+        "anchor": [
+          224,
+          258
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          40,
+          0
+        ],
+        "overlap": 0.4048,
+        "accepted": false,
+        "anchor": [
+          224,
+          258
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          39,
+          0
+        ],
+        "overlap": 0.4311,
+        "accepted": false,
+        "anchor": [
+          224,
+          258
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          5,
+          0
+        ],
+        "overlap": 0.6595,
+        "accepted": false,
+        "anchor": [
+          224,
+          258
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          -4,
+          0
+        ],
+        "overlap": 0.6684,
+        "accepted": false,
+        "anchor": [
+          224,
+          258
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          1,
+          0
+        ],
+        "overlap": 0.7401,
+        "accepted": false,
+        "anchor": [
+          224,
+          258
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          8,
+          0
+        ],
+        "overlap": 0.7527,
+        "accepted": false,
+        "anchor": [
+          224,
+          258
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1531,
+        "floor": 627,
+        "bbox": [
+          1430,
+          420,
+          174,
+          207
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1542,
+        "floor": 627,
+        "bbox": [
+          1441,
+          420,
+          174,
+          207
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1543,
+        "floor": 627,
+        "bbox": [
+          1442,
+          420,
+          174,
+          207
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1543,
+        "floor": 627,
+        "bbox": [
+          1442,
+          420,
+          174,
+          207
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1540,
+        "floor": 627,
+        "bbox": [
+          1439,
+          420,
+          174,
+          207
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1535,
+        "floor": 627,
+        "bbox": [
+          1434,
+          420,
+          174,
+          207
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1531,
+        "floor": 627,
+        "bbox": [
+          1430,
+          420,
+          174,
+          207
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1531,
+        "floor": 627,
+        "bbox": [
+          1430,
+          420,
+          174,
+          207
+        ]
+      }
+    ]
+  },
+  "Lutador Mascarado": {
+    "display": "Lutador Mascarado",
+    "level": 6,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          4,
+          0
+        ],
+        "overlap": 0.874,
+        "accepted": true,
+        "anchor": [
+          254,
+          258
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          12,
+          0
+        ],
+        "overlap": 0.7456,
+        "accepted": false,
+        "anchor": [
+          254,
+          258
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          24,
+          0
+        ],
+        "overlap": 0.589,
+        "accepted": false,
+        "anchor": [
+          254,
+          258
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          24,
+          0
+        ],
+        "overlap": 0.6317,
+        "accepted": false,
+        "anchor": [
+          254,
+          258
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          -7,
+          0
+        ],
+        "overlap": 0.526,
+        "accepted": false,
+        "anchor": [
+          254,
+          258
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          -19,
+          0
+        ],
+        "overlap": 0.6866,
+        "accepted": false,
+        "anchor": [
+          254,
+          258
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          -15,
+          0
+        ],
+        "overlap": 0.6315,
+        "accepted": false,
+        "anchor": [
+          254,
+          258
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          4,
+          0
+        ],
+        "overlap": 0.8789,
+        "accepted": true,
+        "anchor": [
+          254,
+          258
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1575,
+        "floor": 627,
+        "bbox": [
+          1493,
+          422,
+          163,
+          205
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1586,
+        "floor": 627,
+        "bbox": [
+          1508,
+          422,
+          156,
+          205
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1587,
+        "floor": 627,
+        "bbox": [
+          1509,
+          422,
+          156,
+          205
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1587,
+        "floor": 627,
+        "bbox": [
+          1509,
+          422,
+          156,
+          205
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1584,
+        "floor": 627,
+        "bbox": [
+          1506,
+          422,
+          156,
+          205
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1579,
+        "floor": 627,
+        "bbox": [
+          1501,
+          422,
+          156,
+          205
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1575,
+        "floor": 627,
+        "bbox": [
+          1493,
+          422,
+          163,
+          205
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1575,
+        "floor": 627,
+        "bbox": [
+          1493,
+          422,
+          163,
+          205
+        ]
+      }
+    ]
+  },
+  "Vinimuth": {
+    "display": "Vinimuth",
+    "level": 7,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          1,
+          0
+        ],
+        "overlap": 0.9021,
+        "accepted": true,
+        "anchor": [
+          215,
+          258
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          10,
+          0
+        ],
+        "overlap": 0.7332,
+        "accepted": false,
+        "anchor": [
+          215,
+          258
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          11,
+          0
+        ],
+        "overlap": 0.5831,
+        "accepted": false,
+        "anchor": [
+          215,
+          258
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          13,
+          0
+        ],
+        "overlap": 0.5013,
+        "accepted": false,
+        "anchor": [
+          215,
+          258
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          -5,
+          0
+        ],
+        "overlap": 0.6347,
+        "accepted": false,
+        "anchor": [
+          215,
+          258
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          -9,
+          0
+        ],
+        "overlap": 0.6198,
+        "accepted": false,
+        "anchor": [
+          215,
+          258
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          -5,
+          0
+        ],
+        "overlap": 0.7749,
+        "accepted": false,
+        "anchor": [
+          215,
+          258
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          1,
+          0
+        ],
+        "overlap": 0.8995,
+        "accepted": true,
+        "anchor": [
+          215,
+          258
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1517,
+        "floor": 627,
+        "bbox": [
+          1457,
+          425,
+          111,
+          202
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1528,
+        "floor": 627,
+        "bbox": [
+          1474,
+          428,
+          106,
+          199
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1529,
+        "floor": 627,
+        "bbox": [
+          1475,
+          428,
+          106,
+          199
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1529,
+        "floor": 627,
+        "bbox": [
+          1475,
+          428,
+          106,
+          199
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1526,
+        "floor": 627,
+        "bbox": [
+          1472,
+          426,
+          106,
+          201
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1521,
+        "floor": 627,
+        "bbox": [
+          1467,
+          426,
+          106,
+          201
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1517,
+        "floor": 627,
+        "bbox": [
+          1457,
+          425,
+          111,
+          202
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1517,
+        "floor": 627,
+        "bbox": [
+          1457,
+          425,
+          111,
+          202
+        ]
+      }
+    ]
+  },
+  "Mago do Santuário": {
+    "display": "Mago do Santuário",
+    "level": 7,
+    "renderer": "sprite",
+    "frames": [
+      {
+        "frame": 1,
+        "offset": [
+          6,
+          0
+        ],
+        "overlap": 0.7994,
+        "accepted": false,
+        "anchor": [
+          270,
+          258
+        ]
+      },
+      {
+        "frame": 2,
+        "offset": [
+          12,
+          0
+        ],
+        "overlap": 0.6952,
+        "accepted": false,
+        "anchor": [
+          270,
+          258
+        ]
+      },
+      {
+        "frame": 3,
+        "offset": [
+          12,
+          0
+        ],
+        "overlap": 0.6451,
+        "accepted": false,
+        "anchor": [
+          270,
+          258
+        ]
+      },
+      {
+        "frame": 4,
+        "offset": [
+          10,
+          0
+        ],
+        "overlap": 0.6722,
+        "accepted": false,
+        "anchor": [
+          270,
+          258
+        ]
+      },
+      {
+        "frame": 5,
+        "offset": [
+          -1,
+          0
+        ],
+        "overlap": 0.7745,
+        "accepted": false,
+        "anchor": [
+          270,
+          258
+        ]
+      },
+      {
+        "frame": 6,
+        "offset": [
+          -3,
+          0
+        ],
+        "overlap": 0.7123,
+        "accepted": false,
+        "anchor": [
+          270,
+          258
+        ]
+      },
+      {
+        "frame": 7,
+        "offset": [
+          1,
+          0
+        ],
+        "overlap": 0.7606,
+        "accepted": false,
+        "anchor": [
+          270,
+          258
+        ]
+      },
+      {
+        "frame": 8,
+        "offset": [
+          8,
+          0
+        ],
+        "overlap": 0.802,
+        "accepted": false,
+        "anchor": [
+          270,
+          258
+        ]
+      }
+    ],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1599,
+        "floor": 627,
+        "bbox": [
+          1485,
+          420,
+          210,
+          207
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1610,
+        "floor": 627,
+        "bbox": [
+          1496,
+          420,
+          210,
+          207
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1611,
+        "floor": 627,
+        "bbox": [
+          1497,
+          420,
+          210,
+          207
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1611,
+        "floor": 627,
+        "bbox": [
+          1497,
+          420,
+          210,
+          207
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1608,
+        "floor": 627,
+        "bbox": [
+          1494,
+          420,
+          210,
+          207
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1603,
+        "floor": 627,
+        "bbox": [
+          1489,
+          420,
+          210,
+          207
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1599,
+        "floor": 627,
+        "bbox": [
+          1485,
+          420,
+          210,
+          207
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1599,
+        "floor": 627,
+        "bbox": [
+          1485,
+          420,
+          210,
+          207
+        ]
+      }
+    ]
+  },
+  "Goblin": {
+    "display": "Goblin",
+    "level": 3,
+    "renderer": "procedural",
+    "frames": [],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1531,
+        "floor": 631,
+        "bbox": [
+          1505,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1542,
+        "floor": 631,
+        "bbox": [
+          1516,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1543,
+        "floor": 631,
+        "bbox": [
+          1517,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1543,
+        "floor": 631,
+        "bbox": [
+          1517,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1540,
+        "floor": 631,
+        "bbox": [
+          1514,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1534,
+        "floor": 631,
+        "bbox": [
+          1508,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1531,
+        "floor": 631,
+        "bbox": [
+          1505,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1531,
+        "floor": 631,
+        "bbox": [
+          1505,
+          481,
+          52,
+          150
+        ]
+      }
+    ]
+  },
+  "Guarda Sombrio": {
+    "display": "Guarda Sombrio",
+    "level": 3,
+    "renderer": "procedural",
+    "frames": [],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1531,
+        "floor": 631,
+        "bbox": [
+          1505,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1542,
+        "floor": 631,
+        "bbox": [
+          1516,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1543,
+        "floor": 631,
+        "bbox": [
+          1517,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1543,
+        "floor": 631,
+        "bbox": [
+          1517,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1540,
+        "floor": 631,
+        "bbox": [
+          1514,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1534,
+        "floor": 631,
+        "bbox": [
+          1508,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1531,
+        "floor": 631,
+        "bbox": [
+          1505,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1531,
+        "floor": 631,
+        "bbox": [
+          1505,
+          481,
+          52,
+          150
+        ]
+      }
+    ]
+  },
+  "Ogro Ancestral": {
+    "display": "Ogro Ancestral",
+    "level": 3,
+    "renderer": "procedural",
+    "frames": [],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1531,
+        "floor": 631,
+        "bbox": [
+          1505,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1542,
+        "floor": 631,
+        "bbox": [
+          1516,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1543,
+        "floor": 631,
+        "bbox": [
+          1517,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1543,
+        "floor": 631,
+        "bbox": [
+          1517,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1540,
+        "floor": 631,
+        "bbox": [
+          1514,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1534,
+        "floor": 631,
+        "bbox": [
+          1508,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1531,
+        "floor": 631,
+        "bbox": [
+          1505,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1531,
+        "floor": 631,
+        "bbox": [
+          1505,
+          481,
+          52,
+          150
+        ]
+      }
+    ]
+  },
+  "Cavaleiro Caído": {
+    "display": "Cavaleiro Caído",
+    "level": 3,
+    "renderer": "procedural",
+    "frames": [],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1531,
+        "floor": 631,
+        "bbox": [
+          1505,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1542,
+        "floor": 631,
+        "bbox": [
+          1516,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1543,
+        "floor": 631,
+        "bbox": [
+          1517,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1543,
+        "floor": 631,
+        "bbox": [
+          1517,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1540,
+        "floor": 631,
+        "bbox": [
+          1514,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1534,
+        "floor": 631,
+        "bbox": [
+          1508,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1531,
+        "floor": 631,
+        "bbox": [
+          1505,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1531,
+        "floor": 631,
+        "bbox": [
+          1505,
+          481,
+          52,
+          150
+        ]
+      }
+    ]
+  },
+  "Behemoth de Pedra": {
+    "display": "Behemoth de Pedra",
+    "level": 3,
+    "renderer": "procedural",
+    "frames": [],
+    "duration_ms": 560,
+    "world_samples": [
+      {
+        "ms": 0,
+        "x": 1531,
+        "floor": 631,
+        "bbox": [
+          1505,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 65,
+        "x": 1542,
+        "floor": 631,
+        "bbox": [
+          1516,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 120,
+        "x": 1543,
+        "floor": 631,
+        "bbox": [
+          1517,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 190,
+        "x": 1543,
+        "floor": 631,
+        "bbox": [
+          1517,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 300,
+        "x": 1540,
+        "floor": 631,
+        "bbox": [
+          1514,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 420,
+        "x": 1534,
+        "floor": 631,
+        "bbox": [
+          1508,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 520,
+        "x": 1531,
+        "floor": 631,
+        "bbox": [
+          1505,
+          481,
+          52,
+          150
+        ]
+      },
+      {
+        "ms": 560,
+        "x": 1531,
+        "floor": 631,
+        "bbox": [
+          1505,
+          481,
+          52,
+          150
+        ]
+      }
+    ]
+  }
+}

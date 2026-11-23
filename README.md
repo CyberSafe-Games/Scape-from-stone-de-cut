@@ -1,5 +1,7 @@
 # Scape From Stone de Cut
 
+> Referência vigente — auditoria de 23/11/2026. [Estado atual](docs/estado_atual.md). Relatos de validações datadas abaixo representam somente aquela execução.
+
 **A floresta resiste. Escreva sua estratégia. Defenda sua terra.**
 
 ![Python 3.12+](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)
@@ -16,12 +18,15 @@ Foi criado para a disciplina de Programação Para Jogos na universidade, com o 
 
 Jaum Manel, jovem indígena da aldeia Stone The Cut, vê sua terra invadida pelo Clã Moskar e sua tribo capturada por Zanzara, Líder do Clã Moskar. Sozinho e sem exército, ele atravessa o próprio território ocupado, vence combates por turnos, monta seu baralho carta a carta e marcha rumo ao Santuário de Pedra para libertar seu povo.
 
-## Capturas de tela
+## Direção visual e guias atuais
 
-| | |
-|---|---|
-| ![Jaum Manel em combate](docs/protagonista_doze_frames.png) | ![Chefes do Clã Moskar em batalha](docs/bestiario_em_batalha.png) |
-| ![Mochila e baralho](docs/mochila_deck_v2.png) | ![Zanzara, Líder do Clã Moskar](docs/zanzara_batalha.png) |
+Mercado Silencioso, Altar de Aprimoramento e Mochila Ancestral usam ambientações
+ilustradas, molduras ornamentadas, cartas completas e custo dinâmico.
+[Loja/Altar](docs/loja_altar_visual.md) · [Mochila](docs/mochila_visual.md) ·
+[Artes LV1/LV2](docs/cartas_packs_lv1_lv2.md) · [Animações](docs/reacoes_dano.md).
+
+Regras canônicas e inventário:
+[estado atual](docs/estado_atual.md) · [auditoria](docs/auditoria_documentacao_testes.md).
 
 ## Como jogar
 
@@ -35,7 +40,7 @@ Jaum Manel, jovem indígena da aldeia Stone The Cut, vê sua terra invadida pelo
 | Cemitério | `C` |
 | Tela cheia / janela | `F11` |
 | Maior janela 16:9 / janela 1280×720 | `F10` |
-| Reiniciar após a derrota | `R` |
+| Preparar nova jornada após derrota | `R` |
 | Laboratório de testes (na seleção de saves) | `T` |
 
 **Um combate, em resumo:**
@@ -43,19 +48,19 @@ Jaum Manel, jovem indígena da aldeia Stone The Cut, vê sua terra invadida pelo
 1. No seu turno, a energia é restaurada e a mão é completada; você joga cartas gastando energia. A mão vai de 3 a até 5 cartas ao longo do combate (a energia máxima também cresce, de 2 até 8).
 2. A HUD mostra a ordem das ações planejadas do inimigo. Passe o mouse sobre um ícone de intenção para ampliar a carta quando a arte completa estiver disponível.
 3. Ao encerrar o turno, as cartas que sobraram ficam na mão e o inimigo age. O Escudo absorve o dano de ataques antes que eles atinjam a vida.
-4. Após vencer pela primeira vez um encontro com recompensa disponível, escolha uma das cartas que você ainda não possui ou pule a escolha. Revanches não dão cartas.
-5. Se a vida de Jaum Manel zerar, a run volta ao último checkpoint (tecla `R`).
+4. Na vitória inédita, escolha carta ainda não adquirida ou material conforme a recompensa. Revanches não dão ouro, cartas ou materiais.
+5. Se a vida de Jaum Manel zerar, a run termina. Perfil/fragmentos persistem; prepare uma nova jornada. Uma luta viva pode ser retomada por snapshot.
 
 ## Principais mecânicas
 
 - **Baralho com três pilhas:** compra, mão e descarte. Se a pilha de compra esvazia, o descarte é reembaralhado.
-- **Cartas:** 20 cartas jogáveis com artes e animações próprias. As 75 cartas em desenvolvimento ficam indisponíveis para recompensas, compras e montagem do deck.
+- **Cartas:** 20 tipos disponíveis com artes LV1 padrão/LV2 prateadas, custo dinâmico único e evolução individual no Altar. As 75 cartas em desenvolvimento ficam indisponíveis para recompensas, compras e montagem do deck.
 - **Cemitério:** descarte uma carta da mão por 1 de energia, ou faça 1 troca grátis por turno com uma carta do descarte.
 - **Ultimates:** a carga começa em **0/20** em toda batalha e sobe conforme a energia gasta em cartas. Ao atingir 20, você pode ativar a Ultimate equipada: **Mana Ancestral**, **Forças Ancestrais** ou **Rugido da Floresta**. A escolha equipada é salva. A carga vale somente para a batalha atual. Todas custam **2 de energia**. Mana restaura a energia para 8 e remove negativos; Forças concede +12 de Força até o fim do combate e 40 de Escudo por 2 turnos; Rugido destrói o Escudo inimigo, causa 60 de dano base e aplica Fraqueza por 3 turnos.
-- **Mercado Silencioso:** compre cartas ou aumente a vida máxima em 15 por 50 moedas, até 3 vezes por run.
-- **Mochila:** monte seu deck em espaços individuais (até 18, com no máximo 3 cópias da mesma carta) e escolha a Ultimate equipada.
+- **Mercado Silencioso:** compre tipos de cartas ou cure até 20 HP atual por 30/45/60 ouro, até três compras/run. Vida cheia não cobra. Melhorias permanentes ficam entre runs.
+- **Mochila Ancestral:** deck de 6–18 cartas, três cópias por tipo, reserva paginada/filtros, inspeção fixa e aba de Ultimates. Rascunho inválido preserva o último deck salvo.
 - **Tutorial guiado:** primeiro acesso a um save ensina as regras com balões e textos na tela.
-- **Saves em 3 slots** e **Laboratório de Testes** via `T`. Os saves registram progresso, coleção, moedas e Ultimates desbloqueadas e equipada.
+- **Saves v14 em 3 slots** e **Laboratório de Testes** via `T`. Os saves registram progresso, coleção, moedas e Ultimates desbloqueadas e equipada.
 - **Vida entre lutas:** a vida atual é mantida entre combates. A vitória sobre um chefe de território recupera 30% da vida máxima, respeitando o limite.
 
 ### Efeitos negativos
@@ -100,8 +105,11 @@ A suíte usa `unittest` (não pytest). Como há muitos assets, os testes headles
 ```bash
 python3 -m pip install -r requirements-dev.txt
 
-# Suíte completa (pesada, pode passar de 5 minutos)
-SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python3 -m unittest discover -s tests -t .
+# Suíte completa em processos isolados (configura SDL dummy e libera caches)
+python3 -B devtools/validate_isolated_tests.py --report docs/validacao_auditoria_documentacao.json
+
+# Auditoria de Markdown, links e inventário de testes
+python3 -B devtools/audit_project_docs.py --output docs/auditoria_documentacao.json
 
 # Um módulo específico
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python3 -m unittest tests.test_tactical_cards -v
@@ -120,7 +128,11 @@ src/systems/            # Regras de jogo sem interface: combate, saves, campanha
 src/models/             # Entidades (jogador, inimigos, cartas, efeitos, ultimates)
 src/ui/                 # HUD, cartas, sprites animados e helpers de desenho
 assets/                 # Sprites, efeitos e áudio
-assets/cards/           # Cartas jogáveis
+assets/cards/           # LV1 e manifesto geométrico
+assets/cards/lv2/       # Artes LV2 prateadas
+assets/ultimates/       # Cartas douradas
+assets/ui/              # Mercado, Altar e Mochila ilustrados
+assets/bosses/sheets_eight/ # Folhas 4x2 de Octav/Jan-Pietro/Labrro
 assets/intent_art/      # Arte das intenções de chefes e inimigos
 docs/                   # Documentos e prévias de arte/animação
 devtools/               # Scripts de preparo/preview de sprites (uso interno)
@@ -130,7 +142,7 @@ saves/                  # Saves locais dos jogadores (ignorado pelo git)
 
 ## Estado atual e roadmap
 
-**Em funcionamento hoje:** campanha de sete territórios, combate por turnos, tutorial guiado, cutscenes de introdução e pós-tutorial, diálogos de chefes, menu de configurações, efeitos sonoros e trilha por contexto. As intenções com arte completa exibem a carta inteira em um preview ampliado no centro da arena, acima da mão do jogador.
+**Em funcionamento hoje:** campanha de sete territórios, combate por turnos, tutorial guiado, cutscenes de introdução, pós-tutorial e epílogo, diálogos de chefes, menu de configurações, efeitos sonoros e trilha por contexto. As intenções com arte completa exibem a carta inteira em um preview ampliado no centro da arena, acima da mão do jogador.
 
 **Em desenvolvimento:** polimento visual e balanceamento de cartas e encontros.
 

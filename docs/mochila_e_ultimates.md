@@ -1,69 +1,40 @@
 # Mochila e ultimates
 
-A preparação tem duas abas: **Deck e coleção** e **Ultimates**. Ambas seguem
-as molduras de bronze, pedra escura e tipografia das outras telas do jogo.
+> Referência vigente — auditoria de 23/11/2026. [Estado atual](estado_atual.md). Relatos de validações datadas abaixo representam somente aquela execução.
 
-## Como usar
+Mochila Ancestral: mesa de expedição ilustrada, couro e madeira, lanternas e
+ornamentos dourados. Abas Deck e coleção e Ultimates.
 
-1. No mapa, abra a mochila pelo botão ou pela tecla B.
-2. O deck é um grid de espaços individuais (o limite fica na constante `DECK_SLOT_LIMIT`, hoje 18). A prévia à direita mostra a descrição completa da carta selecionada.
-3. Clique em uma carta da coleção para adicionar 1 cópia ao próximo espaço livre (até 3 cópias da mesma carta). Clique em um espaço preenchido para remover apenas aquela cópia. Pelo menos uma carta precisa continuar no deck.
-4. Cada carta da coleção mostra quantas cópias já estão no deck (`x/3`); quando chega ao máximo, a carta aparece indisponível. O título do deck mostra os espaços em uso (`12/18`).
-5. Use as setas, a roda do mouse ou Anterior/Próxima para navegar pela coleção.
-   O filtro Obtidas mostra apenas o que já está disponível no save.
-6. Na aba Ultimates, equipe uma das três habilidades. A troca não usa moedas,
-   não ocupa espaço do deck e preserva a carga acumulada.
+## Uso
 
-TAB alterna as abas; ←/→ navegam as páginas; Enter adiciona a carta selecionada;
-Backspace remove a última cópia adicionada; ESC volta ao mapa. As alterações são
-salvas a cada escolha. A ordem dos espaços não influencia o combate: o baralho é
-embaralhado ao iniciar a luta.
+- 18 espaços individuais, mínimo seis para sair, máximo três cópias por tipo.
+  Clique na coleção equipa; clique no espaço remove aquela cópia.
+- Rascunho pode ficar vazio. Somente deck válido é promovido/salvo; fechar com
+  rascunho inválido preserva o último válido.
+- Reserva de seis tipos/página, filtros por posse/tipo/custo/nível da próxima
+  cópia livre, priorizando LV2 e recalculando após cada mudança.
+- Hover inspeciona a própria carta no painel fixo à direita, fora dos botões.
+  Arte LV1/LV2 real, custo dinâmico único e padding entre carta e moldura externa.
+- Equipamento tem brilho e som discreto; esvaziar/sortear mantêm confirmações
+  e limites. Falha de gravação não altera o deck oficial salvo.
 
-As três ultimates estão disponíveis desde a preparação. Saves antigos também
-recebem as opções ao carregar, mantendo a habilidade equipada e o progresso.
-Não havia uma regra de desbloqueio das alternativas na campanha anterior.
+TAB alterna abas; setas/roda navegam, Enter adiciona a selecionada, Backspace/
+Delete removem a última preenchida, ESC tenta voltar ao mapa. Mouse cobre tudo.
 
-## Balanceamento
+## Ultimates
 
-Todas exigem **20 de carga**, acumulada ao gastar energia em cartas, e não
-custam energia para ativar. Quando prontas, aparecem na mão com moldura dourada.
+Todas exigem **2 de energia e 20 de carga**. A escolha equipada persiste, a carga
+inicia em zero em cada nova batalha. A segunda fase da dupla é a mesma luta.
 
-| Ultimate | Antes | Agora | Papel |
-|---|---|---|---|
-| Mana Ancestral | Restaurava até a energia máxima e comprava 3 cartas | Energia atual sobe para 8, compra até 5 cartas e remove efeitos negativos | Renovar a mão e permitir uma sequência forte de ações |
-| Forças Ancestrais | 4 de Força e 15 de Escudo | 12 de Força até o fim do combate e 40 de Escudo por 2 turnos | Crescimento ofensivo com proteção imediata |
-| Rugido da Floresta | 12 de dano e 2 ações de Fraqueza | Destrói Escudo, causa 60 de dano por alvo e aplica Fraqueza por 3 rodadas completas | Romper defesas e reduzir a pressão do inimigo |
+| Poder | Efeito |
+|---|---|
+| Mana Ancestral | Energia para 8 e limpeza de todos os negativos; não compra cartas. |
+| Forças Ancestrais | +12 Força até o fim da luta e 40 Escudo por 2 turnos. |
+| Rugido da Floresta | Destrói Escudo, 60 de dano base e Fraqueza por 3 turnos. |
 
-A Mana não aumenta a energia máxima permanente e não cria cartas quando as
-pilhas se esgotam; o texto flutuante informa a quantidade realmente comprada.
-A purificação preserva Escudo e efeitos positivos. A Força termina com o combate.
-O Rugido considera Força, Aura Rubra e Fragilidade; o Totem ainda protege seu
-próximo ataque. Fraqueza reduz o dano base dos ataques em 25% e sua duração só
-avança após a rodada completa do chefe, abrangendo os dois atos.
+Cartas completas douradas no molde LV2, exterior transparente e custo/rodapé
+dinâmicos. Troca salva sem ocupar espaço do deck; dano base respeita proteções
+e modificadores existentes. Não há persistência de carga entre lutas.
 
-Os valores diferenciam as ultimates das cartas comuns atuais: Machados Gêmeos
-causa 40 por 4 de energia, Aura Rubra concede +8 temporários e Esfera Escudo dá
-30 de proteção. O balanceamento foi validado em testes de regras; partidas com
-o grupo continuam sendo úteis para ajustar a dificuldade e a duração das lutas.
-
-## Arte
-
-Três ilustrações foram geradas com a ferramenta integrada de imagens. Ficam em
-`assets/ultimates/*_art_v2.png`. A moldura é desenhada pelo jogo no formato
-**300 × 440**, o mesmo das cartas normais, com bronze/dourado reforçado,
-gemas da cor da habilidade e rodapé de ultimate. Título, descrição e carga são
-compostos a partir do modelo real para evitar texto desatualizado.
-
-A prévia das cartas completas está em `docs/cartas_ultimates_v2.png`.
-Os prompts completos estão em [prompts_ultimates_v2.md](prompts_ultimates_v2.md).
-
-![Deck e coleção](mochila_deck_v2.png)
-![Seleção de ultimates](mochila_ultimates_v2.png)
-![Cartas completas](cartas_ultimates_v2.png)
-
-## Verificação
-
-Testes cobrem persistência da escolha, manutenção da carga/deck, falha de
-gravação, migração de saves, purificação, bônus de dano, Fraqueza por rodada,
-expiração do Escudo, paginação, filtro, confirmação de equipamento e desenho
-das duas abas com os assets reais. As prévias também foram inspecionadas.
+[Visual da Mochila](mochila_visual.md) · [Artes Ultimate](cartas_ultimate_lv2.md) ·
+[Contrato atual](estado_atual.md).

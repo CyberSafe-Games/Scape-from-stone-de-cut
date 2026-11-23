@@ -1,5 +1,7 @@
 # Cartas Ultimate no molde LV2
 
+> Referência vigente — auditoria de 23/11/2026. [Estado atual](estado_atual.md). Relatos de validações datadas abaixo representam somente aquela execução.
+
 Atualização de 19/11/2026, autorizada pelo usuário.
 
 As três cartas usam a dimensão real da Esfera Protetora LV2 (316 × 489), a mesma

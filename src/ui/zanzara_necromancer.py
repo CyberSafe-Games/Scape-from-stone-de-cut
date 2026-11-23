@@ -8,6 +8,7 @@ from functools import lru_cache
 from pathlib import Path
 import pygame
 from src.config.settings import ASSETS_DIR
+from src.ui.enemy_reactions import reaction_pose, knockback, impact_tint
 from src.config.layout import ENEMY_X, PLAYER_X, APPROACH_GAP, PLAYER_GROUND_Y, FLASH_DURATION
 
 DEFEAT_DURATION = 1800
@@ -212,10 +213,18 @@ def state_frames(name):
     return tuple(sheet.subsurface((i*384,0,384,280)).copy() for i in range(8))
 
 
+@lru_cache(maxsize=1)
+def reaction_ready():
+    # Converte apenas o canvas: mantém a escala/posição do repouso aprovado.
+    canvas = pygame.Surface((384, 320), pygame.SRCALPHA)
+    canvas.blit(load_kit()['atk1'][0], (40, 30))
+    return canvas
+
+
 def draw_hit_reaction(surface,view):
-    p = max(0,min(1,1-view.enemy_flash/FLASH_DURATION))
-    frame = state_frames('dano')[min(7,int(p*8))]
-    _blit(surface,frame,ENEMY_X,4,48,69.5)
+    frame = reaction_pose(state_frames('dano'), reaction_ready(), view.enemy_flash)
+    frame = impact_tint(frame, view.enemy_flash)
+    _blit(surface,frame,ENEMY_X+round(knockback(view.enemy_flash)),4,48,69.5)
 
 
 def draw_defeat(surface,view):

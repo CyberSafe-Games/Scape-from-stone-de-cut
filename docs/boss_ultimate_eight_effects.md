@@ -1,5 +1,7 @@
 # Efeitos das ultimates com oito frames
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Guardião da Pedra, Goblin Nerd, Corpo Seco, Carrasco da Vigília, Zanzara e
 Gordofera agora usam oito sprites de efeito por ultimate. As quatro chaves
 anteriores permanecem intactas nas posições 1, 3, 5 e 7. Os frames 2, 4,

@@ -1,5 +1,7 @@
 # Playtest da revisão de cartas — 18/11/2026
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Branch `feature/refino-cartas-roguelite`, criada da main `0240b5b`, após a integração da PR #24. Esta revisão reúne os ajustes aprovados posteriormente para uma nova avaliação do grupo.
 
 ## Regras desta versão

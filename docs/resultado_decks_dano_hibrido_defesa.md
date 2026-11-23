@@ -1,8 +1,10 @@
 # Resultado: dano, híbrido e defesa sem cartas de cura
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 > Histórico com cura da loja ilimitada a 30 ouro. O usuário aprovou depois três compras por run a 30/45/60; as taxas abaixo não validam essa revisão. Os relatórios `comparacao_decks_cura_limitada_*.json` e a tabela consolidada separam a regra nova.
 
-**Cartas de cura não são obrigatórias nas regras atuais.** O bot completou campanhas com um híbrido de dano/defesa/limpeza e com uma construção defensiva apoiada em Ultimate ofensiva. Essas vitórias usam recuperação comprada com ouro entre encontros e a cura normal pós-chefe; não demonstram vitória sem qualquer recuperação de vida.
+**Cartas de cura não são obrigatórias nas regras da versão medida.** O bot completou campanhas com um híbrido de dano/defesa/limpeza e com uma construção defensiva apoiada em Ultimate ofensiva. Essas vitórias usam recuperação comprada com ouro entre encontros e a cura normal pós-chefe; não demonstram vitória sem qualquer recuperação de vida.
 
 Nenhum valor ou regra do jogo foi alterado para obter os resultados. Não foram usados saves reais, invulnerabilidade ou melhorias permanentes. Todos começam com 60 HP e energia 2. Dez testes específicos das ferramentas estão aprovados; consolidação incremental de regressão: 649 testes em 68 módulos.
 

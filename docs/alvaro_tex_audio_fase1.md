@@ -1,5 +1,7 @@
 # Álvaro e Tex — áudio da primeira fase
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Primeira versão para avaliação, derivada de recursos existentes no projeto.
 Nenhum download novo foi feito. Receitas e hashes em
 `alvaro_tex_audio_fase1_fontes.json`; reprodução da preparação em

@@ -1,5 +1,7 @@
 # Carrasco da Vigília — piloto de áudio
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Quatro ações integradas com repertório existente, sem novos downloads.
 Fontes, filtros e hashes em `carrasco_audio_fontes_v1.json`.
 Os bosses aprovados, as mecânicas e as animações foram preservados.

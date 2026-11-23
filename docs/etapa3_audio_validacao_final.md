@@ -1,4 +1,6 @@
-﻿# Etapa 3 — validação consolidada de áudio
+# Etapa 3 — validação consolidada de áudio
+
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
 
 Data: 11/11/2026.
 

@@ -1,7 +1,9 @@
 # Inimigos comuns: oito frames
 
-Os 13 habitantes dos encontros normais usam 52 sequências, com oito poses cada
-(416 sprites RGBA). Parado, reação de dano, ataques, defesa e cura foram preparados
+> Referência vigente — auditoria de 23/11/2026. [Estado atual](estado_atual.md). Relatos de validações datadas abaixo representam somente aquela execução.
+
+Os 14 habitantes dos encontros normais usam 56 sequências, com oito poses cada
+(448 sprites RGBA). Parado, reação de dano, ataques, defesa e cura foram preparados
 conforme o kit de cada inimigo. A distribuição por bioma e os valores de combate
 foram preservados.
 
@@ -33,3 +35,5 @@ Os prompts usados na geração estão em `docs/common_eight_frames_prompts.json`
 O ajuste final do Mago está em `docs/common_mage_fire_revision_prompt.json`.
 Os testes em `tests/test_common_eight_frames.py` conferem poses distintas,
 transparência, alcance das oito poses, recuperação e sincronização de dano/HUD.
+
+As oito poses de dano são fontes; a reprodução filtra as incompatíveis e conserva a recuperação segura. O morcego preserva a fase de voo. Ver [reacoes_dano.md](reacoes_dano.md).

@@ -1,5 +1,7 @@
 # Jan-Pietro: estabilização de postura — 23/11/2026
 
+> Referência vigente — auditoria de 23/11/2026. [Estado atual](estado_atual.md). Relatos de validações datadas abaixo representam somente aquela execução.
+
 Revisão motivada pelo vídeo de combate enviado pelo usuário. O preparo anterior
 redimensionava separadamente cada pose de idle; o caminho de desenho ainda
 realinhava a silhueta por quadro, usando inclusive armas/efeitos na estimativa.
@@ -19,7 +21,7 @@ A combinação produzia oscilação lateral e vertical.
   essa ordem de reprodução não altera o fatiamento original.
 - Dano, giro, estocada, regeneração e corte em X abrem e fecham com a mesma
   guarda do idle; as seis poses centrais continuam representando a ação.
-- O renderizador não realinha novamente o idle/dano desse chefe. As folhas já
+- O idle não recebe segundo alinhamento. Dano segue a seleção/registro seguros de enemy_reactions.py. As folhas já
   estão voltadas para a esquerda, sem flip por quadro. Escala de exibição e
   deslocamento intencional dos ataques melee continuam no caminho existente.
 

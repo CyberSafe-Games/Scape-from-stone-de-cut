@@ -1,5 +1,7 @@
 # Especiais com custo de energia — 18/11/2026
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Os três especiais exigem 20 de carga e **5 de energia para ativar por escolha do jogador**. Sem energia suficiente, nada é consumido e a carta continua disponível nos turnos seguintes. O pagamento não gera nova carga. Mana Ancestral paga primeiro e depois restaura a energia para 8. Demais efeitos, dano e regras de recarga foram preservados.
 
 Custo exibido sobre a carta e no tooltip. Clique recusado não dispara o som de ativação. A legenda antiga da arte é encoberta ao renderizar, preservando o PNG original. Não houve mudança de schema de save.
