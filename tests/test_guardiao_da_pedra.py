@@ -85,19 +85,15 @@ class GuardiaoDaPedraTests(unittest.TestCase):
         view.update(1400)
         self.assertTrue(view.is_enemy_resolving_done())
 
-    def test_24_frames_are_rgba_uniform_and_aligned_at_feet(self):
+    def test_new_sheets_are_rgba_and_wave_remains_independent(self):
         from PIL import Image
-        root = Path(__file__).resolve().parents[1] / 'assets' / 'guardiao_da_pedra'
-        for group in ('idle', 'atk1', 'atk2', 'def', 'healer2', 'dano'):
-            for i in range(1, 5):
-                with self.subTest(group=group, frame=i), Image.open(root / f'{group}_{i}.png') as frame:
-                    self.assertEqual(frame.mode, 'RGBA')
-                    self.assertEqual(frame.size, (448, 280))
-                    self.assertEqual(frame.getpixel((0, 0))[3], 0)
-                    alpha = frame.getchannel('A').point(lambda a: 255 if a > 60 else 0)
-                    self.assertGreaterEqual(alpha.getbbox()[3], 274)
-                    self.assertLessEqual(alpha.getbbox()[3], 280)
-        with Image.open(root / 'urso_espiritual.png') as wave:
+        root = Path(__file__).resolve().parents[1] / 'assets'
+        for group in ('idle', 'atk1', 'ultimate', 'def', 'healer2', 'dano'):
+            with Image.open(root/'bosses/sheets_eight/guardiao_da_pedra'/f'{group}.png') as frame:
+                self.assertEqual(frame.mode, 'RGBA')
+                self.assertEqual(frame.size, (1792, 640))
+                self.assertEqual(frame.getpixel((0, 0))[3], 0)
+        with Image.open(root/'guardiao_da_pedra/urso_espiritual.png') as wave:
             self.assertEqual(wave.mode, 'RGBA')
             self.assertEqual(wave.size, (114, 120))
 
@@ -128,7 +124,7 @@ class GuardiaoDaPedraTests(unittest.TestCase):
         view.trigger_attack('enemy', 'atk2', boss.name)
         view.update(1400 * .6)
         # O lançamento ainda está sustentado a 60% do movimento.
-        self.assertIs(view.get_enemy_frame(boss), frames[6])
+        self.assertIs(view.get_enemy_frame(boss), frames[4])
         view.update(3000)
         x, frame = view.get_player_frame('victory')
         self.assertEqual(x, PLAYER_X)

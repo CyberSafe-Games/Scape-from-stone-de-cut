@@ -1,4 +1,4 @@
-"""Kits territoriais com doze poses e os instantes de impacto preservados."""
+"""Kits territoriais com oito poses nativas ou doze poses legadas."""
 from src.systems.animation_inbetweens import action_pose, timed_frame
 
 KITS = {

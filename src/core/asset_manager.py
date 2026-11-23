@@ -3,6 +3,7 @@ import json
 import pygame
 from src.systems.common_animation_kits import COMMON_KITS
 from src.systems.boss_animation_kits import KITS
+from src.systems.boss_sheet_kits import SHEET_KITS, SHEET_CELL_SIZE, SHEET_GRID
 from src.ui.sprite_cleanup import remove_white_fringe, recolor_green_aura_red
 from src.systems.normal_enemy_catalog import NORMAL_SPRITES, NORMAL_RANGED
 
@@ -28,9 +29,6 @@ from src.config.typography import (
 )
 from src.core.game_font import GameFont
 
-# Escala visual do Corpo Seco: 0.74 * ~170 px de corpo = ~126 px no jogo.
-# Mantém o miniboss proporcional ao Jaum Manel (~130 px) e ao cenário.
-CORPO_SECO_RENDER_SCALE = 0.74
 GOBLIN_NERD_RENDER_SCALE = 0.72
 
 # Enquadramento do cenário do tutorial (frações da arte original, 4:3).
@@ -554,6 +552,9 @@ class AssetManager:
         with open(os.path.join(root,'manifest.json'),encoding='utf8') as stream:
             prepared = json.load(stream)
         for name,(slug,groups) in KITS.items():
+            if name in SHEET_KITS:
+                self._load_boss_sheet_kit(name)
+                continue
             if slug not in prepared:
                 continue
             self._enemy_sprites.setdefault(name, {})
@@ -588,6 +589,30 @@ class AssetManager:
                         self._enemy_projectiles[(name, action)] = [
                             pygame.transform.flip(frame, True, False)
                             for frame in self._enemy_projectiles[(name, action)]]
+
+    def _load_boss_sheet_kit(self, name):
+        """Fatias 4×2, esquerda→direita e cima→baixo, com pivô já preparado."""
+        slug, aliases = SHEET_KITS[name]
+        root = os.path.join(ASSETS_DIR, 'bosses', 'sheets_eight')
+        with open(os.path.join(root, 'manifest.json'), encoding='utf-8') as source:
+            entry = json.load(source)['bosses'][slug]
+        groups = {}
+        width, height = SHEET_CELL_SIZE
+        for group, filename in entry['groups'].items():
+            sheet = pygame.image.load(os.path.join(root, slug, filename)).convert_alpha()
+            if sheet.get_size() != (width*SHEET_GRID[0], height*SHEET_GRID[1]):
+                raise ValueError(f'Grade inválida para {slug}/{filename}')
+            frames = [sheet.subsurface((col*width, row*height, width, height)).copy()
+                      for row in range(SHEET_GRID[1]) for col in range(SHEET_GRID[0])]
+            if group == 'ultimate':
+                self._boss_ultimate_sprites[name] = frames
+            else:
+                groups[group] = frames
+        for alias, original in aliases.items():
+            groups[alias] = (self._boss_ultimate_sprites[name] if original == 'ultimate'
+                             else groups[original])
+        groups['atk'] = groups['atk1']
+        self._enemy_sprites[name] = groups
 
     def get_card_action_sprites(self, action_name):
         return self._card_action_sprites.get(action_name, [])
@@ -638,11 +663,6 @@ class AssetManager:
         return pygame.transform.smoothscale(image, (render_width, render_height))
 
     @staticmethod
-    def _prepare_corpo_seco_frame(image, group):
-        """Renderiza todos os frames do chefe com escala e pivô uniformes."""
-        return AssetManager._prepare_uniform_enemy_frame(image, CORPO_SECO_RENDER_SCALE)
-
-    @staticmethod
     def _prepare_goblin_nerd_frame(image, group):
         """Mantém o Goblin Nerd menor e estável, combinando com o cenário."""
         return AssetManager._prepare_uniform_enemy_frame(image, GOBLIN_NERD_RENDER_SCALE)
@@ -672,27 +692,6 @@ class AssetManager:
                 "atk": load_frames("atk", 3),
                 "def": load_frames("def", 3),
             }
-
-        # Sprites do Corpo Seco, alinhados ao mesmo pivô e virados ao herói.
-        boss_dir = os.path.join(ASSETS_DIR, "corpo_seco")
-        if os.path.isdir(boss_dir):
-            groups = {}
-            for group in ("idle", "atk1", "atk3", "atk4", "dano", "healer2"):
-                frames = []
-                for idx in range(1, 5):
-                    path = os.path.join(boss_dir, f"{group}_{idx}.png")
-                    if os.path.isfile(path):
-                        try:
-                            img = pygame.image.load(path).convert_alpha()
-                            frame = self._prepare_corpo_seco_frame(img, group)
-                            if frame is not None:
-                                frames.append(frame)
-                        except pygame.error:
-                            pass
-                groups[group] = frames
-            groups["atk"] = groups["atk1"]
-            groups["def"] = groups["healer2"]
-            self._enemy_sprites["corpo seco"] = groups
 
         goblin_dir = os.path.join(ASSETS_DIR, "goblin_nerd")
         if os.path.isdir(goblin_dir):
@@ -731,37 +730,10 @@ class AssetManager:
             if os.path.isfile(path):
                 self._enemy_projectiles[("vinimuth", "atk2")] = remove_white_fringe(pygame.image.load(path).convert_alpha())
 
-        guardian_dir = os.path.join(ASSETS_DIR, 'guardiao_da_pedra')
-        if os.path.isdir(guardian_dir):
-            groups = {}
-            for group in ('idle', 'atk1', 'atk2', 'def', 'healer2', 'dano'):
-                frames = []
-                for idx in range(1, 5):
-                    path = os.path.join(guardian_dir, f'{group}_{idx}.png')
-                    if os.path.isfile(path):
-                        frames.append(remove_white_fringe(pygame.image.load(path).convert_alpha()))
-                groups[group] = frames
-            groups['atk'] = groups['atk1']
-            self._enemy_sprites['guardião da pedra'] = groups
-            path = os.path.join(guardian_dir, 'urso_espiritual.png')
-            if os.path.isfile(path):
-                self._enemy_projectiles[('guardião da pedra', 'atk2')] = remove_white_fringe(pygame.image.load(path).convert_alpha())
-
-        carrasco_dir = os.path.join(ASSETS_DIR, 'carrasco_da_vigilia')
-        if os.path.isdir(carrasco_dir):
-            groups = {}
-            for group in ('idle', 'atk1', 'atk2', 'atk3', 'healer2', 'dano'):
-                frames = []
-                for idx in range(1, 5):
-                    path = os.path.join(carrasco_dir, f'{group}_{idx}.png')
-                    if os.path.isfile(path):
-                        frame = pygame.image.load(path).convert_alpha()
-                        if group == 'healer2':
-                            frame = recolor_green_aura_red(frame)
-                        frames.append(frame)
-                groups[group] = frames
-            groups['atk'] = groups['atk1']
-            self._enemy_sprites['carrasco da vigília'] = groups
+        # A onda do urso continua sendo um efeito independente, não uma pose antiga.
+        path = os.path.join(ASSETS_DIR, 'guardiao_da_pedra', 'urso_espiritual.png')
+        if os.path.isfile(path):
+            self._enemy_projectiles[('guardião da pedra', 'atk2')] = remove_white_fringe(pygame.image.load(path).convert_alpha())
 
         from src.systems.alvaro_tex_animations import NAMES
         for phase, name in enumerate(NAMES, 1):
