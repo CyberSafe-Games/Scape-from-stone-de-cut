@@ -41,6 +41,8 @@ from src.systems.alvaro_tex_animations import (
 from src.systems.gordofera_animations import TREMOR_BOUNDARIES, tremor_frame
 from src.ui.alvaro_tex_fx import draw_alvaro_tex_fx
 from src.systems.boss_animation_kits import KITS, kit_frame
+from src.systems.boss_sheet_kits import SHEET_KITS, sheet_pose
+from src.systems.jan_pietro_animation import NAME as JAN_NAME, idle_frame as jan_idle_frame
 from src.systems.player_animation_kits import player_frame
 from src.systems.common_animation_kits import COMMON_KITS, PROJECTILE_ORIGINS
 
@@ -580,7 +582,7 @@ class EntityView:
                     index = (kit_frame(p,len(sprites),release) if len(sprites) in (8,12)
                              else boss_cast_frame(p,self.enemy_ultimate))
                     return sample_pose(sprites, min(index, len(sprites) - 1), p,
-                                       action_boundaries(12, release), interpolate, cuts=(6,))
+                                       action_boundaries(len(sprites), release), interpolate, cuts=(len(sprites)//2,))
             preferred_group = self.enemy_action if self.enemy_action else "atk"
             sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, preferred_group)
             attack_group = preferred_group
@@ -600,8 +602,10 @@ class EntityView:
                     recovery_start = release if self.enemy_ranged_attack else MELEE_RETURN_FRACTION
                     p = recovery_progress(self.attack_timer, self.enemy_attack_duration,
                                           self.enemy_recovery_ms, recovery_start)
-                    return sample_pose(sprites, kit_frame(p, len(sprites), release), p,
-                                       action_boundaries(12, release), interpolate, cuts=(6,))
+                    index = (sheet_pose(p, release) if enemy_name in SHEET_KITS
+                             else kit_frame(p, len(sprites), release))
+                    return sample_pose(sprites, index, p,
+                                       action_boundaries(len(sprites), release), interpolate, cuts=(len(sprites)//2,))
                 if enemy_name in NORMAL_RANGED and attack_group in NORMAL_RANGED[enemy_name]:
                     progress = self.attack_timer / max(1, self.enemy_attack_duration)
                     index = 0 if progress < .22 else 1 if progress < .44 else 2 if progress < .80 else 3
@@ -648,8 +652,10 @@ class EntityView:
         if self.enemy_flash > 0 and enemy_name in KITS:
             damage = self.asset_manager.get_enemy_sprite_group(enemy_name, "dano")
             if len(damage) == 8:
-                return hurt_pose(damage, sprites, self.enemy_flash, interpolate)
+                return hurt_pose(damage, sprites, self.enemy_flash, interpolate and enemy_name != JAN_NAME)
         if sprites:
+            if enemy_name == JAN_NAME and len(sprites) == 8:
+                return sprites[jan_idle_frame(self.enemy_idle_timer)]
             now = self.enemy_idle_timer
             if (enemy_name in KITS or enemy_name in COMMON_KITS) and len(sprites) in (8,12):
                 frame_ms = COMMON_IDLE_FRAME_MS

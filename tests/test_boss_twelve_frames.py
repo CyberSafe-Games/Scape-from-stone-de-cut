@@ -8,6 +8,7 @@ os.environ.setdefault('SDL_AUDIODRIVER','dummy')
 import pygame
 from src.core.asset_manager import AssetManager
 from src.systems.boss_animation_kits import KITS, kit_frame, STRIKE_BOUNDARIES
+from src.systems.boss_sheet_kits import SHEET_KITS
 from src.systems.boss_ultimate_animations import BOSS_ULTIMATE_ANIMATIONS
 from src.ui.entity_view import EntityView
 from src.config.layout import BOSS_IDLE_FRAME_MS
@@ -26,7 +27,7 @@ class BossTwelveFramesTests(unittest.TestCase):
                 with self.subTest(name=name,group=group):
                     frames = (self.assets.get_boss_ultimate_sprites(name) if group=='ultimate'
                               else self.assets.get_enemy_sprite_group(name,group))
-                    count = 8 if group in ('idle', 'dano') else 12
+                    count = 8 if name in SHEET_KITS or group in ('idle', 'dano') else 12
                     self.assertEqual(len(frames), count)
                     # Some original ultimates begin and end in the same idle pose.
                     unique = {pygame.image.tobytes(f,'RGBA') for f in frames}
@@ -47,7 +48,12 @@ class BossTwelveFramesTests(unittest.TestCase):
             frames = self.assets.get_enemy_sprite_group(name,'idle')
             for i in range(8):
                 view.enemy_idle_timer=i*BOSS_IDLE_FRAME_MS+1
-                self.assertIs(view.get_enemy_frame(SimpleNamespace(name=name)),frames[i])
+                if name == 'corpo seco':
+                    from src.systems.jan_pietro_animation import idle_frame
+                    expected=idle_frame(view.enemy_idle_timer)
+                else:
+                    expected=i
+                self.assertIs(view.get_enemy_frame(SimpleNamespace(name=name)),frames[expected])
 
     def test_boss_damage_plays_all_eight_poses_once_then_resumes_idle(self):
         from src.config.layout import FLASH_DURATION
@@ -78,7 +84,7 @@ class BossTwelveFramesTests(unittest.TestCase):
                     view.attack_timer = i*(view.enemy_attack_duration + view.enemy_recovery_ms)/1000
                     frame = view.get_enemy_frame(SimpleNamespace(name=name))
                     seen.add(next(j for j,f in enumerate(frames) if f is frame))
-                self.assertEqual(seen,set(range(12)),(name,group))
+                self.assertEqual(seen,set(range(len(frames))),(name,group))
 
     def test_melee_flash_tracks_new_strike_pose(self):
         view = EntityView(self.assets)
@@ -106,14 +112,22 @@ class BossTwelveFramesTests(unittest.TestCase):
                 if group=='transition':continue
                 frames=(self.assets.get_boss_ultimate_sprites(name) if group=='ultimate'
                         else self.assets.get_enemy_sprite_group(name,group))
-                self.assertEqual(pygame.image.tobytes(frames[-1],'RGBA'),pygame.image.tobytes(idle,'RGBA'),(name,group))
+                if name not in SHEET_KITS:
+                    self.assertEqual(pygame.image.tobytes(frames[-1],'RGBA'),pygame.image.tobytes(idle,'RGBA'),(name,group))
+                else:
+                    self.assertLessEqual(abs(frames[-1].get_bounding_rect(min_alpha=96).bottom-idle.get_bounding_rect(min_alpha=96).bottom),3)
             view=EntityView(self.assets)
             view.trigger_attack('enemy','atk1',name)
             view.update(view.enemy_attack_duration + view.enemy_recovery_ms + 10)
             self.assertEqual(view.enemy_idle_timer,0)
             self.assertIs(view.get_enemy_frame(SimpleNamespace(name=name)),idle)
             view.update(BOSS_IDLE_FRAME_MS + 1)
-            self.assertIs(view.get_enemy_frame(SimpleNamespace(name=name)),self.assets.get_enemy_sprite_group(name,'idle')[1])
+            if name == 'corpo seco':
+                from src.systems.jan_pietro_animation import idle_frame
+                expected=idle_frame(view.enemy_idle_timer)
+            else:
+                expected=1
+            self.assertIs(view.get_enemy_frame(SimpleNamespace(name=name)),self.assets.get_enemy_sprite_group(name,'idle')[expected])
 
     def test_shared_palette_and_no_alternating_idle_brightness(self):
         import json
@@ -121,7 +135,8 @@ class BossTwelveFramesTests(unittest.TestCase):
         import numpy as np
         root=Path(__file__).resolve().parents[1]/'assets/bosses/eight_frames'
         for name,(slug,groups) in KITS.items():
-            palette=set(map(tuple,json.loads((root/slug/'palette.json').read_text(encoding='utf8'))))
+            folder = root.parent/'sheets_eight'/slug if name in SHEET_KITS else root/slug
+            palette=set(map(tuple,json.loads((folder/'palette.json').read_text(encoding='utf8'))))
             brightness=[]
             for group in groups:
                 frames=(self.assets.get_boss_ultimate_sprites(name) if group=='ultimate'
@@ -137,6 +152,8 @@ class BossTwelveFramesTests(unittest.TestCase):
         from pathlib import Path
         root=Path(__file__).resolve().parents[1]/'assets/bosses/eight_frames'
         for name,(slug,groups) in KITS.items():
+            if name in SHEET_KITS:
+                continue  # Identidade das novas fatias é validada em test_boss_sheet_update.
             for group in groups:
                 frames=(self.assets.get_boss_ultimate_sprites(name) if group=='ultimate'
                         else self.assets.get_enemy_sprite_group(name,group))
@@ -164,7 +181,7 @@ class BossTwelveFramesTests(unittest.TestCase):
                         else:view.enemy_action_timer=p*(view.enemy_action_duration + view.enemy_recovery_ms)
                         frame=view.get_enemy_frame(SimpleNamespace(name=name))
                         seen.add(next(i for i,f in enumerate(frames) if f is frame))
-                    self.assertEqual(seen,set(range(12)))
+                    self.assertEqual(seen,set(range(len(frames))))
 
     def test_regular_attack_poses_have_time_to_read_and_keep_the_contact_cue(self):
         from src.systems.gordofera_animations import tremor_frame

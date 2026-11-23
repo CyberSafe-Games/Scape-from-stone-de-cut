@@ -5,14 +5,13 @@ import unittest
 from src.systems.animation_timing import frame_index, animation_duration
 
 
-ASSETS = Path(__file__).resolve().parents[1] / 'assets' / 'corpo_seco'
+ASSETS = Path(__file__).resolve().parents[1] / 'assets/bosses/sheets_eight/corpo_seco'
 
 
 class CorpoSecoAnimationTests(unittest.TestCase):
     def test_all_animation_sets_exist(self):
-        for group in ('idle', 'atk1', 'atk3', 'atk4', 'dano', 'healer2'):
-            files = sorted(ASSETS.glob(f'{group}_*.png'))
-            self.assertEqual(len(files), 4, group)
+        for group in ('idle', 'atk1', 'atk3', 'ultimate', 'dano', 'healer2'):
+            self.assertTrue((ASSETS/f'{group}.png').is_file(),group)
 
     def test_attack_timing_is_action_specific(self):
         self.assertGreater(animation_duration('atk4'), animation_duration('atk3'))
@@ -68,7 +67,7 @@ class CorpoSecoAnimationTests(unittest.TestCase):
         except ImportError:
             self.skipTest('Pillow opcional não instalado')
         for group in ('atk1','atk3','healer2'):
-            for path in ASSETS.glob(f'{group}_*.png'):
+            for path in ASSETS.glob(f'{group}.png'):
                 with self.subTest(name=path.name):
                     image=Image.open(path).convert('RGBA')
                     w,h=image.size

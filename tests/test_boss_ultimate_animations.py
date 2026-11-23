@@ -14,6 +14,7 @@ from src.systems.enemy_factory import create_point_enemy, choose_next_action
 from src.systems.combat_engine import CombatEngine
 from src.systems.boss_ultimate_animations import BOSS_ULTIMATE_ANIMATIONS, BOSS_ORIGINAL_CASTS, boss_ultimate_pose
 from src.ui.entity_view import EntityView
+from src.systems.boss_sheet_kits import SHEET_KITS
 from src.ui.boss_ultimate_fx import draw_boss_ultimate_fx
 from src.scenes.battle_scene import BattleScene
 from src.config.layout import ENEMY_X, PLAYER_X
@@ -65,7 +66,7 @@ class BossUltimateAnimationTests(unittest.TestCase):
         for name in BOSS_ULTIMATE_ANIMATIONS:
             casts = self.assets.get_boss_ultimate_sprites(name)
             effects = self.assets.get_boss_ultimate_sprites(name, effects=True)
-            self.assertEqual(len(casts), 12)
+            self.assertEqual(len(casts), 8 if name in SHEET_KITS else 12)
             self.assertEqual(len(effects), 12)
             for frame in casts:
                 self.assertEqual(frame.get_size(), (448, 320))
@@ -116,7 +117,8 @@ class BossUltimateAnimationTests(unittest.TestCase):
         from src.systems.boss_animation_kits import KITS
         for name in BOSS_ULTIMATE_ANIMATIONS:
             slug = KITS[name][0]
-            colors = json.loads((root/'assets/bosses/eight_frames'/slug/'palette.json').read_text(encoding='utf8'))
+            folder = 'sheets_eight' if name in SHEET_KITS else 'eight_frames'
+            colors = json.loads((root/'assets/bosses'/folder/slug/'palette.json').read_text(encoding='utf8'))
             palette = set(map(tuple, colors))
             casts = self.assets.get_boss_ultimate_sprites(name)
             for cast in casts:
@@ -125,7 +127,10 @@ class BossUltimateAnimationTests(unittest.TestCase):
                 self.assertTrue(used.issubset(palette), name)
                 self.assertGreater(len(used), 20)
             idle = self.assets.get_enemy_sprite_group(name,'idle')[0]
-            self.assertEqual(pygame.image.tobytes(casts[-1],'RGBA'),pygame.image.tobytes(idle,'RGBA'))
+            if name not in SHEET_KITS:
+                self.assertEqual(pygame.image.tobytes(casts[-1],'RGBA'),pygame.image.tobytes(idle,'RGBA'))
+            else:
+                self.assertLessEqual(abs(casts[-1].get_bounding_rect().bottom-idle.get_bounding_rect().bottom),3)
 
     def test_approved_magic_effect_files_remain_identical(self):
         root = Path(__file__).resolve().parents[1]

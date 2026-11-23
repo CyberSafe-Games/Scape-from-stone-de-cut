@@ -1,26 +1,5 @@
 {
-  "guardiao_da_pedra": [
-    "atk1",
-    "atk2",
-    "def",
-    "healer2",
-    "ultimate"
-  ],
   "goblin_nerd": [
-    "atk1",
-    "atk2",
-    "atk3",
-    "healer2",
-    "ultimate"
-  ],
-  "corpo_seco": [
-    "atk1",
-    "atk3",
-    "atk4",
-    "healer2",
-    "ultimate"
-  ],
-  "carrasco_da_vigilia": [
     "atk1",
     "atk2",
     "atk3",

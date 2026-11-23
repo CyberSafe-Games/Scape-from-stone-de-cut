@@ -82,16 +82,15 @@ class CarrascoDaVigiliaTests(unittest.TestCase):
         boss.cleanse(all_effects=True)
         self.assertEqual(boss.attack_bonus, 0)
 
-    def test_all_24_frames_are_uniform_rgba_and_transparent(self):
+    def test_all_six_sheets_are_uniform_rgba_and_transparent(self):
         from PIL import Image
-        root = Path(__file__).resolve().parents[1] / 'assets' / 'carrasco_da_vigilia'
-        for group in ('idle', 'atk1', 'atk2', 'atk3', 'healer2', 'dano'):
-            for i in range(1, 5):
-                with self.subTest(group=group, frame=i), Image.open(root / f'{group}_{i}.png') as image:
-                    self.assertEqual(image.size, (448, 300))
-                    self.assertEqual(image.mode, 'RGBA')
-                    self.assertEqual(image.getpixel((0, 0))[3], 0)
-                    self.assertIsNotNone(image.getbbox())
+        root = Path(__file__).resolve().parents[1] / 'assets/bosses/sheets_eight/carrasco_da_vigilia'
+        for group in ('idle', 'atk1', 'atk2', 'ultimate', 'healer2', 'dano'):
+            with self.subTest(group=group), Image.open(root/f'{group}.png') as image:
+                self.assertEqual(image.size, (1792, 640))
+                self.assertEqual(image.mode, 'RGBA')
+                self.assertEqual(image.getpixel((0, 0))[3], 0)
+                self.assertIsNotNone(image.getbbox())
 
     def test_palette_star_and_biome_load_in_the_real_view(self):
         was_initialized = pygame.get_init()
@@ -117,7 +116,7 @@ class CarrascoDaVigiliaTests(unittest.TestCase):
         self.assertGreater(red.r, red.g)
         self.assertGreater(red.a, 0)
         frames = assets.get_enemy_sprite_group('Carrasco da Vigília', 'healer2')
-        self.assertEqual(len(frames), 12)
+        self.assertEqual(len(frames), 8)
         for frame in frames:
             rgb = pygame.image.tobytes(frame, 'RGBA')
             greens = sum(1 for i in range(0, len(rgb), 4)

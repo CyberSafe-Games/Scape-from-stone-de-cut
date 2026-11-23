@@ -1,0 +1,447 @@
+{
+  "modulos": [
+    {
+      "modulo": "tests.test_alvaro_tex",
+      "exit_code": 0,
+      "testes": 13,
+      "segundos": 0.63
+    },
+    {
+      "modulo": "tests.test_audio_enemies",
+      "exit_code": 0,
+      "testes": 28,
+      "segundos": 1.04
+    },
+    {
+      "modulo": "tests.test_audio_gameplay",
+      "exit_code": 0,
+      "testes": 26,
+      "segundos": 0.47
+    },
+    {
+      "modulo": "tests.test_audio_manager",
+      "exit_code": 0,
+      "testes": 9,
+      "segundos": 0.42
+    },
+    {
+      "modulo": "tests.test_audio_mix",
+      "exit_code": 0,
+      "testes": 1,
+      "segundos": 0.15
+    },
+    {
+      "modulo": "tests.test_audio_options",
+      "exit_code": 0,
+      "testes": 7,
+      "segundos": 0.62
+    },
+    {
+      "modulo": "tests.test_audio_punch_polish",
+      "exit_code": 0,
+      "testes": 1,
+      "segundos": 0.26
+    },
+    {
+      "modulo": "tests.test_audio_ui",
+      "exit_code": 0,
+      "testes": 36,
+      "segundos": 0.45
+    },
+    {
+      "modulo": "tests.test_audio_zanzara",
+      "exit_code": 0,
+      "testes": 3,
+      "segundos": 0.46
+    },
+    {
+      "modulo": "tests.test_backpack_ultimates",
+      "exit_code": 0,
+      "testes": 12,
+      "segundos": 4.24
+    },
+    {
+      "modulo": "tests.test_balance_simulation",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 0.23
+    },
+    {
+      "modulo": "tests.test_boss_sheet_update",
+      "exit_code": 0,
+      "testes": 5,
+      "segundos": 4.39
+    },
+    {
+      "modulo": "tests.test_boss_twelve_frames",
+      "exit_code": 0,
+      "testes": 12,
+      "segundos": 10.46
+    },
+    {
+      "modulo": "tests.test_boss_ultimate_animations",
+      "exit_code": 0,
+      "testes": 12,
+      "segundos": 5.22
+    },
+    {
+      "modulo": "tests.test_boss_ultimate_twelve_effects",
+      "exit_code": 0,
+      "testes": 3,
+      "segundos": 8.89
+    },
+    {
+      "modulo": "tests.test_card_collection_pages",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 0.39
+    },
+    {
+      "modulo": "tests.test_carrasco_da_vigilia",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 4.4
+    },
+    {
+      "modulo": "tests.test_cemetery_system",
+      "exit_code": 0,
+      "testes": 13,
+      "segundos": 36.71
+    },
+    {
+      "modulo": "tests.test_character_portraits",
+      "exit_code": 0,
+      "testes": 3,
+      "segundos": 4.75
+    },
+    {
+      "modulo": "tests.test_common_eight_frames",
+      "exit_code": 0,
+      "testes": 3,
+      "segundos": 5.06
+    },
+    {
+      "modulo": "tests.test_corpo_seco_animation",
+      "exit_code": 0,
+      "testes": 7,
+      "segundos": 0.36
+    },
+    {
+      "modulo": "tests.test_corpo_seco_visual_scale",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 0.57
+    },
+    {
+      "modulo": "tests.test_cutscene_intro_selection",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 0.54
+    },
+    {
+      "modulo": "tests.test_cutscene_post_tutorial",
+      "exit_code": 0,
+      "testes": 5,
+      "segundos": 0.46
+    },
+    {
+      "modulo": "tests.test_cutscene_save_flags",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 0.32
+    },
+    {
+      "modulo": "tests.test_cutscene_scene",
+      "exit_code": 0,
+      "testes": 8,
+      "segundos": 0.7
+    },
+    {
+      "modulo": "tests.test_deck_archetype_comparison",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 0.65
+    },
+    {
+      "modulo": "tests.test_deck_clear_and_minimum",
+      "exit_code": 0,
+      "testes": 20,
+      "segundos": 1.1
+    },
+    {
+      "modulo": "tests.test_deck_draft_persistence",
+      "exit_code": 0,
+      "testes": 19,
+      "segundos": 1.17
+    },
+    {
+      "modulo": "tests.test_deck_slots",
+      "exit_code": 0,
+      "testes": 12,
+      "segundos": 0.49
+    },
+    {
+      "modulo": "tests.test_enemy_intents",
+      "exit_code": 0,
+      "testes": 15,
+      "segundos": 5.3
+    },
+    {
+      "modulo": "tests.test_energy_system",
+      "exit_code": 0,
+      "testes": 11,
+      "segundos": 4.69
+    },
+    {
+      "modulo": "tests.test_extended_cards",
+      "exit_code": 0,
+      "testes": 10,
+      "segundos": 0.58
+    },
+    {
+      "modulo": "tests.test_goblin_monge",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 4.38
+    },
+    {
+      "modulo": "tests.test_goblin_ranged_attacks",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 0.24
+    },
+    {
+      "modulo": "tests.test_guardian_visual_polish",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 0.66
+    },
+    {
+      "modulo": "tests.test_guardiao_da_pedra",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 4.34
+    },
+    {
+      "modulo": "tests.test_hand_and_cemetery_flow",
+      "exit_code": 0,
+      "testes": 13,
+      "segundos": 0.17
+    },
+    {
+      "modulo": "tests.test_jan_pietro_stance",
+      "exit_code": 0,
+      "testes": 8,
+      "segundos": 4.91
+    },
+    {
+      "modulo": "tests.test_life_recovery_after_combat",
+      "exit_code": 0,
+      "testes": 7,
+      "segundos": 4.39
+    },
+    {
+      "modulo": "tests.test_map_encounters",
+      "exit_code": 0,
+      "testes": 12,
+      "segundos": 0.66
+    },
+    {
+      "modulo": "tests.test_map_icons",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 0.81
+    },
+    {
+      "modulo": "tests.test_mata_sombria_boss",
+      "exit_code": 0,
+      "testes": 5,
+      "segundos": 0.24
+    },
+    {
+      "modulo": "tests.test_merchant_workshop",
+      "exit_code": 0,
+      "testes": 8,
+      "segundos": 1.73
+    },
+    {
+      "modulo": "tests.test_music_director",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 0.46
+    },
+    {
+      "modulo": "tests.test_normal_bestiary",
+      "exit_code": 0,
+      "testes": 4,
+      "segundos": 4.62
+    },
+    {
+      "modulo": "tests.test_options_menu",
+      "exit_code": 0,
+      "testes": 18,
+      "segundos": 0.89
+    },
+    {
+      "modulo": "tests.test_pause_menu_layout",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 0.18
+    },
+    {
+      "modulo": "tests.test_player_card_art",
+      "exit_code": 0,
+      "testes": 8,
+      "segundos": 2.9
+    },
+    {
+      "modulo": "tests.test_player_twelve_frames",
+      "exit_code": 0,
+      "testes": 8,
+      "segundos": 7.2
+    },
+    {
+      "modulo": "tests.test_pose_playback",
+      "exit_code": 0,
+      "testes": 5,
+      "segundos": 0.21
+    },
+    {
+      "modulo": "tests.test_random_deck",
+      "exit_code": 0,
+      "testes": 18,
+      "segundos": 0.72
+    },
+    {
+      "modulo": "tests.test_roguelite",
+      "exit_code": 0,
+      "testes": 18,
+      "segundos": 0.9
+    },
+    {
+      "modulo": "tests.test_route_boss_and_backpack",
+      "exit_code": 0,
+      "testes": 13,
+      "segundos": 0.56
+    },
+    {
+      "modulo": "tests.test_save_integration",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 0.29
+    },
+    {
+      "modulo": "tests.test_save_system",
+      "exit_code": 0,
+      "testes": 13,
+      "segundos": 0.36
+    },
+    {
+      "modulo": "tests.test_shop_and_combat_reset",
+      "exit_code": 0,
+      "testes": 22,
+      "segundos": 0.91
+    },
+    {
+      "modulo": "tests.test_swamp_boss",
+      "exit_code": 0,
+      "testes": 5,
+      "segundos": 4.28
+    },
+    {
+      "modulo": "tests.test_tactical_cards",
+      "exit_code": 0,
+      "testes": 26,
+      "segundos": 0.49
+    },
+    {
+      "modulo": "tests.test_territory_map",
+      "exit_code": 0,
+      "testes": 16,
+      "segundos": 0.38
+    },
+    {
+      "modulo": "tests.test_test_save",
+      "exit_code": 0,
+      "testes": 7,
+      "segundos": 0.57
+    },
+    {
+      "modulo": "tests.test_text_wrap",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 0.41
+    },
+    {
+      "modulo": "tests.test_tutorial_save_flow",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 0.24
+    },
+    {
+      "modulo": "tests.test_tutorial_scene",
+      "exit_code": 0,
+      "testes": 20,
+      "segundos": 4.97
+    },
+    {
+      "modulo": "tests.test_ultimate_animations",
+      "exit_code": 0,
+      "testes": 7,
+      "segundos": 4.85
+    },
+    {
+      "modulo": "tests.test_ultimate_cards_lv2",
+      "exit_code": 0,
+      "testes": 5,
+      "segundos": 0.45
+    },
+    {
+      "modulo": "tests.test_ultimates",
+      "exit_code": 0,
+      "testes": 9,
+      "segundos": 0.22
+    },
+    {
+      "modulo": "tests.test_window_modes",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 0.6
+    },
+    {
+      "modulo": "tests.test_zanzara",
+      "exit_code": 0,
+      "testes": 5,
+      "segundos": 4.75
+    },
+    {
+      "modulo": "tests.test_zanzara_difficulty",
+      "exit_code": 0,
+      "testes": 6,
+      "segundos": 0.19
+    },
+    {
+      "modulo": "tests.test_zanzara_final",
+      "exit_code": 0,
+      "testes": 9,
+      "segundos": 4.67
+    },
+    {
+      "modulo": "tests.test_zanzara_main_integration",
+      "exit_code": 0,
+      "testes": 3,
+      "segundos": 0.18
+    },
+    {
+      "modulo": "tests.test_zanzara_necromancer",
+      "exit_code": 0,
+      "testes": 16,
+      "segundos": 2.94
+    }
+  ],
+  "total_testes": 698,
+  "falhas": 0,
+  "concluido": true,
+  "retomado": true,
+  "segundos": 26.12
+}
