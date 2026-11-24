@@ -80,6 +80,12 @@ O jogo tem uma campanha linear de **sete territórios**. Em cada um, há 2 comba
 
 ## Instalação e execução
 
+### Windows
+
+Baixe `ScapeFromStoneDeCut-Setup-x.y.z.exe` na seção **Releases** do GitHub e siga o assistente. O instalador não exige Python nem Pygame. Também há um `.zip` portátil para quem preferir extrair e executar o jogo sem instalá-lo. Ao gerar localmente, o Setup fica na raiz do projeto, ao lado de `main.py`. Consulte [o guia de instalação para Windows](docs/build_windows.md).
+
+### Executar pelo código-fonte
+
 Pré-requisitos: **Python 3.12 ou mais recente**. As dependências vêm do `requirements.txt` (somente Pygame).
 
 ```bash
