@@ -154,15 +154,18 @@ def main():
         battle.engine.enemy.hp = 0
         battle.engine._on_enemy_defeated()
         assert battle._persist_logical_state()
+        battle._outcome_elapsed = battle.VICTORY_POSE_MS
         battle._draw_victory(window.screen)
         pygame.image.save(window.screen, output / 'recompensa.png')
-        battle.material_chooser = True
+        battle.reward_view.show_materials = True
         battle._draw_victory(window.screen)
         pygame.image.save(window.screen, output / 'materiais.png')
-        name, rect = next(iter(battle.material_rects.items()))
+        (_, name), rect = next(battle.reward_view.offers(battle.engine, data['progresso']))
         before = data['progresso']['materials'][name]
-        battle.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN,
-            button=1, pos=(round(rect.centerx * 2 / 3), round(rect.centery * 2 / 3))))
+        for target in (rect, battle.reward_view.CONFIRM):
+            battle.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN,
+                button=1, pos=(round(target.centerx * 2 / 3), round(target.centery * 2 / 3))))
+        battle.update(battle.reward_view.CONFIRM_MS)
         assert data['progresso']['materials'][name] == before + 1
         assert data['progresso']['combat_snapshot'] is None
         manager.end_run(data, 7)

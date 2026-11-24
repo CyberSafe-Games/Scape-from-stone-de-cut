@@ -43,13 +43,14 @@ Jaum Manel, jovem indígena da aldeia Stone The Cut, vê sua terra invadida pelo
 1. No seu turno, a energia é restaurada e a mão é completada; você joga cartas gastando energia. A mão vai de 3 a até 5 cartas ao longo do combate (a energia máxima também cresce, de 2 até 8).
 2. A HUD mostra a ordem das ações planejadas do inimigo. Passe o mouse sobre um ícone de intenção para ampliar a carta quando a arte completa estiver disponível.
 3. Ao encerrar o turno, as cartas que sobraram ficam na mão e o inimigo age. O Escudo absorve o dano de ataques antes que eles atinjam a vida.
-4. Após vencer pela primeira vez um encontro com recompensa disponível, escolha uma das cartas que você ainda não possui ou pule a escolha. Revanches não dão cartas.
+4. Após vencer um encontro pela primeira vez, o altar de espólios mostra o ouro conquistado. Selecione uma carta nova ou abra **Escolher materiais** para ver as cópias e a reserva de cada tipo. Use **Confirmar escolha** para receber a seleção ou **Pular recompensa** para seguir com o ouro da vitória. Revanches não concedem espólios.
 5. Se a vida de Jaum Manel zerar, a run volta ao último checkpoint (tecla `R`).
 
 ## Principais mecânicas
 
 - **Baralho com três pilhas:** compra, mão e descarte. Se a pilha de compra esvazia, o descarte é reembaralhado.
 - **Cartas:** 20 cartas jogáveis com artes e animações próprias. As 75 cartas em desenvolvimento ficam indisponíveis para recompensas, compras e montagem do deck.
+- **Altar de espólios:** cenário ilustrado em `assets/ui/rewards/`, com brasas ascendentes, runas ao apontar para uma oferta e pulso dourado na confirmação. A prévia lateral usa a arte e o custo atuais das cartas, incluindo a moldura prateada em LV2. Para abrir o piloto com um save temporário, execute `testar_polimento_audio.bat recompensa` e pressione Espaço para vencer o encontro.
 - **Cemitério:** descarte uma carta da mão por 1 de energia, ou faça 1 troca grátis por turno com uma carta do descarte.
 - **Ultimates:** a carga começa em **0/20** em toda batalha e sobe conforme a energia gasta em cartas. Ao atingir 20, você pode ativar a Ultimate equipada: **Mana Ancestral**, **Forças Ancestrais** ou **Rugido da Floresta**. A escolha equipada é salva. A carga vale somente para a batalha atual. Todas custam **2 de energia**. Mana restaura a energia para 8 e remove negativos; Forças concede +12 de Força até o fim do combate e 40 de Escudo por 2 turnos; Rugido destrói o Escudo inimigo, causa 60 de dano base e aplica Fraqueza por 3 turnos.
 - **Mercado Silencioso:** compre cartas ou aumente a vida máxima em 15 por 50 moedas, até 3 vezes por run.
@@ -61,7 +62,8 @@ Jaum Manel, jovem indígena da aldeia Stone The Cut, vê sua terra invadida pelo
 ### Efeitos negativos
 
 - **Veneno:** cada aplicação adiciona 1 ou 2 stacks, até 5, e renova a duração para 2 turnos. No fim do turno da entidade afetada, causa `5 × stacks` de dano direto, ignorando Escudo, e perde 1 turno de duração.
-- **Sangramento:** cada aplicação adiciona 1 ou 2 stacks, até 5, e renova a duração para 2 turnos. Causa `3 × stacks` de dano direto após uma ação ofensiva que tire vida do alvo, até duas vezes por turno. A duração diminui no fim do turno da entidade afetada.
+- **Sangramento:** cada aplicação adiciona 1 ou 2 stacks, até 5, e renova a duração para 2 turnos. O primeiro ataque de cada turno causa `3 × stacks` de dano direto à vida de quem está sangrando. A duração diminui no fim do turno da entidade afetada.
+- **Debuffs de impacto:** o golpe precisa tirar vida para aplicar ou renovar o debuff. Um Escudo que absorve todo o dano impede a aplicação, mesmo quando quebra. Ganhar Escudo preserva os debuffs já ativos.
 - **Choque:** só inimigos aplicam. Cada stack reduz a energia inicial do próximo turno do jogador em 1, até o mínimo de 0. Todos os stacks expiram assim que a redução é aplicada.
 
 ## Progressão
@@ -70,7 +72,7 @@ O jogo tem uma campanha linear de **sete territórios**. Em cada um, há 2 comba
 
 | # | Território | Chefe |
 |---|---|---|
-| 1 | Pedra do Corte | Octav, o lobisomem |
+| 1 | Stone de Cut | Octav, o lobisomem |
 | 2 | Mata Sombria | Alvar & Tekks, Rastreadores |
 | 3 | Ruínas Ancestrais | Jozephino, o Inventor |
 | 4 | Pântano Abissal | Sir Thomas, a Besta Fera |

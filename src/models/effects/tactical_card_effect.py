@@ -45,11 +45,11 @@ class TacticalCardEffect(CardEffect):
         elif rule == 'vulnerable': target.apply_status('vulnerable', 3, 25)
         elif rule == 'cleanse': user.cleanse()
         elif rule == 'totem': user.apply_status('totem', 0, 1)
-        elif rule == 'darts' and not blocked: target.add_stacks('poison', 2)
+        elif rule == 'darts' and result.get('damage'): target.add_stacks('poison', 2)
         elif rule == 'break': target.block = 0
         elif rule == 'dispel': target.remove_positive_effects()
-        elif rule == 'bleed' and not blocked: target.add_stacks('bleed', 2)
-        elif rule == 'fire' and not blocked: target.apply_status('fire', 3, 1)
+        elif rule == 'bleed' and result.get('damage'): target.add_stacks('bleed', 2)
+        elif rule == 'fire' and result.get('damage'): target.apply_status('fire', 3, 1)
         elif rule == 'poison': target.add_stacks('poison', card.value)
         elif rule == 'energy':
             gain = next_turn_energy_gain(user, card.value)

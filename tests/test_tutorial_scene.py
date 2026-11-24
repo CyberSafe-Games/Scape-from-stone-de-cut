@@ -2,7 +2,7 @@
 import os
 import tempfile
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pygame
 
@@ -117,6 +117,34 @@ class TestTutorialSceneIntegration(unittest.TestCase):
 
     def tearDown(self):
         self._tmp.cleanup()
+
+    def test_practice_tip_only_appears_over_review_button(self):
+        scene = self.tutorial_scene
+        scene.overlay.finish()
+        surface = pygame.Surface((WIDTH, HEIGHT))
+        with (
+            patch("src.scenes.battle_scene.BattleScene.draw"),
+            patch.object(scene, "_draw_guide_tip") as tip,
+            patch.object(self.window_manager, "get_virtual_mouse_pos",
+                         side_effect=[(-1, -1), scene.help_button_rect.center, (0, 0)]),
+        ):
+            scene.draw(surface)
+            tip.assert_not_called()
+            scene.draw(surface)
+            tip.assert_called_once_with(surface)
+            scene.draw(surface)
+            tip.assert_called_once()
+        self.assertFalse(scene.overlay.is_active)
+
+    def test_clicking_review_button_reopens_guide(self):
+        scene = self.tutorial_scene
+        scene.overlay.finish()
+        with patch.object(self.window_manager, "map_to_virtual",
+                          return_value=scene.help_button_rect.center):
+            scene.handle_event(pygame.event.Event(
+                pygame.MOUSEBUTTONDOWN, button=1, pos=scene.help_button_rect.center
+            ))
+        self.assertTrue(scene.overlay.is_active)
 
     def test_save_on_exit_keeps_initial_deck_unchanged(self):
         """Fechar durante o tutorial não altera o deck inicial do save."""

@@ -31,7 +31,8 @@ class ExtendedCardEffect(CardEffect):
             context._resolve_totem_trigger(target, user)
             result['damage'] = damage
             context.spawn_damage_text(target, f'-{damage}', RED)
-            self._apply_attack_statuses(user, target)
+            if damage:
+                self._apply_attack_statuses(user, target)
             return damage
 
         def consume_attack_totem():
@@ -83,8 +84,8 @@ class ExtendedCardEffect(CardEffect):
             self._heal(user, value, context)
             user.attack_lock_pending = max(user.attack_lock_pending, 1)
         elif rule == 'damage_status':
-            attack(value)
-            add_status(self.params['status'], self.params['stacks'])
+            if attack(value):
+                add_status(self.params['status'], self.params['stacks'])
         elif rule == 'block_status':
             self._block(user, value, context)
             apply_statuses({self.params['status']: self.params['stacks']})
@@ -158,8 +159,7 @@ class ExtendedCardEffect(CardEffect):
             target.apply_status('no_block', 1)
             add_status(self.params['status'], self.params['stacks'])
         elif rule == 'conditional_weak':
-            attack(value)
-            if any(name in target.statuses for name in ('poison', 'bleed', 'burn')):
+            if attack(value) and any(name in target.statuses for name in ('poison', 'bleed', 'burn')):
                 target.apply_status('weak', 1)
         elif rule == 'block_stun':
             self._block(user, value, context)
@@ -202,15 +202,14 @@ class ExtendedCardEffect(CardEffect):
             context.deck_manager.draw_cards(value)
             user.apply_strength(1, self.params['turns'])
         elif rule == 'damage_stun':
-            attack(value)
-            self._stun(target, self.params['chance'], blocked)
+            if attack(value):
+                self._stun(target, self.params['chance'], blocked)
         elif rule == 'damage_stun_per_debuff':
-            attack(value)
-            chance = min(50, 10 * self._debuff_types(target))
-            self._stun(target, chance, blocked)
+            if attack(value):
+                chance = min(50, 10 * self._debuff_types(target))
+                self._stun(target, chance, blocked)
         elif rule == 'damage_stun_draw':
-            attack(value)
-            stunned = not blocked and random.randint(1, 100) <= self.params['chance']
+            stunned = attack(value) and random.randint(1, 100) <= self.params['chance']
             if stunned:
                 target.apply_status('stun', 1)
             elif not blocked:
@@ -228,8 +227,8 @@ class ExtendedCardEffect(CardEffect):
             user.apply_status('totem', 0, 1)
             user.statuses['totem']['trigger'] = 'heal'
         elif rule == 'damage_multi_status':
-            attack(value)
-            apply_statuses(self.params['statuses'])
+            if attack(value):
+                apply_statuses(self.params['statuses'])
         elif rule == 'damage_per_debuff':
             attack(value * self._debuff_types(target))
         elif rule == 'add_existing_debuffs':
@@ -254,13 +253,13 @@ class ExtendedCardEffect(CardEffect):
         elif rule == 'draw_per_debuff':
             context.deck_manager.draw_cards(self._debuff_types(target))
         elif rule == 'damage_status_strength':
-            attack(value)
-            add_status(self.params['status'], self.params['stacks'])
+            if attack(value):
+                add_status(self.params['status'], self.params['stacks'])
             user.apply_strength(self.params['strength'], self.params['turns'])
         elif rule == 'damage_stun_status':
-            attack(value)
-            self._stun(target, self.params['chance'], blocked)
-            add_status(self.params['status'], self.params['stacks'])
+            if attack(value):
+                self._stun(target, self.params['chance'], blocked)
+                add_status(self.params['status'], self.params['stacks'])
         elif rule == 'double_all_debuffs_lock':
             consume_attack_totem()
             if not blocked:

@@ -82,7 +82,8 @@ saves/                  # Saves JSON por slot (gitignored): 3 slots + save espec
 **Estado e debuffs** — `src/models/entity.py` e `src/systems/combat_engine.py`
 
 - **Veneno:** aplique 1 ou 2 stacks por ação, limitado a `0 <= poison_stacks <= 5`. Toda aplicação renova `poison_turns = 2`, inclusive com 5 stacks ativos. Ao fim do turno da entidade afetada, aplique `5 * poison_stacks` de dano direto que ignora Escudo e reduza `poison_turns` em 1. Ao chegar a 0, zere os stacks.
-- **Sangramento:** aplique 1 ou 2 stacks por ação, limitado a `0 <= bleed_stacks <= 5`. Toda aplicação renova `bleed_turns = 2`, inclusive no teto. Após uma ação ofensiva que tire vida do alvo, aplique `3 * bleed_stacks` de dano direto à entidade afetada se `bleed_triggers_this_turn < 2` e incremente o contador. Um ataque com vários golpes conta como uma ação. Zere o contador no início do turno da entidade. No fim do turno, reduza `bleed_turns` em 1 e zere os stacks se chegar a 0.
+- **Sangramento:** aplique 1 ou 2 stacks por ação, limitado a `0 <= bleed_stacks <= 5`. Toda aplicação renova `bleed_turns = 2`, inclusive no teto. No primeiro ataque de cada turno, aplique `3 * bleed_stacks` de dano direto à vida de quem está sangrando, mesmo se o alvo absorver o golpe. Zere o contador no início do turno da entidade. No fim do turno, reduza `bleed_turns` em 1 e zere os stacks se chegar a 0.
+- **Debuffs de impacto:** aplique ou renove efeitos vinculados a golpes somente se o golpe tirar vida. Quebrar o Escudo com dano exato impede a aplicação. Ganhar Escudo preserva os debuffs ativos. Efeitos diretos, como a Poção Venenosa, seguem suas próprias regras.
 - **Choque:** exclusivo de inimigos. A habilidade comum de Jozephino aplica 1 stack e sua Ultimate aplica 2. Os stacks se somam e duram 1 turno. Após restaurar a energia no início do próximo turno do jogador, aplique `max(0, energia - stacks)` e remova todos os stacks imediatamente.
 - **Ciclo da batalha:** inicialize `ultimate_charge = 0` e limpe todos os efeitos de combate na entrada. Na vitória ou derrota, o motor limpa Veneno e Sangramento de ambas as entidades, zerando stacks, durações e contador de Sangramento. Os demais efeitos e a carga são estado local do encontro e ficam fora do save. A troca de fase do chefe mantém o estado do jogador no mesmo combate.
 - **HUD de status:** mostre stacks, turnos restantes e dano por gatilho em Veneno e Sangramento. Mantenha os textos das cartas e habilidades em pt-BR, incluindo a quantidade aplicada e a duração.
@@ -101,7 +102,7 @@ saves/                  # Saves JSON por slot (gitignored): 3 slots + save espec
 
 | # | Território | Nome interno | Nome de exibição |
 |---|---|---|---|
-| 1 | Pedra do Corte | `Guardião da Pedra` | Octav, o lobisomem |
+| 1 | Stone de Cut | `Guardião da Pedra` | Octav, o lobisomem |
 | 2 | Mata Sombria | `Álvaro e Tex` | Alvar & Tekks, Rastreadores |
 | 3 | Ruínas Ancestrais | `Goblin Nerd` | Jozephino, o Inventor |
 | 4 | Pântano Abissal | `Gordofera` | Sir Thomas, a Besta Fera |
@@ -295,3 +296,30 @@ Estas decisões atualizam as descrições históricas de Zanzara e áudio acima:
 - Reutilizar o renderizador de cartas da Loja/Altar com nível, custo e descrição da cópia real; manter padding e custo único. Preview de hover é visual, fixo no painel à direita e separado dos botões.
 - Filtros de custo/nível usam a próxima cópia livre com prioridade LV2 existente; recalcular após mutações do deck. Não mudar limites, rascunho válido, bloqueio de cartas indisponíveis ou persistência para acomodar o layout.
 - Piloto com saves temporários em preview_roguelite.py --smoke; testes em test_backpack_visual e regressões de deck/ultimates.
+
+## 17. Altar de espólios pós-combate
+
+- `src/ui/post_combat_reward_view.py` desenha o cenário em `assets/ui/rewards/`, com procedência em `art_manifest.json`. Reutiliza moldura, padding e custo dinâmico da Loja/Altar, preview lateral e moldura prateada para uma cópia LV2 existente.
+- Carta Nova desbloqueia o tipo pelas regras da run. Materiais entram na reserva de evolução do tipo, respeitando o limite 9. Mostre a quantidade de cópias existentes e a reserva. Preserve as regras do motor, ouro, fragmentos, revanches e transações de save.
+- Brasas no cenário, runas e faíscas no hover, pulso dourado ao confirmar. A cena encaminha a decisão uma única vez após o pulso e conclui a escolha se a janela for fechada durante ele. Pular mantém o ouro conquistado.
+- Piloto sem slots reais em `testar_polimento_audio.bat recompensa`. Teste rápido com `--smoke` e testes de seleção, pulo, materiais e fechamento em `tests/test_post_combat_rewards.py`.
+- A vitória sobre Zanzara preserva a celebração e segue automaticamente para o epílogo depois de salvar a conclusão da campanha. O altar de espólios fica reservado aos demais encontros.
+
+## 18. Animações de derrota
+
+- Slime derrete e deixa uma poça. Morcego Sombrio cai e solta poeira e som ao tocar o chão. Vinimuth, Zanzara e a transição de Alvar para Tekks têm sequências próprias.
+- Os demais kits de campanha usam a reação de dano antes da pose final em `assets/enemies/defeat/`. Bípedes apoiam um joelho. Quadrúpedes cedem de acordo com a anatomia. Procedência em `art_manifest.json` e exportação em `devtools/prepare_enemy_defeats.py`.
+- Pilotos `testar_polimento_audio.bat derrotas-comuns` e `testar_polimento_audio.bat derrotas-chefes`. Use as setas para trocar o inimigo, Espaço para o golpe final e R para repetir.
+
+## 19. Áudio dos debuffs — 24/11/2026
+
+- Veneno e Sangramento aprovados no piloto. Veneno usa só a cauda corrosiva da Poção Venenosa. Sangramento usa só o escoamento da Adaga Sangrenta e toca com o aviso do debuff, após o som de contato.
+- Fogo e Queimadura usam a cauda de chama da Bola de Fogo, aprovada no piloto `testar_polimento_audio.bat queimadura`. Fonte e recorte em `docs/queimadura_debuff_chama_v2.json`.
+- Choque aprovado no piloto. Usa o mesmo OGG da Esfera Protetora, com identificador próprio no grupo de volume de dano e disparo quando a energia é reduzida. Piloto `testar_polimento_audio.bat debuffs`, tecla 3.
+- Rugido da Floresta aprovado no piloto com o som da Bola de Fogo no lançamento do avatar e o som comum na ativação. As três cartas especiais usam o feedback padrão ao entrar com o mouse nas cartas da mão.
+- Avanço dos diálogos aprovado com `ui.navigate` em volume reduzido. Epílogo aprovado com Jungle Tribe da batalha final até as últimas falas de Zanzara, saída gradual na tela preta e Lost Time, de Kevin MacLeod, a partir da primeira fala de Octav. Fonte, licença e conversão em `assets/audio/README.md`.
+- Abertura aprovada no piloto exclusivo `testar_polimento_audio.bat abertura`. The Last Stand toca no primeiro quadro. Jungle Chase entra quando Zanzara aparece no navio, no segundo quadro.
+- Guerreiro da Mata aprovado no piloto. Varredura do Mangual e Abalo da Floresta usam o mesmo OGG do Machado Quebra-Escudo, agendado 250 ms antes do contato para alinhar o transiente pesado e preservar a cauda de quebra. No piloto único, pressione 2 e use A ou S para comparar os golpes.
+- Game Over e vitória do tutorial aprovados no piloto. O brasão de derrota e o áudio original entram após o golpe fatal. O tutorial usa a fanfarra e o brasão padrão de vitória antes da tela de conclusão. No piloto único, use 6 para Game Over ou 7 e V para a vitória do tutorial.
+- Revisão em janela única com `testar_polimento_audio.bat polimento-final`. Teclas 1–8 alternam Rugido, Mangual, diálogos, abertura, epílogo, Game Over, tutorial e recompensa. Usa saves temporários. O teste rápido do piloto valida os disparos pelo mixer e as mudanças de contexto musical. A avaliação de timbre e volume é feita ouvindo o piloto.
+- Fechamento técnico de 24/11/2026 nesta branch: suíte completa isolada com 724 testes em 77 módulos, todos aprovados. O mixer dummy iniciou 84 efeitos e cinco trilhas, e a entrada real `main.py` abriu e desenhou o menu no teste automático. A conferência da campanha no jogo aberto é manual.

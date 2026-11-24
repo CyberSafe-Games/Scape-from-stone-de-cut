@@ -415,15 +415,25 @@ class TestPunchImpactAudio(unittest.TestCase):
 
 
 class TestTutorialGuideAudio(unittest.TestCase):
-    def test_tutorial_victory_does_not_play_fanfare(self):
+    def test_tutorial_victory_plays_fanfare_after_enemy_defeat(self):
         scene = object.__new__(TutorialScene)
         scene.scene_manager = MagicMock()
+        scene.engine = MagicMock(state="victory")
+        scene.engine.enemy.name = "Slime"
         scene.entity_view = MagicMock()
         scene.entity_view.player_action = None
+        scene.entity_view.attacker = None
+        scene.entity_view.pending_enemy_hit_at = None
+        scene.entity_view.enemy_flash = 0
+        scene.entity_view.advance_enemy_defeat.side_effect = [False, True]
 
-        scene._handle_combat_event("victory")
+        scene._update_outcome(0)
+        playback = scene.scene_manager.audio_manager.play_sfx
+        self.assertNotIn("gameplay.victory", [cue.args[0] for cue in playback.call_args_list])
+        scene._update_outcome(680)
+        scene._update_outcome(16)
 
-        scene.scene_manager.audio_manager.play_sfx.assert_not_called()
+        self.assertEqual([cue.args[0] for cue in playback.call_args_list].count("gameplay.victory"), 1)
 
     def test_guide_blocks_card_hover_but_keeps_advance_click(self):
         scene = object.__new__(TutorialScene)
@@ -539,44 +549,81 @@ class TestCardHoverTiming(unittest.TestCase):
 
 
 class TestCardGameplayAudio(unittest.TestCase):
-    def test_victory_plays_sound_once(self):
-        scene = object.__new__(BattleScene)
-        scene.scene_manager = MagicMock()
-        scene.entity_view = MagicMock()
-        scene.entity_view.player_action = None
-        scene.coin_hud = MagicMock()
+    def test_rugido_plays_fireball_once_when_avatar_is_released(self):
+        from src.systems.ultimate_animations import ULTIMATE_ANIMATIONS
 
-        engine = object.__new__(CombatEngine)
-        engine.state = "player_turn"
-        engine.is_replay = False
-        engine.player = MagicMock()
-        engine.enemy = MagicMock()
-        engine.enemy.boss_id = None
-        engine.enemy.is_miniboss = False
-        engine.on_event = scene._handle_combat_event
-        engine.generate_rewards = MagicMock()
+        scene = TestNamedCardAudio().make_scene()
+        action = "Rugido da Floresta"
+        animation = ULTIMATE_ANIMATIONS[action]
+        scene._handle_combat_event("player_action", action=action)
+        playback = scene.scene_manager.audio_manager.play_sfx
+        scene.update(animation.duration * animation.release - 1)
+        playback.assert_not_called()
+        scene.update(1)
+        scene.update(animation.duration * animation.impact)
+        playback.assert_called_once_with("gameplay.attack.fireball", volume=1.0)
 
-        engine._on_enemy_defeated()
-        engine._on_enemy_defeated()
+    def test_status_ticks_use_contact_sounds_with_full_tails(self):
+        scene = TestNamedCardAudio().make_scene()
+        for status in ("poison", "bleed", "shock"):
+            scene._handle_combat_event("status_trigger", status=status, target="player")
 
-        self.assertEqual(engine.state, "victory")
-        scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "gameplay.victory",
-            volume=1.0,
-        )
+        scene._update_status_audio(0)
+        self.assertEqual(scene.scene_manager.audio_manager.play_sfx.call_count, 2)
+        scene._update_status_audio(scene.BLEED_FEEDBACK_DELAY_MS)
+        scene._update_status_audio(0)
+        self.assertEqual(scene.scene_manager.audio_manager.play_sfx.call_args_list, [
+            call("gameplay.status.poison_tick", volume=0.60),
+            call("gameplay.status.shock_tick", volume=1.0),
+            call("gameplay.status.bleed_tick", volume=1.0),
+        ])
 
-    def test_game_over_event_plays_sound(self):
-        scene = object.__new__(BattleScene)
-        scene.scene_manager = MagicMock()
-        scene.entity_view = MagicMock()
-        scene.entity_view.player_action = None
+    def test_lethal_arrow_delays_fanfare_and_gold_reveal(self):
+        from src.systems.card_catalog import CARD_BY_NAME
+        from src.systems.enemy_factory import create_road_enemy
 
+        scene = TestNamedCardAudio().make_scene()
+        scene.engine = CombatEngine(scene._handle_combat_event)
+        with patch("src.systems.enemy_factory.random.choice", return_value="Slime"):
+            scene.engine.enemy = create_road_enemy(1)
+        scene.engine.enemy.hp = 1
+        scene.engine.player.energy = 8
+        scene.engine.deck_manager.hand = [CARD_BY_NAME["Disparo de Arco"].copy()]
+        gold = scene.engine.player.coins
+        playback = scene.scene_manager.audio_manager.play_sfx
+
+        self.assertTrue(scene.engine.play_card(0))
+        self.assertEqual(scene.engine.state, "victory")
+        self.assertEqual(scene.engine.player.coins - gold, scene._reward_gold)
+        self.assertGreater(scene._reward_gold, 0)
+        playback.assert_not_called()
+        scene.update(768)
+        scene.update(312)
+        self.assertEqual(playback.call_args.args[0], "gameplay.attack.arrow_impact")
+        self.assertIsNone(scene._fall_elapsed)
+        self.assertFalse(scene._victory_ready)
+        scene.update(2000)
+        self.assertEqual(scene.entity_view.enemy_fall_progress, 0)
+        scene.update(scene.entity_view.SLIME_MELT_MS)
+        self.assertEqual(playback.call_args.args[0], "gameplay.victory")
+        self.assertFalse(scene._victory_ready)
+        scene.update(scene.VICTORY_POSE_MS)
+        self.assertTrue(scene._victory_ready)
+        self.assertEqual([cue.args[0] for cue in playback.call_args_list].count("gameplay.victory"), 1)
+        scene.coin_hud.spawn_coins.assert_not_called()
+
+    def test_game_over_waits_for_attack_then_plays_once(self):
+        scene = TestNamedCardAudio().make_scene()
+        scene._handle_combat_event("attack", attacker="enemy", action="atk")
+        scene.engine.state = "game_over"
         scene._handle_combat_event("game_over")
-
-        scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
-            "gameplay.game_over",
-            volume=1.0,
-        )
+        playback = scene.scene_manager.audio_manager.play_sfx
+        playback.assert_not_called()
+        self.assertFalse(scene._game_over_ready)
+        scene.update(3000)
+        scene.update(3000)
+        playback.assert_called_once_with("gameplay.game_over", volume=1.0)
+        self.assertTrue(scene._game_over_ready)
 
     def test_card_hover_sound_on_entry_only(self):
         scene = object.__new__(BattleScene)
@@ -597,9 +644,10 @@ class TestCardGameplayAudio(unittest.TestCase):
                 return_value=[
                     pygame.Rect(50, 50, 100, 100),
                     pygame.Rect(160, 50, 100, 100),
+                    pygame.Rect(270, 50, 100, 100),
                 ],
             ),
-            patch("pygame.time.get_ticks", side_effect=[1000, 1200, 1400]),
+            patch("pygame.time.get_ticks", side_effect=[1000, 1200, 1400, 1600]),
         ):
             for pos, expected_calls in (
                 ((100, 100), 1),
@@ -607,6 +655,8 @@ class TestCardGameplayAudio(unittest.TestCase):
                 ((200, 100), 2),
                 ((400, 100), 2),
                 ((200, 100), 3),
+                ((300, 100), 4),
+                ((310, 100), 4),
             ):
                 with self.subTest(pos=pos):
                     scene.handle_event(

@@ -53,6 +53,8 @@ class FinalCutsceneTests(unittest.TestCase):
             for index in range(len(images)):
                 scene.update(500)
                 self.assertEqual(scene.index, index)
+                if index in (2, 3):
+                    self.assertIsNone(scene.music_context)
                 if images[index] is None:
                     surface = pygame.Surface((32, 32))
                     surface.fill("white")
@@ -62,6 +64,8 @@ class FinalCutsceneTests(unittest.TestCase):
                 dialogues = scene.scenes[index]["dialogues"]
                 for speaker, line in dialogues:
                     scene.update(scene.DIALOGUE_DELAY_MS)
+                    if index == 3:
+                        self.assertEqual(scene.music_context, "farewell")
                     self.assertEqual(scene._current_dialogue(), (speaker, line))
                     scene.update(1000 * len(line))
                     scene.handle_event(event)
@@ -71,15 +75,16 @@ class FinalCutsceneTests(unittest.TestCase):
             destination.assert_called_with(self.battle._make_map_scene.return_value)
             missing_image.assert_not_called()
 
-    def test_laboratorio_exibe_epilogo_sem_registrar_recompensa(self):
-        self.battle.save_data = {"id": TEST_SAVE_ID, "modo_teste": True}
+    def test_revanche_final_exibe_epilogo_sem_registrar_recompensa(self):
         self.battle.engine.is_replay = True
-        with patch("src.scenes.battle_scene.record_victory") as record:
-            self.battle._finalize_map_phase(self.level)
-        record.assert_not_called()
-        self.assertIsInstance(
-            self.battle.scene_manager.change_scene.call_args.args[0], CutsceneScene
-        )
+        for data in ({}, {"id": TEST_SAVE_ID, "modo_teste": True}):
+            with self.subTest(data=data), patch("src.scenes.battle_scene.record_victory") as record:
+                self.battle.save_data = data
+                self.battle._finalize_map_phase(self.level)
+                record.assert_not_called()
+                self.assertIsInstance(
+                    self.battle.scene_manager.change_scene.call_args.args[0], CutsceneScene
+                )
 
     def test_falha_ao_salvar_mantem_a_batalha(self):
         with patch("src.scenes.battle_scene.record_victory", side_effect=SaveError):
@@ -90,7 +95,7 @@ class FinalCutsceneTests(unittest.TestCase):
         for level, kind, replay in [
             (self.level - 1, "point", False),
             (self.level, "road", False),
-            (self.level, "point", True),
+            (self.level - 1, "point", True),
         ]:
             with self.subTest(level=level, kind=kind, replay=replay), patch(
                 "src.scenes.battle_scene.record_victory"

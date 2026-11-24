@@ -10,7 +10,8 @@ Um turno é a vez inteira de um combatente, incluindo todas as ações de um che
 
 - **Fogo:** 3 de dano por intensidade no fim da vez do afetado. Reaplicar adiciona uma intensidade (máximo 3) e renova para no mínimo 3 turnos. Consome Escudo antes da vida.
 - **Veneno:** dano direto à vida no fim da vez do afetado. Ignora Escudo e Totem. Reaplicar renova a duração para a maior entre a atual e a nova; o dano não soma. A zarabatana aplica 5 por 3 turnos; a poção aplica 5 por 4. O Slime também pode envenenar com Salpico Ácido (3 por 2 turnos) e o Goblin Nerd com Baforada Tóxica (5 por 2).
-- **Sangramento:** 4 de dano direto à vida antes do primeiro ataque de cada vez do afetado, durante 2 turnos. Não repete nas outras ações do chefe. Se o dano for fatal, o ataque não acontece.
+- **Sangramento:** no primeiro ataque de cada turno, quem está sangrando perde 3 de vida por stack. A duração é de 2 turnos e o limite é de 5 stacks.
+- **Debuffs de impacto:** a aplicação ou renovação exige perda de vida no golpe. Escudo absorve o impacto e preserva os efeitos que já estavam ativos.
 - **Fragilidade:** ataques recebidos causam +25% de dano, arredondado para cima. Não amplia os danos contínuos.
 - **Aura Rubra:** +8 de dano por ataque por 3 turnos, incluindo a vez de aplicação. Reaplicar renova; não acumula o bônus. A força permanente das ultimates soma normalmente.
 - **Totem:** anula o próximo ataque completo, mesmo com vários projéteis, e é consumido. Não anula efeitos contínuos. Impede o envenenamento de um ataque bloqueado.
@@ -36,7 +37,7 @@ A Poção Purificadora remove negativos e Fraqueza do usuário, preservando Escu
 | Esfera Escudo | 4 | Receba 30 de Escudo por 2 turnos. |
 | Machado Quebra-Escudo | 5 | Destrua todo o Escudo do inimigo. |
 | Amuleto Dissipador | 4 | Remova todos os efeitos do inimigo, positivos e negativos, incluindo Escudo e Força. |
-| Adaga Sangrenta | 3 | Cause 5 de dano. Por 2 turnos, o primeiro ataque do alvo causa 4 de Sangramento nele, ignorando Escudo. |
+| Adaga Sangrenta | 2 | Cause 8 de dano e aplique 2 stacks de Sangramento por 2 turnos. |
 | Máscara Ancestral | 6 | Recupere 20 de vida e receba 20 de Escudo por 2 turnos. |
 | Machados Gêmeos | 4 | Cause 40 de dano. |
 | Lança Perfurante | 3 | Cause 30 de dano. |

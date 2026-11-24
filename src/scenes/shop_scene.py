@@ -88,13 +88,15 @@ class ShopScene(BaseScene):
         hovered_name = None
         for name, rect in self.card_rects.items():
             price, owned = CARD_PRICES[name], name in p["cartas_colecao"]
-            hovered = rect.collidepoint(mouse) or self.offer_rects[name].collidepoint(mouse)
-            self.visuals.framed_card(surface, CARD_OFFERS[name], rect, hovered)
+            card = CARD_OFFERS[name]
+            hovered = self.visuals.framed_card_image_rect(card, rect).collidepoint(mouse)
+            self.visuals.framed_card(surface, card, rect, hovered)
             enabled = not owned and p["moedas"] >= price and self._can_trade()
             label = "ADQUIRIDA" if owned else "COMPRAR" if enabled else "SEM OURO"
             if not owned and not self._can_trade():
                 label = "INDISPONÍVEL"
-            self.visuals.price_button(surface, self.offer_rects[name], price, label, hovered, enabled)
+            button = self.offer_rects[name]
+            self.visuals.price_button(surface, button, price, label, button.collidepoint(mouse), enabled)
             if hovered:
                 hovered_name = name
         self._draw_heal(surface, mouse)

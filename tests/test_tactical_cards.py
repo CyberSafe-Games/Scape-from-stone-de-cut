@@ -88,6 +88,18 @@ class TacticalCardTests(unittest.TestCase):
         self.assertIn(('poison', 25), target.end_turn_statuses())
         self.assertEqual((target.poison_stacks, target.poison_turns), (0, 0))
 
+    def test_fire_and_burn_share_one_audio_event_per_tick(self):
+        for statuses in (("fire",), ("burn",), ("fire", "burn")):
+            with self.subTest(statuses=statuses):
+                events = []
+                engine = CombatEngine(lambda event, **details: events.append((event, details)))
+                engine.player.add_block(10)
+                for status in statuses:
+                    engine.player.apply_status(status, 2, 1)
+                engine.end_turn()
+                cues = [data for event, data in events if event == "status_trigger"]
+                self.assertEqual(cues, [{"status": "burn", "target": "player"}])
+
     def test_poison_ticks_once_after_all_boss_actions_and_kill_rewards_once(self):
         events = []
         engine = self.engine()
@@ -109,7 +121,7 @@ class TacticalCardTests(unittest.TestCase):
         engine.finish_enemy_turn()
         self.assertEqual(events.count('coin_drop'), 1)
 
-    def test_bleeding_only_after_damage_and_at_most_twice_for_a_boss(self):
+    def test_bleeding_uses_all_stacks_once_per_turn_for_a_boss(self):
         engine = self.engine()
         boss = engine.enemy
         attack = Action('Ataque', damage=1)
@@ -118,30 +130,92 @@ class TacticalCardTests(unittest.TestCase):
         boss.set_intent('attack', 1, attack)
         boss.add_block(20)
         boss.add_stacks('bleed', 2)
+        boss.add_stacks('bleed', 1)
         self.full_round(engine)
-        self.assertEqual(boss.hp, 488)
+        self.assertEqual(boss.hp, 491)
         self.assertEqual(boss.block, 20)
-        self.assertEqual((boss.bleed_stacks, boss.bleed_turns), (2, 1))
+        self.assertEqual((boss.bleed_stacks, boss.bleed_turns), (3, 1))
         self.full_round(engine)
-        self.assertEqual(boss.hp, 476)
+        self.assertEqual(boss.hp, 482)
         self.assertEqual((boss.bleed_stacks, boss.bleed_turns), (0, 0))
 
-    def test_player_bleed_skips_defense_and_full_block_then_triggers_after_hits(self):
+    def test_player_bleed_skips_defense_and_triggers_on_shield_damage(self):
         engine = self.engine()
         player, enemy = engine.player, engine.enemy
         player.add_stacks('bleed', 2)
         enemy.block = 6
         self.play(engine, 'Esfera Protetora')
-        self.play(engine, 'Soco Simples')
         self.assertEqual(player.bleed_triggers_this_turn, 0)
-        self.assertEqual(player.hp, player.max_hp)
+        self.play(engine, 'Soco Simples')
+        self.assertEqual(player.bleed_triggers_this_turn, 1)
+        self.assertEqual(player.hp, player.max_hp - 6)
         for _ in range(3):
             self.play(engine, 'Soco Simples')
         self.assertEqual(enemy.hp, 482)
-        self.assertEqual(player.hp, player.max_hp - 12)
-        self.assertEqual(player.bleed_triggers_this_turn, 2)
+        self.assertEqual(player.hp, player.max_hp - 6)
+        self.assertEqual(player.bleed_triggers_this_turn, 1)
         self.full_round(engine)
         self.assertEqual(player.bleed_triggers_this_turn, 0)
+
+    def test_adaga_bleed_triggers_when_enemy_only_hits_player_shield(self):
+        engine = self.engine()
+        player, enemy = engine.player, engine.enemy
+        self.play(engine, 'Adaga Sangrenta')
+        player.add_block(20)
+        hit = Action('Ataque', damage=7)
+        enemy.set_intent('attack', hit.damage, hit)
+        engine.end_turn()
+        engine.enemy_turn()
+        self.assertEqual(player.hp, player.max_hp)
+        self.assertEqual(player.block, 13)
+        self.assertEqual(enemy.bleed_triggers_this_turn, 1)
+        self.assertEqual(enemy.hp, 500 - 8 - 6)
+
+    def test_totem_blocks_the_hit_but_the_attacker_still_bleeds(self):
+        engine = self.engine()
+        player, enemy = engine.player, engine.enemy
+        enemy.add_stacks('bleed', 2)
+        player.add_block(20)
+        player.apply_status('totem', 0, 1)
+        hit = Action('Ataque', damage=7)
+        enemy.set_intent('attack', hit.damage, hit)
+        engine.end_turn()
+        engine.enemy_turn()
+        self.assertEqual(player.hp, player.max_hp)
+        self.assertEqual(player.block, 20)
+        self.assertEqual(enemy.bleed_triggers_this_turn, 1)
+        self.assertEqual(enemy.hp, 494)
+
+    def test_dagger_does_not_apply_or_refresh_bleed_without_hp_damage(self):
+        engine = self.engine()
+        enemy = engine.enemy
+        enemy.block = 9
+        self.play(engine, 'Adaga Sangrenta')
+        self.assertEqual(enemy.bleed_stacks, 0)
+        enemy.add_stacks('bleed', 1)
+        enemy.statuses['bleed']['turns'] = 1
+        enemy.block = 8
+        self.play(engine, 'Adaga Sangrenta')
+        self.assertEqual((enemy.block, enemy.hp), (0, 500))
+        self.assertEqual((enemy.bleed_stacks, enemy.bleed_turns), (1, 1))
+        enemy.block = 7
+        self.play(engine, 'Adaga Sangrenta')
+        self.assertEqual((enemy.block, enemy.hp), (0, 499))
+        self.assertEqual((enemy.bleed_stacks, enemy.bleed_turns), (3, 2))
+
+    def test_enemy_attack_statuses_require_hp_damage(self):
+        for block in (8, 7, 6, 0):
+            with self.subTest(block=block):
+                engine = self.engine()
+                hit = Action('Ataque', damage=7, status_effects=(
+                    ('poison', 2, 1), ('bleed', 2, 1), ('fire', 3, 1), ('shock', 1, 1),
+                ))
+                engine.player.block = block
+                engine.enemy.set_intent('attack', hit.damage, hit)
+                engine.end_turn()
+                engine.enemy_turn()
+                for status in ('poison', 'bleed', 'fire', 'shock'):
+                    self.assertEqual(status in engine.player.statuses, block < hit.damage)
 
     def test_lethal_bleed_happens_after_player_action_and_clears_battle_stacks(self):
         engine = self.engine()

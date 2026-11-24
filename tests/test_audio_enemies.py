@@ -444,11 +444,8 @@ class TestCommonEnemyAudio(unittest.TestCase):
             ("Vinimuth", "atk2", "gameplay.skill.energy"),
             ("Esqueleto Saqueador", "atk1", "gameplay.enemy.blade"),
             ("Esqueleto Saqueador", "atk2", "gameplay.attack.spear"),
-            ("Golem das Ruínas", "atk1", "gameplay.attack.charge_impact"),
             ("Centauro Vigia", "atk2", "gameplay.attack.charge_impact"),
             ("Putrefato do Pântano", "atk1", "gameplay.enemy.acid"),
-            ("Guerreiro da Mata", "atk1", "gameplay.attack.charge_impact"),
-            ("Guerreiro da Mata", "atk2", "gameplay.attack.charge_impact"),
             ("Lagarto Couraçado", "atk1", "gameplay.attack.punch"),
             ("Morcego Sombrio", "atk1", "gameplay.attack.punch"),
             ("Morcego Sombrio", "atk2", "gameplay.skill.energy"),
@@ -473,6 +470,27 @@ class TestCommonEnemyAudio(unittest.TestCase):
                 scene.update(2000)
                 scene.scene_manager.audio_manager.play_sfx.assert_called_once()
 
+    def test_forest_warrior_syncs_and_keeps_the_breaking_tail_for_both_attacks(self):
+        from src.systems.common_enemy_audio import SHIELD_BREAK_IMPACT_MS
+
+        for action in ("atk1", "atk2"):
+            with self.subTest(action=action):
+                scene = self.make_scene("Guerreiro da Mata")
+                scene._handle_combat_event("attack", attacker="enemy", action=action)
+                scene._handle_combat_event("flash", target="player")
+                view = scene.entity_view
+                start = view.pending_player_hit_at - SHIELD_BREAK_IMPACT_MS
+                playback = scene.scene_manager.audio_manager.play_sfx
+                scene.update(start - 1)
+                playback.assert_not_called()
+                scene.update(1)
+                playback.assert_called_once_with(
+                    "gameplay.attack.shield_break", volume=0.85, maxtime=2150)
+                self.assertEqual(view.player_flash, 0)
+                scene.update(SHIELD_BREAK_IMPACT_MS)
+                self.assertGreater(view.player_flash, 0)
+                playback.assert_called_once()
+
     def test_centaur_arrow_has_distinct_launch_and_contact(self):
         scene = self.make_scene("Centauro Vigia")
         scene._handle_combat_event("attack", attacker="enemy", action="atk1")
@@ -484,10 +502,25 @@ class TestCommonEnemyAudio(unittest.TestCase):
         self.assertEqual(scene.scene_manager.audio_manager.play_sfx.call_args.args, ("gameplay.attack.arrow_impact",))
         self.assertEqual(scene.scene_manager.audio_manager.play_sfx.call_count, 2)
 
+    def test_golem_plasma_plays_the_laser_at_release_and_energy_at_contact(self):
+        scene = self.make_scene("Golem das Ruínas")
+        scene._handle_combat_event("attack", attacker="enemy", action="atk1")
+        scene._handle_combat_event("flash", target="player")
+        duration, release, impact = scene.entity_view.enemy_ranged_attack
+        audio = scene.scene_manager.audio_manager.play_sfx
+        scene.update(duration * release - 1)
+        audio.assert_not_called()
+        scene.update(1)
+        self.assertEqual(audio.call_args.args, ("gameplay.boss.goblin.beam",))
+        scene.update(duration * (impact - release))
+        self.assertEqual(audio.call_args.args, ("gameplay.boss.goblin.energy_hit",))
+        self.assertEqual(audio.call_count, 2)
+        self.assertGreater(scene.entity_view.player_flash, 0)
+
     def test_common_defense_and_heal_sound_at_activation(self):
         for name, action, sound_id in (
             ("Slime", "def", "gameplay.skill.shield_light"),
-            ("Golem das Ruínas", "def", "gameplay.skill.shield_light"),
+            ("Golem das Ruínas", "def", "gameplay.boss.guardian.stone"),
             ("Lagarto Couraçado", "def", "gameplay.skill.shield_light"),
             ("Crocodilo Abissal", "def", "gameplay.skill.shield_light"),
             ("Putrefato do Pântano", "healer2", "gameplay.enemy.heal"),

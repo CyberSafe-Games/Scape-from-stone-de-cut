@@ -74,9 +74,6 @@ class TutorialScene(BattleScene):
         self.overlay = TutorialOverlay(self._create_tutorial_steps())
 
     def _handle_combat_event(self, event_name, **kwargs):
-        # A conclusão do tutorial apresenta instruções sem fanfarra de vitória.
-        if event_name == "victory":
-            return
         # O treinamento concede uma recompensa fixa na conclusão, em vez do
         # sorteio de moedas do combate comum (que impediria repetir com segurança).
         if event_name == "coin_drop":
@@ -133,10 +130,10 @@ class TutorialScene(BattleScene):
         steps.append(
             TutorialStep(
                 id="intro",
-                title="O DESPERTAR NA PEDRA DO CORTE",
+                title="O DESPERTAR EM STONE DE CUT",
                 subtitle="Introdução Narrativa",
                 lines=[
-                    "Você desperta na clareira sombria de Pedra do Corte.",
+                    "Você desperta na clareira sombria de Stone de Cut.",
                     "Uma criatura mística espreita entre as árvores antigas.",
                     "Antes de avançar pela floresta, domine as runas de combate!",
                     "Aprenda seus recursos, cartas e táticas de sobrevivência.",
@@ -220,7 +217,7 @@ class TutorialScene(BattleScene):
                     "• ESCUDO absorve dano e dura 2 turnos completos.",
                     "• FORÇA aumenta o dano; Aura Rubra dura 3 turnos.",
                     "• VENENO causa 5 de dano por stack no fim do turno.",
-                    "• SANGRAMENTO causa 3 por stack após causar dano, até duas vezes no turno.",
+                    "• SANGRAMENTO tira 3 de vida por stack no primeiro ataque do turno.",
                 ],
                 target_rect_fn=lambda: pygame.Rect(180, 141, 414, 72),
                 bubble_pos=(624, 117),
@@ -357,6 +354,8 @@ class TutorialScene(BattleScene):
     def draw(self, surface):
         # Renderiza a batalha base (cenário, entidades, HUD e cartas)
         super().draw(surface)
+        if self.engine.state in ("victory", "game_over", "phase_complete"):
+            return
 
         cursor = self.window_manager.get_virtual_mouse_pos()
 
@@ -375,36 +374,24 @@ class TutorialScene(BattleScene):
                 prominent=False,
             )
 
-            # Barra superior discreta com dicas essenciais de combate
-            tip_rect = pygame.Rect(WIDTH // 2 - 465, 78, 930, 36)
-            draw_panel(
-                surface,
-                tip_rect,
-                fill=(10, 16, 16, 210),
-                border=(90, 78, 54),
-                radius=15,
-                shadow=False,
-            )
-            draw_text(
-                surface,
-                "ENERGIA para jogar cartas  ·  BLOQUEIO reduz dano  ·  FORÇA amplia ataques",
-                self.asset_manager.small_font,
-                (225, 215, 175),
-                tip_rect.centerx,
-                tip_rect.centery,
-                center=True,
-            )
+            if hover:
+                self._draw_guide_tip(surface)
 
-            # Avisos do combate ficam acima do botão e da faixa de dicas para não serem cortados
-            self._draw_top_message(surface)
+    def _draw_guide_tip(self, surface):
+        # Usa apenas o espaço livre entre os painéis de vida.
+        tip_rect = pygame.Rect(644, self.help_button_rect.bottom + 11, 516, 103)
+        draw_panel(surface, tip_rect, fill=(10, 16, 16, 245), border=(90, 78, 54),
+                   radius=15, shadow=False)
+        for index, line in enumerate((
+            "Energia serve para jogar cartas.",
+            "Bloqueio reduz o dano recebido.",
+            "Força amplia o dano dos ataques.",
+        )):
+            draw_text(surface, line, self.asset_manager.small_font, (225, 215, 175),
+                      tip_rect.centerx, tip_rect.y + 22 + index * 28, center=True)
 
-        # Sobrescreve a tela de vitória quando o tutorial for concluído
-        if (
-            self.engine.state == "victory"
-            and self.entity_view.player_action is None
-            and self.entity_view.attacker is None
-        ):
-            self._draw_tutorial_victory(surface, cursor)
+    def _draw_victory(self, surface):
+        self._draw_tutorial_victory(surface, self.window_manager.get_virtual_mouse_pos())
 
     def _draw_tutorial_victory(self, surface, cursor):
         """Tela triunfante de conclusão da fase de tutorial após a derrota do inimigo."""
@@ -490,7 +477,7 @@ class TutorialScene(BattleScene):
 
         # Se a vitória ocorreu, trata o clique ou atalho para avançar ao mapa
         if self.engine.state == "victory":
-            if self.window_manager.handle_window_event(event):
+            if self.window_manager.handle_window_event(event) or not self._victory_ready:
                 return
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 # Qualquer clique na tela ou no botão avança
