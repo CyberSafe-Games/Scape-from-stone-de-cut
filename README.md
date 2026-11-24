@@ -82,7 +82,20 @@ O jogo tem uma campanha linear de **sete territórios**. Em cada um, há 2 comba
 
 ### Windows
 
-Baixe `ScapeFromStoneDeCut-Setup-x.y.z.exe` na seção **Releases** do GitHub e siga o assistente. O instalador não exige Python nem Pygame. Também há um `.zip` portátil para quem preferir extrair e executar o jogo sem instalá-lo. Ao gerar localmente, o Setup fica na raiz do projeto, ao lado de `main.py`. Consulte [o guia de instalação para Windows](docs/build_windows.md).
+#### Instalar com o assistente
+
+1. Abra a página de [Releases do jogo](https://github.com/CyberSafe-Games/Scape-from-stone-de-cut/releases/latest).
+2. Em **Assets**, baixe `ScapeFromStoneDeCut-Setup-x.y.z.exe` (use a versão mais recente disponível).
+3. Abra o arquivo baixado e siga o assistente. A instalação é por usuário, não pede Python ou Pygame e, por padrão, não exige permissão de administrador. O atalho do Menu Iniciar é criado automaticamente; o atalho da Área de Trabalho é opcional.
+4. Ao terminar, abra **Scape From Stone de Cut** pelo Menu Iniciar.
+
+O Windows SmartScreen ou um antivírus pode avisar sobre um instalador sem assinatura digital. Se baixou o arquivo da página oficial de Releases e deseja prosseguir, no aviso do SmartScreen selecione **Mais informações → Executar assim mesmo**. Não execute instaladores de outras origens.
+
+#### Usar a versão portátil
+
+Na mesma página de Releases, baixe `ScapeFromStoneDeCut-portable-x.y.z.zip` em **Assets**. Use **Extrair Tudo** do Windows e execute `ScapeFromStoneDeCut/ScapeFromStoneDeCut.exe` dentro da pasta extraída. Extraia a pasta inteira e mantenha os arquivos juntos; não execute o jogo de dentro do ZIP.
+
+Saves e configurações ficam em `%LOCALAPPDATA%\ScapeFromStoneDeCut`. Desinstalar pelo Windows preserva esses dados por padrão e oferece a opção de apagá-los. Consulte também [o guia de instalação para Windows](docs/build_windows.md).
 
 ### Executar pelo código-fonte
 
