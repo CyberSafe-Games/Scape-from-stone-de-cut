@@ -1,5 +1,7 @@
 # Prompts das ilustrações de ultimate
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Ferramenta: geração de imagens integrada. Imagens novas, fundo opaco, uma chamada
 por ilustração. Referências de estilo visíveis na conversa: carta Machados Gêmeos,
 carta antiga Rugido da Floresta e ilustrações geradas na mesma série.

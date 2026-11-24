@@ -1,5 +1,7 @@
 # Retratos dos personagens
 
+> Referência vigente — auditoria de 23/11/2026. [Estado atual](estado_atual.md). Relatos de validações datadas abaixo representam somente aquela execução.
+
 Os retratos personalizados da HUD ficam em `assets/portraits/source`.
 O `manifest.json` registra os nomes originais dos retratos comuns vindos de
 `inimigos.zip`. A correspondência e os recortes ficam em

@@ -43,6 +43,7 @@ from src.ui.alvaro_tex_fx import draw_alvaro_tex_fx
 from src.systems.boss_animation_kits import KITS, kit_frame
 from src.systems.boss_sheet_kits import SHEET_KITS, sheet_pose
 from src.systems.jan_pietro_animation import NAME as JAN_NAME, idle_frame as jan_idle_frame
+from src.ui.enemy_reactions import reaction_pose, knockback, impact_tint, calm_idle
 from src.systems.player_animation_kits import player_frame
 from src.systems.common_animation_kits import COMMON_KITS, PROJECTILE_ORIGINS
 
@@ -332,7 +333,6 @@ class EntityView:
 
         self.post_enemy_pause = max(0, self.post_enemy_pause - dt)
         if (enemy_was_busy or self.attacker == 'enemy' or self.enemy_action is not None
-                or ((enemy_was_hurt or self.enemy_flash > 0) and self.enemy_attack_name in KITS)
                 or self.phase_transition_timer is not None):
             self.enemy_idle_timer = 0
         elif not (enemy_was_hurt or self.enemy_flash > 0):
@@ -345,7 +345,7 @@ class EntityView:
     def is_enemy_resolving_done(self):
         # O segundo ataque só começa depois de terminar a animação do primeiro.
         return (self.attacker is None and self.enemy_action is None
-                and self.post_enemy_pause <= 0)
+                and self.post_enemy_pause <= 0 and self.enemy_flash <= 0)
 
     def get_attack_pose(self, attacker, home_x, target_x):
         """Calcula a posição interpolada X e extensão de braço para um ataque corpo-a-corpo."""
@@ -594,6 +594,11 @@ class EntityView:
                 return sample_pose(frames, attack_frame(p, len(frames)), p,
                                    frame_boundaries(DUO_BOUNDARIES, len(frames)), interpolate)
 
+        if self.enemy_flash > 0:
+            ready = self._enemy_idle_frame(enemy_name, interpolate)
+            damage = self.asset_manager.get_enemy_sprite_group(enemy_name, "dano")
+            return reaction_pose(damage, ready, self.enemy_flash, interpolate)
+
         # 1. Ataque físico
         if self.attacker == "enemy":
             if self.enemy_ultimate:
@@ -675,12 +680,13 @@ class EntityView:
                 index = frame_index(group, p, 1, len(sprites))
                 return sample_pose(sprites, index, p, UNIFORM_TWELVE, interpolate)
 
+        return self._enemy_idle_frame(enemy_name, interpolate)
+
+    def _enemy_idle_frame(self, enemy_name, interpolate=True):
         sprites = self.asset_manager.get_enemy_sprite_group(enemy_name, "idle")
-        if self.enemy_flash > 0 and enemy_name in KITS:
-            damage = self.asset_manager.get_enemy_sprite_group(enemy_name, "dano")
-            if len(damage) == 8:
-                return hurt_pose(damage, sprites, self.enemy_flash, interpolate and enemy_name != JAN_NAME)
         if sprites:
+            if enemy_name == "goblin nerd" and len(sprites) == 8:
+                return calm_idle(sprites[0], self.enemy_idle_timer)
             if enemy_name == JAN_NAME and len(sprites) == 8:
                 return sprites[jan_idle_frame(self.enemy_idle_timer)]
             now = self.enemy_idle_timer
@@ -820,7 +826,7 @@ class EntityView:
             else:
                 frame, blend_flags = display_pose(self.get_enemy_frame(enemy, interpolate=True), light)
             if frame is not None:
-                hover = 42 + round(4.5 * math.sin(pygame.time.get_ticks() / 300)) if enemy.name == 'Morcego Sombrio' else 0
+                hover = 42 + round(4.5 * math.sin(self.enemy_idle_timer / 300)) if enemy.name == 'Morcego Sombrio' else 0
                 if self.enemy_ultimate:
                     _, hover = boss_ultimate_pose(self.enemy_ultimate, self.attack_timer/max(1, self.enemy_attack_duration), ENEMY_X, PLAYER_X+158)
                 rect = frame.get_rect(midbottom=(int(enemy_x), PLAYER_GROUND_Y-hover))
@@ -851,12 +857,18 @@ class EntityView:
                             trail.set_alpha(opacity)
                         surface.blit(trail, rect.move(offset), special_flags=blend_flags)
                 hurt = self.enemy_flash if self.phase_transition_timer is None else 0
-                if hurt and name in KITS and len(self.asset_manager.get_enemy_sprite_group(name, "dano")) == 8:
-                    hurt = 0
-                draw_recoiling_actor(surface, frame, rect, hurt, 1, blend_flags)
+                # Recuo somente horizontal: nunca gira, achata ou muda a escala.
+                surface.blit(impact_tint(frame, hurt) if hurt else frame,
+                             rect.move(round(knockback(hurt)) if hurt else 0, 0),
+                             special_flags=blend_flags)
                 return
 
-        # Fallback procedural: boneco palito
+        # Fallback procedural: mesma geometria, recuo e pulso de cor.
+        if self.enemy_flash > 0:
+            elapsed = FLASH_DURATION-self.enemy_flash
+            strength = max(0, min(1, elapsed/65, (160-elapsed)/95))
+            color = tuple(round(c+(flash-c)*strength) for c, flash in zip(color, (255,205,155)))
+        enemy_x += knockback(self.enemy_flash) if self.enemy_flash > 0 else 0
         x = int(enemy_x)
         y = int(ENEMY_Y)
         facing = -1
@@ -883,14 +895,3 @@ class EntityView:
 
         if enemy_arm > 0.15:
             pygame.draw.circle(surface, color, (int(x + front_dx), int(y + front_dy)), 9)
-
-        # Efeito de flash de dano
-        if self.enemy_flash > 0:
-            alpha = self.enemy_flash / FLASH_DURATION
-            pygame.draw.circle(
-                surface,
-                WHITE,
-                (int(enemy_x), ENEMY_Y - 23),
-                83 + int(12 * alpha),
-                5,
-            )

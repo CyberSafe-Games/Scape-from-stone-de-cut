@@ -1,0 +1,551 @@
+{
+  "art": {
+    "regular_count": 40,
+    "regular_geometry_by_card": true,
+    "ultimate_template": [
+      316,
+      489
+    ]
+  },
+  "statuses": {
+    "damage": {
+      "poison": 5,
+      "bleed": 3
+    },
+    "maximum": 5,
+    "turns": 2,
+    "bleed_trigger_limit": 1
+  },
+  "cards": [
+    {
+      "id": "esfera_protetora",
+      "name": "Esfera Protetora",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 1,
+          "description": "Receba 10 de Escudo por 2 turnos."
+        },
+        {
+          "level": 2,
+          "cost": 1,
+          "description": "Receba 14 de Escudo por 2 turnos."
+        }
+      ]
+    },
+    {
+      "id": "soco_simples",
+      "name": "Soco Simples",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 1,
+          "description": "Cause 6 de dano."
+        },
+        {
+          "level": 2,
+          "cost": 1,
+          "description": "Cause 9 de dano."
+        }
+      ]
+    },
+    {
+      "id": "investida",
+      "name": "Investida",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 2,
+          "description": "Cause 18 de dano. Depois, remova 25% do Escudo restante do inimigo, arredondando para baixo."
+        },
+        {
+          "level": 2,
+          "cost": 2,
+          "description": "Cause 24 de dano. Depois, remova 25% do Escudo restante do inimigo, arredondando para baixo."
+        }
+      ]
+    },
+    {
+      "id": "aura_rubra",
+      "name": "Aura Rubra",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 2,
+          "description": "Seus ataques causam +6 de dano por 3 turnos. Reaplicar renova a duração."
+        },
+        {
+          "level": 2,
+          "cost": 2,
+          "description": "Seus ataques causam +8 de dano por 3 turnos. Reaplicar renova a duração."
+        }
+      ]
+    },
+    {
+      "id": "pocao_fragilizante",
+      "name": "Poção Fragilizante",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 1,
+          "description": "Por 3 turnos, o inimigo recebe 25% a mais de dano de ataques."
+        },
+        {
+          "level": 2,
+          "cost": 1,
+          "description": "Por 3 turnos, o inimigo recebe 25% a mais de dano de ataques. Receba também 5 de Escudo."
+        }
+      ]
+    },
+    {
+      "id": "pocao_purificadora",
+      "name": "Poção Purificadora",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 1,
+          "description": "Remova todos os seus efeitos negativos."
+        },
+        {
+          "level": 2,
+          "cost": 1,
+          "description": "Remova todos os seus efeitos negativos. Recupere 6 de vida."
+        }
+      ]
+    },
+    {
+      "id": "totem_protetor",
+      "name": "Totem Protetor",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 3,
+          "description": "Ignore o próximo ataque inimigo inteiro. Não bloqueia dano de efeitos."
+        },
+        {
+          "level": 2,
+          "cost": 3,
+          "description": "Ignore o próximo ataque inimigo inteiro. Não bloqueia dano de efeitos. Receba também 8 de Escudo."
+        }
+      ]
+    },
+    {
+      "id": "zarabatana_venenosa",
+      "name": "Zarabatana Venenosa",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 3,
+          "description": "Dispare 3 dardos. Cause 10 de dano total e aplique 2 stacks de Veneno por 2 turnos."
+        },
+        {
+          "level": 2,
+          "cost": 3,
+          "description": "Dispare 3 dardos. Cause 16 de dano total e aplique 2 stacks de Veneno por 2 turnos."
+        }
+      ]
+    },
+    {
+      "id": "disparo_de_arco",
+      "name": "Disparo de Arco",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 2,
+          "description": "Cause 20 de dano à distância."
+        },
+        {
+          "level": 2,
+          "cost": 2,
+          "description": "Cause 26 de dano à distância."
+        }
+      ]
+    },
+    {
+      "id": "esfera_escudo",
+      "name": "Esfera Escudo",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 3,
+          "description": "Receba 32 de Escudo por 2 turnos."
+        },
+        {
+          "level": 2,
+          "cost": 3,
+          "description": "Receba 42 de Escudo por 2 turnos."
+        }
+      ]
+    },
+    {
+      "id": "machado_quebra_escudo",
+      "name": "Machado Quebra-Escudo",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 1,
+          "description": "Destrua todo o Escudo do inimigo."
+        },
+        {
+          "level": 2,
+          "cost": 1,
+          "description": "Destrua todo o Escudo do inimigo. Receba também 8 de Escudo."
+        }
+      ]
+    },
+    {
+      "id": "amuleto_dissipador",
+      "name": "Amuleto Dissipador",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 2,
+          "description": "Remova os efeitos positivos do inimigo, incluindo Escudo e Força. Preserve os efeitos negativos."
+        },
+        {
+          "level": 2,
+          "cost": 2,
+          "description": "Remova os efeitos positivos do inimigo, incluindo Escudo e Força. Preserve os efeitos negativos. Receba também 8 de Escudo."
+        }
+      ]
+    },
+    {
+      "id": "adaga_sangrenta",
+      "name": "Adaga Sangrenta",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 2,
+          "description": "Cause 8 de dano e aplique 2 stacks de Sangramento por 2 turnos."
+        },
+        {
+          "level": 2,
+          "cost": 2,
+          "description": "Cause 14 de dano e aplique 2 stacks de Sangramento por 2 turnos."
+        }
+      ]
+    },
+    {
+      "id": "mascara_ancestral",
+      "name": "Máscara Ancestral",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 4,
+          "description": "Recupere 14 de vida e receba 22 de Escudo por 2 turnos."
+        },
+        {
+          "level": 2,
+          "cost": 4,
+          "description": "Recupere 18 de vida e receba 28 de Escudo por 2 turnos."
+        }
+      ]
+    },
+    {
+      "id": "machados_gemeos",
+      "name": "Machados Gêmeos",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 5,
+          "description": "Cause 40 de dano."
+        },
+        {
+          "level": 2,
+          "cost": 5,
+          "description": "Cause 50 de dano."
+        }
+      ]
+    },
+    {
+      "id": "lanca_perfurante",
+      "name": "Lança Perfurante",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 3,
+          "description": "Cause 30 de dano."
+        },
+        {
+          "level": 2,
+          "cost": 3,
+          "description": "Cause 38 de dano."
+        }
+      ]
+    },
+    {
+      "id": "bola_de_fogo",
+      "name": "Bola de Fogo",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 2,
+          "description": "Cause 12 de dano e Fogo por 3 turnos: 3 de dano por intensidade ao fim do turno. Acumula até 3 intensidades e atinge Escudo primeiro."
+        },
+        {
+          "level": 2,
+          "cost": 2,
+          "description": "Cause 18 de dano e Fogo por 3 turnos: 3 de dano por intensidade ao fim do turno. Acumula até 3 intensidades e atinge Escudo primeiro."
+        }
+      ]
+    },
+    {
+      "id": "pocao_de_cura",
+      "name": "Poção de Cura",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 3,
+          "description": "Recupere 20 de vida, sem ultrapassar a vida máxima."
+        },
+        {
+          "level": 2,
+          "cost": 3,
+          "description": "Recupere 26 de vida, sem ultrapassar a vida máxima."
+        }
+      ]
+    },
+    {
+      "id": "surto_de_energia",
+      "name": "Surto de Energia",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 1,
+          "description": "Ganhe 2 de energia extra no próximo turno, até o limite de 8. Não aumenta sua energia máxima."
+        },
+        {
+          "level": 2,
+          "cost": 1,
+          "description": "Ganhe 3 de energia extra no próximo turno, até o limite de 8. Não aumenta sua energia máxima."
+        }
+      ]
+    },
+    {
+      "id": "pocao_venenosa",
+      "name": "Poção Venenosa",
+      "levels": [
+        {
+          "level": 1,
+          "cost": 2,
+          "description": "Aplique 2 stacks de Veneno por 2 turnos."
+        },
+        {
+          "level": 2,
+          "cost": 2,
+          "description": "Aplique 2 stacks de Veneno por 2 turnos. Receba também 6 de Escudo."
+        }
+      ]
+    }
+  ],
+  "unavailable_cards": [
+    "A Melhor Defesa é o Ataque",
+    "Armadilha de Brasa",
+    "Ataque Encorajado",
+    "Banho de Ervas",
+    "Banquete do Curupira",
+    "Bisbilhotar",
+    "Brasa de Arco e Flecha",
+    "Bênção da Mãe-Terra",
+    "Carvão em Brasa",
+    "Casca Venenosa",
+    "Casca de Guerreiro",
+    "Castigo da Floresta",
+    "Cheiro de Medo",
+    "Chuva de Faíscas",
+    "Cinzas Impiedosas",
+    "Combo do Javali",
+    "Confusão dos Espíritos",
+    "Conhecimento Proibido",
+    "Corte Contaminado",
+    "Dança da Lâmina Rubra",
+    "Dança de Guerra Selvagem",
+    "Despertar das Pragas",
+    "Dose Letal",
+    "Erva-Dobro",
+    "Escudo Trovejante",
+    "Espírito do Guerreiro",
+    "Explosão da Mata",
+    "Ferida que Não Fecha",
+    "Flecha Envenenada",
+    "Fogo que Cobra seu Preço",
+    "Fogo-Fátuo",
+    "Força a Qualquer Custo",
+    "Fumaça Reveladora",
+    "Fumaça Venenosa",
+    "Fôlego da Mata",
+    "Fúria Multiplicada",
+    "Fúria de Jaum Manel",
+    "Garras da Iara",
+    "Golpe do Trovão",
+    "Grito de Guerra",
+    "Instinto de Caça",
+    "Investida do Mapinguari",
+    "Justiça",
+    "Juízo Final da Floresta",
+    "Labareda Selvagem",
+    "Maldição da Caipora",
+    "Marretada",
+    "Mau Agouro",
+    "Mistura Peçonhenta",
+    "Muralha de Cipó Tóxico",
+    "Negociação",
+    "Olhar do Anhangá",
+    "Pacto Doloroso",
+    "Pancada de Tacape",
+    "Peçonha Concentrada",
+    "Ponto Fraco",
+    "Praga Multiplicada",
+    "Praga da Mata Fechada",
+    "Proteção",
+    "Proteção das Quatro Ervas",
+    "Purga da Jararaca",
+    "Rasga-Carne",
+    "Ritual da Caçada",
+    "Ritual do Sacrifício",
+    "Sangue Tóxico",
+    "Sem Dor, Sem Ganho",
+    "Soco MUITO Simples",
+    "Sopro de Boitatá",
+    "Talho de Caçador",
+    "Totem Ancestral",
+    "Totem Guardião",
+    "Totem da Cura",
+    "Totem da Serpente",
+    "Três Golpes da Onça",
+    "Tríplice Maldição"
+  ],
+  "ultimates": {
+    "mana_ancestral": {
+      "name": "Mana Ancestral",
+      "cost": 2,
+      "charge": 20,
+      "description": "Restaura sua energia para 8 e remove todos os seus efeitos negativos."
+    },
+    "forcas_ancestrais": {
+      "name": "Forças Ancestrais",
+      "cost": 2,
+      "charge": 20,
+      "description": "Ganhe 12 de força ate o fim do combate e 40 de escudo por 2 turnos"
+    },
+    "rugido_da_floresta": {
+      "name": "Rugido da Floresta",
+      "cost": 2,
+      "charge": 20,
+      "description": "Destrua o escudo inimigo, cause 60 de dano e aplique Fraqueza por 3 turnos."
+    }
+  },
+  "runtime": {
+    "virtual": [
+      1920,
+      1080
+    ],
+    "fps": 60,
+    "save_version": 14
+  },
+  "shop": {
+    "heal_amount": 20,
+    "heal_prices": [
+      30,
+      45,
+      60
+    ],
+    "heal_limit": 3
+  },
+  "deck": {
+    "minimum": 6,
+    "maximum": 18,
+    "copies_per_type": 3
+  },
+  "upgrade": {
+    "material_price": 15,
+    "material_limit": 9,
+    "limit": 3,
+    "prices": {
+      "Soco Simples": 40,
+      "Esfera Protetora": 40,
+      "Investida": 45,
+      "Disparo de Arco": 55,
+      "Lança Perfurante": 60,
+      "Machados Gêmeos": 70,
+      "Aura Rubra": 65,
+      "Poção Fragilizante": 50,
+      "Poção Purificadora": 50,
+      "Totem Protetor": 65,
+      "Zarabatana Venenosa": 65,
+      "Poção Venenosa": 55,
+      "Adaga Sangrenta": 55,
+      "Bola de Fogo": 55,
+      "Esfera Escudo": 60,
+      "Machado Quebra-Escudo": 40,
+      "Amuleto Dissipador": 55,
+      "Poção de Cura": 65,
+      "Máscara Ancestral": 75,
+      "Surto de Energia": 45
+    }
+  },
+  "campaign": {
+    "road_fights": 2,
+    "bosses": [
+      {
+        "level": 1,
+        "territory": "Stone de Cut",
+        "internal": "Guardião da Pedra",
+        "display": "Octav, o lobisomem"
+      },
+      {
+        "level": 2,
+        "territory": "Mata Sombria",
+        "internal": "Álvaro e Tex",
+        "display": "Alvar & Tekks, Rastreadores"
+      },
+      {
+        "level": 3,
+        "territory": "Ruínas Ancestrais",
+        "internal": "Goblin Nerd",
+        "display": "Jozephino, o Inventor"
+      },
+      {
+        "level": 4,
+        "territory": "Pântano Abissal",
+        "internal": "Gordofera",
+        "display": "Sir Thomas, a Besta Fera"
+      },
+      {
+        "level": 5,
+        "territory": "Fortaleza Caída",
+        "internal": "Corpo Seco",
+        "display": "Jan-Pietro, o Imortal"
+      },
+      {
+        "level": 6,
+        "territory": "Pico da Vigília",
+        "internal": "Carrasco da Vigília",
+        "display": "Labrro, o Carrasco"
+      },
+      {
+        "level": 7,
+        "territory": "Santuário de Pedra",
+        "internal": "Zanzara",
+        "display": "Zanzara, Líder do Clã Moskar"
+      }
+    ]
+  },
+  "animation": {
+    "native_sheets": [
+      "carrasco da vigília",
+      "corpo seco",
+      "guardião da pedra"
+    ],
+    "grid": [
+      4,
+      2
+    ],
+    "cell": [
+      448,
+      320
+    ],
+    "jan_idle_ms": 160,
+    "jozephino_idle_ms": 160
+  }
+}

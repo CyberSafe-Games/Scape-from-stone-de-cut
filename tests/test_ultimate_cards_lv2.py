@@ -106,6 +106,24 @@ class UltimateCompleteEffectsTests(unittest.TestCase):
         self.assertEqual(engine.enemy.statuses['weak']['turns'], 3)
         self.assertEqual(engine.enemy.weak_turns, 3)
 
+    def test_each_ultimate_consumes_two_energy_once_and_cannot_repeat_without_charge(self):
+        from copy import deepcopy
+        for uid in ULTIMATE_METADATA:
+            with self.subTest(ultimate=uid):
+                engine = self.ready(uid)
+                engine.enemy.hp = engine.enemy.max_hp = 500
+                self.assertTrue(engine.activate_ultimate())
+                self.assertEqual(engine.energy, 8 if uid == 'mana_ancestral' else 0)
+                self.assertEqual(engine.player.ultimate_charge, 0)
+                # Energia suficiente não substitui a recarga necessária.
+                engine.player.energy = 8
+                before = (engine.enemy.hp, engine.player.strength, engine.player.block,
+                          deepcopy(engine.player.statuses), deepcopy(engine.enemy.statuses))
+                self.assertFalse(engine.activate_ultimate())
+                after = (engine.enemy.hp, engine.player.strength, engine.player.block,
+                         engine.player.statuses, engine.enemy.statuses)
+                self.assertEqual(after, before)
+
 
 if __name__ == '__main__':
     unittest.main()

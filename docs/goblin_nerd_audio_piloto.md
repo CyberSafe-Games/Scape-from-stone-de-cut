@@ -1,5 +1,7 @@
 # Goblin Nerd — piloto de áudio
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Cinco ações integradas com sete OGG novos, preservando os originais externos.
 Fontes, autores, licença indicada, filtros e hashes em `goblin_nerd_audio_fontes.json`.
 Seleção baseada em metadados e análise de duração/envelope, sem alegar escuta crítica.

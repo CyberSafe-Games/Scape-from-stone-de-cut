@@ -51,25 +51,30 @@ class BossTwelveFramesTests(unittest.TestCase):
                 if name == 'corpo seco':
                     from src.systems.jan_pietro_animation import idle_frame
                     expected=idle_frame(view.enemy_idle_timer)
+                elif name == 'goblin nerd':
+                    from src.ui.enemy_reactions import calm_idle
+                    self.assertIs(view.get_enemy_frame(SimpleNamespace(name=name)), calm_idle(frames[0], view.enemy_idle_timer))
+                    continue
                 else:
                     expected=i
                 self.assertIs(view.get_enemy_frame(SimpleNamespace(name=name)),frames[expected])
 
-    def test_boss_damage_plays_all_eight_poses_once_then_resumes_idle(self):
+    def test_boss_damage_returns_to_same_idle_phase_without_reset(self):
         from src.config.layout import FLASH_DURATION
+        from src.ui.enemy_reactions import support
         for name in KITS:
             view = EntityView(self.assets)
             enemy = SimpleNamespace(name=name)
-            view.enemy_idle_timer = BOSS_IDLE_FRAME_MS * 3
+            view.enemy_idle_timer = 675
+            ready = view.get_enemy_frame(enemy, interpolate=True)
             view.trigger_flash('enemy', name)
-            seen = []
-            for _ in range(0, FLASH_DURATION, 10):
-                frame = view.get_enemy_frame(enemy)
-                if not seen or frame is not seen[-1]:
-                    seen.append(frame)
+            for elapsed in range(0, FLASH_DURATION, 10):
+                frame = view.get_enemy_frame(enemy, interpolate=True)
+                self.assertEqual(support(frame)[:2],support(ready)[:2],name)
                 view.update(10)
-            self.assertEqual(seen, self.assets.get_enemy_sprite_group(name, 'dano'), name)
-            self.assertIs(view.get_enemy_frame(enemy), self.assets.get_enemy_sprite_group(name, 'idle')[0])
+            self.assertEqual(view.enemy_idle_timer,675)
+            self.assertEqual(pygame.image.tobytes(view.get_enemy_frame(enemy, interpolate=True),'RGBA'),
+                             pygame.image.tobytes(ready,'RGBA'),name)
 
     def test_regular_attacks_and_ultimate_reach_every_pose(self):
         for name in BOSS_ULTIMATE_ANIMATIONS:
@@ -120,11 +125,18 @@ class BossTwelveFramesTests(unittest.TestCase):
             view.trigger_attack('enemy','atk1',name)
             view.update(view.enemy_attack_duration + view.enemy_recovery_ms + 10)
             self.assertEqual(view.enemy_idle_timer,0)
-            self.assertIs(view.get_enemy_frame(SimpleNamespace(name=name)),idle)
+            if name == 'goblin nerd':
+                from src.ui.enemy_reactions import calm_idle
+                self.assertIs(view.get_enemy_frame(SimpleNamespace(name=name)),calm_idle(idle,0))
+            else:
+                self.assertIs(view.get_enemy_frame(SimpleNamespace(name=name)),idle)
             view.update(BOSS_IDLE_FRAME_MS + 1)
             if name == 'corpo seco':
                 from src.systems.jan_pietro_animation import idle_frame
                 expected=idle_frame(view.enemy_idle_timer)
+            elif name == 'goblin nerd':
+                self.assertIs(view.get_enemy_frame(SimpleNamespace(name=name)),calm_idle(idle, view.enemy_idle_timer))
+                continue
             else:
                 expected=1
             self.assertIs(view.get_enemy_frame(SimpleNamespace(name=name)),self.assets.get_enemy_sprite_group(name,'idle')[expected])

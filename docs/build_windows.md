@@ -1,5 +1,7 @@
 # Build e instalação no Windows
 
+> Referência vigente. [Estado atual](estado_atual.md).
+
 O instalador oficial é gerado em um runner `windows-latest` pelo GitHub Actions. O jogo instalado é independente de Python e Pygame. O `.zip` portátil contém a pasta do PyInstaller e também não exige instalação de Python.
 
 ## Gerar localmente

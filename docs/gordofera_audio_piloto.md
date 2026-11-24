@@ -1,5 +1,7 @@
 # Gordofera — piloto de áudio
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Cinco ações integradas usando repertório existente. Sem novos downloads.
 Fontes, créditos, receitas e hashes: `gordofera_audio_fontes_v1.json`.
 

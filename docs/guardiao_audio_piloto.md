@@ -1,5 +1,7 @@
 # Guardião da Pedra — piloto de seleção autônoma
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Quatro ações integradas na branch `feature/audio-enemies`. Origens, autores,
 licença informada e hashes estão em `guardiao_audio_fontes.json`.
 Os MP3 externos foram somente lidos. Nenhum OGG existente foi sobrescrito.

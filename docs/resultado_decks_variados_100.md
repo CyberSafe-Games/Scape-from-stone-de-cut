@@ -1,5 +1,7 @@
 # Cem runs com decks variados — 18/11/2026
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 > Registro histórico da alternativa sem limpeza. Depois desta amostra, o usuário aprovou Mana restaurando energia **e limpando efeitos negativos**, sem compra de cartas. A taxa abaixo não mede essa revisão posterior.
 
 **11 campanhas completas, 89 mortes e nenhum limite técnico atingido. Taxa do bot nesta matriz: 11%.** Todas as vitórias passaram pelos 21 encontros, incluindo Zanzara, sem morrer na run. Isso não estima a chance de um jogador iniciante vencer.

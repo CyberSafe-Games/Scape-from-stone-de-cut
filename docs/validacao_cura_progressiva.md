@@ -1,5 +1,7 @@
 # Cura progressiva da loja — 17/11/2026
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Implementada na branch `feature/balanceamento-roguelite`, sem commit, push ou merge.
 
 ## Regra aprovada

@@ -1,5 +1,7 @@
 # Animações das ultimates
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 As três habilidades agora usam poses próprias do guerreiro, voltadas para a
 direita, e efeitos independentes com transparência real. São **24 sprites**:
 quatro poses e quatro efeitos para cada ultimate, além das três folhas originais.

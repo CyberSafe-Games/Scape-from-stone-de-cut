@@ -1,12 +1,14 @@
 # Implementação roguelite para avaliação
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 > Estado para o playtest de 18/11: [roteiro do grupo](playtest_balanceamento_grupo.md), [cura progressiva](validacao_cura_progressiva.md) e [especiais custando 5](validacao_especiais_custo5.md). O usuário autorizou publicar a branch e abrir PR, sem merge. As contagens e regras anteriores abaixo registram etapas históricas.
 
 17/11/2026, branch `feature/balanceamento-roguelite`, base `ad593a5`. Implementação autorizada pelo usuário após a entrega do diagnóstico. Sem commit, push ou merge. Arte, sprites, retratos, músicas e arquivos de efeitos aprovados foram preservados; não há dependências novas.
 
 ## Comportamento disponível
 
-**Regra atual da cura:** até três compras por run, recuperando até 20 de vida atual cada, por 30/45/60 ouro. Contador e preço persistem no save v14; cheia não cobra/consome, quarta compra esgota. Nova run zera contador. Saves v13 iniciam esse contador em zero, sem inventar compras anteriores, preservando HP, ouro e perfil; original guardado em `.v13.bak`. As descrições e simulações de cura ilimitada abaixo são históricas.
+**Regra da cura naquela etapa:** até três compras por run, recuperando até 20 de vida atual cada, por 30/45/60 ouro. Contador e preço persistem no save v14; cheia não cobra/consome, quarta compra esgota. Nova run zera contador. Saves v13 iniciam esse contador em zero, sem inventar compras anteriores, preservando HP, ouro e perfil; original guardado em `.v13.bak`. As descrições e simulações de cura ilimitada abaixo são históricas.
 
 Revisão posterior aprovada pelo usuário: a oferta de vida máxima temporária foi substituída por **cura de até 20 de vida atual por 30 ouro**, limitada à vida máxima, sem cobrar quando cheia. Aumento de vida máxima fica nas melhorias permanentes por fragmentos; morrer não concede atributo automaticamente. Compras temporárias feitas antes da mudança continuam válidas somente até o fim daquela run, preservando o investimento anterior. O contador legado não recebe novas compras e zera na nova run. Não foi necessário mudar o formato v13 do save.
 

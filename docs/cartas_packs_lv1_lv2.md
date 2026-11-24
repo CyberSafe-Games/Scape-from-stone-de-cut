@@ -1,5 +1,7 @@
 # Cartas dos packs LV1 e LV2
 
+> Referência vigente — auditoria de 23/11/2026. [Estado atual](estado_atual.md). Relatos de validações datadas abaixo representam somente aquela execução.
+
 Integração local de Cartas.zip. Os 20 tipos disponíveis têm uma arte base dourada e uma arte LV2 prateada, totalizando 40 PNGs RGBA.
 
 ## Origem e organização
@@ -21,7 +23,7 @@ Os nomes dos packs 1 e 2 LV2 estão invertidos no ZIP. O mapeamento do importado
 
 ## Renderização
 
-AssetManager.get_card_image(nome, level=1, cost=None, description=None) mantém o carregamento por nome e aceita nível e valores da instância. O cache distingue nível, custo e descrição. CardView e MerchantWorkshopView encaminham os dados da cópia. Os slots de cópias da mochila e o cemitério usam CardView. A coleção e as ofertas de loja exibem LV1. O altar usa LV1 no Antes e LV2 no Depois.
+AssetManager.get_card_image(nome, level=1, cost=None, description=None) mantém o carregamento por nome e aceita nível e valores da instância. O cache distingue nível, custo e descrição. CardView e MerchantWorkshopView encaminham os dados da cópia. O cemitério usa CardView. A Mochila usa BackpackView e mostra a cópia real/próxima livre, LV1 ou LV2; as ofertas da loja exibem LV1. O altar usa LV1 no Antes e LV2 no Depois.
 
 with_player_rules recompõe o interior escuro detectado na própria arte e centraliza o número pelo centroide do contorno, mantendo a borda dourada ou prateada. Cada uma das 40 artes tem seu próprio contorno no manifesto. As dimensões e proporções originais dos recortes são preservadas. O texto ilustrado é preservado quando corresponde à descrição registrada. Se a descrição da instância mudar, o texto passa a ser composto na área de regras. with_rules permanece para artes de intenções e consumidores legados.
 

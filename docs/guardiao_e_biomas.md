@@ -1,5 +1,7 @@
 # Guardião da Pedra e cenários dos biomas
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 O confronto principal da fase 1 (Pedra do Corte) agora usa o Guardião da Pedra. Os três encontros comuns da Pedra do Corte usam Slime; o tutorial também mantém seu Slime didático. Os demais habitantes seguem a distribuição descrita em bestiario_e_biomas.md. Saves existentes mantêm o progresso; o novo chefe aparece ao jogar ou repetir o ponto principal.
 
 ## Chefe

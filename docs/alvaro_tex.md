@@ -1,55 +1,35 @@
-# Álvaro e Tex — Mata Sombria
+# Alvar & Tekks, Rastreadores
 
-O ponto principal do segundo bioma agora enfrenta Álvaro e Tex. Os três encontros
-comuns continuam usando Macaco Selvagem e Guerreiro da Mata.
+> Referência vigente — auditoria de 23/11/2026. [Estado atual](estado_atual.md). Relatos de validações datadas abaixo representam somente aquela execução.
 
-## Duas fases, uma luta
+Mata Sombria; ID interno: Álvaro e Tex.
+76 HP, 4 energia, duas ações/turno e especial a cada oito ações.
+Valores base, antes de bônus/proteções; efeitos seguem regras de stacks atuais.
 
-1. **Dupla: 76 de vida.** Estocada (9), shuriken (7), Fumaça Restauradora
-   (recupera até 10 de vida e concede +3 de dano por dois turnos completos,
-   sem acumular ao reaplicar). A fumaça permanece na dupla, sem causar dano
-   ou veneno no jogador. Especial: Vendaval da Dupla (15).
-2. **Pequeno sozinho: 44 de vida.** Chute (7), porrete (9), shuriken (6).
-   Especial: Fúria do Pequeno (13), com golpe no chão, poeira e rastros.
+| Ação | Tipo | Valor | Energia | Efeitos |
+|---|---|---:|---:|---|
+| Estocada da Dupla | attack | 9 | 1 | — |
+| Estrela Traiçoeira | attack | 7 | 1 | — |
+| Fumaça Restauradora | buff | 10 | 1 | cura até 10; +3 dano/2 turnos |
+| Vendaval da Dupla | attack | 15 | 1 | — |
 
-Ambas fazem duas ações por rodada. O especial acontece a cada oito ações e fica
-indicado na intenção, como nos demais chefes. A segunda fase inicia seu próprio
-contador. A barra identifica a fase atual (1/2 ou 2/2).
+## Segunda fase: Tekks
 
-Ao zerar a primeira barra, a carta/ultimate termina antes da sequência de fumaça
-e queda, de oito quadros e dois segundos. Cartas ficam visíveis, mas ações são
-bloqueadas durante essa transição. O pequeno entra com a própria barra cheia.
-Não há moedas, recompensa ou conclusão do território antes da segunda derrota.
+44 HP e barra própria. Conserva o estado/carga do jogador, pois é a
+mesma batalha. Sem recompensa antes da segunda derrota. Fumaça é cura/buff,
+sem dano ao jogador. Snapshot permite retomada da luta viva.
 
-Vida, escudo, força, efeitos, energia, mão, pilhas, uso da troca do cemitério e
-carga da ultimate do jogador permanecem. A carta final é descartada e paga
-normalmente. Os efeitos do parceiro derrotado não passam ao pequeno. Se fogo,
-veneno ou sangramento derrubarem a dupla na rodada inimiga, suas ações restantes
-são canceladas e uma rodada normal do jogador começa após a transição.
+| Ação | Tipo | Valor | Energia | Efeitos |
+|---|---|---:|---:|---|
+| Chute Ardiloso | attack | 7 | 1 | — |
+| Pancada de Porrete | attack | 9 | 1 | — |
+| Shuriken Furtiva | attack | 6 | 1 | — |
+| Fúria do Pequeno | attack | 13 | 1 | — |
 
-O formato dos saves não muda. Como as demais batalhas, sair e carregar novamente
-reinicia o confronto territorial na primeira fase; não salva uma luta pela metade.
+## Apresentação
 
-## Arte e reprodução
-
-Fontes do ZIP `alvaro e tex.zip` preservadas em
-`assets/bosses/alvaro_tex/source/`. Preparação:
-
-```bash
-python devtools/prepare_alvaro_tex.py
-python devtools/preview_alvaro_tex.py
-```
-
-Cada fase conserva **oito poses distintas por habilidade**, quatro de idle e quatro
-de dano. A primeira tem também oito poses para a transição. O jogo escolhe os
-quadros pelo tempo decorrido, sem limitar essas sequências aos quatro quadros dos
-chefes antigos. Idle percorre as poses de ida e volta para suavizar a respiração.
-
-Os sprites foram espelhados para a esquerda, separados com transparência e
-alinhados pelos pés. Removidos os alvos cinzentos ilustrativos e os projéteis
-destacados das poses de arremesso. A estrela foi recortada do desenho extra da
-própria folha e gira separadamente até o jogador. Sinais de cura ao redor da dupla,
-rastros, estilhaços e brilho dos especiais são complementos desenhados pelo jogo. Os personagens não
-foram redesenhados. O cenário existente da Mata Sombria continua aplicado.
-
-Prévia: `alvaro_tex_em_acao.gif`; folhas: `alvaro_tex_sprites.png`.
+Duas fases com IDs Álvaro e Tex e Álvaro e Tex · Pequeno. Ações legadas de doze
+poses; idle/fontes de dano de oito; transição própria. Preservar desenhos,
+projéteis, fumaça, partículas e áudio aprovados.
+Dano: [registro de apoio e reação segura](reacoes_dano.md).
+[Regras e UI vigentes](estado_atual.md).

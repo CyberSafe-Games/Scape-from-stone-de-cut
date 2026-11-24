@@ -1,5 +1,7 @@
 # Diagnóstico e proposta roguelite — avaliação
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 > Registro da fase de diagnóstico. Após esta entrega, o usuário autorizou continuar com a implementação. O estado implementado e seus limites estão em [implementacao_balanceamento_roguelite.md](implementacao_balanceamento_roguelite.md); as referências abaixo a “nenhuma mudança” e “aguarda avaliação” descrevem a entrega original, não o estado atual da branch.
 
 17/11/2026. **Nenhuma mudança de regra implementada. Todos os valores propostos aguardam avaliação.** Leitura integral de AGENTS.md e do documento externo ORIENTACOES_CODEX_ROGUELITE.md. Os oito itens abaixo separam fatos observados de propostas experimentais; não representam campanha jogada ou balanceamento validado.

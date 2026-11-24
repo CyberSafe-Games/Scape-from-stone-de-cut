@@ -1,0 +1,299 @@
+{
+  "documents": [
+    {
+      "file": "AGENTS.md",
+      "kind": "current",
+      "summary": "Convenções vigentes reescritas; remove regras conflitantes e caminhos específicos de outro computador."
+    },
+    {
+      "file": "README.md",
+      "kind": "current",
+      "summary": "UI/arte atuais, cura/preços, deck mínimo, morte/run/snapshot, epílogo, pastas e executor isolado."
+    },
+    {
+      "file": "assets/audio/README.md",
+      "kind": "current",
+      "summary": "Remove aviso de áudio ausente; trilha, IDs, canais, volumes e fontes ativos."
+    },
+    {
+      "file": "docs/alvaro_tex.md",
+      "kind": "current",
+      "summary": "Duas fases, fumaça de cura/buff, ações12/idle8 e retomada por snapshot."
+    },
+    {
+      "file": "docs/alvaro_tex_audio_fase1.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/alvaro_tex_audio_fase2.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/animacoes_ultimates.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/audio_mix_review.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/audio_polimento_final.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/auditoria_documentacao_testes.md",
+      "kind": "current",
+      "summary": "Novo índice completo por documento, cobertura dos testes, comandos e resultado da auditoria."
+    },
+    {
+      "file": "docs/bestiario_e_biomas.md",
+      "kind": "current",
+      "summary": "14 tipos, dois por bioma, duas lutas; Viniurgo e nomes atuais dos chefes."
+    },
+    {
+      "file": "docs/boss_twelve_frames.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/boss_ultimate_eight_effects.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/boss_ultimates_e_ruinas.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/bosses_oito_frames.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/bosses_spritesheets_oito.md",
+      "kind": "current",
+      "summary": "Cadência distinta de Jan-Pietro, fontes8 e reação segura em560 ms."
+    },
+    {
+      "file": "docs/build_windows.md",
+      "kind": "current",
+      "summary": "Build PyInstaller/Inno Setup, instalação, distribuição e dados graváveis do Windows preservados na integração das PRs #29/#30."
+    },
+    {
+      "file": "docs/carrasco_audio_piloto.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/carrasco_da_vigilia.md",
+      "kind": "current",
+      "summary": "Labrro: HP140, danos/buff reais, folhas4×2; preserva prompt do cenário."
+    },
+    {
+      "file": "docs/cartas_e_estados.md",
+      "kind": "current",
+      "summary": "Tabela real dos 20 tipos LV1/LV2, 75 bloqueadas, stacks, dispel e evolução."
+    },
+    {
+      "file": "docs/cartas_packs_lv1_lv2.md",
+      "kind": "current",
+      "summary": "Renderização real da cópia na Mochila, em vez de coleção sempre LV1."
+    },
+    {
+      "file": "docs/cartas_ultimate_lv2.md",
+      "kind": "current",
+      "summary": "Referência conferida; vínculo canônico e validações datadas distinguidas."
+    },
+    {
+      "file": "docs/common_eight_frames.md",
+      "kind": "current",
+      "summary": "14 comuns/56 grupos/448 fontes, reação filtrada e fase de voo."
+    },
+    {
+      "file": "docs/comparacao_decks_sem_cura.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/comparacao_main_etapa3.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/comparacao_mana_machados.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/corpo_seco_audio_piloto.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/diagnostico_balanceamento_roguelite.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/estado_atual.md",
+      "kind": "current",
+      "summary": "Nova referência canônica com regras, UI, famílias de animação e comandos atuais."
+    },
+    {
+      "file": "docs/etapa3_audio_validacao_final.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/etapa4_trilha_sonora.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/fechamento_balanceamento_roguelite.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/goblin_nerd_audio_piloto.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/gordofera.md",
+      "kind": "current",
+      "summary": "Sir Thomas: nome, Sangramento por stacks, ações12/idle8 e valores da fábrica."
+    },
+    {
+      "file": "docs/gordofera_audio_piloto.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/guardiao_audio_piloto.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/guardiao_e_biomas.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/implementacao_balanceamento_roguelite.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/intencoes_dos_inimigos.md",
+      "kind": "current",
+      "summary": "Duas ações de chefe; carta inteira em x central/y43%, sem painel lateral."
+    },
+    {
+      "file": "docs/jan_pietro_alinhamento.md",
+      "kind": "current",
+      "summary": "Distingue idle já preparado do registro/filtro global de dano."
+    },
+    {
+      "file": "docs/laboratorio_de_testes.md",
+      "kind": "current",
+      "summary": "14 encontros, mínimo seis, 75 bloqueadas, ultimates e isolamento dos saves."
+    },
+    {
+      "file": "docs/loja_altar_visual.md",
+      "kind": "current",
+      "summary": "Cura30/45/60, materiais15, limite3 evoluções e padding/custo único."
+    },
+    {
+      "file": "docs/mapa_e_encontros.md",
+      "kind": "current",
+      "summary": "Revanche sem drops, cura pós-chefe, snapshot/run e epílogo."
+    },
+    {
+      "file": "docs/mochila_e_ultimates.md",
+      "kind": "current",
+      "summary": "Mínimo seis, rascunho, filtros, preview, cartas douradas, custo 2 e sem herança de carga."
+    },
+    {
+      "file": "docs/mochila_visual.md",
+      "kind": "current",
+      "summary": "Referência conferida; vínculo canônico e validações datadas distinguidas."
+    },
+    {
+      "file": "docs/player_twelve_frames.md",
+      "kind": "current",
+      "summary": "Referência conferida; vínculo canônico e validações datadas distinguidas."
+    },
+    {
+      "file": "docs/playtest_balanceamento_grupo.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/playtest_refino_cartas.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/pr_audio_final.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/prompts_ultimates_v2.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/protagonista_oito_frames.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/reacoes_dano.md",
+      "kind": "current",
+      "summary": "Referência conferida; vínculo canônico e validações datadas distinguidas."
+    },
+    {
+      "file": "docs/resultado_decks_dano_hibrido_defesa.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/resultado_decks_variados_100.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/retratos_personagens.md",
+      "kind": "current",
+      "summary": "Referência conferida; vínculo canônico e validações datadas distinguidas."
+    },
+    {
+      "file": "docs/revisao_cartas_balanceamento.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/validacao_cura_progressiva.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/validacao_especiais_custo5.md",
+      "kind": "historical",
+      "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."
+    },
+    {
+      "file": "docs/zanzara.md",
+      "kind": "current",
+      "summary": "Necromante atual; HP175, kit e efeitos reais, renderizador e epílogo."
+    }
+  ]
+}

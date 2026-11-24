@@ -1,5 +1,7 @@
 # Octav, Jan-Pietro e Labrro — folhas nativas de oito quadros
 
+> Referência vigente — auditoria de 23/11/2026. [Estado atual](estado_atual.md). Relatos de validações datadas abaixo representam somente aquela execução.
+
 Integração retomada em 23/11/2026 após interrupção do computador. A inspeção
 anterior e dois reparos ImageGen foram recuperados; o Git estava limpo antes
 desta retomada. Nenhuma integração parcial precisou ser descartada.
@@ -60,7 +62,7 @@ arquivos externos para rodar o jogo.
 - A componente cinza do xadrez tingido por auras vira alfa real; não deixar
   quadrados opacos dentro de azul/verde. Reflexos internos da magia preservados.
 - Paleta comum de 256 cores por chefe e remoção de fragmentos isolados castanhos.
-- Idle: 225 ms por pose, mantendo o ciclo aprovado. Dano: oito poses nos 560 ms
+- Idle: Octav/Labrro 225 ms; Jan-Pietro 160 ms com ciclo próprio. Dano: fontes de oito poses, com seleção segura nos 560 ms
   globais. Ataques e suporte usam o relógio existente, independente do FPS da
   janela; preparação/impacto/recuperação percorrem as oito poses uma vez.
 - Os efeitos independentes de Ultimate continuam separados e conservados.

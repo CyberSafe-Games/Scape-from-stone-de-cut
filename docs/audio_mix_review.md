@@ -1,5 +1,7 @@
 # Revisão inicial da mixagem
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Base: `origin/main` em `b69cdd9`; branch local `feature/audio-enemies`.
 Atualização por fast-forward, sem commit novo ou publicação. Alterações locais
 de inimigos preservadas por combinação em três vias.

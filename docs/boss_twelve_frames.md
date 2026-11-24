@@ -1,5 +1,7 @@
 # Bosses com doze frames
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Os sete bosses usam doze poses em defesa, cura, ataques e ultimates. Álvaro e
 Tex contam com as duas fases e a transição entre elas. São 39 sequências de
 corpo (468 sprites) e seis camadas de ultimate com doze efeitos cada (72

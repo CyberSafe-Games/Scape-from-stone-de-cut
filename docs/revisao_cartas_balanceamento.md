@@ -1,5 +1,7 @@
 # Revisão das 20 cartas disponíveis — 18/11/2026
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 > Implementação posterior autorizada: Investida 20/26 por duas energias; Máscara cura 14/18 com Escudo 22/28; Amuleto preserva debuffs ao remover benefícios; Surto sinaliza ganho aproveitável ou nulo. As descrições abaixo registram o diagnóstico anterior. 123 testes reexecutados em dez módulos aprovados, consolidado incremental 661/68; smoke de interface aprovado. Alterações locais, sem atualizar PR #24. O valor de Investida cria paridade com Arco, não uma identidade mecânica nova.
 
 Análise da versão local: Machados custa cinco; Mana restaura energia e limpa efeitos, sem comprar cartas. Não houve mudança de regras nesta revisão. As 75 cartas bloqueadas estão fora do escopo.

@@ -1,0 +1,1158 @@
+{
+  "files": [
+    {
+      "file": "tests/__init__.py",
+      "cases": []
+    },
+    {
+      "file": "tests/test_alvaro_tex.py",
+      "cases": [
+        "AlvaroTexCombatTests.test_biome_and_phases",
+        "AlvaroTexCombatTests.test_first_defeat_preserves_player_and_only_second_rewards",
+        "AlvaroTexCombatTests.test_poison_and_fire_end_of_enemy_round_transition",
+        "AlvaroTexCombatTests.test_bleed_killing_first_phase_cancels_remaining_attacks",
+        "AlvaroTexCombatTests.test_lethal_player_ultimate_does_not_skip_second_phase",
+        "AlvaroTexCombatTests.test_lethal_card_discards_and_consumes_energy_before_transition",
+        "AlvaroTexCombatTests.test_resume_starts_both_phases_again_without_touching_save_format",
+        "AlvaroTexCombatTests.test_eight_action_specials_in_both_phases",
+        "AlvaroTexCombatTests.test_smoke_heals_and_buffs_without_hurting_or_poisoning_player",
+        "AlvaroTexCombatTests.test_smoke_refreshes_bonus_and_lasts_full_rounds_not_actions",
+        "AlvaroTexVisualTests.test_all_attack_poses_used_and_no_quadrilateral_background",
+        "AlvaroTexVisualTests.test_transition_waits_for_finishing_animation",
+        "AlvaroTexVisualTests.test_smoke_uses_eight_frames_at_home_without_projectile"
+      ]
+    },
+    {
+      "file": "tests/test_audio_enemies.py",
+      "cases": [
+        "TestCommonEnemyAudio.test_carrasco_axe_motion_and_contact_are_synchronized",
+        "TestCommonEnemyAudio.test_carrasco_vigor_has_tail_and_cancelled_execution_is_silent",
+        "TestCommonEnemyAudio.test_corpo_seco_blades_and_flesh_contact_are_synchronized",
+        "TestCommonEnemyAudio.test_corpo_seco_guard_tail_and_cancelled_ultimate",
+        "TestCommonEnemyAudio.test_gordofera_attacks_match_movement_and_contact",
+        "TestCommonEnemyAudio.test_gordofera_guard_and_tremor_have_tails",
+        "TestCommonEnemyAudio.test_gordofera_cancelled_ultimate_does_not_play",
+        "TestCommonEnemyAudio.test_goblin_lasers_keep_burning_after_animation",
+        "TestCommonEnemyAudio.test_goblin_acid_continues_after_attack_animation",
+        "TestCommonEnemyAudio.test_goblin_projectiles_and_ultimate_have_separate_synchronized_cues",
+        "TestCommonEnemyAudio.test_goblin_toxic_breath_and_shield_activate_once",
+        "TestCommonEnemyAudio.test_goblin_retch_precedes_visible_acid_jet",
+        "TestCommonEnemyAudio.test_goblin_cancelled_ultimate_and_late_frame_do_not_play",
+        "TestCommonEnemyAudio.test_small_phase_two_movement_and_body_contacts_are_synchronized",
+        "TestCommonEnemyAudio.test_small_cancelled_ultimate_or_phase_change_does_not_play",
+        "TestCommonEnemyAudio.test_duo_phase_one_moves_then_hits_flesh",
+        "TestCommonEnemyAudio.test_duo_smoke_has_tail_and_cancelled_attack_has_no_sound",
+        "TestCommonEnemyAudio.test_guardian_claw_swings_before_contact_then_plays_flesh_cut",
+        "TestCommonEnemyAudio.test_guardian_buffs_allow_audible_tail_after_animation",
+        "TestCommonEnemyAudio.test_guardian_pilot_sounds_follow_action_and_ultimate_release",
+        "TestCommonEnemyAudio.test_guardian_cancelled_or_late_ultimate_does_not_play",
+        "TestCommonEnemyAudio.test_common_attacks_use_matching_sound_once_at_visual_contact",
+        "TestCommonEnemyAudio.test_forest_warrior_syncs_and_keeps_the_breaking_tail_for_both_attacks",
+        "TestCommonEnemyAudio.test_centaur_arrow_has_distinct_launch_and_contact",
+        "TestCommonEnemyAudio.test_golem_plasma_plays_the_laser_at_release_and_energy_at_contact",
+        "TestCommonEnemyAudio.test_common_defense_and_heal_sound_at_activation",
+        "TestCommonEnemyAudio.test_bosses_and_unmapped_actions_remain_without_new_sound",
+        "TestCommonEnemyAudio.test_only_basic_unarmed_boss_attacks_reuse_body_impacts",
+        "TestCommonEnemyAudio.test_boss_ultimate_never_uses_basic_attack_sound",
+        "TestCommonEnemyAudio.test_cancelled_attack_and_long_frame_do_not_play_stale_sound"
+      ]
+    },
+    {
+      "file": "tests/test_audio_gameplay.py",
+      "cases": [
+        "TestNamedCardAudio.test_arrow_impact_follows_projectile_clock_and_flash_frame",
+        "TestNamedCardAudio.test_arrow_plays_distinct_launch_and_body_impact_once",
+        "TestNamedCardAudio.test_remaining_player_cards_are_synchronized_and_bounded",
+        "TestNamedCardAudio.test_amulet_plays_when_frame_crosses_launch",
+        "TestNamedCardAudio.test_poison_potion_starts_composition_at_throw_and_keeps_glass_and_acid_tail",
+        "TestNamedCardAudio.test_revised_attacks_preserve_impact_tail",
+        "TestNamedCardAudio.test_aura_and_totem_begin_with_visual_preparation",
+        "TestNamedCardAudio.test_ranged_audio_runs_only_between_launch_and_collision",
+        "TestNamedCardAudio.test_ranged_audio_skips_missed_collision_after_long_frame",
+        "TestNamedCardAudio.test_charge_starts_running_with_animation_and_preserves_composed_impact",
+        "TestNamedCardAudio.test_self_actions_play_their_own_sound_once",
+        "TestNamedCardAudio.test_audio_uses_current_animation_position",
+        "TestPunchImpactAudio.test_arrow_impact_is_not_duplicated_when_frame_crosses_contact",
+        "TestPunchImpactAudio.test_blowgun_plays_sound_once_at_launch",
+        "TestPunchImpactAudio.test_bloody_dagger_preserves_composed_contact_impact",
+        "TestPunchImpactAudio.test_simple_punch_sound_runs_during_motion_until_contact",
+        "TestTutorialGuideAudio.test_tutorial_victory_plays_fanfare_after_enemy_defeat",
+        "TestTutorialGuideAudio.test_guide_blocks_card_hover_but_keeps_advance_click",
+        "TestCardHoverTiming.test_card_hover_limits_rapid_transitions",
+        "TestCardHoverTiming.test_card_hover_ignores_hand_rearrangement_after_play",
+        "TestCardGameplayAudio.test_rugido_plays_fireball_once_when_avatar_is_released",
+        "TestCardGameplayAudio.test_status_ticks_use_contact_sounds_with_full_tails",
+        "TestCardGameplayAudio.test_lethal_arrow_delays_fanfare_and_gold_reveal",
+        "TestCardGameplayAudio.test_game_over_waits_for_attack_then_plays_once",
+        "TestCardGameplayAudio.test_card_hover_sound_on_entry_only",
+        "TestCardGameplayAudio.test_card_click_does_not_play_movement_sound",
+        "TestCardGameplayAudio.test_end_turn_plays_sound",
+        "TestCardGameplayAudio.test_ultimate_activation_plays_sound"
+      ]
+    },
+    {
+      "file": "tests/test_audio_manager.py",
+      "cases": [
+        "TestAudioManager.test_per_sound_volume_combines_with_existing_controls",
+        "TestAudioManager.test_per_sound_volume_is_clamped_and_does_not_affect_other_sounds",
+        "TestAudioManager.test_limits_playback_to_collision_window",
+        "TestAudioManager.test_initializes_mixer_when_not_available",
+        "TestAudioManager.test_register_sound",
+        "TestAudioManager.test_play_registered_sound",
+        "TestAudioManager.test_applies_combined_volume",
+        "TestAudioManager.test_does_not_play_when_mixer_is_unavailable",
+        "TestAudioManager.test_handles_missing_audio_file"
+      ]
+    },
+    {
+      "file": "tests/test_audio_mix.py",
+      "cases": [
+        "TestAudioMix.test_every_registered_effect_has_an_attenuation_setting"
+      ]
+    },
+    {
+      "file": "tests/test_audio_options.py",
+      "cases": [
+        "VolumeCategoryTests.test_music_combat_damage_and_interface_are_independent",
+        "VolumeCategoryTests.test_volume_change_updates_loaded_effect_without_replaying_it",
+        "AudioPreferencesTests.test_defaults_roundtrip_and_invalid_values",
+        "AudioPreferencesTests.test_applies_preferences_to_shared_audio_service",
+        "AudioOptionsUITests.test_mouse_drag_updates_music_saves_and_returns",
+        "AudioOptionsUITests.test_restore_defaults_and_draw",
+        "AudioOptionsUITests.test_main_menu_opens_audio_options"
+      ]
+    },
+    {
+      "file": "tests/test_audio_punch_polish.py",
+      "cases": [
+        "PunchPolishTests.test_registered_punch_has_headroom_and_keeps_contact_in_short_window"
+      ]
+    },
+    {
+      "file": "tests/test_audio_ui.py",
+      "cases": [
+        "TestShopAudio.test_previous_page_plays_click_sound",
+        "TestShopAudio.test_next_page_plays_click_sound",
+        "TestShopAudio.test_back_to_map_plays_click_sound",
+        "TestBackpackAudio.test_add_card_plays_confirm_sound",
+        "TestBackpackAudio.test_ultimate_tab_plays_click_sound",
+        "TestBackpackAudio.test_deck_tab_plays_click_sound",
+        "TestBackpackAudio.test_back_to_map_plays_click_sound",
+        "TestBackpackAudio.test_next_page_plays_click_sound",
+        "TestBackpackAudio.test_previous_page_plays_click_sound",
+        "TestBackpackAudio.test_click_filled_slot_removes_copy_and_plays_confirm_sound",
+        "TestBackpackAudio.test_add_card_success_plays_confirm_sound",
+        "TestBackpackAudio.test_add_card_failure_does_not_play_confirm_sound",
+        "TestBackpackAudio.test_remove_slot_success_plays_confirm_sound",
+        "TestBackpackAudio.test_filter_button_plays_click_sound",
+        "TestBackpackAudio.test_equip_ultimate_success_plays_confirm_sound",
+        "TestBackpackAudio.test_equip_ultimate_failure_does_not_play_sound",
+        "TestBackpackAudio.test_tab_key_plays_click_sound",
+        "TestBackpackAudio.test_escape_key_plays_click_sound",
+        "TestBackpackAudio.test_backspace_removes_last_filled_slot_and_plays_confirm_sound",
+        "TestBackpackAudio.test_right_arrow_plays_click_sound",
+        "TestBackpackAudio.test_left_arrow_plays_click_sound",
+        "TestBackpackAudio.test_enter_key_adds_card_and_plays_confirm_sound",
+        "TestBackpackAudio.test_mouse_wheel_page_change_plays_click_sound",
+        "TestBackpackAudio.test_mouse_wheel_at_first_page_does_not_play_sound",
+        "TestSaveSelectionAudio.test_back_to_menu_plays_navigate_sound",
+        "TestSaveSelectionAudio.test_delete_confirmation_plays_sound_once",
+        "TestSaveSelectionAudio.test_open_test_save_plays_confirm_sound",
+        "TestSaveSelectionAudio.test_fullscreen_button_plays_click_sound",
+        "TestSaveSelectionAudio.test_open_delete_confirmation_plays_click_sound",
+        "TestConfirmationModalAudio.test_confirm_plays_confirm_sound",
+        "TestBattleMenuAudio.test_open_menu_confirmation_plays_click_sound",
+        "TestTutorialReopenAudio.test_reopen_guide_plays_click_sound",
+        "TestShopEscapeAudio.test_escape_plays_click_sound",
+        "TestShopPurchaseAudio.test_purchase_feedback_plays_correct_sound",
+        "TestF11Audio.test_f11_plays_click_sound_once",
+        "TestMenuExitAudio.test_exit_plays_click_before_quitting"
+      ]
+    },
+    {
+      "file": "tests/test_audio_zanzara.py",
+      "cases": [
+        "TestZanzaraAudio.test_four_attacks_schedule_distinct_stages",
+        "TestZanzaraAudio.test_cancelled_action_does_not_play",
+        "TestZanzaraAudio.test_ferry_body_impact_matches_visual_contact_once"
+      ]
+    },
+    {
+      "file": "tests/test_backpack_ultimates.py",
+      "cases": [
+        "UltimatePreparationTests.test_choice_persists_but_legacy_charge_is_discarded",
+        "UltimatePreparationTests.test_invalid_choice_and_failed_write_preserve_the_previous_loadout",
+        "UltimatePreparationTests.test_old_save_gains_all_three_choices_and_keeps_its_equipped_ultimate",
+        "UltimatePreparationTests.test_mana_restores_energy_and_cleanses_without_draw",
+        "UltimatePreparationTests.test_rugido_breaks_shield_and_uses_strength_aura_and_vulnerability",
+        "UltimatePreparationTests.test_boss_weakness_lasts_three_full_rounds_and_six_actions",
+        "UltimatePreparationTests.test_totem_still_protects_against_the_roar",
+        "UltimatePreparationTests.test_forcas_shield_expires_after_two_turns_while_strength_stays",
+        "BackpackInteractionTests.test_ultimate_tab_equips_each_choice_without_changing_deck",
+        "BackpackInteractionTests.test_click_collection_card_adds_copies_and_owned_filter",
+        "BackpackInteractionTests.test_both_tabs_keep_buttons_inside_the_screen",
+        "UltimateCardArtTests.test_new_art_and_both_backpack_tabs_render"
+      ]
+    },
+    {
+      "file": "tests/test_backpack_visual.py",
+      "cases": [
+        "BackpackVisualTests.test_lv2_hover_uses_real_cost_and_description_without_changing_loadout",
+        "BackpackVisualTests.test_filters_use_real_type_level_and_cost_and_reset_pagination",
+        "BackpackVisualTests.test_preview_is_fixed_outside_action_controls_and_hover_cannot_equip",
+        "BackpackVisualTests.test_equip_remove_feedback_and_disk_save_preserve_upgraded_copy",
+        "BackpackVisualTests.test_failed_save_does_not_play_acquisition_effect",
+        "BackpackVisualTests.test_empty_full_and_ultimate_tabs_render_within_virtual_screen",
+        "BackpackVisualTests.test_filters_do_not_misrepresent_the_level_that_will_be_equipped",
+        "BackpackVisualTests.test_filter_refreshes_after_equipping_its_last_free_level_two_copy",
+        "BackpackVisualTests.test_acquisition_effect_marks_the_hole_actually_filled",
+        "BackpackVisualTests.test_new_assets_load_and_leather_compartment_has_transparent_center"
+      ]
+    },
+    {
+      "file": "tests/test_balance_simulation.py",
+      "cases": [
+        "BalanceSimulationTests.test_every_strategy_keeps_starter_attack_when_only_support_owned",
+        "BalanceSimulationTests.test_preparation_pays_for_healing_and_does_not_grant_permanent_bonus",
+        "BalanceSimulationTests.test_exploratory_turns_do_not_consume_future_randomness",
+        "BalanceSimulationTests.test_upgrade_targets_do_not_waste_materials_on_unequipped_aura"
+      ]
+    },
+    {
+      "file": "tests/test_boss_sheet_update.py",
+      "cases": [
+        "BossSheetUpdateTests.test_all_18_sheets_have_eight_frames_and_keep_internal_identity",
+        "BossSheetUpdateTests.test_each_of_144_frames_was_audited_and_repairs_are_recorded",
+        "BossSheetUpdateTests.test_each_native_pose_is_reachable_in_normal_attack_support_and_ultimate",
+        "BossSheetUpdateTests.test_native_sampler_keeps_contact_and_a_readable_hold_for_every_frame",
+        "BossSheetUpdateTests.test_replaced_pose_directories_are_absent_but_independent_bear_remains"
+      ]
+    },
+    {
+      "file": "tests/test_boss_twelve_frames.py",
+      "cases": [
+        "BossTwelveFramesTests.test_all_forms_have_eight_idle_and_hurt_poses_and_twelve_action_poses",
+        "BossTwelveFramesTests.test_all_idle_frames_are_used_instead_of_static_first_pose",
+        "BossTwelveFramesTests.test_boss_damage_returns_to_same_idle_phase_without_reset",
+        "BossTwelveFramesTests.test_regular_attacks_and_ultimate_reach_every_pose",
+        "BossTwelveFramesTests.test_melee_flash_tracks_new_strike_pose",
+        "BossTwelveFramesTests.test_approved_boss_magic_layers_remain_independent",
+        "BossTwelveFramesTests.test_frame_boundaries_are_clamped",
+        "BossTwelveFramesTests.test_all_actions_close_on_idle_without_global_clock_jump",
+        "BossTwelveFramesTests.test_shared_palette_and_no_alternating_idle_brightness",
+        "BossTwelveFramesTests.test_all_eight_approved_poses_remain_pixel_identical",
+        "BossTwelveFramesTests.test_all_duo_support_and_transition_poses_are_reachable",
+        "BossTwelveFramesTests.test_regular_attack_poses_have_time_to_read_and_keep_the_contact_cue"
+      ]
+    },
+    {
+      "file": "tests/test_boss_ultimate_animations.py",
+      "cases": [
+        "BossUltimateAnimationTests.test_all_four_specials_are_marked_only_on_the_eighth_and_sixteenth_actions",
+        "BossUltimateAnimationTests.test_every_boss_has_twelve_transparent_casts_and_twelve_independent_effects",
+        "BossUltimateAnimationTests.test_goblin_regular_shot_keeps_its_old_animation_and_ultimate_is_dedicated",
+        "BossUltimateAnimationTests.test_damage_flash_and_visual_health_shield_wait_for_each_impact",
+        "BossUltimateAnimationTests.test_casts_use_the_new_character_palette_and_close_on_ready",
+        "BossUltimateAnimationTests.test_approved_magic_effect_files_remain_identical",
+        "BossUltimateAnimationTests.test_projectiles_go_left_melee_bosses_advance_and_all_return_home",
+        "BossUltimateAnimationTests.test_layers_render_then_clear_and_followup_action_waits_until_end",
+        "BossUltimateAnimationTests.test_lethal_special_finishes_before_game_over_overlay",
+        "BossUltimateAnimationTests.test_regular_boss_attacks_show_health_and_damage_only_at_impact",
+        "BossUltimateAnimationTests.test_regular_lethal_hit_finishes_before_defeat_overlay",
+        "BossUltimateAnimationTests.test_ruins_background_is_used_by_goblin_and_regular_biome_encounters"
+      ]
+    },
+    {
+      "file": "tests/test_boss_ultimate_twelve_effects.py",
+      "cases": [
+        "BossTwelveEffectTests.test_old_key_drawings_remain_identical_and_new_poses_are_distinct",
+        "BossTwelveEffectTests.test_every_effect_is_reached_with_ground_impact_reserved_for_the_hit",
+        "BossTwelveEffectTests.test_legacy_twelve_effects_render_in_arena_and_disappear_at_end"
+      ]
+    },
+    {
+      "file": "tests/test_card_collection_pages.py",
+      "cases": [
+        "CardCollectionPageTests.test_buy_cards_on_all_pages_and_no_offscreen_buttons",
+        "CardCollectionPageTests.test_last_page_card_adds_copies_and_persists_slots",
+        "CardCollectionPageTests.test_only_available_cards_can_be_added_to_the_deck",
+        "CardCollectionPageTests.test_unavailable_card_cannot_be_bought_or_added_to_the_deck_from_an_old_save"
+      ]
+    },
+    {
+      "file": "tests/test_carrasco_da_vigilia.py",
+      "cases": [
+        "CarrascoDaVigiliaTests.test_level_six_point_uses_carrasco_with_two_actions",
+        "CarrascoDaVigiliaTests.test_special_fires_on_eighth_and_sixteenth_actions",
+        "CarrascoDaVigiliaTests.test_vigor_heals_and_bonus_lasts_turns_rather_than_actions",
+        "CarrascoDaVigiliaTests.test_vigor_caps_health_and_does_not_stack_bonus",
+        "CarrascoDaVigiliaTests.test_all_six_sheets_are_uniform_rgba_and_transparent",
+        "CarrascoDaVigiliaTests.test_palette_star_and_biome_load_in_the_real_view"
+      ]
+    },
+    {
+      "file": "tests/test_cemetery_system.py",
+      "cases": [
+        "TestPlayerCemeteryRules.test_cemetery_costs_one_energy_each",
+        "TestCombatEngineCemeteryIntegration.test_discard_repeats_only_while_energy_remains",
+        "TestCombatEngineCemeteryIntegration.test_swap_once_per_turn",
+        "TestCombatEngineCemeteryIntegration.test_cemetery_blocked_outside_player_turn",
+        "TestCombatEngineCemeteryIntegration.test_cemetery_invalid_card_index",
+        "TestCemeteryModalUI.test_modal_draw",
+        "TestCemeteryModalUI.test_modal_card_selection_and_discard_flow",
+        "TestCemeteryModalUI.test_discard_without_selection_does_not_play_confirm",
+        "TestCemeteryModalUI.test_modal_swap_once_and_stays_open",
+        "TestCemeteryModalUI.test_modal_close_via_esc",
+        "TestCemeteryModalUI.test_modal_close_via_button",
+        "TestBattleSceneCemeteryIntegration.test_battle_scene_cemetery_button_opens_modal",
+        "TestBattleSceneCemeteryIntegration.test_battle_scene_c_key_opens_modal"
+      ]
+    },
+    {
+      "file": "tests/test_character_portraits.py",
+      "cases": [
+        "CharacterPortraitTests.test_all_supplied_portraits_load_in_the_hud_and_are_cached",
+        "CharacterPortraitTests.test_phase_two_has_its_own_crop_and_missing_portraits_keep_the_sprite_fallback",
+        "CharacterPortraitTests.test_zanzara_keeps_approved_face_inside_protagonist_frame"
+      ]
+    },
+    {
+      "file": "tests/test_common_eight_frames.py",
+      "cases": [
+        "CommonEightFramesTests.test_all_14_kits_have_distinct_transparent_poses_and_close_on_idle",
+        "CommonEightFramesTests.test_each_action_reaches_all_eight_frames_and_resets_idle",
+        "CommonEightFramesTests.test_damage_and_hud_wait_for_the_actual_melee_or_projectile_impact"
+      ]
+    },
+    {
+      "file": "tests/test_corpo_seco_animation.py",
+      "cases": [
+        "CorpoSecoAnimationTests.test_all_animation_sets_exist",
+        "CorpoSecoAnimationTests.test_attack_timing_is_action_specific",
+        "CorpoSecoAnimationTests.test_spin_cycles_through_frames_without_out_of_range",
+        "CorpoSecoAnimationTests.test_regular_action_reaches_last_frame",
+        "CorpoSecoAnimationTests.test_melee_is_drawn_next_to_player_at_impact_and_returns_home",
+        "CorpoSecoAnimationTests.test_pngs_use_alpha_channel",
+        "CorpoSecoAnimationTests.test_checkerboard_removed_at_corners"
+      ]
+    },
+    {
+      "file": "tests/test_corpo_seco_visual_scale.py",
+      "cases": [
+        "CorpoSecoVisualScaleTests.test_all_sheets_share_canvas_and_alpha",
+        "CorpoSecoVisualScaleTests.test_native_scale_is_baked_once_and_idle_does_not_bounce",
+        "CorpoSecoVisualScaleTests.test_all_48_frames_keep_an_opaque_body_including_repaired_thrust",
+        "CorpoSecoVisualScaleTests.test_spin_regeneration_and_both_slashes_keep_their_own_colors"
+      ]
+    },
+    {
+      "file": "tests/test_cutscene_final.py",
+      "cases": [
+        "FinalCutsceneTests.test_vitoria_final_abre_dez_imagens_em_ordem_e_volta_ao_mapa",
+        "FinalCutsceneTests.test_revanche_final_exibe_epilogo_sem_registrar_recompensa",
+        "FinalCutsceneTests.test_falha_ao_salvar_mantem_a_batalha",
+        "FinalCutsceneTests.test_outros_encontros_e_revanche_voltam_ao_mapa"
+      ]
+    },
+    {
+      "file": "tests/test_cutscene_intro_selection.py",
+      "cases": [
+        "IntroSaveSelectionTests.test_slot_vazio_abre_intro_e_conclui_para_tutorial",
+        "IntroSaveSelectionTests.test_save_existente_sem_intro_vai_direto_ao_tutorial",
+        "IntroSaveSelectionTests.test_save_existente_concluido_vai_ao_mapa",
+        "IntroSaveSelectionTests.test_falha_ao_salvar_nao_impede_o_tutorial"
+      ]
+    },
+    {
+      "file": "tests/test_cutscene_post_tutorial.py",
+      "cases": [
+        "TestPostTutorial.test_victory_cutscene_then_map",
+        "TestPostTutorial.test_already_seen_goes_directly_to_map",
+        "TestPostTutorial.test_repeat_does_not_add_coins_or_change_scene_again",
+        "TestPostTutorial.test_debug_without_save_goes_directly_to_map",
+        "TestPostTutorial.test_failed_tutorial_save_stays_on_victory"
+      ]
+    },
+    {
+      "file": "tests/test_cutscene_save_flags.py",
+      "cases": [
+        "CutsceneSaveFlagsTests.test_new_save_flags_are_false",
+        "CutsceneSaveFlagsTests.test_old_save_without_flags_migrates_to_true",
+        "CutsceneSaveFlagsTests.test_test_mode_flags_remain_true",
+        "CutsceneSaveFlagsTests.test_invalid_flag_types_are_rejected"
+      ]
+    },
+    {
+      "file": "tests/test_cutscene_scene.py",
+      "cases": [
+        "CutsceneSceneTests.test_configuracao_tem_cinco_quadros_e_pos_tutorial",
+        "CutsceneSceneTests.test_avanco_manual_ignora_entrada_durante_transicao",
+        "CutsceneSceneTests.test_ultimo_quadro_encerra_so_apos_fade",
+        "CutsceneSceneTests.test_esc_pula_e_finaliza_uma_unica_vez",
+        "CutsceneSceneTests.test_lista_vazia_finaliza_sem_exibir_quadro",
+        "CutsceneSceneTests.test_imagem_ausente_nao_interrompe_renderizacao",
+        "CutsceneSceneTests.test_imagem_e_escalada_uma_vez_por_quadro",
+        "CutsceneSceneTests.test_quantidade_de_quadros_nao_e_fixa"
+      ]
+    },
+    {
+      "file": "tests/test_deck_archetype_comparison.py",
+      "cases": [
+        "DeckArchetypeComparisonTests.test_equal_size_valid_decks_without_healing",
+        "DeckArchetypeComparisonTests.test_pure_defense_has_no_damage_route_without_offensive_ultimate",
+        "DeckArchetypeComparisonTests.test_actual_starter_is_not_reported_as_pure_damage_or_defense",
+        "DeckArchetypeComparisonTests.test_disabling_ultimate_preserves_its_charge",
+        "DeckArchetypeComparisonTests.test_shop_healing_spends_real_gold_and_keeps_cards_unchanged",
+        "DeckArchetypeComparisonTests.test_upgraded_control_has_only_three_lv2_and_keeps_cleanse_without_healing"
+      ]
+    },
+    {
+      "file": "tests/test_deck_clear_and_minimum.py",
+      "cases": [
+        "DeckClearAndMinimumRulesTests.test_minimum_is_six_and_counts_copies_not_card_types",
+        "DeckClearAndMinimumRulesTests.test_empty_deck_slots_are_all_none",
+        "DeckClearAndMinimumRulesTests.test_clear_and_manual_removal_produce_the_same_empty_draft",
+        "DeckClearAndMinimumRulesTests.test_remove_last_copy_succeeds_in_draft_without_overwriting_official",
+        "DeckClearAndMinimumRulesTests.test_add_after_manual_zero_builds_a_valid_draft",
+        "DeckClearAndMinimumRulesTests.test_no_minimum_one_card_rule_remains",
+        "DeckClearAndMinimumRulesTests.test_empty_saved_deck_migrates_to_initial_deck",
+        "DeckClearAndMinimumRulesTests.test_new_player_already_has_six_copies_available",
+        "DeckRulesWithoutPygameTests.test_deck_rules_import_and_validate_without_pygame",
+        "BackpackExitRulesTests.test_invalid_deck_blocks_back_button_and_escape",
+        "BackpackExitRulesTests.test_valid_deck_exits_by_button_and_escape",
+        "BackpackExitRulesTests.test_ultimate_tab_stays_available_with_invalid_deck",
+        "BackpackExitRulesTests.test_clear_deck_asks_confirmation_and_leaves_draft_empty",
+        "BackpackExitRulesTests.test_clear_button_does_nothing_extra_when_draft_is_already_empty",
+        "BackpackExitRulesTests.test_click_last_slot_removes_it_from_draft_and_shows_minimum_notice",
+        "BackpackExitRulesTests.test_backspace_removes_the_last_card_from_draft",
+        "BackpackExitRulesTests.test_zero_cards_blocks_exit",
+        "BackpackExitRulesTests.test_collection_click_still_adds_after_manual_zero",
+        "BackpackExitRulesTests.test_invalid_saved_deck_migrates_to_initial_when_reopening",
+        "BackpackExitRulesTests.test_clear_button_sits_below_panel_without_overlapping_other_controls"
+      ]
+    },
+    {
+      "file": "tests/test_deck_draft_persistence.py",
+      "cases": [
+        "DraftPersistenceTests.test_valid_deck_is_saved_and_loaded_unchanged",
+        "DraftPersistenceTests.test_each_valid_edit_is_promoted_immediately",
+        "DraftPersistenceTests.test_invalid_draft_on_save_on_exit_keeps_last_valid_deck",
+        "DraftPersistenceTests.test_any_invalid_draft_size_on_save_on_exit_keeps_last_valid_deck",
+        "DraftPersistenceTests.test_clear_deck_then_close_keeps_last_valid_deck",
+        "DraftPersistenceTests.test_last_valid_deck_is_the_most_recent_valid_edit",
+        "DraftPersistenceTests.test_new_player_starts_with_valid_deck_and_keeps_it",
+        "DraftPersistenceTests.test_saving_before_opening_backpack_keeps_initial_deck",
+        "DraftPersistenceTests.test_invalid_official_deck_is_restored_to_initial_on_save",
+        "DraftPersistenceTests.test_old_valid_save_becomes_last_valid_deck",
+        "DraftPersistenceTests.test_old_invalid_save_migrates_to_initial_deck_without_changing_collection",
+        "DraftPersistenceTests.test_missing_cards_are_dropped_on_load_without_exception",
+        "DraftPersistenceTests.test_missing_cards_below_minimum_fall_back_to_initial_deck",
+        "DraftPersistenceTests.test_all_missing_cards_fall_back_to_initial_deck",
+        "DraftPersistenceTests.test_other_progress_saves_with_invalid_draft_keep_last_valid_deck",
+        "DraftPersistenceTests.test_save_on_exit_promotes_a_valid_draft",
+        "DraftPersistenceTests.test_commit_deck_tolerates_save_error_and_restores_official",
+        "DraftPersistenceTests.test_save_on_exit_never_raises_when_saving_fails",
+        "DraftPersistenceWithoutPygameTests.test_deck_persistence_imports_without_pygame"
+      ]
+    },
+    {
+      "file": "tests/test_deck_slots.py",
+      "cases": [
+        "DeckSlotsTests.test_add_occupies_next_free_slot",
+        "DeckSlotsTests.test_fourth_copy_is_rejected",
+        "DeckSlotsTests.test_deck_never_exceeds_slot_limit",
+        "DeckSlotsTests.test_remove_frees_only_that_slot",
+        "DeckSlotsTests.test_remove_last_card_leaves_draft_empty_without_touching_official",
+        "DeckSlotsTests.test_initial_deck_fills_slots_per_rule",
+        "DeckSlotsTests.test_normalize_uses_initial_deck_when_deck_is_missing",
+        "DeckSlotsTests.test_deck_manager_builds_stacks_with_exact_copies",
+        "DeckSlotsTests.test_save_and_load_round_trip_keeps_deck",
+        "DeckSlotsTests.test_legacy_v8_save_migrates_to_individual_slots",
+        "DeckSlotsTests.test_legacy_save_without_deck_slots_uses_collection",
+        "DeckSlotsTests.test_add_from_unknown_or_unowned_card_does_not_change_deck"
+      ]
+    },
+    {
+      "file": "tests/test_documentation_contract.py",
+      "cases": [
+        "DocumentationContractTests.test_every_markdown_is_declared_as_current_or_historical",
+        "DocumentationContractTests.test_local_links_resolve_for_all_markdown_files",
+        "DocumentationContractTests.test_available_lv1_lv2_card_table_matches_real_models",
+        "DocumentationContractTests.test_ultimate_documentation_matches_real_cost_charge_and_effects",
+        "DocumentationContractTests.test_shop_deck_upgrades_and_save_version_match_documented_contract",
+        "DocumentationContractTests.test_native_sheet_membership_is_not_confused_with_jozephino",
+        "DocumentationContractTests.test_stack_rules_and_campaign_match_documented_contract",
+        "DocumentationContractTests.test_test_inventory_includes_every_python_test_file_and_case",
+        "DocumentationContractTests.test_old_reports_are_explicitly_marked_and_current_guides_are_linked"
+      ]
+    },
+    {
+      "file": "tests/test_enemy_defeats.py",
+      "cases": [
+        "EnemyDefeatTests.test_campaign_kits_have_a_defeat_pose_or_dedicated_sequence",
+        "EnemyDefeatTests.test_bat_landing_plays_impact_before_victory_and_only_once"
+      ]
+    },
+    {
+      "file": "tests/test_enemy_intents.py",
+      "cases": [
+        "IntentPlanningTests.test_every_boss_announces_two_actions_and_common_enemy_one",
+        "IntentPlanningTests.test_goblin_shock_stacks_for_one_player_turn",
+        "IntentPlanningTests.test_corpse_guard_and_executioner_attack_effects_match_intents",
+        "IntentPlanningTests.test_planned_second_action_executes_without_a_new_random_draw",
+        "IntentPlanningTests.test_ultimate_is_visible_as_second_action_before_the_turn",
+        "IntentPlanningTests.test_special_reserves_energy_in_advance",
+        "IntentPlanningTests.test_generic_enemy_executes_the_new_announced_action_instead_of_a_stale_one",
+        "IntentPlanningTests.test_vulnerability_expiring_at_end_of_player_turn_is_not_counted",
+        "IntentPlanningTests.test_preview_includes_strength_weakness_vulnerability_and_prior_buff",
+        "IntentInterfaceTests.test_boss_cards_load_with_a_separate_ultimate_illustration",
+        "IntentInterfaceTests.test_zanzara_actions_match_the_four_printed_cards",
+        "IntentInterfaceTests.test_tall_intent_art_is_centered_and_counters_do_not_cover_it",
+        "IntentInterfaceTests.test_boss_card_hover_only_draws_the_enlarged_card_inside_the_screen",
+        "IntentInterfaceTests.test_every_icon_has_hover_description_inside_the_window_without_randomness",
+        "IntentInterfaceTests.test_boss_phase_switch_replaces_both_icons"
+      ]
+    },
+    {
+      "file": "tests/test_enemy_reactions.py",
+      "cases": [
+        "EnemyReactionTests.test_all_native_reaction_samples_keep_the_ready_anchor_and_canvas",
+        "EnemyReactionTests.test_actual_arena_draw_never_moves_baseline_or_adds_vertical_knockback",
+        "EnemyReactionTests.test_idle_clock_freezes_during_hit_then_resumes_without_reset",
+        "EnemyReactionTests.test_hit_hold_and_recoil_have_continuous_endpoints",
+        "EnemyReactionTests.test_missing_or_grossly_deformed_pose_uses_intact_guard_without_scaling",
+        "EnemyReactionTests.test_jozephino_eight_breaths_share_boot_pixels_and_do_not_shrink",
+        "EnemyReactionTests.test_next_enemy_action_waits_for_the_visual_reaction_to_finish",
+        "EnemyReactionTests.test_procedural_minibosses_and_enemies_keep_ground_and_shape",
+        "EnemyReactionTests.test_enemy_render_does_not_use_rotating_or_squashing_player_fallback"
+      ]
+    },
+    {
+      "file": "tests/test_energy_system.py",
+      "cases": [
+        "TestPlayerEnergySystem.test_initial_energy_is_two",
+        "TestPlayerEnergySystem.test_increase_max_energy_progression",
+        "TestPlayerEnergySystem.test_max_energy_limit_strictly_eight",
+        "TestPlayerEnergySystem.test_reset_energy_restores_to_current_max",
+        "TestPlayerEnergySystem.test_use_energy_validation",
+        "TestCombatEngineEnergyIntegration.test_combat_engine_initial_energy",
+        "TestCombatEngineEnergyIntegration.test_playing_cards_spends_energy_and_blocks_insufficient",
+        "TestCombatEngineEnergyIntegration.test_turn_by_turn_progression_up_to_eight",
+        "TestCombatEngineEnergyIntegration.test_different_match_moments",
+        "TestEnergyHUD.test_hud_draw_at_different_stages",
+        "TestBattleSceneEnergyIntegration.test_battle_scene_draw_and_restart"
+      ]
+    },
+    {
+      "file": "tests/test_extended_cards.py",
+      "cases": [
+        "ExtendedCardTests.test_txt_cards_are_registered_without_replacing_existing_soco",
+        "ExtendedCardTests.test_artless_card_fallback_displays_cost_name_and_effect",
+        "ExtendedCardTests.test_poison_stacks_tick_and_purge_deals_damage_per_stack",
+        "ExtendedCardTests.test_multihit_bonus_and_temporary_strength",
+        "ExtendedCardTests.test_temporary_strength_layers_expire_independently",
+        "ExtendedCardTests.test_immunity_and_attack_lock",
+        "ExtendedCardTests.test_burn_doubling_and_final_attack_lock",
+        "ExtendedCardTests.test_stun_skips_enemy_turn_and_totem_triggers",
+        "ExtendedCardTests.test_draw_and_energy_restore_effects",
+        "ExtendedCardTests.test_no_heal_blocks_enemy_healing"
+      ]
+    },
+    {
+      "file": "tests/test_goblin_monge.py",
+      "cases": [
+        "GoblinMongeTests.test_biome_encounters_can_be_selected_at_every_level",
+        "GoblinMongeTests.test_legacy_normal_pool_has_animated_actions_too",
+        "GoblinMongeTests.test_melee_approaches_but_wave_waits_for_release_and_impact",
+        "GoblinMongeTests.test_assets_load_with_alpha_and_render_wave_in_battle"
+      ]
+    },
+    {
+      "file": "tests/test_goblin_ranged_attacks.py",
+      "cases": [
+        "GoblinRangedAttackTests.test_ranged_attacks_stay_home_and_fly_towards_player",
+        "GoblinRangedAttackTests.test_flash_waits_for_arrival_and_next_action_waits_for_recovery",
+        "GoblinRangedAttackTests.test_other_enemies_and_goblin_melee_still_approach",
+        "GoblinRangedAttackTests.test_next_attack_clears_ranged_state"
+      ]
+    },
+    {
+      "file": "tests/test_guardian_visual_polish.py",
+      "cases": [
+        "GuardianVisualPolishTests.test_cleanup_removes_exterior_gray_but_preserves_enclosed_highlights",
+        "GuardianVisualPolishTests.test_cleanup_does_not_destroy_blue_spirit_or_thin_colored_details",
+        "GuardianVisualPolishTests.test_spirit_has_charge_flight_and_impact_then_leaves_no_residual_effect",
+        "GuardianVisualPolishTests.test_guardian_visual_does_not_appear_for_another_enemy_or_regular_attack"
+      ]
+    },
+    {
+      "file": "tests/test_guardiao_da_pedra.py",
+      "cases": [
+        "GuardiaoDaPedraTests.test_first_point_has_guardian_but_normal_encounters_keep_their_pool",
+        "GuardiaoDaPedraTests.test_special_occurs_on_eighth_and_sixteenth_actions",
+        "GuardiaoDaPedraTests.test_healing_caps_at_maximum_and_defense_uses_dedicated_animation",
+        "GuardiaoDaPedraTests.test_spirit_is_ranged_and_hit_flash_waits_for_arrival",
+        "GuardiaoDaPedraTests.test_new_sheets_are_rgba_and_wave_remains_independent",
+        "GuardiaoDaPedraTests.test_assets_load_correct_biomes_and_animate_guardian_without_affecting_player"
+      ]
+    },
+    {
+      "file": "tests/test_hand_and_cemetery_flow.py",
+      "cases": [
+        "PersistentHandTests.test_unused_cards_remain_in_same_order_and_only_missing_cards_are_drawn",
+        "PersistentHandTests.test_only_replenishes_up_to_current_turn_target",
+        "PersistentHandTests.test_extra_cards_are_not_removed_when_hand_exceeds_target",
+        "PersistentHandTests.test_cemetery_discard_does_not_automatically_replace",
+        "PersistentHandTests.test_combat_restart_still_creates_fresh_hand",
+        "CemeteryTradeTests.test_discard_costs_one_per_card_until_energy_exhausted",
+        "CemeteryTradeTests.test_swap_one_per_turn_preserves_hand_size_and_energy",
+        "CemeteryTradeTests.test_swap_does_not_consume_charge_or_energy",
+        "CemeteryTradeTests.test_swap_resets_at_start_of_next_player_turn",
+        "CemeteryTradeTests.test_swap_not_reset_between_boss_two_actions",
+        "CemeteryTradeTests.test_swap_requires_valid_index_and_replacement",
+        "CemeteryTradeTests.test_swap_reshuffles_old_discard_without_redrawing_discarded_selection",
+        "CemeteryTradeTests.test_swap_disabled_when_not_player_turn"
+      ]
+    },
+    {
+      "file": "tests/test_jan_pietro_stance.py",
+      "cases": [
+        "JanPietroStanceTests.test_all_48_frames_have_the_same_boot_anchor",
+        "JanPietroStanceTests.test_idle_boot_pixels_are_identical_and_all_eight_upper_poses_remain",
+        "JanPietroStanceTests.test_real_interpolated_draw_path_keeps_world_foot_pixels_fixed",
+        "JanPietroStanceTests.test_runtime_does_not_reanchor_idle_or_hurt_using_silhouette",
+        "JanPietroStanceTests.test_action_endpoints_share_exactly_the_idle_pose",
+        "JanPietroStanceTests.test_idle_clock_is_6_25_fps_and_ping_pong_has_no_wrap_jump",
+        "JanPietroStanceTests.test_coordinate_report_covers_every_frame_without_per_frame_zoom",
+        "JanPietroStanceTests.test_idle_head_registration_removes_large_horizontal_sway"
+      ]
+    },
+    {
+      "file": "tests/test_life_recovery_after_combat.py",
+      "cases": [
+        "TestLifeAfterCombat.test_common_victory_does_not_heal",
+        "TestLifeAfterCombat.test_miniboss_victory_heals_30_percent_of_max_hp",
+        "TestLifeAfterCombat.test_miniboss_heal_never_exceeds_max_hp",
+        "TestLifeAfterCombat.test_miniboss_heal_tracks_changed_max_hp",
+        "TestLifeAfterCombat.test_life_is_saved_and_loaded_for_next_combat",
+        "TestLifeAfterCombat.test_legacy_save_without_life_defaults_to_full",
+        "TestTutorialRestoresLife.test_completing_tutorial_saves_full_life_for_the_campaign"
+      ]
+    },
+    {
+      "file": "tests/test_map_encounters.py",
+      "cases": [
+        "MapEncounterTests.test_new_save_opens_only_first_encounter_and_two_wins_open_main",
+        "MapEncounterTests.test_replay_does_not_skip_next_encounter_or_change_checkpoint",
+        "MapEncounterTests.test_rewards_exclude_collected_cards_even_outside_the_equipped_deck",
+        "MapEncounterTests.test_full_collection_still_allows_a_first_win_and_coin_drop",
+        "MapEncounterTests.test_completed_road_and_boss_have_no_repeat_drops_after_reloading",
+        "MapEncounterTests.test_can_replay_normal_encounters_in_completed_territory",
+        "MapEncounterTests.test_locked_encounters_and_invalid_indices_cannot_grant_rewards",
+        "MapEncounterTests.test_failed_save_keeps_previous_count_and_retry_advances_once",
+        "MapEncounterTests.test_all_fourteen_encounter_points_are_inside_map_and_unique",
+        "MapEncounterTests.test_clicking_encounter_and_play_passes_exact_index_to_battle",
+        "MapEncounterTests.test_clicking_main_point_before_road_complete_does_not_start_battle",
+        "MapEncounterTests.test_keyboard_visits_all_twenty_one_points"
+      ]
+    },
+    {
+      "file": "tests/test_map_icons.py",
+      "cases": [
+        "MapIconTests.test_every_territory_has_its_own_square_transparent_icon",
+        "MapIconTests.test_icons_are_scaled_cached_and_dimmed_without_touching_the_source",
+        "MapIconTests.test_completed_bosses_show_skulls_instead_of_the_v_marker",
+        "MapIconTests.test_map_draws_the_icon_centered_on_each_territory"
+      ]
+    },
+    {
+      "file": "tests/test_mata_sombria_boss.py",
+      "cases": [
+        "RuinasAncestraisBossTests.test_level_three_point_encounter_uses_goblin_nerd",
+        "RuinasAncestraisBossTests.test_mata_sombria_no_longer_uses_goblin_nerd",
+        "RuinasAncestraisBossTests.test_goblin_special_triggers_every_eight_actions",
+        "RuinasAncestraisBossTests.test_assets_for_goblin_and_mata_background_exist",
+        "RuinasAncestraisBossTests.test_create_goblin_nerd_stats"
+      ]
+    },
+    {
+      "file": "tests/test_merchant_workshop.py",
+      "cases": [
+        "MerchantWorkshopTests.test_selecting_copy_upgrades_only_that_instance_and_persists",
+        "MerchantWorkshopTests.test_save_failure_restores_gold_materials_and_selected_copy",
+        "MerchantWorkshopTests.test_material_purchase_and_limit",
+        "MerchantWorkshopTests.test_every_card_compares_real_levels_and_additional_effects",
+        "MerchantWorkshopTests.test_empty_collection_and_all_shop_pages_draw",
+        "MerchantWorkshopTests.test_hover_preview_closes_on_frame_or_purchase_button",
+        "MerchantWorkshopTests.test_cost_composition_replaces_previous_number_for_every_card",
+        "MerchantWorkshopTests.test_framed_card_keeps_padding_and_refreshes_when_cost_changes",
+        "MerchantWorkshopTests.test_upgraded_saved_copy_keeps_lv2_across_backpack_altar_and_base_shop_offer"
+      ]
+    },
+    {
+      "file": "tests/test_music_director.py",
+      "cases": [
+        "MusicRoutingTests.test_every_boss_uses_chase_except_final_boss",
+        "MusicRoutingTests.test_victory_and_defeat_leave_space_for_existing_stingers",
+        "MusicRoutingTests.test_zanzara_track_continues_until_the_black_frame",
+        "MusicRoutingTests.test_zanzara_game_over_still_releases_the_music",
+        "MusicRoutingTests.test_menu_to_map_does_not_restart_music",
+        "MusicRoutingTests.test_fade_waits_then_uses_latest_requested_context",
+        "MusicRoutingTests.test_phase_change_and_modal_keep_boss_track",
+        "MusicPlaybackTests.test_music_fades_in_without_altering_effects"
+      ]
+    },
+    {
+      "file": "tests/test_normal_bestiary.py",
+      "cases": [
+        "NormalBestiaryTests.test_fourteen_unique_types_follow_the_requested_biome_distribution",
+        "NormalBestiaryTests.test_every_new_action_resolves_in_the_real_combat_engine",
+        "NormalBestiaryTests.test_existing_territorial_bosses_are_preserved",
+        "NormalBestiaryTests.test_all_sprite_groups_and_projectiles_load_and_render_without_clipping"
+      ]
+    },
+    {
+      "file": "tests/test_options_menu.py",
+      "cases": [
+        "PreferencesPersistenceTests.test_defaults_match_previous_game_behavior",
+        "PreferencesPersistenceTests.test_save_and_load_every_setting",
+        "PreferencesPersistenceTests.test_missing_corrupt_and_out_of_range_use_defaults",
+        "PreferencesPersistenceTests.test_legacy_audio_only_file_gets_defaults_for_new_keys",
+        "PreferencesPersistenceTests.test_restore_tab_affects_only_that_tab",
+        "EnemySpeedTests.test_normal_keeps_exact_original_windups",
+        "EnemySpeedTests.test_fast_only_shortens_windups",
+        "EnemySpeedTests.test_invalid_speed_falls_back_to_normal",
+        "OptionsSceneTests.test_restore_defaults_restores_only_current_tab",
+        "OptionsSceneTests.test_video_tab_applies_and_persists_immediately",
+        "OptionsSceneTests.test_setting_buttons_stay_on_their_own_rows",
+        "OptionsSceneTests.test_game_tab_applies_and_persists_immediately",
+        "OptionsSceneTests.test_escape_closes_modal",
+        "PauseLogicTests.test_modal_freezes_scene_timer_and_resumes_after_close",
+        "PauseLogicTests.test_battle_reads_enemy_speed_preference",
+        "PauseLogicTests.test_battle_menu_and_escape_open_pause_modal",
+        "PauseLogicTests.test_pause_modal_buttons_follow_layout_and_receive_clicks",
+        "PreferencesPygameIndependenceTests.test_preferences_module_does_not_import_pygame"
+      ]
+    },
+    {
+      "file": "tests/test_pause_menu_layout.py",
+      "cases": [
+        "PauseMenuLayoutTests.test_panel_is_centered_on_virtual_screen",
+        "PauseMenuLayoutTests.test_buttons_keep_size_alignment_and_equal_spacing",
+        "PauseMenuLayoutTests.test_panel_contains_header_buttons_and_footer",
+        "PauseMenuLayoutTests.test_subtitle_and_divider_respect_header_spacing",
+        "PauseMenuLayoutTests.test_height_grows_by_one_button_row_each_step",
+        "PauseMenuLayoutTests.test_requires_at_least_one_button"
+      ]
+    },
+    {
+      "file": "tests/test_player_card_art.py",
+      "cases": [
+        "PlayerCardArtTests.test_all_twenty_cards_have_two_complete_transparent_sprites",
+        "PlayerCardArtTests.test_swapped_pack_names_are_mapped_by_card_identity",
+        "PlayerCardArtTests.test_composition_preserves_all_art_outside_the_cost_diamond",
+        "PlayerCardArtTests.test_cost_can_be_changed_without_leaving_the_previous_number",
+        "PlayerCardArtTests.test_shared_card_view_requests_the_actual_copy_level_and_cost",
+        "PlayerCardArtTests.test_cache_separates_levels_and_runtime_costs",
+        "PlayerCardArtTests.test_detected_contours_fit_all_original_badges",
+        "PlayerCardArtTests.test_aura_rubra_alignment_uses_its_own_center_in_both_levels"
+      ]
+    },
+    {
+      "file": "tests/test_player_twelve_frames.py",
+      "cases": [
+        "PlayerTwelveFramesTests.test_idle_and_hurt_have_eight_poses_and_other_actions_have_twelve",
+        "PlayerTwelveFramesTests.test_all_card_and_ultimate_poses_are_reachable_and_return_without_global_clock_jump",
+        "PlayerTwelveFramesTests.test_ranged_release_matches_seventh_pose_and_projectile_start",
+        "PlayerTwelveFramesTests.test_idle_victory_and_basic_punch_play_all_their_poses",
+        "PlayerTwelveFramesTests.test_damage_plays_eight_poses_and_finishes_at_ready",
+        "PlayerTwelveFramesTests.test_all_approved_eight_poses_and_ultimate_effects_remain_pixel_identical",
+        "PlayerTwelveFramesTests.test_palette_brightness_and_slim_idle_silhouette_remain_consistent",
+        "PlayerTwelveFramesTests.test_twelve_ultimate_effects_are_reached_and_roar_dissipation_waits_for_impact"
+      ]
+    },
+    {
+      "file": "tests/test_pose_playback.py",
+      "cases": [
+        "PosePlaybackTests.test_eight_frame_animation_and_twelve_frame_contact_keep_their_exact_pose",
+        "PosePlaybackTests.test_compatible_twelve_frame_poses_blend_with_an_opaque_shared_body",
+        "PosePlaybackTests.test_transition_keeps_one_solid_outline_when_an_arm_changes_position",
+        "PosePlaybackTests.test_outlier_is_bridged_without_a_second_silhouette",
+        "PosePlaybackTests.test_stance_alignment_preserves_the_ready_foot_center_and_floor"
+      ]
+    },
+    {
+      "file": "tests/test_post_combat_rewards.py",
+      "cases": [
+        "PostCombatRewardTests.test_card_selection_saves_once_after_pulse",
+        "PostCombatRewardTests.test_material_respects_capacity_and_preserves_copies",
+        "PostCombatRewardTests.test_skip_preserves_collection_and_gold",
+        "PostCombatRewardTests.test_quitting_during_confirmation_persists_selection",
+        "PostCombatRewardTests.test_resuming_victory_recovers_gold_label_without_crediting_again",
+        "PostCombatRewardTests.test_final_victory_saves_and_opens_epilogue_without_an_offer"
+      ]
+    },
+    {
+      "file": "tests/test_random_deck.py",
+      "cases": [
+        "RandomDeckRulesTests.test_respects_copy_limit_and_slot_limit",
+        "RandomDeckRulesTests.test_uses_only_cards_from_the_collection",
+        "RandomDeckRulesTests.test_fixed_seed_is_reproducible_and_other_seeds_can_differ",
+        "RandomDeckRulesTests.test_large_collection_reaches_the_target_size",
+        "RandomDeckRulesTests.test_small_collection_generates_only_the_possible_copies",
+        "RandomDeckRulesTests.test_insufficient_collection_is_signalled_and_generates_nothing",
+        "RandomDeckRulesTests.test_generated_deck_is_ready_for_exit",
+        "RandomDeckRulesTests.test_building_the_deck_does_not_change_the_collection",
+        "RandomDeckRulesTests.test_default_rng_varies_between_calls",
+        "RandomDeckPersistenceTests.test_set_random_deck_persists_and_keeps_collection",
+        "RandomDeckPersistenceTests.test_insufficient_collection_preserves_the_current_deck",
+        "BackpackRandomDeckButtonTests.test_buttons_sit_side_by_side_below_panel_and_above_footer",
+        "BackpackRandomDeckButtonTests.test_empty_deck_generates_without_confirmation",
+        "BackpackRandomDeckButtonTests.test_manual_removal_to_zero_then_random_deck_still_works",
+        "BackpackRandomDeckButtonTests.test_non_empty_deck_asks_confirmation_before_replacing",
+        "BackpackRandomDeckButtonTests.test_button_is_disabled_when_collection_cannot_reach_the_minimum",
+        "BackpackRandomDeckButtonTests.test_each_empty_deck_generation_can_produce_a_different_deck",
+        "RandomDeckWithoutPygameTests.test_random_deck_rules_import_without_pygame"
+      ]
+    },
+    {
+      "file": "tests/test_roguelite.py",
+      "cases": [
+        "RogueliteTests.test_exact_three_materials_upgrade_one_equipped_copy",
+        "RogueliteTests.test_duplicate_upgrade_and_short_materials_never_charge",
+        "RogueliteTests.test_io_failure_rolls_back_level_material_gold_and_counter",
+        "RogueliteTests.test_limit_survives_unequip_and_reload",
+        "RogueliteTests.test_material_purchase_repeated_and_cap",
+        "RogueliteTests.test_death_new_run_preserves_profile_and_resets_temporaries",
+        "RogueliteTests.test_stale_checkpoint_cannot_resurrect_confirmed_death",
+        "RogueliteTests.test_permanent_is_between_runs_and_slot_isolation",
+        "RogueliteTests.test_snapshot_json_preserves_hand_and_two_action_plan",
+        "RogueliteTests.test_level_two_observable_damage",
+        "RogueliteTests.test_v12_migrates_without_inventing_materials_and_keeps_backup",
+        "RogueliteTests.test_future_save_rejected_without_overwrite",
+        "RogueliteTests.test_material_reward_and_gold_are_applied_once_after_reload",
+        "RogueliteTests.test_boss_fragments_persist_before_choice_and_do_not_repeat",
+        "RogueliteTests.test_old_document_cannot_replace_a_new_run",
+        "RogueliteTests.test_snapshot_roundtrip_keeps_phase_transition_player_state",
+        "RogueliteTests.test_level_two_hybrids_keep_status_limits_and_individual_benefits",
+        "RogueliteTests.test_snapshot_blocks_shop_and_deck_changes"
+      ]
+    },
+    {
+      "file": "tests/test_route_boss_and_backpack.py",
+      "cases": [
+        "RouteBossDeckTests.test_new_save_starts_with_zero_road_encounters",
+        "RouteBossDeckTests.test_two_road_encounters_then_point_fight_unlock",
+        "RouteBossDeckTests.test_point_cannot_unlock_before_road",
+        "RouteBossDeckTests.test_road_cannot_be_counted_three_times",
+        "RouteBossDeckTests.test_legacy_save_preserves_open_point_battles",
+        "RouteBossDeckTests.test_old_three_win_counter_is_migrated_without_relocking_the_boss",
+        "RouteBossDeckTests.test_fortress_boss_and_other_road_enemies",
+        "RouteBossDeckTests.test_boss_gets_two_actions_and_spins_every_eight_actions",
+        "RouteBossDeckTests.test_normal_enemy_one_action",
+        "RouteBossDeckTests.test_initial_deck_three_copies_per_starter",
+        "RouteBossDeckTests.test_purchase_collect_then_add_three_copies",
+        "RouteBossDeckTests.test_deck_removal_can_empty_the_draft_without_persisting_it",
+        "RouteBossDeckTests.test_bad_encounter_counter_rejected"
+      ]
+    },
+    {
+      "file": "tests/test_save_integration.py",
+      "cases": [
+        "TestSaveIntegration.test_three_fixed_slot_identifiers",
+        "TestSaveIntegration.test_two_slots_persist_distinct_combat_progress",
+        "TestSaveIntegration.test_next_floor_emits_checkpoint",
+        "TestSaveIntegration.test_repeated_reload_does_not_inflate_turn_counter",
+        "TestSaveIntegration.test_invalid_json_and_invalid_metadata_are_detected",
+        "TestSaveIntegration.test_save_id_cannot_escape_directory"
+      ]
+    },
+    {
+      "file": "tests/test_save_system.py",
+      "cases": [
+        "TestSaveSystem.test_new_save_has_initial_progress",
+        "TestSaveSystem.test_create_save_does_not_overwrite_existing",
+        "TestSaveSystem.test_empty_name_is_rejected",
+        "TestSaveSystem.test_load_missing_save_raises",
+        "TestSaveSystem.test_progress_round_trip",
+        "TestSaveSystem.test_each_save_keeps_its_own_progress",
+        "TestSaveSystem.test_unlock_territory_does_not_duplicate",
+        "TestSaveSystem.test_update_and_apply_with_player_and_deck",
+        "TestSaveSystem.test_unknown_cards_are_ignored_when_applying",
+        "TestSaveSystem.test_list_saves",
+        "TestSaveSystem.test_corrupted_file_is_reported_and_skipped_in_list",
+        "TestSaveSystem.test_missing_fields_are_filled_on_load",
+        "TestSaveSystem.test_delete_save"
+      ]
+    },
+    {
+      "file": "tests/test_shop_and_combat_reset.py",
+      "cases": [
+        "ShopAndCombatTests.test_heal_persists_without_increasing_maximum",
+        "ShopAndCombatTests.test_full_hp_refuses_without_charge",
+        "ShopAndCombatTests.test_insufficient_funds_does_not_charge",
+        "ShopAndCombatTests.test_repeated_heals_stop_at_full_hp_across_reloads",
+        "ShopAndCombatTests.test_healing_does_not_change_other_slots",
+        "ShopAndCombatTests.test_card_purchase_adds_to_collection_and_persists",
+        "ShopAndCombatTests.test_card_purchase_insufficient_and_unregistered",
+        "ShopAndCombatTests.test_failed_save_rolls_back_card_and_heal",
+        "ShopAndCombatTests.test_old_heals_do_not_consume_upgrade_limit",
+        "ShopAndCombatTests.test_corrupt_purchase_counter_rejected",
+        "ShopAndCombatTests.test_heal_clamps_to_permanent_maximum_without_spending_fragments",
+        "ShopAndCombatTests.test_legacy_health_bonus_preserved_only_until_new_run",
+        "ShopAndCombatTests.test_heal_cannot_resurrect_or_change_in_progress_combat",
+        "ShopAndCombatTests.test_prices_increase_and_fourth_purchase_is_blocked_when_injured",
+        "ShopAndCombatTests.test_second_purchase_requires_45_and_does_not_consume_on_failure",
+        "ShopAndCombatTests.test_failed_write_preserves_next_price_and_counter",
+        "ShopAndCombatTests.test_new_run_resets_counter_and_profile_survives",
+        "ShopAndCombatTests.test_corrupt_heal_counter_is_rejected",
+        "ShopAndCombatTests.test_v13_migration_starts_counter_zero_and_preserves_original",
+        "ShopAndCombatTests.test_partial_heal_consumes_one_purchase_but_full_hp_does_not",
+        "ShopAndCombatTests.test_new_fight_resets_energy_hand_growth_and_strength",
+        "ShopAndCombatTests.test_loading_legacy_progress_starts_at_fight_baseline"
+      ]
+    },
+    {
+      "file": "tests/test_swamp_boss.py",
+      "cases": [
+        "SwampBossTests.test_last_missing_boss_is_assigned_to_swamp_only",
+        "SwampBossTests.test_crossed_guard_adds_shield_without_attacking",
+        "SwampBossTests.test_claws_apply_bleed_that_triggers_once_per_turn",
+        "SwampBossTests.test_ultimate_leaps_toward_player_and_closes_on_ready",
+        "SwampBossTests.test_real_guard_animation_uses_all_twelve_frames"
+      ]
+    },
+    {
+      "file": "tests/test_tactical_cards.py",
+      "cases": [
+        "TacticalCardTests.test_only_new_catalog_in_rewards_shop_and_starter",
+        "TacticalCardTests.test_every_card_consumes_its_cost_and_has_a_valid_effect",
+        "TacticalCardTests.test_attacks_match_printed_damage_and_darts_total_ten",
+        "TacticalCardTests.test_fire_stacks_and_burns_shield_while_poison_bypasses_it",
+        "TacticalCardTests.test_fire_and_burn_share_one_audio_event_per_tick",
+        "TacticalCardTests.test_poison_ticks_once_after_all_boss_actions_and_kill_rewards_once",
+        "TacticalCardTests.test_bleeding_uses_all_stacks_once_per_turn_for_a_boss",
+        "TacticalCardTests.test_player_bleed_skips_defense_and_triggers_on_shield_damage",
+        "TacticalCardTests.test_adaga_bleed_triggers_when_enemy_only_hits_player_shield",
+        "TacticalCardTests.test_totem_blocks_the_hit_but_the_attacker_still_bleeds",
+        "TacticalCardTests.test_dagger_does_not_apply_or_refresh_bleed_without_hp_damage",
+        "TacticalCardTests.test_enemy_attack_statuses_require_hp_damage",
+        "TacticalCardTests.test_lethal_bleed_happens_after_player_action_and_clears_battle_stacks",
+        "TacticalCardTests.test_only_damaging_ultimate_triggers_bleed",
+        "TacticalCardTests.test_shield_survives_two_full_rounds_not_two_boss_actions",
+        "TacticalCardTests.test_shield_layers_expire_independently_and_oldest_absorbs_first",
+        "TacticalCardTests.test_enemy_shield_protects_two_player_turns",
+        "TacticalCardTests.test_totem_blocks_whole_multi_hit_attack_but_not_poison",
+        "TacticalCardTests.test_totem_prevents_on_hit_negatives_from_blocked_attacks",
+        "TacticalCardTests.test_cleanse_preserves_buffs_and_dispel_preserves_debuffs",
+        "TacticalCardTests.test_aura_fragility_and_delayed_energy",
+        "TacticalCardTests.test_surge_forecast_handles_partial_gain_and_existing_bonus",
+        "TacticalCardTests.test_updated_mask_and_charge_at_both_levels",
+        "TacticalCardTests.test_charge_removes_quarter_of_remaining_shield_after_damage",
+        "TacticalCardTests.test_charge_does_not_pierce_or_break_through_totem",
+        "TacticalCardTests.test_charge_preserves_remaining_shield_layer_durations",
+        "TacticalCardTests.test_poison_death_on_player_end_prevents_enemy_acting",
+        "TacticalCardTests.test_new_fight_clears_temporary_effects_and_ultimate_charge",
+        "TacticalCardTests.test_legacy_collection_and_slots_migrate_without_changing_ultimates",
+        "TacticalCardTests.test_all_art_and_animation_frames_exist_with_alpha",
+        "TacticalCardTests.test_ranged_projectiles_travel_right_and_only_flash_on_arrival"
+      ]
+    },
+    {
+      "file": "tests/test_territory_map.py",
+      "cases": [
+        "TestTerritoryMap.test_seven_distinct_territories_and_levels",
+        "TestTerritoryMap.test_map_titles_match_boss_names_without_changing_combat_keys",
+        "TestTerritoryMap.test_new_save_only_first_is_open",
+        "TestTerritoryMap.test_locked_stage_cannot_be_completed",
+        "TestTerritoryMap.test_progresses_one_stage_at_a_time_and_replays",
+        "TestTerritoryMap.test_slots_are_independent_across_map_progress",
+        "TestTerritoryMap.test_legacy_save_migration_infers_previous_wins",
+        "TestTerritoryMap.test_legacy_checkpoint_without_unlocked_field_recovers_map",
+        "TestTerritoryMap.test_corrupt_completed_list_is_rejected",
+        "TestTerritoryMap.test_map_mode_reward_triggers_phase_complete_not_next_level",
+        "TestTerritoryMap.test_skip_reward_and_legacy_flow",
+        "TestTerritoryMap.test_record_victory_collects_coins_and_persists_all_rewards",
+        "TestTerritoryMap.test_cannot_record_victory_before_reward",
+        "TestTerritoryMap.test_last_territory_completion_has_no_phantom_eighth_stage",
+        "TestTerritoryMap.test_replay_completed_stage_retains_highest_available_stage",
+        "TestTerritoryMap.test_selected_stage_does_not_overwrite_campaign_checkpoint"
+      ]
+    },
+    {
+      "file": "tests/test_test_save.py",
+      "cases": [
+        "TestLaboratorySave.test_creates_extra_save_without_overwriting_any_normal_slot",
+        "TestLaboratorySave.test_unlocks_every_encounter_card_and_ultimate",
+        "TestLaboratorySave.test_invulnerability_includes_all_damage_and_preserves_shield_consumption",
+        "TestLaboratorySave.test_normal_save_and_same_display_name_do_not_enable_invulnerability",
+        "TestLaboratorySave.test_equipped_deck_and_ultimate_are_preserved_when_reopening_laboratory",
+        "TestLaboratorySave.test_never_overwrites_non_test_file_with_reserved_name",
+        "TestLaboratorySave.test_ui_keyboard_opens_lab_directly_on_map"
+      ]
+    },
+    {
+      "file": "tests/test_text_wrap.py",
+      "cases": [
+        "WrapTextTests.test_short_text_stays_on_one_line",
+        "WrapTextTests.test_long_text_never_exceeds_width",
+        "WrapTextTests.test_word_wider_than_box_is_split",
+        "WrapTextTests.test_explicit_newlines_are_kept",
+        "WrapTextTests.test_empty_text",
+        "WrapTextTests.test_truncate_text_fits_width"
+      ]
+    },
+    {
+      "file": "tests/test_tutorial_save_flow.py",
+      "cases": [
+        "TutorialSaveTests.test_new_save_starts_with_tutorial_pending",
+        "TutorialSaveTests.test_old_save_without_flag_bypasses_tutorial",
+        "TutorialSaveTests.test_flag_persists_and_invalid_type_is_rejected",
+        "TutorialSaveTests.test_cemetery_discard_requires_one_energy_without_spending_on_failure",
+        "TutorialSaveTests.test_cemetery_swap_remains_free_once_per_turn",
+        "TutorialSaveTests.test_discard_does_not_replenish_hand_automatically"
+      ]
+    },
+    {
+      "file": "tests/test_tutorial_scene.py",
+      "cases": [
+        "TestTutorialOverlay.test_initial_state",
+        "TestTutorialOverlay.test_advance_and_fluid_transition",
+        "TestTutorialOverlay.test_skip_finishes_overlay",
+        "TestTutorialOverlay.test_screen_click_advances",
+        "TestTutorialOverlay.test_draw_helpers_do_not_crash",
+        "TestTutorialSceneIntegration.test_practice_tip_only_appears_over_review_button",
+        "TestTutorialSceneIntegration.test_clicking_review_button_reopens_guide",
+        "TestTutorialSceneIntegration.test_save_on_exit_keeps_initial_deck_unchanged",
+        "TestTutorialSceneIntegration.test_floating_bubbles_positioned_near_targets",
+        "TestTutorialSceneIntegration.test_bubble_text_stays_inside_bubble",
+        "TestTutorialSceneIntegration.test_bubble_with_bottom_arrow_grows_upwards",
+        "TestTutorialSceneIntegration.test_tutorial_required_elements_covered_in_steps",
+        "TestTutorialSceneIntegration.test_tutorial_enemy_setup",
+        "TestTutorialSceneIntegration.test_tutorial_hand_setup",
+        "TestTutorialSceneIntegration.test_overlay_navigation_via_screen_click",
+        "TestTutorialSceneIntegration.test_tutorial_cannot_complete_before_victory",
+        "TestTutorialSceneIntegration.test_tutorial_completion_is_once_only",
+        "TestTutorialSceneIntegration.test_victory_and_completion_flow",
+        "TestSaveSelectionRouting.test_empty_slot_routes_to_intro_then_tutorial",
+        "TestSaveSelectionRouting.test_existing_save_without_tutorial_flag_does_not_restart_training",
+        "TestSaveSelectionRouting.test_unfinished_tutorial_routes_back_to_training",
+        "TestSaveSelectionRouting.test_completed_save_routes_to_map"
+      ]
+    },
+    {
+      "file": "tests/test_ultimate_animations.py",
+      "cases": [
+        "UltimateAnimationTests.test_every_ultimate_has_twelve_cast_poses_and_twelve_independent_alpha_effects",
+        "UltimateAnimationTests.test_cast_poses_stay_at_home_and_finish_in_the_idle_state",
+        "UltimateAnimationTests.test_layers_render_inside_arena_and_restore_clip_then_disappear",
+        "UltimateAnimationTests.test_roar_flies_right_and_flash_waits_for_impact",
+        "UltimateAnimationTests.test_real_scene_delays_visual_hp_and_text_until_roar_impact",
+        "UltimateAnimationTests.test_self_cast_feedback_appears_at_peak_without_overlapping_text",
+        "UltimateAnimationTests.test_lethal_roar_keeps_victory_effects_until_hit_and_cast_ends"
+      ]
+    },
+    {
+      "file": "tests/test_ultimate_cards_lv2.py",
+      "cases": [
+        "UltimateCardTemplateTests.test_all_three_match_lv2_geometry_and_have_transparent_exterior",
+        "UltimateCardTemplateTests.test_dynamic_cost_replaces_only_diamond_and_footer_without_moving_border",
+        "UltimateCompleteEffectsTests.test_mana_cleans_all_negative_states_and_keeps_benefits",
+        "UltimateCompleteEffectsTests.test_forcas_strength_outlasts_two_turn_shield",
+        "UltimateCompleteEffectsTests.test_rugido_destroys_shield_before_damage_and_registers_weakness",
+        "UltimateCompleteEffectsTests.test_each_ultimate_consumes_two_energy_once_and_cannot_repeat_without_charge"
+      ]
+    },
+    {
+      "file": "tests/test_ultimates.py",
+      "cases": [
+        "TestUltimates.test_default_ultimate_is_mana_ancestral",
+        "TestUltimates.test_mana_restores_energy_and_cleanses_without_drawing",
+        "TestUltimates.test_twin_axes_cost_prevents_two_hits_with_eight_energy",
+        "TestUltimates.test_forcas_ancestrais_grants_strength_and_block",
+        "TestUltimates.test_rugido_applies_weakness_for_three_full_enemy_turns",
+        "TestUltimates.test_insufficient_energy_preserves_charge_and_effects_for_all_specials",
+        "TestUltimates.test_incomplete_charge_or_wrong_turn_does_not_spend_energy",
+        "TestUltimateSaveMigration.test_new_save_contains_default_ultimate_fields",
+        "TestUltimateSaveMigration.test_legacy_save_receives_default_ultimate"
+      ]
+    },
+    {
+      "file": "tests/test_window_modes.py",
+      "cases": [
+        "TestWindowModes.test_render_is_full_hd_and_game_opens_in_720p_window",
+        "TestWindowModes.test_legacy_window_keeps_full_hd_render_and_maps_mouse",
+        "TestWindowModes.test_f11_alternates_fullscreen_and_720p_window",
+        "TestWindowModes.test_resize_echo_after_leaving_fullscreen_does_not_restore_screen_size",
+        "TestWindowModes.test_leaving_fullscreen_always_returns_to_720p_window",
+        "TestWindowModes.test_f10_toggles_window_size_and_leaves_fullscreen"
+      ]
+    },
+    {
+      "file": "tests/test_zanzara.py",
+      "cases": [
+        "ZanzaraTests.test_final_boss_occupies_only_the_final_point",
+        "ZanzaraTests.test_no_old_amulet_and_current_skill_names",
+        "ZanzaraTests.test_passo_teleports_and_chains_use_target_effect",
+        "ZanzaraTests.test_special_uses_dedicated_poses_and_ends_with_final_victory",
+        "ZanzaraTests.test_map_resume_starts_zanzara_and_finishes_level_seven"
+      ]
+    },
+    {
+      "file": "tests/test_zanzara_difficulty.py",
+      "cases": [
+        "ZanzaraDifficultyTests.test_scythe_and_step_have_separate_status_roles",
+        "ZanzaraDifficultyTests.test_ultimate_applies_one_poison_stack",
+        "ZanzaraDifficultyTests.test_totem_blocks_damage_and_every_attached_debuff",
+        "ZanzaraDifficultyTests.test_scythe_and_ultimate_add_stacks_and_refresh_duration",
+        "ZanzaraDifficultyTests.test_intents_show_both_scythe_debuffs",
+        "ZanzaraDifficultyTests.test_legacy_single_status_actions_still_work"
+      ]
+    },
+    {
+      "file": "tests/test_zanzara_final.py",
+      "cases": [
+        "FinalKitTests.test_final_kit_names_and_no_old_healing_buff",
+        "FinalKitTests.test_chains_damage_vulnerability_and_totem_protection",
+        "FinalKitTests.test_second_intent_accounts_for_chains_but_not_if_totem_protects",
+        "FinalKitTests.test_intent_describes_chains_and_new_skill_icons",
+        "FinalVisualTests.test_final_dungeon_is_specific_to_level_seven",
+        "FinalVisualTests.test_damage_and_defeat_strips_have_eight_complete_frames",
+        "FinalVisualTests.test_hit_reaction_and_defeat_are_different_from_idle",
+        "FinalVisualTests.test_defeat_starts_only_when_player_attack_reaches_contact",
+        "FinalVisualTests.test_victory_waits_for_the_defeat_animation"
+      ]
+    },
+    {
+      "file": "tests/test_zanzara_main_integration.py",
+      "cases": [
+        "TestMergedZanzaraTotems.test_poison_totem_blocks_both_scythe_debuffs_and_retaliates",
+        "TestMergedZanzaraTotems.test_healing_totem_still_blocks_chains_vulnerability",
+        "TestMergedZanzaraTotems.test_unprotected_scythe_applies_only_one_bleed_stack"
+      ]
+    },
+    {
+      "file": "tests/test_zanzara_necromancer.py",
+      "cases": [
+        "NecromancerTests.test_dense_aura_is_drawn_behind_character",
+        "NecromancerTests.test_spectral_flames_cover_both_sides_from_feet_to_shoulders",
+        "NecromancerTests.test_rubra_style_aura_leaves_character_center_clear",
+        "NecromancerTests.test_aura_tracks_current_silhouette_and_has_no_body_inside",
+        "NecromancerTests.test_passo_has_backswing_release_and_contact",
+        "NecromancerTests.test_ultimate_uses_normal_pose_indices_not_a_larger_body",
+        "NecromancerTests.test_ultimate_renderer_keeps_normal_character_scale",
+        "NecromancerTests.test_player_anchor_ignores_transparent_canvas_padding",
+        "NecromancerTests.test_portal_is_centered_on_actual_opponent_feet",
+        "NecromancerTests.test_eight_native_frames_and_transparency",
+        "NecromancerTests.test_entity_renderer_draws_all_actions_and_suppresses_legacy_projectiles",
+        "NecromancerTests.test_new_windup_has_blade_behind_the_character",
+        "NecromancerTests.test_scythe_prepares_before_approaching_and_hits_at_contact",
+        "NecromancerTests.test_ferry_moves_continuously_from_summon_to_impact",
+        "NecromancerTests.test_contact_frame_and_return_home",
+        "NecromancerTests.test_damage_reaction_preserves_approved_idle_anchor_and_duration"
+      ]
+    }
+  ],
+  "modules": 79,
+  "methods": 753
+}

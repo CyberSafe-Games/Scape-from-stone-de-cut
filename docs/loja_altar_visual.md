@@ -1,5 +1,7 @@
 # Loja e altar ancestral
 
+> Referência vigente — auditoria de 23/11/2026. [Estado atual](estado_atual.md). Relatos de validações datadas abaixo representam somente aquela execução.
+
 Redesign local de 19/11/2026, baseado na main fe7284b.
 
 ## Composição
@@ -7,6 +9,8 @@ Redesign local de 19/11/2026, baseado na main fe7284b.
 A loja usa o Mercado Silencioso ilustrado, com mercador, bancada, lanternas e ruínas. Exibe quatro cartas por página, preços em ouro, estado de compra, preview central ampliado e feedback de aquisição e cura.
 
 O altar apresenta a coleção em páginas de cinco tipos, seleção das cópias individuais, comparação LV1 → LV2 calculada com `instance_card()`, materiais necessários e preço. As runas giram e a confirmação do upgrade produz brilho e partículas. Cópias já LV2 continuam selecionáveis para consulta.
+
+Cura até 20 HP atual por 30/45/60 ouro, três compras/run; vida cheia não cobra. Evolução individual custa três materiais e ouro, limite três/run; material custa 15, reserva nove. Preservar padding e artes LV1/LV2 com custo dinâmico único.
 
 As regras são executadas pelas transações existentes de `shop_system.py` e `roguelite.py`. O fluxo de preparação entre runs continua na mesma cena.
 

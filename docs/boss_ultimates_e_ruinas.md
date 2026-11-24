@@ -1,5 +1,7 @@
 # Ultimates dos chefes e Ruínas Ancestrais
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Os quatro minibosses territoriais existentes têm animações exclusivas,
 com **o design original dos personagens**: rosto, cabelo, roupa, proporções e
 armas vêm das próprias sprites já usadas nas lutas normais. Cada um tem quatro poses e quatro efeitos

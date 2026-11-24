@@ -1,5 +1,7 @@
 # Protagonista com oito frames
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Todas as 27 interações usam sequências completas de oito poses: repouso,
 dano, soco básico, vitória, as 20 cartas comuns e as três ultimates.
 O personagem mantém cabelo, penas, colar e roupas, com ombros estreitos,

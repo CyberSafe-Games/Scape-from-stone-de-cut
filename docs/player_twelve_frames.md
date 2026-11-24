@@ -1,5 +1,7 @@
 # Protagonista com doze frames
 
+> Referência vigente — auditoria de 23/11/2026. [Estado atual](estado_atual.md). Relatos de validações datadas abaixo representam somente aquela execução.
+
 Soco básico, vitória, vinte cartas e três ultimates usam doze poses. São 300
 sprites de corpo e 36 efeitos de ultimate. Repouso e reação ao dano usam oito
 poses em `assets/player/eight_frames`.

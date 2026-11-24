@@ -1,4 +1,6 @@
-﻿# Atualização da main na branch de áudio — 11/11/2026
+# Atualização da main na branch de áudio — 11/11/2026
+
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
 
 Origem: `origin/main` em `ae383f5`; destino: `feature/audio-enemies`. A main compartilhada não foi alterada. O trabalho local aprovado foi preservado no commit `0b84b84` antes da integração.
 

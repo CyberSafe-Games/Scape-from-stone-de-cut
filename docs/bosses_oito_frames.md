@@ -1,5 +1,7 @@
 # Bosses — oito quadros, cores e fluidez
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 ## Versão atual
 
 Os cinco bosses possuem kits completos de oito quadros. Álvaro e Tex contam

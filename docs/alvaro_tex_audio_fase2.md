@@ -1,5 +1,7 @@
 # Álvaro e Tex — Pequeno, fase 2
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Piloto derivado do repertório existente, sem novos downloads.
 Primeira fase e Guardião aprovados pelo jogador; segunda fase ainda aguarda escuta.
 

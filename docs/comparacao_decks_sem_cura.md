@@ -1,5 +1,7 @@
 # Comparação de decks sem cartas de cura
 
+> **Registro histórico — não é especificação vigente.** Valores, caminhos, comandos e resultados abaixo pertencem à etapa original. Não restaurar regras/arte antigas nem executar preparadores sobre kits atuais. Consulte o [estado atual](estado_atual.md).
+
 Teste automatizado, sem alterar regras do jogo ou saves reais. Referência LV1 e controle com até três LV2; 60 HP, energia inicial 2 e zero melhorias permanentes. A cura normal de 30% após chefes é preservada.
 
 **LV1 usa dez sementes por política; o controle LV2 usa cinco. Cada célula agrupa duas políticas do bot (conservadora/agressiva): 20 ou 10 casos, não sementes independentes adicionais.** Limite de 40 turnos por confronto; limite não é contado como morte.
@@ -281,7 +283,7 @@ O personagem reinicia com 60 HP em cada caso: essa tabela não mede desgaste ent
 
 ## Limites de interpretação
 
-- Defesa pura sem Ultimate ofensiva não tem via de dano nas regras atuais. `sem_via_de_dano` é uma impossibilidade estrutural dessa composição, não uma derrota simulada.
+- Defesa pura sem Ultimate ofensiva não tem via de dano nas regras da versão medida. `sem_via_de_dano` é uma impossibilidade estrutural dessa composição, não uma derrota simulada.
 - Com Rugido, um deck de defesa pode matar, mas o dano vem da Ultimate. Mana Ancestral não causa dano diretamente; Forças Ancestrais também precisaria de um ataque para aproveitar sua Força.
 - Vitórias com cura da loja demonstram ausência de carta de cura, não ausência de recuperação de vida.
 - Uma composição não representa toda a família de estratégias. Foram incluídas variações de dano direto e de ataques com Veneno/Sangramento para reduzir essa limitação.
