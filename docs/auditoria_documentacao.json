@@ -2,7 +2,7 @@
   "markdown": [
     {
       "file": "AGENTS.md",
-      "sha256": "da6bd1d928d853b1ed1c85ba2c8a36941a210ed68897532f7e96f9c151da6e11"
+      "sha256": "908340dfd2034c54ed5f76fd8398255fdeae8973268b2209cde40af141f5d932"
     },
     {
       "file": "assets/audio/README.md",
@@ -34,7 +34,7 @@
     },
     {
       "file": "docs/auditoria_documentacao_testes.md",
-      "sha256": "cd21a483df107c2b3db65a4dc25f0a8d1d90801c3aae341d08af91b8679c1ff6"
+      "sha256": "be97883c1c74fe084b1f90b5a269dcc1b27b57b6aa34b547e240b883485424b9"
     },
     {
       "file": "docs/bestiario_e_biomas.md",
@@ -110,7 +110,7 @@
     },
     {
       "file": "docs/estado_atual.md",
-      "sha256": "41673116f0c2287d9fa41721a0aa0d49622ac0a2a8d8e790adddff39b20abff4"
+      "sha256": "d6f6963166f8853b5b091228d9ad1569270d2028dbd660e6fba4e6452e997cac"
     },
     {
       "file": "docs/etapa3_audio_validacao_final.md",
@@ -162,7 +162,7 @@
     },
     {
       "file": "docs/loja_altar_visual.md",
-      "sha256": "65305ff808264c38abd8f7ccafd48ca2bcf5a3f9bb7e8266ca3d278ac95450af"
+      "sha256": "728279d1010df8b0b1f9c8ce5d5d769ecf9131fdccec33db1a9131601d30fd8f"
     },
     {
       "file": "docs/mapa_e_encontros.md",
@@ -170,7 +170,7 @@
     },
     {
       "file": "docs/mochila_e_ultimates.md",
-      "sha256": "5012e6efbd5b70c4c217235afeb1ff21cc8a9c40a67517b950dadf81996ed813"
+      "sha256": "bc38e0116445b6576a06c2f432de225a7186f0bfbb6d94bacba676a06ffa6c1c"
     },
     {
       "file": "docs/mochila_visual.md",
@@ -214,7 +214,7 @@
     },
     {
       "file": "docs/retratos_personagens.md",
-      "sha256": "e2c3058ae4ea2009c73654de29c500822a8d16179f4a9c9a41688582731a5869"
+      "sha256": "8453efce1cc866054ca3525b4b346f2cb9cf0c1e934d72d504138aaeafe607fa"
     },
     {
       "file": "docs/revisao_cartas_balanceamento.md",
@@ -234,7 +234,7 @@
     },
     {
       "file": "README.md",
-      "sha256": "544b610b4b4325619a3164faf7fee3b4d6af5896068aef99db73ff34daed56b4"
+      "sha256": "63ca6d5d8fd2d343219ba871027b8a70aad8daf7b7950e36895c3d627ce60816"
     }
   ],
   "broken_links": [],
@@ -242,6 +242,10 @@
     "files": [
       {
         "file": "tests/__init__.py",
+        "cases": []
+      },
+      {
+        "file": "tests/management_fixtures.py",
         "cases": []
       },
       {
@@ -553,7 +557,11 @@
         "cases": [
           "CharacterPortraitTests.test_all_supplied_portraits_load_in_the_hud_and_are_cached",
           "CharacterPortraitTests.test_phase_two_has_its_own_crop_and_missing_portraits_keep_the_sprite_fallback",
-          "CharacterPortraitTests.test_zanzara_keeps_approved_face_inside_protagonist_frame"
+          "CharacterPortraitTests.test_zanzara_keeps_approved_face_inside_protagonist_frame",
+          "CharacterPortraitTests.test_every_common_uses_pixel_identical_protagonist_frame_without_old_overlay",
+          "CharacterPortraitTests.test_common_registries_use_real_portrait_files_without_sprite_fallback",
+          "CharacterPortraitTests.test_contain_composition_keeps_all_four_corners_for_wide_tall_and_square_art",
+          "CharacterPortraitTests.test_slime_and_monkey_have_dedicated_unframed_portraits"
         ]
       },
       {
@@ -855,6 +863,16 @@
         ]
       },
       {
+        "file": "tests/test_health_bar.py",
+        "cases": [
+          "HealthBarTests.test_full_hp_fills_every_opaque_window_pixel_including_both_ends",
+          "HealthBarTests.test_fill_never_changes_eagle_heads_or_gold_outside_the_window",
+          "HealthBarTests.test_partial_hp_uses_proportional_cutoff_and_zero_has_no_red",
+          "HealthBarTests.test_player_and_enemy_have_identical_full_health_channels",
+          "HealthBarTests.test_limits_and_missing_art_keep_a_safe_non_negative_fill"
+        ]
+      },
+      {
         "file": "tests/test_jan_pietro_stance.py",
         "cases": [
           "JanPietroStanceTests.test_all_48_frames_have_the_same_boot_anchor",
@@ -877,6 +895,22 @@
           "TestLifeAfterCombat.test_life_is_saved_and_loaded_for_next_combat",
           "TestLifeAfterCombat.test_legacy_save_without_life_defaults_to_full",
           "TestTutorialRestoresLife.test_completing_tutorial_saves_full_life_for_the_campaign"
+        ]
+      },
+      {
+        "file": "tests/test_management_guides.py",
+        "cases": [
+          "ManagementGuideTests.test_first_visit_is_independent_per_screen_and_manual_help_reopens",
+          "ManagementGuideTests.test_flags_survive_new_run_and_remain_isolated_by_slot",
+          "ManagementGuideTests.test_migration_from_v14_keeps_inventory_profile_and_flags",
+          "ManagementGuideTests.test_serialized_profile_flags_reload_and_reject_non_booleans",
+          "ManagementGuideTests.test_guide_consumes_underlying_buy_equip_upgrade_and_wheel_events",
+          "ManagementGuideTests.test_failed_save_rolls_back_and_keeps_guide_open_for_retry",
+          "ManagementGuideTests.test_scaled_mouse_navigation_finishes_without_buying",
+          "ManagementGuideTests.test_workshop_preparation_does_not_show_upgrade_guide",
+          "ManagementGuideTests.test_all_steps_fit_canvas_and_help_avoids_options_and_navigation",
+          "ManagementGuideTests.test_hud_panels_are_mirrored_and_menu_is_centered_without_overlap",
+          "ManagementGuideTests.test_nine_slice_preserves_colored_corners_for_every_slot_proportion"
         ]
       },
       {
@@ -972,6 +1006,19 @@
           "PauseLogicTests.test_battle_menu_and_escape_open_pause_modal",
           "PauseLogicTests.test_pause_modal_buttons_follow_layout_and_receive_clicks",
           "PreferencesPygameIndependenceTests.test_preferences_module_does_not_import_pygame"
+        ]
+      },
+      {
+        "file": "tests/test_options_sanctuary.py",
+        "cases": [
+          "OptionsSanctuaryTests.test_asset_loads_and_all_four_tabs_render_without_mutating_preferences",
+          "OptionsSanctuaryTests.test_scaled_drag_clamps_and_persists_on_release",
+          "OptionsSanctuaryTests.test_switching_tab_persists_an_active_slider",
+          "OptionsSanctuaryTests.test_return_to_combat_pops_options_and_pause_without_recreating_battle",
+          "OptionsSanctuaryTests.test_review_library_does_not_change_campaign_or_mark_guides_seen",
+          "OptionsSanctuaryTests.test_exit_confirmation_preserves_battle_when_save_fails_then_exits_safely",
+          "OptionsSanctuaryTests.test_uncollected_victory_cannot_be_bypassed_by_exit",
+          "OptionsSanctuaryTests.test_preference_failure_is_reported_without_discarding_session_value"
         ]
       },
       {
@@ -1393,7 +1440,7 @@
         ]
       }
     ],
-    "modules": 79,
-    "methods": 753
+    "modules": 82,
+    "methods": 781
   }
 }

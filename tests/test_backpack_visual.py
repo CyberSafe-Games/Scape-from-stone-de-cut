@@ -1,3 +1,4 @@
+from tests.management_fixtures import guides_seen
 """Integração da mesa de expedição com cartas reais, mouse e saves temporários."""
 import os
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
@@ -41,7 +42,7 @@ class BackpackVisualTests(unittest.TestCase):
         self.window.handle_window_event.return_value = False
         self.window.get_virtual_mouse_pos.return_value = (-1, -1)
         self.window.map_to_virtual.side_effect = lambda point: point
-        self.scene = BackpackScene(MagicMock(), self.window, self.assets, self.saves, self.data)
+        self.scene = BackpackScene(MagicMock(), self.window, self.assets, self.saves, guides_seen(self.data))
         self.canvas = pygame.Surface((1920, 1080))
 
     def click(self, rect):

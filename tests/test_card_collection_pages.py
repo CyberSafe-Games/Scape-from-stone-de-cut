@@ -1,3 +1,4 @@
+from tests.management_fixtures import guides_seen
 """A coleção exibe o catálogo e só libera seleção e compra de cartas disponíveis."""
 import os
 import unittest
@@ -31,7 +32,7 @@ class CardCollectionPageTests(unittest.TestCase):
         scene.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=rect.center))
 
     def test_buy_cards_on_all_pages_and_no_offscreen_buttons(self):
-        scene = ShopScene(MagicMock(), self.window, MagicMock(), self.saves, self.data)
+        scene = ShopScene(MagicMock(), self.window, MagicMock(), self.saves, guides_seen(self.data))
         found = set()
         while True:
             for name, rect in scene.offer_rects.items():
@@ -48,7 +49,7 @@ class CardCollectionPageTests(unittest.TestCase):
 
     def test_last_page_card_adds_copies_and_persists_slots(self):
         self.data['progresso']['cartas_colecao'] = list(CARD_BY_NAME)
-        scene = BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, self.data)
+        scene = BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, guides_seen(self.data))
         found = set(scene.cards)
         for _ in range(scene.page_count - 1):
             self.click(scene, scene.next_page_rect)
@@ -63,7 +64,7 @@ class CardCollectionPageTests(unittest.TestCase):
 
     def test_only_available_cards_can_be_added_to_the_deck(self):
         self.data['progresso']['cartas_colecao'] = list(CARD_BY_NAME)
-        scene = BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, self.data)
+        scene = BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, guides_seen(self.data))
         selected = set()
         for page in range(scene.page_count):
             scene._set_page(page)
@@ -104,7 +105,7 @@ class CardCollectionPageTests(unittest.TestCase):
         self.assertEqual(progress['moedas'], coins)
         self.saves.save.assert_not_called()
 
-        scene = BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, self.data)
+        scene = BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, guides_seen(self.data))
         self.assertIn(name, progress['cartas_colecao'])
         self.assertNotIn(name, progress['cartas'])
         self.assertNotIn(name, scene.draft_slots)

@@ -4,9 +4,9 @@ import pygame
 from src.config.colors import WHITE, GOLD
 from src.config.boss_names import boss_display_name
 from src.ui.helpers import draw_text
+from src.ui.frames import gold_outline, horizontal_frame
 from src.ui.status_badges import draw_status_badges
-from src.systems.normal_enemy_catalog import NORMAL_PORTRAITS
-from src.systems.character_portraits import FRAMED_PORTRAITS
+from src.config.combat_header import HEALTH_FRAME_REFERENCE, HEALTH_WINDOW_POLYGON
 
 
 class BattleHUD:
@@ -21,44 +21,21 @@ class BattleHUD:
             return False
         cache_key = (key, rect.size)
         if cache_key not in self._scaled:
-            self._scaled[cache_key] = pygame.transform.smoothscale(image, rect.size)
+            self._scaled[cache_key] = (horizontal_frame(image, rect.size) if key == 'hud_health'
+                                       else pygame.transform.smoothscale(image, rect.size))
         surface.blit(self._scaled[cache_key], rect)
         return True
 
     def portrait(self, surface, rect, name, player=False):
         portrait_name = 'jaum manel' if player else name.strip().lower()
-        if portrait_name in FRAMED_PORTRAITS:
-            portrait = self.assets.get_character_portrait(portrait_name, rect.size)
-            if portrait is not None:
-                self._portraits[(portrait_name, rect.size)] = portrait
-                surface.blit(portrait, rect)
-                return
-        inner = pygame.Rect(rect.x + round(rect.width * 0.17),
-                            rect.y + round(rect.height * 0.18),
-                            round(rect.width * 0.66), round(rect.height * 0.64))
-        pygame.draw.rect(surface, (9, 14, 15), inner)
-        key = ('player' if player else name.lower(), inner.size)
-        portrait = None if player else self.assets.get_character_portrait(name, inner.size)
+        portrait = self.assets.get_character_portrait(portrait_name, rect.size)
         if portrait is not None:
-            self._portraits[key] = portrait
-        if key not in self._portraits:
-            sprites = (self.assets.get_player_sprite_group('idle') if player
-                       else self.assets.get_enemy_sprite_group(name, 'idle'))
-            source = sprites[0] if sprites else self.assets.get_fallback_sprite()
-            bounds = source.get_bounding_rect(min_alpha=40)
-            if bounds.width and bounds.height:
-                side = max(1, round(bounds.height * 0.48))
-                head = pygame.Rect(bounds.centerx - side // 2, bounds.top, side, side)
-                if not player and name.lower() in NORMAL_PORTRAITS:
-                    x, y, w, h = NORMAL_PORTRAITS[name.lower()]
-                    head = pygame.Rect(bounds.x+round(x*bounds.width), bounds.y+round(y*bounds.height),
-                                       round(w*bounds.width), round(h*bounds.height))
-                head = head.clip(source.get_rect())
-                self._portraits[key] = pygame.transform.smoothscale(source.subsurface(head), inner.size)
-        if key in self._portraits:
-            surface.blit(self._portraits[key], inner)
-        if not self.art(surface, 'hud_portrait', rect):
-            pygame.draw.rect(surface, (153, 119, 65), rect, 5)
+            self._portraits[(portrait_name, rect.size)] = portrait
+            surface.blit(portrait, rect)
+        else:
+            # Ausência do asset é visível, sem ressuscitar a moldura antiga.
+            pygame.draw.rect(surface, (9,14,15), rect)
+            gold_outline(surface, rect)
 
     def combatant(self, surface, rect, name, hp, maximum, stats, enemy=False, boss=False,
                   combatant=None, mouse=(0, 0)):
@@ -80,23 +57,10 @@ class BattleHUD:
             height = round(heading.get_height() * track.width / heading.get_width())
             heading = pygame.transform.smoothscale(heading, (track.width, height))
         surface.blit(heading, heading.get_rect(center=(track.centerx, rect.top + 23)))
-        if not self.art(surface, 'hud_health', track):
-            pygame.draw.rect(surface, (119, 92, 50), track, 3)
-        bar = pygame.Rect(track.x + round(track.width * 0.18), track.y + round(track.height * 0.30),
-                          round(track.width * 0.64), round(track.height * 0.34))
-        pygame.draw.rect(surface, (29, 12, 13), bar)
-        ratio = max(0, min(1, hp / max(1, maximum)))
-        filled = bar.copy()
-        filled.width = round(bar.width * ratio)
-        if filled.width:
-            pygame.draw.rect(surface, (137, 32, 30), filled)
-            pygame.draw.line(surface, (203, 77, 52), filled.topleft,
-                             (filled.right - 1, filled.top), 3)
-            pygame.draw.line(surface, (72, 16, 20), filled.bottomleft,
-                             (filled.right - 1, filled.bottom), 3)
+        bar = self.health_bar(surface, track, hp, maximum)
         health_label = '∞' if getattr(combatant, 'invulnerable', False) else f'{hp}/{maximum}'
         draw_text(surface, health_label, self.assets.small_font, WHITE,
-                  track.centerx, track.centery, center=True)
+                  bar.centerx, bar.centery, center=True)
         if combatant is not None:
             draw_status_badges(surface, combatant, track.x + 15, rect.top + 114,
                                track.width, self.assets, mouse)
@@ -104,3 +68,40 @@ class BattleHUD:
         for i, (label, value, color) in enumerate(stats[:2]):
             draw_text(surface, f'{label}: {value}', self.assets.small_font, color,
                       track.x + 20 + i * 168, rect.top + 114)
+
+    def health_window(self, size):
+        """Máscara do canal interno, preservando as cabeças e a borda dourada."""
+        key = ('health-window', tuple(size))
+        if key not in self._scaled:
+            source = self.assets.get_ui_image('hud_health')
+            if isinstance(source, pygame.Surface):
+                mask = pygame.Surface(source.get_size(), pygame.SRCALPHA)
+                w,h = HEALTH_FRAME_REFERENCE
+                points = [(round(x*source.get_width()/w),round(y*source.get_height()/h))
+                          for x,y in HEALTH_WINDOW_POLYGON]
+                pygame.draw.polygon(mask,(255,255,255,255),points)
+                self._scaled[key] = horizontal_frame(mask, size)
+            else:
+                mask = pygame.Surface(size, pygame.SRCALPHA)
+                pygame.draw.rect(mask,(255,255,255,255),mask.get_rect().inflate(-6,-6))
+                self._scaled[key] = mask
+        return self._scaled[key]
+
+    def health_bar(self, surface, track, hp, maximum):
+        """Preenche de 0 a 100% da abertura real; não usa insets percentuais."""
+        track = pygame.Rect(track)
+        if not self.art(surface,'hud_health',track):
+            gold_outline(surface,track)
+        mask = self.health_window(track.size)
+        bounds = mask.get_bounding_rect(min_alpha=128)
+        layer = pygame.Surface(track.size,pygame.SRCALPHA)
+        layer.fill((29,12,13,255))
+        fill = bounds.copy()
+        fill.width = round(bounds.width*max(0,min(1,hp/max(1,maximum))))
+        if fill.width:
+            pygame.draw.rect(layer,(137,32,30,255),fill)
+            pygame.draw.line(layer,(203,77,52,255),fill.topleft,(fill.right-1,fill.top),2)
+            pygame.draw.line(layer,(72,16,20,255),(fill.left,fill.bottom-1),(fill.right-1,fill.bottom-1),2)
+        layer.blit(mask,(0,0),special_flags=pygame.BLEND_RGBA_MULT)
+        surface.blit(layer,track)
+        return bounds.move(track.topleft)

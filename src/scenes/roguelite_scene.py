@@ -3,6 +3,7 @@ import re
 import pygame
 
 from src.scenes.base_scene import BaseScene
+from src.ui.management_guide import ManagementGuide
 from src.config.colors import WHITE, GOLD, GRAY
 from src.ui import dark_fantasy_theme as theme
 from src.ui.helpers import draw_text, wrap_text
@@ -63,6 +64,8 @@ class RogueliteScene(BaseScene):
         self.after_rect = pygame.Rect(1430, 328, 310, 458)
         self._select_first()
 
+        self.management_guide = None if preparation else ManagementGuide(self, "workshop")
+
     def _select_first(self):
         copies = self.save_data["progresso"]["copies"]
         if self.selected_copy_id not in {c["id"] for c in copies}:
@@ -114,6 +117,7 @@ class RogueliteScene(BaseScene):
             self._draw_preparation(surface)
             return
         self._draw_workshop(surface)
+        self.management_guide.draw(surface)
 
     def _draw_workshop(self, surface):
         self._select_first()
@@ -272,6 +276,8 @@ class RogueliteScene(BaseScene):
 
     def handle_event(self, event):
         if self.window_manager.handle_window_event(event):
+            return
+        if getattr(self, 'management_guide', None) and self.management_guide.handle_event(event):
             return
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             self.play_ui_sound("ui.click")

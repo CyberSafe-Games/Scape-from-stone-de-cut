@@ -95,7 +95,7 @@ Vida persiste; chefe vencido pela primeira vez recupera 30% da vida máxima.
 | 6 | Pico da Vigília | Carrasco da Vigília | Labrro, o Carrasco |
 | 7 | Santuário de Pedra | Zanzara | Zanzara, Líder do Clã Moskar |
 
-Saves v14: três slots e laboratório separado, perfil permanente, snapshot de
+Saves v15: três slots e laboratório separado, perfil permanente, snapshot de
 combate vivo e gravação atômica/revisão. Derrota encerra a run; nova jornada
 reinicia recursos temporários mantendo perfil/fragmentos. Epílogo já existe
 após Zanzara; laboratório permite revê-lo. Não restaurar o antigo checkpoint
@@ -155,3 +155,47 @@ coexistem com as reações de dano suavizadas. Os novos áudios de debuffs e
 contextos musicais da abertura/epílogo são preservados. Lost Time toca a partir
 da primeira fala de Octav no epílogo; fonte/licença no
 [guia de áudio](../assets/audio/README.md).
+
+## HUD e guias — 24/11/2026
+
+MENU fica centralizado entre painéis de vida simétricos; título da arena acima,
+retângulos canônicos em src/config/combat_header.py. Molduras externas usam
+ouro envelhecido/pedra e recorte em faixas para conservar cantos; as artes e
+bordas próprias de LV1, LV2 e Ultimate permanecem intactas.
+
+Guias da Loja, Mochila e Altar abrem uma vez por tela e slot. Spotlight segue
+os controles reais e botões Anterior/Próximo/Concluir não acionam a tela por
+baixo. ? AJUDA reabre. Fechar registra a dispensa; erro de gravação mantém o
+guia aberto e as flags anteriores. Esc após erro sai sem registrar.
+
+O schema v15 mantém tutoriais_gerenciamento no perfil permanente por meio de
+PROFILE_FIELDS. Migração aditiva inicializa shop/backpack/workshop em False,
+preserva dados e snapshots e mantém a conclusão entre runs. O modo preparação
+entre runs não abre o guia de aprimoramento. Preview usa saves temporários.
+
+## Configurações e retratos comuns — 24/11/2026
+
+Santuário dos Ajustes: arte em assets/ui/options/, painel ancestral, controles
+texturizados e hover rúnico. As quatro abas preservam preferências e gravação
+imediata. Retorno direto à batalha fecha Opções+pausa; Esc volta uma camada.
+A biblioteca de guias na aba Jogo é somente consulta e não modifica o slot.
+Sair para Menu pede confirmação, preserva saves e bloqueia recompensas pendentes.
+Os 14 comuns compartilham a composição framed/manel.png com padding e contain;
+fontes de rostos permanecem, e a antiga hud_portrait.png foi arquivada.
+
+## Revisão interna dos retratos comuns — 24/11/2026
+
+As 14 entradas COMMON_PORTRAIT_SPECS agora usam framed-contain, com recortes
+individuais e padding. Slime/Macaco têm artes de retrato dedicadas, sem recorte
+de sprite. O compositor cover de Zanzara e a moldura aprovada foram preservados.
+[Catálogo da auditoria de retratos](retratos_personagens.md).
+
+Goblin e Guarda Sombrio do gerador comum legado também têm artes dedicadas,
+com a mesma composição. Cobertura: 16 tipos comuns; chefes preservados.
+
+## Preenchimento de HP — 24/11/2026
+
+A barra usa toda a abertura interna da arte hud_health.png, com máscara própria
+transformada pela mesma escala em faixas da moldura. HP máximo vai de ponta a
+ponta do canal; HP parcial é proporcional e HP zero não tem vermelho. A máscara
+protege cabeças de águia/bordas e a composição é idêntica nos dois lados.

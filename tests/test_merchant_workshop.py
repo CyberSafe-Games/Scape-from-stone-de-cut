@@ -1,3 +1,4 @@
+from tests.management_fixtures import guides_seen
 """Regressões da seleção de cópias, transações e previews do altar ilustrado."""
 import os
 import tempfile
@@ -45,7 +46,7 @@ class MerchantWorkshopTests(unittest.TestCase):
         self.window.handle_window_event.return_value = False
         self.window.get_virtual_mouse_pos.return_value = (-1, -1)
         self.window.map_to_virtual.side_effect = lambda pos: (round(pos[0] * 1.5), round(pos[1] * 1.5))
-        self.scene = RogueliteScene(MagicMock(), self.window, self.assets, self.manager, self.data)
+        self.scene = RogueliteScene(MagicMock(), self.window, self.assets, self.manager, guides_seen(self.data))
 
     def click(self, rect):
         point = (round(rect.centerx / 1.5), round(rect.centery / 1.5))
@@ -115,7 +116,7 @@ class MerchantWorkshopTests(unittest.TestCase):
             instance_card(dict(copy, level=1)), instance_card(dict(copy, level=2)))))
 
     def test_empty_collection_and_all_shop_pages_draw(self):
-        shop = ShopScene(MagicMock(), self.window, self.assets, self.manager, self.data)
+        shop = ShopScene(MagicMock(), self.window, self.assets, self.manager, guides_seen(self.data))
         for page in range(shop.page_count):
             shop._set_page(page)
             for rect in shop.offer_rects.values():
@@ -135,7 +136,7 @@ class MerchantWorkshopTests(unittest.TestCase):
         p["copy_slots"] = [cid if any(c["id"] == cid for c in p["copies"]) else None for cid in p["copy_slots"]]
         p["deck_slots"] = [n if n != name else None for n in p["deck_slots"]]
         self.manager.save(self.data)
-        self.scene = ShopScene(MagicMock(), self.window, self.assets, self.manager, self.data)
+        self.scene = ShopScene(MagicMock(), self.window, self.assets, self.manager, guides_seen(self.data))
         from src.systems.shop_system import CARD_OFFERS
         self.scene._set_page(list(CARD_OFFERS).index(name) // self.scene.PAGE_SIZE)
         card_rect = self.scene.card_rects[name]
@@ -197,7 +198,7 @@ class MerchantWorkshopTests(unittest.TestCase):
         copy = next(c for c in p["copies"] if c["name"] == "Soco Simples")
         self.assertTrue(upgrade_copy(self.manager, self.data, copy["id"])[0])
         reloaded = self.manager.load_save(self.data["id"])
-        backpack = BackpackScene(MagicMock(), self.window, self.assets, self.manager, reloaded)
+        backpack = BackpackScene(MagicMock(), self.window, self.assets, self.manager, guides_seen(reloaded))
         draft = backpack._inventory_preview()
         slot = draft["copy_slots"].index(copy["id"])
         self.window.get_virtual_mouse_pos.return_value = backpack.slots[slot].center
@@ -208,12 +209,12 @@ class MerchantWorkshopTests(unittest.TestCase):
             self.assertTrue(requests)
             self.assertEqual(requests[-1].kwargs["cost"], 1)
             self.assertIn("9", requests[-1].kwargs["description"])
-        altar = RogueliteScene(MagicMock(), self.window, self.assets, self.manager, reloaded)
+        altar = RogueliteScene(MagicMock(), self.window, self.assets, self.manager, guides_seen(reloaded))
         altar.selected_copy_id = copy["id"]
         self.assertEqual(altar._selected_copy()["level"], 2)
         altar.draw(self.surface)
         self.window.get_virtual_mouse_pos.return_value = (-1, -1)
-        shop = ShopScene(MagicMock(), self.window, self.assets, self.manager, reloaded)
+        shop = ShopScene(MagicMock(), self.window, self.assets, self.manager, guides_seen(reloaded))
         with patch.object(self.assets, "get_card_image", wraps=self.assets.get_card_image) as image:
             shop.draw(self.surface)
             requests = [c for c in image.call_args_list if c.args[0] == "Soco Simples"]

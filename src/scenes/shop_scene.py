@@ -3,6 +3,7 @@ import pygame
 
 from src.config.colors import WHITE, GOLD
 from src.scenes.base_scene import BaseScene
+from src.ui.management_guide import ManagementGuide
 from src.systems.save_manager import player_max_hp
 from src.systems.shop_system import (
     CARD_OFFERS, CARD_PRICES, HEAL_AMOUNT, HEAL_PRICES, HEAL_LIMIT,
@@ -30,6 +31,8 @@ class ShopScene(BaseScene):
         self.page = 0
         self._set_page(0)
         self.message, self.message_timer, self.message_positive = "", 0, True
+
+        self.management_guide = ManagementGuide(self, "shop")
 
     def _set_page(self, page):
         self.page_count = max(1, (len(CARD_OFFERS) + self.PAGE_SIZE - 1) // self.PAGE_SIZE)
@@ -122,9 +125,12 @@ class ShopScene(BaseScene):
             self.visuals.panel(surface, (722, 170, 476, 678))
             self.visuals.card(surface, CARD_OFFERS[hovered_name], (748, 194, 424, 630))
         self.visuals.feedback(surface)
+        self.management_guide.draw(surface)
 
     def handle_event(self, event):
         if self.window_manager.handle_window_event(event):
+            return
+        if getattr(self, 'management_guide', None) and self.management_guide.handle_event(event):
             return
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             self.play_ui_sound("ui.click")

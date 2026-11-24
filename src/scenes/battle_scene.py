@@ -20,6 +20,8 @@ from src.ui.post_combat_reward_view import PostCombatRewardView
 from src.ui.coin_hud import CoinHUD
 from src.ui.energy_hud import EnergyHUD
 from src.ui.battle_hud import BattleHUD
+from src.config.combat_header import PLAYER_PANEL, ENEMY_PANEL, MENU_BUTTON, ARENA_TITLE
+from src.ui.merchant_workshop_view import text_in_rect
 # BEGIN BOSS DIALOGUE INTEGRATION
 from src.config.boss_dialogues import dialogue_for
 from src.ui.boss_dialogue_overlay import BossDialogueOverlay
@@ -176,7 +178,7 @@ class BattleScene(BaseScene):
         self.energy_hud = EnergyHUD(self.engine.player)
 
         self.enemy_turn_timer = 0
-        self.menu_button_rect = pygame.Rect(WIDTH - 162, 27, 129, 42)
+        self.menu_button_rect = pygame.Rect(MENU_BUTTON)
         self.end_turn_rect = pygame.Rect(WIDTH - 180, HEIGHT - 198, 150, 150)
         self.cemetery_button_rect = pygame.Rect(42, HEIGHT - 231, 138, 186)
         self.ultimate_button_rect = pygame.Rect(0, 0, 0, 0)
@@ -1201,7 +1203,7 @@ class BattleScene(BaseScene):
         subtitle=None,
         align="left",
     ):
-        if self.asset_manager.get_ui_image("hud_portrait") is not None:
+        if getattr(self, "battle_hud", None) is not None:
             self.battle_hud.combatant(
                 surface,
                 rect,
@@ -1397,16 +1399,9 @@ class BattleScene(BaseScene):
 
         player = self._visible_player()
         enemy = self._visible_enemy()
-        if getattr(player, "invulnerable", False) and not self.engine.message:
-            draw_text(
-                surface,
-                "LABORATÓRIO · VIDA INFINITA",
-                self.asset_manager.small_font,
-                GOLD,
-                WIDTH // 2,
-                44,
-                center=True,
-            )
+        arena_label = ('LABORATÓRIO · VIDA INFINITA' if getattr(player, 'invulnerable', False)
+                       else TERRITORIES[max(0, min(len(TERRITORIES)-1, self.engine.level-1))].title.upper())
+        text_in_rect(surface, arena_label, self.asset_manager.small_font, GOLD, ARENA_TITLE, True)
         enemy_color = WHITE
         if enemy.intent:
             if enemy.intent == "attack":
@@ -1430,8 +1425,8 @@ class BattleScene(BaseScene):
         if not enemy_stats:
             enemy_stats.append(("Status", "Pronto", GRAY))
 
-        player_rect = pygame.Rect(33, 30, 585, 138)
-        enemy_rect = pygame.Rect(1185, 30, 555, 138)
+        player_rect = pygame.Rect(PLAYER_PANEL)
+        enemy_rect = pygame.Rect(ENEMY_PANEL)
         self._draw_combatant_panel(
             surface,
             player_rect,

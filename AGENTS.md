@@ -31,7 +31,7 @@ rústica, pixel art, verde-musgo, couro/madeira/pedra e ouro envelhecido.
 - src/scenes e src/ui: eventos, composição e animações. BaseScene/SceneManager
   administram cenas e modais. Áudio via scene_manager.audio_manager.
 - src/settings.py e src/game.py são shims; não colocar regras novas neles.
-- Saves v14: perfil permanente separado de run; progresso é o alias em memória.
+- Saves v15: perfil permanente separado de run; progresso é o alias em memória.
   SaveManager valida/migra, usa revisão otimista e gravação atômica.
 - Mudanças de schema exigem SAVE_VERSION e migração compatível. Não incrementar
   a versão por mudança visual/documental.
@@ -257,3 +257,110 @@ Resume/recheck são incrementais; não chamá-los de nova suíte integral.
 - Game Over e vitória do tutorial aprovados no piloto. O brasão de derrota e o áudio original entram após o golpe fatal. O tutorial usa a fanfarra e o brasão padrão de vitória antes da tela de conclusão. No piloto único, use 6 para Game Over ou 7 e V para a vitória do tutorial.
 - Revisão em janela única com `testar_polimento_audio.bat polimento-final`. Teclas 1–8 alternam Rugido, Mangual, diálogos, abertura, epílogo, Game Over, tutorial e recompensa. Usa saves temporários. O teste rápido do piloto valida os disparos pelo mixer e as mudanças de contexto musical. A avaliação de timbre e volume é feita ouvindo o piloto.
 - Fechamento técnico de 24/11/2026 nesta branch: suíte completa isolada com 724 testes em 77 módulos, todos aprovados. O mixer dummy iniciou 84 efeitos e cinco trilhas, e a entrada real `main.py` abriu e desenhou o menu no teste automático. A conferência da campanha no jogo aberto é manual.
+
+## 20. HUD, molduras e guias de gerenciamento — 24/11/2026
+
+- Branch desta implementação: codex/hud-tutoriais-gerenciamento, partindo da
+  main 00b0078 (PRs #28, #29 e #30 integradas). Preservar áudio, derrotas,
+  altar de espólios, instalador e a regra de Sangramento de uma ativação.
+- Geometria da faixa de combate em src/config/combat_header.py: painéis de
+  vida espelhados; MENU central em (870,80,180,56); título da arena acima.
+  Desenho e eventos usam o mesmo retângulo e coordenadas virtuais.
+- Molduras em src/ui/frames.py: nine_slice para cantos proporcionais e faixas
+  centrais extensíveis; horizontal_frame conserva extremidades das barras de
+  vida; gold_outline compartilha paleta/espessura. MerchantWorkshopView leva
+  o mesmo padrão à Loja, Altar, Mochila e Recompensas. Painéis usam theme.panel.
+  Não transformar as bordas prateadas LV2 ou douradas de Ultimate em borda base;
+  não refazer rostos aprovados. Enquadrar cartas/retratos inteiros e manter padding.
+- Guias em src/ui/management_guide.py; regras puras em
+  src/systems/management_tutorials.py. Estados shop/backpack/workshop; cada
+  tela é independente. Passos consultam retângulos reais, sem deslocar controles.
+- O guia intercepta cliques/teclas enquanto ativo; nunca deixar o clique de
+  Próximo/Concluir chegar a compra, equipamento ou evolução. Opções de janela
+  continuam tratadas antes do guia. AJUDA reabre, Esc/× dispensam com gravação.
+- Saves v15: tutoriais_gerenciamento é um dicionário de booleanos por tela em
+  PROFILE_FIELDS, persistido no perfil; a migração inicializa faltantes como
+  False, preservando o restante do save. Não guardar essas flags apenas na run.
+  Gravar via transact e respeitar rollback/revisões. Falha mantém guia aberto
+  para repetir; Esc após falha permite sair sem gravar nem marcar como visto.
+- Testes de fluxos já conhecidos usam tests.management_fixtures.guides_seen;
+  primeira visita, cliques capturados, migração, rollback e persistência são
+  cobertos separadamente em test_management_guides. Não remover essas verificações.
+- Preview sem slots reais: python -B devtools/preview_management_guides.py
+  --smoke --output <pasta-de-QA>. Nenhum asset original foi substituído nesta
+  etapa; não mover recursos compartilhados para a pasta de descarte.
+
+## 21. Retratos comuns e Santuário dos Ajustes — 24/11/2026
+
+- Manter as alterações locais da etapa 20. Nenhum rebalanceamento foi feito.
+- BattleHUD.portrait sempre pede o retrato completo no tamanho do slot a
+  AssetManager.get_character_portrait. Não voltar ao antigo recorte interno
+  com hud_portrait por cima. O dispatcher da batalha usa BattleHUD diretamente,
+  sem condicionar a HUD à presença da moldura aposentada.
+- Os 14 comuns compõem a face dentro de framed/manel.png usando
+  _portrait_with_protagonist_frame, o mesmo compositor de Zanzara; preserve
+  bordas pixel-idênticas e escala contain. Viniurgo reaproveita só o conteúdo
+  do PNG antigo emoldurado; não desenhar duas bordas. Slime/Macaco e encontros
+  sem retrato próprio usavam um recorte do idle/fallback; ver a auditoria da seção 22.
+- As faces e PNGs aprovados de jogador/chefes permanecem intactos. Crops dos
+  comuns estão em character_portraits.py; preservar olhos/focinho no quadro.
+- assets/ui/hud_portrait.png foi arquivado em
+  _arquivos_antigos_para_deletar/assets/ui/hud_portrait.png e removido do mapa
+  de carregamento. Não comitar a pasta de descarte nem reintroduzir referências.
+- Nova arte em assets/ui/options/sanctuary_background.png, criada com image_gen
+  integrado; prompt em docs/opcoes_arte_prompt.txt e procedência/hash no
+  art_manifest.json da pasta. Não guardar referências apenas em .codex.
+- OptionsSanctuaryView é o renderizador de pedra/pergaminho, controles rúnicos
+  e ornamentos; reutiliza offer_frame.png. Opções, pausa e biblioteca de guias
+  compartilham o padrão. Preferências continuam em GamePreferences/AudioManager,
+  não duplicar armazenamento na UI nem alterar os padrões de áudio/vídeo.
+- MENU → pausa → Opções conserva a pilha modal. Botão Retornar ao Combate fecha
+  Opções e a pausa; Esc fecha uma camada. Não recriar a cena/engine ao retomar.
+- Rever Tutoriais na aba Jogo abre GuideLibraryScene em leitura: usa somente
+  títulos/textos dos passos. Não avaliar targets de spotlight nessa biblioteca,
+  marcar flags, liberar cartas, escrever slots ou avançar a batalha.
+- Sair para Menu confirma e usa save_on_exit da cena; impedir saída se houver
+  falha ou recompensa/transição pendente. Não pular o altar de espólios/epílogo.
+- Testes: opções/persistência já existentes, test_options_sanctuary e a auditoria
+  pixel da moldura dos comuns em test_character_portraits. Preview:
+  python -B devtools/preview_options_sanctuary.py --smoke --output <pasta-QA>.
+  Saves e preferências do preview são temporários.
+
+## 22. Enquadramento dos 14 retratos comuns — 24/11/2026
+
+- COMMON_PORTRAIT_SPECS em character_portraits.py cobre exatamente os 14 nomes
+  de BIOME_ENEMIES. Todas as entradas apontam para PNGs dedicados ao retrato,
+  sem depender de idle, pose, animação ou recorte automático da spritesheet.
+- Recortes individuais retiram a borda anterior e o vazio acima da cabeça,
+  preservando rosto/orelhas/cristas/focinho. Não voltar ao crop uniforme .28/.28.
+- Comuns usam framed-contain: o compositor recebe fit=contain, escala com min
+  em 88% da largura/90% da altura e centraliza com margem interna. Não usar
+  cover/max nos comuns nem esticar a imagem. A moldura aprovada não foi alterada.
+- framed-content/cover continua reservado aos retratos aprovados de Zanzara;
+  não alterar o enquadramento do jogador/chefes para corrigir os comuns.
+- Slime e Macaco Selvagem receberam arquivos em portraits/source/dedicated/,
+  gerados com image_gen integrado; prompts/hashes estão no art_manifest.json.
+  Esses dois monstros não devem voltar ao recorte do sprite de combate.
+- Os sprites e fontes existentes continuam ativos, portanto não arquivar
+  idle_*.png nem os onze PNGs de portraits/source/enemies/. Não havia retratos
+  dedicados antigos de Slime/Macaco a substituir.
+- Testes verificam cobertura dos 14 nomes, carregamento sem fallback de sprite,
+  moldura pixel-idêntica e preservação dos quatro cantos em artes largas,
+  altas e quadradas. Revisão visual inclui a HUD real em 1920 e 1280 pixels.
+
+- Cobertura completa dos comuns: 14 dos biomas + Goblin/Guarda Sombrio do pool
+  ENEMY_TYPES legado. Os dois adicionais ficam em LEGACY_COMMON_PORTRAIT_SPECS,
+  com novas artes dedicadas; não confundi-los com Jozephino/Vinimuth. Testes
+  conferem a união dos dois registros. Chefes/minibosses ficam preservados.
+
+## 23. Canal útil de HP — 24/11/2026
+
+- BattleHUD.health_bar usa a máscara de HEALTH_WINDOW_POLYGON, definida na
+  referência 733×188 de hud_health.png em src/config/combat_header.py.
+- Máscara e moldura passam pelo mesmo horizontal_frame: não restaurar margens
+  de 18%/largura de 64%, pois deixam espaços pretos antes das águias.
+- Preencher de 0 a 100% do bounding box da abertura, com clipping pela máscara;
+  nunca pintar sobre a ornamentação. Jogador/inimigo usam o mesmo método.
+  O texto de HP é centralizado na abertura, não no canvas decorativo inteiro.
+- test_health_bar cobre pontas no HP máximo, proporção parcial, zero, limites,
+  preservação dos ornamentos e simetria dos dois lados. A arte PNG não mudou.

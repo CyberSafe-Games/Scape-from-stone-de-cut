@@ -1,3 +1,4 @@
+from tests.management_fixtures import guides_seen
 import unittest
 from unittest.mock import MagicMock, call, patch
 
@@ -24,7 +25,7 @@ class TestShopAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         scene._set_page(1)
@@ -58,7 +59,7 @@ class TestShopAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         window_manager.map_to_virtual.return_value = scene.next_page_rect.center
@@ -90,7 +91,7 @@ class TestShopAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         window_manager.map_to_virtual.return_value = scene.back_button.center
@@ -127,7 +128,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         self.assertTrue(scene.cards)
@@ -168,7 +169,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         self.assertEqual(scene.tab, "deck")
@@ -202,7 +203,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         scene.tab = "ultimates"
@@ -236,7 +237,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         window_manager.map_to_virtual.return_value = scene.back_rect.center
@@ -270,7 +271,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         self.assertGreater(scene.page_count, 1)
@@ -304,7 +305,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         scene._set_page(1)
@@ -338,7 +339,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         # O save novo começa com 3 cópias de Soco Simples nos espaços 0-2.
@@ -375,7 +376,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         card_name = save_data["progresso"]["cartas_colecao"][0]
@@ -409,7 +410,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         with patch(
@@ -437,7 +438,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         window_manager.map_to_virtual.return_value = scene.slots[2].center
@@ -481,7 +482,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         initial_filter = scene.owned_only
@@ -516,7 +517,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         scene.tab = "ultimates"
@@ -566,7 +567,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         scene.tab = "ultimates"
@@ -614,7 +615,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         scene.tab = "deck"
@@ -646,7 +647,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         scene._back = MagicMock()
@@ -678,7 +679,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         scene.tab = "deck"
@@ -722,7 +723,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         scene.tab = "deck"
@@ -756,7 +757,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         scene.tab = "deck"
@@ -790,7 +791,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         scene.tab = "deck"
@@ -833,7 +834,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         scene.tab = "deck"
@@ -870,7 +871,7 @@ class TestBackpackAudio(unittest.TestCase):
             window_manager,
             MagicMock(),
             save_manager,
-            save_data,
+            guides_seen(save_data),
         )
 
         scene.tab = "deck"

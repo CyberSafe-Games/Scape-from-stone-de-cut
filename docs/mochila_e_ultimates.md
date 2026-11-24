@@ -38,3 +38,6 @@ e modificadores existentes. Não há persistência de carga entre lutas.
 
 [Visual da Mochila](mochila_visual.md) · [Artes Ultimate](cartas_ultimate_lv2.md) ·
 [Contrato atual](estado_atual.md).
+
+Guia da primeira visita: diferencia acervo e deck equipado, limites e escolha
+de Ultimate. Reabra em ? AJUDA; o estado visto é permanente neste slot (v15).

@@ -241,6 +241,7 @@ class OptionsSceneTests(unittest.TestCase):
             big_font=font,
             menu_font=font,
             background=None,
+            get_service_image=lambda name: None,
         )
         from src.scenes.options_scene import OptionsScene
 

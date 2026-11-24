@@ -14,6 +14,7 @@ from src.config.layout import (
     BACKPACK_DECK_BUTTON_INSET_X,
 )
 from src.scenes.base_scene import BaseScene
+from src.ui.management_guide import ManagementGuide
 from src.systems.deck_loadout import (
     DECK_SLOT_LIMIT,
     DECK_MIN_CARDS,
@@ -120,6 +121,8 @@ class BackpackScene(BaseScene):
         else:
             self.notice = self._missing_cards_notice()
             self.notice_color = (226, 135, 118)
+
+        self.management_guide = ManagementGuide(self, "backpack")
 
     def _set_page(self, page):
         owned = self.save_data["progresso"]["cartas_colecao"]
@@ -247,6 +250,7 @@ class BackpackScene(BaseScene):
         else:
             self.visuals.ultimates(surface, self)
         self.visuals.label(surface, self.notice, (75, 1035, 1770, 32), self.notice_color)
+        self.management_guide.draw(surface)
 
     def _deck_counts(self):
         return Counter(name for name in self.draft_slots if name)
@@ -259,6 +263,8 @@ class BackpackScene(BaseScene):
 
     def handle_event(self, event):
         if self.window_manager.handle_window_event(event):
+            return
+        if getattr(self, 'management_guide', None) and self.management_guide.handle_event(event):
             return
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if options_gear_clicked(self.window_manager.map_to_virtual(event.pos)):

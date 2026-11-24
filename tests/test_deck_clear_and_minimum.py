@@ -1,3 +1,4 @@
+from tests.management_fixtures import guides_seen
 """Esvaziar o deck, rascunho inválido e mínimo de 6 para sair da Mochila."""
 import inspect
 import os
@@ -200,7 +201,7 @@ class BackpackExitRulesTests(unittest.TestCase):
             self.window,
             self.assets,
             self.saves,
-            self.data,
+            guides_seen(self.data),
         )
         self.scene_manager.current_scene = scene
         return scene
@@ -366,7 +367,7 @@ class BackpackExitRulesTests(unittest.TestCase):
             self.window,
             self.assets,
             self.saves,
-            loaded,
+            guides_seen(loaded),
         )
 
         # O deck inválido gravado vira o deck inicial do tutorial ao carregar.

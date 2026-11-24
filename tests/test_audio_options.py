@@ -73,7 +73,7 @@ class AudioOptionsUITests(unittest.TestCase):
         self.manager=SimpleNamespace(audio_manager=self.audio,audio_preferences=self.store,change_scene=MagicMock())
         self.window=SimpleNamespace(map_to_virtual=lambda pos:pos,get_virtual_mouse_pos=lambda:(-1,-1))
         font=pygame.font.Font(None,28)
-        self.assets=SimpleNamespace(font=font,small_font=font,big_font=font,menu_font=font,background=None)
+        self.assets=SimpleNamespace(font=font,small_font=font,big_font=font,menu_font=font,background=None,get_service_image=lambda name:None)
         self.return_scene=object()
         self.scene=AudioOptionsScene(self.manager,self.window,self.assets,self.return_scene)
 

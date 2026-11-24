@@ -20,7 +20,8 @@ from src.systems.deck_loadout import INITIAL_SLOTS, normalize_collection_and_slo
 # v11: registra as cutscenes vistas, com defaults em _normalize().
 # v12: abandona a carga de Ultimate persistida entre combates.
 # v14: persiste as três compras de cura e seus preços progressivos por run.
-SAVE_VERSION = 14
+# v15: registra os guias vistos por tela no perfil permanente do slot.
+SAVE_VERSION = 15
 # Somente compatibilidade: bônus comprados antes da troca da loja por cura.
 # Nenhuma compra nova incrementa este contador; new_run() o zera.
 HEALTH_UPGRADE_AMOUNT = 15
@@ -87,6 +88,7 @@ class SaveManager:
                 "territorios_desbloqueados": list(INITIAL_TERRITORIES),
                 "territorios_concluidos": [],
                 "guia_mapa_visto": False,
+                "tutoriais_gerenciamento": {"shop": False, "backpack": False, "workshop": False},
                 "tutorial_concluido": False,
                 "intro_vista": False,
                 "pos_tutorial_visto": False,
