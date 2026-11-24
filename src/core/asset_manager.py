@@ -279,7 +279,6 @@ class AssetManager:
             "battle_hud_frame": "battle_hud_frame_top.png",
             "battle_hud_frame_alt": "battle_hud_frame_bottom.png",
             "hud_hand_tray": "hud_hand_tray.png",
-            "hud_portrait": "hud_portrait.png",
             "hud_health": "hud_health.png",
             "hud_cemetery": "hud_cemetery.png",
             "world_map": "world_map.png",
@@ -820,7 +819,7 @@ class AssetManager:
         groups = self._enemy_sprites.get(key, {})
         return any(bool(frames) for frames in groups.values())
 
-    def _portrait_with_protagonist_frame(self, source):
+    def _portrait_with_protagonist_frame(self, source, fit='cover'):
         from src.systems.character_portraits import FRAMED_PORTRAITS
         path = os.path.join(os.path.dirname(PLAYER_ASSETS_DIR), 'portraits', 'source',
                             'framed', FRAMED_PORTRAITS['jaum manel'] + '.png')
@@ -828,9 +827,14 @@ class AssetManager:
         w, h = frame.get_size()
         panel = pygame.Surface((w, h), pygame.SRCALPHA)
         panel.fill((9, 14, 15, 255))
-        scale = max(w * .933 / source.get_width(), h * .96 / source.get_height())
-        image = pygame.transform.smoothscale(source, (round(source.get_width()*scale),
-                                                      round(source.get_height()*scale)))
+        if fit == 'contain':
+            # O quadro inteiro cabe com margem; nenhuma extremidade é descartada.
+            scale = min(w * .88 / source.get_width(), h * .90 / source.get_height())
+        else:
+            # Composição legada de Zanzara aprovada, sem mudar seu enquadramento.
+            scale = max(w * .933 / source.get_width(), h * .96 / source.get_height())
+        image = pygame.transform.smoothscale(source, (max(1,round(source.get_width()*scale)),
+                                                      max(1,round(source.get_height()*scale))))
         panel.blit(image, image.get_rect(center=(w//2, h//2)))
         mask = pygame.Surface((w, h), pygame.SRCALPHA)
         points = ((.08,.02),(.92,.02),(.967,.055),(.967,.945),
@@ -842,34 +846,50 @@ class AssetManager:
         return frame
 
     def get_character_portrait(self, name, size):
-        """Enquadra o retrato sem distorcer; ausências usam o recorte de sprite da HUD."""
+        """Retrato completo com moldura; comuns e fallback seguem o protagonista."""
         from src.systems.character_portraits import PORTRAITS
+        from src.systems.normal_enemy_catalog import NORMAL_PORTRAITS
         key = (name.strip().lower(), tuple(size))
         if key in self._character_portraits:
             return self._character_portraits[key]
         spec = PORTRAITS.get(key[0])
         result = None
-        if spec:
-            filename, crop, mode = spec
-            path = os.path.join(os.path.dirname(PLAYER_ASSETS_DIR), 'portraits', 'source', filename)
-            try:
+        try:
+            if spec:
+                filename, crop, mode = spec
+                path = os.path.join(os.path.dirname(PLAYER_ASSETS_DIR), 'portraits', 'source', filename)
                 source = pygame.image.load(path).convert_alpha()
                 x, y, w, h = crop
                 bounds = pygame.Rect(round(x*source.get_width()), round(y*source.get_height()),
                                      round(w*source.get_width()), round(h*source.get_height())).clip(source.get_rect())
                 source = source.subsurface(bounds)
-                if mode == 'framed-content':
-                    source = self._portrait_with_protagonist_frame(source)
-                    mode = 'framed'
-                ratios = (size[0]/source.get_width(), size[1]/source.get_height())
-                scale = min(ratios) if mode in ('contain', 'framed') else max(ratios)
-                image = pygame.transform.smoothscale(source, (max(1, round(source.get_width()*scale)), max(1, round(source.get_height()*scale))))
-                result = pygame.Surface(size, pygame.SRCALPHA)
-                if mode != 'framed':
-                    result.fill((9, 14, 15))
-                result.blit(image, image.get_rect(center=result.get_rect().center))
-            except (pygame.error, FileNotFoundError):
-                pass
+            else:
+                frames = self.get_enemy_sprite_group(key[0], 'idle')
+                source = frames[0] if frames else self.get_fallback_sprite()
+                bounds = source.get_bounding_rect(min_alpha=40)
+                if not bounds.width or not bounds.height:
+                    source = self.get_fallback_sprite()
+                    bounds = source.get_rect()
+                side = max(1, round(bounds.height * .48))
+                head = pygame.Rect(bounds.centerx-side//2, bounds.top, side, side)
+                if key[0] in NORMAL_PORTRAITS:
+                    x,y,w,h = NORMAL_PORTRAITS[key[0]]
+                    head = pygame.Rect(bounds.x+round(x*bounds.width),bounds.y+round(y*bounds.height),
+                                       round(w*bounds.width),round(h*bounds.height))
+                source = source.subsurface(head.clip(source.get_rect()))
+                mode = 'framed-content'
+            if mode in ('framed-content', 'framed-contain'):
+                source = self._portrait_with_protagonist_frame(source,
+                    fit='contain' if mode == 'framed-contain' else 'cover')
+                mode = 'framed'
+            ratios = (size[0]/source.get_width(), size[1]/source.get_height())
+            scale = min(ratios)
+            image = pygame.transform.smoothscale(source, (max(1, round(source.get_width()*scale)),
+                                                          max(1, round(source.get_height()*scale))))
+            result = pygame.Surface(size, pygame.SRCALPHA)
+            result.blit(image, image.get_rect(center=result.get_rect().center))
+        except (pygame.error, FileNotFoundError, OSError):
+            pass
         self._character_portraits[key] = result
         return result
 

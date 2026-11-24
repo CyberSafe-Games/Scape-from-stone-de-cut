@@ -37,6 +37,8 @@ def main():
         data = manager.create_save('preview')
         p = data['progresso']
         p['tutorial_concluido'] = True
+        # Este piloto inspeciona os layouts; os guias têm preview próprio.
+        p['tutoriais_gerenciamento'] = dict.fromkeys(('shop', 'backpack', 'workshop'), True)
         p['moedas'] = 1000
         p['vida'] = 25
         p['cartas_colecao'] = [c.name for c in AVAILABLE_CARD_POOL]

@@ -1,4 +1,5 @@
 import pygame
+from src.ui.frames import gold_outline
 from src.config.settings import WIDTH, HEIGHT
 from src.config.colors import CARD_BG, WHITE
 from src.config.layout import CARD_WIDTH, CARD_HEIGHT, CARD_SPACING
@@ -39,7 +40,7 @@ class CardView:
                 round(image.get_width() * scale), round(image.get_height() * scale)))
             surface.blit(scaled, scaled.get_rect(center=draw_rect.center))
             if hovered:
-                pygame.draw.rect(surface, (245, 222, 160), draw_rect, 3, border_radius=15)
+                gold_outline(surface, scaled.get_rect(center=draw_rect.center).inflate(8, 8), True)
             return
 
         pygame.draw.rect(surface, CARD_BG, draw_rect, border_radius=15)

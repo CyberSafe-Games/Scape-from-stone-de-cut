@@ -1,0 +1,8 @@
+{
+  "tool": "image_gen built-in",
+  "date": "2026-11-24",
+  "file": "sanctuary_background.png",
+  "sha256": "fd8e8cd762926c85ae067ea430dfde843ac153d271d5a7cc3039bfd137124ba6",
+  "prompt": "Ancient forest sanctuary for dark fantasy tribal deckbuilder settings; carved mossy stone tablet, aged gold filigree, dark parchment center, amber lanterns, bone and feather talismans, subtle runes, no UI/text/characters. Full prompt in docs/opcoes_arte_prompt.txt.",
+  "source": "AI-generated under user art direction; project references: Mercado Silencioso and Altar Ancestral."
+}

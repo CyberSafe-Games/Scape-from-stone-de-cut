@@ -1,3 +1,4 @@
+from tests.management_fixtures import guides_seen
 """Deck aleatório: sorteio puro, persistência e integração com a Mochila."""
 import os
 import random
@@ -175,7 +176,7 @@ class BackpackRandomDeckButtonTests(unittest.TestCase):
             self.window,
             self.assets,
             self.saves,
-            self.data,
+            guides_seen(self.data),
         )
         self.scene_manager.current_scene = scene
         return scene

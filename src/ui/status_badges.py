@@ -1,6 +1,7 @@
 import pygame
 from src.ui.helpers import draw_text, draw_panel, wrap_text
 from src.models.entity import STACK_STATUS_DAMAGE, STACK_STATUS_LIMIT
+from src.ui.frames import gold_outline
 
 INFO = {
  'shock': ('Choque', 'Cada acúmulo retira 1 de energia no início do próximo turno e então expira.'),
@@ -43,7 +44,7 @@ def draw_status_badges(surface, combatant, x, y, width, assets, mouse):
         rect = pygame.Rect(x + (i % per_row) * 66, y + (i // per_row) * 38, 63, 35)
         hovered = rect.collidepoint(mouse)
         pygame.draw.rect(surface, (12, 20, 20), rect, border_radius=6)
-        pygame.draw.rect(surface, (179, 135, 72) if hovered else (73, 72, 52), rect, 2, border_radius=6)
+        gold_outline(surface, rect, hovered, compact=True)
         icon = assets.get_status_icon(name)
         if name == 'shock' or name in STACK_STATUS_DAMAGE:
             count = potency
@@ -61,7 +62,7 @@ def draw_status_badges(surface, combatant, x, y, width, assets, mouse):
                 turns = combatant.statuses[name]['turns']
                 if name in STACK_STATUS_DAMAGE:
                     per_stack = STACK_STATUS_DAMAGE[name]
-                    trigger = 'por turno' if name == 'poison' else 'por ação que cause dano'
+                    trigger = 'por turno' if name == 'poison' else 'no primeiro ataque do turno'
                     text += (f' Stacks: {potency}/{STACK_STATUS_LIMIT}. Dano: {potency * per_stack} '
                              f'{trigger} ({per_stack} por stack). Duração restante: {turns} turno(s).')
                 elif name not in ('totem', 'shock'):

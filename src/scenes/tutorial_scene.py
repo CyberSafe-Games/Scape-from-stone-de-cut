@@ -21,6 +21,7 @@ from src.config.settings import WIDTH, HEIGHT
 from src.models.action import Action
 from src.models.enemy import Enemy
 from src.scenes.battle_scene import BattleScene
+from src.config.combat_header import PLAYER_PANEL
 from src.scenes.map_scene import MapScene
 from src.systems.save_manager import SaveError
 from src.ui.helpers import draw_text, draw_panel, draw_vignette
@@ -158,7 +159,7 @@ class TutorialScene(BattleScene):
                     "Reduza a vida do Slime a zero para vencer a batalha!",
                     "Se seu HP acabar, você pode reiniciar o treinamento.",
                 ],
-                target_rect_fn=lambda: pygame.Rect(33, 30, 585, 138),
+                target_rect_fn=lambda: pygame.Rect(PLAYER_PANEL),
                 bubble_pos=(648, 30),
                 bubble_size=(705, 285),
                 arrow_origin_fn=lambda: (648, 99),

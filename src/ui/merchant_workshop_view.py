@@ -6,6 +6,7 @@ from src.config.colors import GOLD, WHITE
 from src.config.settings import WIDTH, HEIGHT
 from src.ui import dark_fantasy_theme as theme
 from src.ui.helpers import draw_text, wrap_text
+from src.ui.frames import nine_slice, gold_outline
 
 MUTED = (174, 174, 147)
 JADE = (150, 212, 173)
@@ -76,20 +77,20 @@ class MerchantWorkshopView:
         theme.divider(surface, 60, WIDTH - 60, 148)
 
     def panel(self, surface, rect, selected=False):
-        rect = pygame.Rect(rect)
-        layer = pygame.Surface(rect.size, pygame.SRCALPHA)
-        local = layer.get_rect()
-        pygame.draw.rect(layer, (5, 13, 10, 205 if rect.height < 150 else 172),
-                         local, border_radius=10)
-        edge = GOLD if selected else (140, 111, 64)
-        pygame.draw.rect(layer, (*edge, 235), local, 2, border_radius=10)
-        pygame.draw.rect(layer, (89, 75, 48, 185), local.inflate(-14, -14), 1, border_radius=7)
-        surface.blit(layer, rect.topleft)
+        theme.panel(surface, rect, highlighted=selected,
+                    fill=(5, 13, 10, 205 if pygame.Rect(rect).height < 150 else 172))
 
     def frame(self, surface, rect):
-        image = self.image("shop/offer_frame", pygame.Rect(rect).size)
+        rect = pygame.Rect(rect)
+        key = ('ornament-nine-slice', rect.size)
+        if key not in self.scaled:
+            source = self.assets.get_service_image('shop/offer_frame')
+            self.scaled[key] = nine_slice(source, rect.size, margin=205, edge=28) if source is not None else None
+        image = self.scaled[key]
         if image is not None:
-            surface.blit(image, pygame.Rect(rect).topleft)
+            surface.blit(image, rect.topleft)
+        else:
+            gold_outline(surface, rect)
 
     @staticmethod
     def _framed_card_inner(rect):

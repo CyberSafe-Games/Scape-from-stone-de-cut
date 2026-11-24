@@ -28,6 +28,44 @@ ilustradas, molduras ornamentadas, cartas completas e custo dinâmico.
 Regras canônicas e inventário:
 [estado atual](docs/estado_atual.md) · [auditoria](docs/auditoria_documentacao_testes.md).
 
+## HUD e guias de gerenciamento
+
+O botão **MENU** fica no centro superior do combate, entre duas barras de vida
+simétricas. O preenchimento de HP usa toda a abertura interna da moldura,
+com recorte para preservar as águias; HP parcial reduz a largura proporcionalmente.
+O nome da arena fica acima, sem ocupar os retratos e os status.
+As molduras externas compartilham ouro envelhecido/pedra; cantos ornamentados
+são preservados ao redimensionar. Cartas LV1, LV2 prateadas e Ultimates douradas
+mantêm suas identidades e o custo dinâmico único.
+
+Na primeira visita ao **Mercado Silencioso**, à **Mochila** e ao **Altar de
+Aprimoramento**, um guia ancestral destaca os controles reais em passos curtos.
+Use **Próximo**, **Anterior** e **Concluir**, ou feche pelo ×/Esc. O botão
+**? AJUDA** permite rever cada guia. A conclusão/dispensa é salva por tela no
+perfil do slot, preservada entre runs. Saves anteriores migram para v15 sem
+perder cartas, ouro, progresso ou snapshots. Falha ao gravar mantém o guia
+aberto para nova tentativa; Esc nessa situação sai sem registrar a conclusão.
+
+## Configurações e retratos
+
+O **Santuário dos Ajustes** usa cenário ilustrado de pedra ancestral,
+pergaminho escuro, runas e ouro envelhecido. As abas Áudio, Vídeo, Jogo e
+Controles preservam as preferências existentes. Sliders e seletores têm
+textura e destaque rúnico; alterações continuam aplicadas e salvas na hora.
+No combate, abra **MENU → OPÇÕES**. **Retornar ao Combate** fecha as camadas
+de pausa sem reiniciar a luta; Esc volta somente uma camada.
+
+Na aba **Jogo**, **Rever Tutoriais** abre uma biblioteca de consulta de Loja,
+Mochila e Altar, sem marcar guias como vistos ou modificar o slot. **Sair para
+o Menu** pede confirmação e salva o progresso válido; falha de gravação cancela
+a saída, e recompensas/transições pendentes precisam ser concluídas primeiro.
+
+Os 14 inimigos comuns usam a mesma moldura e proporção do protagonista na HUD.
+Faces fornecidas são preservadas; Slime e Macaco têm retratos dedicados.
+Os 14 retratos dos biomas, mais Goblin e Guarda Sombrio do gerador legado,
+usam recortes individuais e escala interna proporcional em
+contain, com margem para preservar rosto, orelhas, cristas e focinho.
+
 ## Como jogar
 
 **Controles por mouse e atalhos**
@@ -61,7 +99,7 @@ Regras canônicas e inventário:
 - **Mercado Silencioso:** compre tipos de cartas ou cure até 20 HP atual por 30/45/60 ouro, até três compras/run. Vida cheia não cobra. Melhorias permanentes ficam entre runs.
 - **Mochila Ancestral:** deck de 6–18 cartas, três cópias por tipo, reserva paginada/filtros, inspeção fixa e aba de Ultimates. Rascunho inválido preserva o último deck salvo.
 - **Tutorial guiado:** primeiro acesso a um save ensina as regras com balões e textos na tela.
-- **Saves v14 em 3 slots** e **Laboratório de Testes** via `T`. Os saves registram progresso, coleção, moedas e Ultimates desbloqueadas e equipada.
+- **Saves v15 em 3 slots** e **Laboratório de Testes** via `T`. Os saves registram progresso, coleção, moedas e Ultimates desbloqueadas e equipada.
 - **Vida entre lutas:** a vida atual é mantida entre combates. A vitória sobre um chefe de território recupera 30% da vida máxima, respeitando o limite.
 
 ### Efeitos negativos

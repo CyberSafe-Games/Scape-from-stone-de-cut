@@ -1,3 +1,4 @@
+from tests.management_fixtures import guides_seen
 """Rascunho da Mochila x último deck válido persistido no save."""
 import json
 import os
@@ -54,7 +55,7 @@ class DraftPersistenceTests(unittest.TestCase):
             self.window,
             self.assets,
             self.saves,
-            self.data,
+            guides_seen(self.data),
         )
         self.scene_manager.current_scene = scene
         return scene
@@ -263,7 +264,7 @@ class DraftPersistenceTests(unittest.TestCase):
             self.window,
             self.assets,
             self.saves,
-            legacy,
+            guides_seen(legacy),
         )
         scene = self.scene_manager.current_scene
         scene.draft_slots = ["Soco Simples"] + [None] * (DECK_SLOT_LIMIT - 1)
@@ -305,7 +306,7 @@ class DraftPersistenceTests(unittest.TestCase):
             self.window,
             self.assets,
             self.saves,
-            legacy,
+            guides_seen(legacy),
         )
         self.assertTrue(deck_is_ready_for_exit(scene.draft_slots))
         self.assertTrue(scene.save_on_exit())

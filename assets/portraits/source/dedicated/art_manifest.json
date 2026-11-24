@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-24",
+  "tool": "image_gen built-in",
+  "portraits": {
+    "slime": {
+      "file": "slime.png",
+      "sha256": "dff721ebb6ed6969ff9a77eeec021e4ed4b8620050acdf1d3bca5e49163ad6cf",
+      "prompt": "Production pixel-art portrait for a rustic dark fantasy tribal deckbuilder. Vertical 3:4 composition, no frame, no writing, no UI. A single simple squat rounded green Slime creature, olive and lime translucent gelatin with dark moss-green shading and a few pale glossy highlights. Faithful to a tiny round green gelatin blob with two small black slanted triangular eyes and a tiny straight black mouth, cute but mildly hostile. NO humanoid anatomy, no limbs, no horns, no fangs, no tentacles, no extra monsters. Show the COMPLETE squat domed body, widest at its flattened base, centered horizontally and vertically in the picture, with at least 12 percent safe margin on every side; do not crop any part of the silhouette. The slime should occupy about 76% of image width and 42% of height, natural squat proportions, face centered and easy to read at 100 pixels. Dark charcoal/moss atmospheric forest background, extremely quiet with soft vignette and warm amber rimlight. Detailed hand-painted pixel art, crisp small pixel texture, restrained earthy greens, high quality similar to an old-school fantasy character portrait, no photorealistic skin, no neon. No border or decoration because an approved gold border will be composited by the game."
+    },
+    "macaco_selvagem": {
+      "file": "macaco_selvagem.png",
+      "sha256": "81779815c80edd40d547702dc515926a0de6e55aad463255670c4f6214713aa5",
+      "prompt": "Production character bust portrait for a rustic dark fantasy tribal deckbuilder. Vertical 3:4 composition, no frame, no writing, no UI. A fierce brown wild monkey from an ancient forest: warm chestnut brown fur, rounded ears, tan brown muzzle, dark fierce eyes, angry brow and snarling short sharp teeth, lean primate anatomy and a slight tuft of hair. Natural wild monkey, NO gorilla anatomy, NO clothing, no armor, no jewelry, no weapons or human features. Portrait shows entire head including BOTH ears and hair silhouette plus upper chest and shoulder tops. Three-quarter facing slightly left toward player, face horizontally centered and in middle upper half, subject takes about 78% of image width, reserve at least 10% safe margin around head and ears, nothing cropped at left/right/top. Dark charcoal and moss atmospheric forest background, very quiet, warm amber rim light. Detailed hand-painted pixel art with crisp visible small pixel texture, earthy brown, ochre and dark forest palette, expressive and readable even at 100 pixels. Match a high quality old-school fantasy character bust illustration. No border because approved gold frame will be composited in game."
+    },
+    "goblin": {
+      "file": "goblin.png",
+      "sha256": "40815fe8273cea92efd553776af767b6ac0a20c91cc1f55a1f02201758ad8ae3",
+      "prompt": "A dedicated vertical 3:4 character bust portrait for an old-school dark fantasy tribal deckbuilder. Crisp detailed hand-painted pixel art, earthy moss greens, brown leather and warm amber rim light, quiet dark charcoal forest background. A small hostile green goblin with long pointed ears, wiry scruffy dark hair, sharp nose, dark amber eyes and mischievous crooked teeth, rough simple brown leather vest, lean anatomy. No glasses, no goggles, no modern machines, no crown. Show full head, BOTH pointed ears and hair completely within the picture, centered, 12 percent safe space around the head and ears, plus upper chest/shoulders. Readable expressive face in upper middle, no disproportionate gorilla face. NO frame, text, UI, logo or watermark. A portrait illustration, not a sprite sheet. Natural proportions, no cropped ears or hair."
+    },
+    "guarda_sombrio": {
+      "file": "guarda_sombrio.png",
+      "sha256": "cf7177954c76e7beaa87365abd0365ca6a1ee88b7b8b94c3ea5c666944343e76",
+      "prompt": "A dedicated vertical 3:4 character bust portrait for an old-school dark fantasy rustic tribal deckbuilder. Crisp detailed hand-painted pixel art, charcoal black, dark iron, weathered brown leather and restrained antique gold, warm amber rim light, quiet dark moss forest background. A sinister human dark guard, upper chest portrait with a worn hood and dark steel face guard, intense human eyes visible, leather straps and battered old shoulder armor. Ancient raider soldier atmosphere, no firearms, no modern equipment, no bright magic, no crown. Show the COMPLETE head/hood/helmet silhouette, face centered in upper middle and upper chest/shoulders below, at least 12 percent safe margin above and beside head. No important detail touching any image edge. No frame, text, UI, logos or watermark. Keep armor subordinate to readable human face."
+    }
+  }
+}

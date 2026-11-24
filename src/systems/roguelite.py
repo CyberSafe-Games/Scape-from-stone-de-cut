@@ -5,7 +5,7 @@ from uuid import uuid4
 from src.systems.card_catalog import AVAILABLE_CARD_NAMES, CARD_BY_NAME
 
 PROFILE_FIELDS = ('tutorial_concluido', 'intro_vista', 'pos_tutorial_visto',
-                  'guia_mapa_visto', 'ultimates_desbloqueadas', 'ultimate_equipada')
+                  'guia_mapa_visto', 'tutoriais_gerenciamento', 'ultimates_desbloqueadas', 'ultimate_equipada')
 FRAGMENTS = (1, 1, 2, 2, 3, 3, 5)
 ROAD_GOLD = (35, 40, 40, 45, 45, 50, 50)
 BOSS_GOLD = (60, 65, 70, 75, 80, 85, 100)
@@ -81,6 +81,8 @@ def normalize_profile(data):
         value = profile.get(field)
         if type(value) is not int or value < 0 or (limit is not None and value > limit):
             raise ValueError('Melhoria permanente inválida.')
+    from src.systems.management_tutorials import normalize_guides
+    normalize_guides(p)
     for key in PROFILE_FIELDS:
         profile[key] = deepcopy(p[key])
     p['bonus_vida_permanente'] = 5 * profile['vida']

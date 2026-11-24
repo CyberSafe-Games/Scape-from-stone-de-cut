@@ -1,3 +1,4 @@
+from tests.management_fixtures import guides_seen
 """Seleção persistente, equilíbrio das habilidades e navegação da mochila."""
 import os
 import tempfile
@@ -142,7 +143,7 @@ class BackpackInteractionTests(unittest.TestCase):
         self.data = SaveManager()._new_data('Teste', 'preview')
         self.data['progresso']['cartas_colecao'] = list(CARD_BY_NAME)
         self.saves = MagicMock()
-        self.scene = BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, self.data)
+        self.scene = BackpackScene(MagicMock(), self.window, MagicMock(), self.saves, guides_seen(self.data))
 
     def click(self, rect):
         self.window.map_to_virtual.return_value = rect.center
@@ -193,7 +194,7 @@ class UltimateCardArtTests(unittest.TestCase):
             self.assertEqual(meta['charge_requirement'], 20)
         window = MagicMock()
         window.get_virtual_mouse_pos.return_value = (-1, -1)
-        scene = BackpackScene(MagicMock(), window, assets, MagicMock(), SaveManager()._new_data('T', 'p'))
+        scene = BackpackScene(MagicMock(), window, assets, MagicMock(), guides_seen(SaveManager()._new_data('T', 'p')))
         canvas = pygame.Surface((1920, 1080))
         for tab in ('deck', 'ultimates'):
             scene.tab = tab

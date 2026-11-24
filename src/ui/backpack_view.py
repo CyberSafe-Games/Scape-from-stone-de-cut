@@ -8,6 +8,7 @@ from src.systems.card_catalog import AVAILABLE_CARD_NAMES
 from src.systems.deck_loadout import DECK_SLOT_LIMIT, DECK_MIN_CARDS, COPIES_PER_CARD
 from src.systems.roguelite import instance_card
 from src.ui.merchant_workshop_view import MerchantWorkshopView, text_in_rect, MUTED, JADE
+from src.ui.frames import nine_slice, gold_outline
 
 
 class BackpackView(MerchantWorkshopView):
@@ -18,11 +19,15 @@ class BackpackView(MerchantWorkshopView):
 
     def slot(self, surface, rect, occupied=False, hovered=False):
         self.panel(surface, rect, hovered or occupied)
-        image = self.image("backpack/leather_slot", rect.size)
+        key = ("leather-nine-slice", rect.size)
+        if key not in self.scaled:
+            source = self.assets.get_service_image("backpack/leather_slot")
+            self.scaled[key] = nine_slice(source, rect.size, edge=14) if source is not None else None
+        image = self.scaled[key]
         if image is not None:
             surface.blit(image, rect)
         if hovered:
-            pygame.draw.rect(surface, GOLD, rect.inflate(-8, -8), 2, border_radius=5)
+            gold_outline(surface, rect.inflate(-8, -8), True, compact=True)
 
     def label(self, surface, text, rect, color=MUTED, centered=False):
         text_in_rect(surface, text, self.assets.small_font, color, rect, centered)

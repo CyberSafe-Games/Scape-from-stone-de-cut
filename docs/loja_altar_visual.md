@@ -46,3 +46,7 @@ Single isolated magical rune ring VFX sprite for dark fantasy pixel-art roguelik
 Testes direcionados de loja, coleção, roguelite, áudio de interface e seleção de cópias. O piloto `devtools/preview_roguelite.py --smoke` usa saves temporários. Os testes novos verificam seleção da segunda cópia, persistência, clique repetido, rollback de falha de gravação, limite de materiais, todas as cartas LV1/LV2, coleção vazia e compra com hover aberto.
 
 Para conferir visualmente, abra a Loja no mapa e o Altar de Aprimoramento pelo botão inferior esquerdo. Selecione o tipo e a cópia, confira a comparação e confirme a evolução. O hover da loja é exclusivamente visual e mantém o destino dos cliques na oferta.
+
+Guias ancestrais independentes na primeira visita à Loja e ao Altar, com
+spotlight e ? AJUDA. Molduras externas usam nine_slice com cantos proporcionais;
+painéis compartilham theme.panel. O guia nunca efetua compras ou upgrades.

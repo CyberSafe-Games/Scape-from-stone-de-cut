@@ -8,6 +8,7 @@ from src.config.layout import compute_pause_menu_layout
 from src.scenes.base_scene import BaseScene
 from src.ui import dark_fantasy_theme as theme
 from src.ui.helpers import draw_text
+from src.ui.options_sanctuary_view import OptionsSanctuaryView
 
 
 class PauseMenuModal(BaseScene):
@@ -24,6 +25,7 @@ class PauseMenuModal(BaseScene):
         subtitle="A batalha está congelada até você continuar.",
     ):
         super().__init__(scene_manager, window_manager, asset_manager)
+        self.visuals = OptionsSanctuaryView(asset_manager)
         self.on_options = on_options
         self.on_exit = on_exit
         self.exit_label = exit_label
@@ -35,13 +37,13 @@ class PauseMenuModal(BaseScene):
         self.exit_button = pygame.Rect(self.layout.buttons[2])
 
     def update(self, dt):
-        pass
+        self.visuals.update(dt)
 
     def draw(self, surface):
         overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         overlay.fill((3, 8, 8, 218))
         surface.blit(overlay, (0, 0))
-        theme.panel(surface, self.panel_rect, highlighted=True)
+        self.visuals.modal_panel(surface, self.panel_rect)
         theme.eyebrow(
             surface,
             "BATALHA PAUSADA",
@@ -75,22 +77,22 @@ class PauseMenuModal(BaseScene):
             self.layout.divider_y,
         )
         mouse = self.window_manager.get_virtual_mouse_pos()
-        theme.button(
+        self.visuals.button(
             surface,
             self.continue_button,
-            "CONTINUAR",
+            "RETORNAR AO COMBATE",
             self.asset_manager.font,
             hover=self.continue_button.collidepoint(mouse),
             prominent=True,
         )
-        theme.button(
+        self.visuals.button(
             surface,
             self.options_button,
             "OPÇÕES",
             self.asset_manager.font,
             hover=self.options_button.collidepoint(mouse),
         )
-        theme.button(
+        self.visuals.button(
             surface,
             self.exit_button,
             self.exit_label,

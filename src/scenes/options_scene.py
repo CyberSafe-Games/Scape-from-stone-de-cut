@@ -58,7 +58,8 @@ from src.config.preferences import (
 from src.scenes.base_scene import BaseScene
 from src.systems.game_preferences import GamePreferences
 from src.ui import dark_fantasy_theme as theme
-from src.ui.helpers import draw_text
+from src.ui.helpers import draw_text, wrap_text
+from src.ui.options_sanctuary_view import OptionsSanctuaryView
 
 AUDIO_ROWS = (
     ("master_volume", "VOLUME GERAL", "Todos os sons do jogo"),
@@ -92,6 +93,9 @@ class OptionsScene(BaseScene):
             self.preferences = GamePreferences()
         self.return_scene = return_scene
         self.modal = modal
+        self.visuals = OptionsSanctuaryView(asset_manager)
+        self.review_button = pygame.Rect(1030, 640, 390, 64)
+        self.exit_button = pygame.Rect(500, 746, 420, 44)
         self.tab = TAB_AUDIO
         self.selected = 0
         self.dragging = None
@@ -219,17 +223,24 @@ class OptionsScene(BaseScene):
     def _switch_tab(self, tab):
         if tab not in self.tab_rects:
             return
+        if self.dragging is not None:
+            self._persist('Volumes salvos.')
         self.tab = tab
         self.selected = 0
         self.dragging = None
         self.message = INITIAL_MESSAGE
         self.play_ui_sound("ui.click")
 
-    def _back(self):
+    def _back(self, resume=False):
         self._persist()
         self.play_ui_sound("ui.click")
         if self.modal:
             self.scene_manager.pop_modal()
+            stack = getattr(self.scene_manager, 'modal_stack', None)
+            if resume and isinstance(stack, list) and stack:
+                from src.scenes.pause_menu_modal import PauseMenuModal
+                if isinstance(stack[-1], PauseMenuModal):
+                    self.scene_manager.pop_modal()
             return
         if self.return_scene is None:
             from src.scenes.menu_scene import MenuScene
@@ -270,11 +281,37 @@ class OptionsScene(BaseScene):
         )
         self._persist("Números de dano atualizados.")
 
+    def _in_battle(self):
+        from src.scenes.battle_scene import BattleScene
+        return self.modal and isinstance(getattr(self.scene_manager,'current_scene',None),BattleScene)
+
+    def _request_exit(self):
+        owner=getattr(self.scene_manager,'current_scene',None) if self.modal else self.return_scene
+        engine=getattr(owner,'engine',None)
+        if getattr(engine,'state',None) in ('victory','phase_complete','boss_transition'):
+            self.message='Conclua a recompensa ou a transição antes de sair.'
+            return
+        from src.scenes.confirmation_modal import ConfirmationModal
+        self.scene_manager.push_modal(ConfirmationModal(self.scene_manager,self.window_manager,self.asset_manager,
+            on_confirm=lambda:self._exit_to_menu(owner),title='SAIR PARA O MENU?',
+            message='Seu progresso válido será salvo antes de sair.'))
+
+    def _exit_to_menu(self,owner):
+        save=getattr(owner,'save_on_exit',None)
+        if callable(save) and save() is False:
+            self.message='Não foi possível salvar a jornada. Saída cancelada.'
+            return
+        if self.modal and getattr(self.scene_manager,'current_scene',None) is not owner:
+            return
+        self._persist()
+        from src.scenes.menu_scene import MenuScene
+        self.scene_manager.change_scene(MenuScene(self.scene_manager,self.window_manager,self.asset_manager))
+
     # ------------------------------------------------------------------
     # Eventos
     # ------------------------------------------------------------------
     def update(self, dt):
-        pass
+        self.visuals.update(dt)
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -284,7 +321,7 @@ class OptionsScene(BaseScene):
                     self._switch_tab(tab_id)
                     return
             if self.back_button.collidepoint(point):
-                self._back()
+                self._back(resume=True)
                 return
             if self.defaults_button.collidepoint(point):
                 self._restore_defaults()
@@ -342,6 +379,14 @@ class OptionsScene(BaseScene):
             self.play_ui_sound("ui.click")
 
     def _handle_game_click(self, point):
+        if self.review_button.collidepoint(point):
+            from src.scenes.guide_library_scene import GuideLibraryScene
+            self.scene_manager.push_modal(GuideLibraryScene(self.scene_manager,self.window_manager,self.asset_manager))
+            self.play_ui_sound('ui.click')
+            return
+        if self.exit_button.collidepoint(point):
+            self._request_exit()
+            return
         for speed_id, rect in self.enemy_speed_buttons.items():
             if rect.collidepoint(point):
                 self._select_enemy_speed(speed_id)
@@ -367,9 +412,8 @@ class OptionsScene(BaseScene):
     # ------------------------------------------------------------------
     def draw(self, surface):
         assets = self.asset_manager
-        theme.backdrop(surface, assets.background, opacity=208)
-        theme.panel(surface, self.panel_rect)
-        draw_text(surface, "OPÇÕES", assets.big_font, GOLD, 960, OPTIONS_TITLE_Y, center=True)
+        self.visuals.backdrop(surface)
+        draw_text(surface, "SANTUÁRIO DOS AJUSTES", assets.big_font, GOLD, 960, OPTIONS_TITLE_Y, center=True)
         draw_text(
             surface,
             "Áudio, vídeo e ritmo da jornada em um só lugar.",
@@ -382,7 +426,7 @@ class OptionsScene(BaseScene):
         mouse = self.window_manager.get_virtual_mouse_pos()
         for tab_id, label in OPTIONS_TABS:
             rect = self.tab_rects[tab_id]
-            theme.button(
+            self.visuals.button(
                 surface,
                 rect,
                 label,
@@ -401,14 +445,14 @@ class OptionsScene(BaseScene):
         else:
             self._draw_controls(surface)
 
-        theme.button(
+        self.visuals.button(
             surface,
             self.back_button,
-            "VOLTAR",
+            "RETORNAR AO COMBATE" if self._in_battle() else "RETORNAR" if self.modal else "MENU INICIAL",
             assets.font,
             hover=self.back_button.collidepoint(mouse),
         )
-        theme.button(
+        self.visuals.button(
             surface,
             self.defaults_button,
             "RESTAURAR PADRÃO",
@@ -433,30 +477,13 @@ class OptionsScene(BaseScene):
             rect = self.sliders[key]
             value = getattr(self.audio, key)
             draw_text(surface, label, assets.font, WHITE, AUDIO_LABEL_X, row_top)
-            draw_text(
-                surface,
-                description,
-                assets.small_font,
-                GRAY,
-                AUDIO_LABEL_X,
-                row_top + OPTIONS_ROW_DESCRIPTION_OFFSET,
-            )
-            pygame.draw.rect(surface, (37, 48, 45), rect, border_radius=7)
-            fill = rect.copy()
-            fill.width = round(rect.width * value)
-            if fill.width:
-                pygame.draw.rect(surface, (145, 122, 70), fill, border_radius=7)
-            knob = (round(rect.left + rect.width * value), rect.centery)
-            pygame.draw.circle(surface, (15, 24, 22), knob, 16)
-            pygame.draw.circle(
-                surface,
-                GOLD if index == self.selected else (160, 143, 98),
-                knob,
-                13,
-                3,
-            )
+            for i,line in enumerate(wrap_text(description,assets.small_font,AUDIO_MINUS_LEFT-AUDIO_LABEL_X-22)):
+                draw_text(surface,line,assets.small_font,GRAY,AUDIO_LABEL_X,
+                          row_top+OPTIONS_ROW_DESCRIPTION_OFFSET+i*(assets.small_font.get_height()+2))
+            self.visuals.slider(surface, rect, value,
+                                index == self.selected or rect.inflate(28,44).collidepoint(mouse))
             for button, text in ((self.minus[key], "-"), (self.plus[key], "+")):
-                theme.button(
+                self.visuals.button(
                     surface,
                     button,
                     text,
@@ -476,14 +503,9 @@ class OptionsScene(BaseScene):
     def _draw_setting_row(self, surface, row_top, label, description):
         assets = self.asset_manager
         draw_text(surface, label, assets.font, WHITE, SETTING_LABEL_X, row_top)
-        draw_text(
-            surface,
-            description,
-            assets.small_font,
-            GRAY,
-            SETTING_LABEL_X,
-            row_top + OPTIONS_ROW_DESCRIPTION_OFFSET,
-        )
+        for i,line in enumerate(wrap_text(description,assets.small_font,SETTING_CONTROL_LEFT-SETTING_LABEL_X-30)):
+            draw_text(surface,line,assets.small_font,GRAY,SETTING_LABEL_X,
+                      row_top+OPTIONS_ROW_DESCRIPTION_OFFSET+i*(assets.small_font.get_height()+2))
 
     def _draw_video(self, surface, mouse):
         assets = self.asset_manager
@@ -492,7 +514,7 @@ class OptionsScene(BaseScene):
             surface, row, "TELA CHEIA", "Alterna janela e tela cheia (F11)."
         )
         fullscreen = bool(getattr(self.window_manager, "is_fullscreen", False))
-        theme.button(
+        self.visuals.button(
             surface,
             self.fullscreen_button,
             "ATIVADA" if fullscreen else "DESATIVADA",
@@ -515,7 +537,7 @@ class OptionsScene(BaseScene):
         )
         for size_id, label in WINDOW_SIZE_OPTIONS:
             button = self.window_size_buttons[size_id]
-            theme.button(
+            self.visuals.button(
                 surface,
                 button,
                 label,
@@ -532,7 +554,7 @@ class OptionsScene(BaseScene):
             "Exibe o contador de FPS no topo.",
         )
         show_fps = bool(self.preferences.get("show_fps"))
-        theme.button(
+        self.visuals.button(
             surface,
             self.fps_button,
             "ATIVADO" if show_fps else "DESATIVADO",
@@ -553,7 +575,7 @@ class OptionsScene(BaseScene):
         current_speed = self.preferences.get("enemy_speed")
         for speed_id, label in ENEMY_SPEED_OPTIONS:
             button = self.enemy_speed_buttons[speed_id]
-            theme.button(
+            self.visuals.button(
                 surface,
                 button,
                 label,
@@ -570,7 +592,7 @@ class OptionsScene(BaseScene):
             "Mostra números de dano no combate.",
         )
         damage_numbers = bool(self.preferences.get("damage_numbers"))
-        theme.button(
+        self.visuals.button(
             surface,
             self.damage_numbers_button,
             "ATIVADOS" if damage_numbers else "DESATIVADOS",
@@ -578,6 +600,13 @@ class OptionsScene(BaseScene):
             hover=self.damage_numbers_button.collidepoint(mouse),
             prominent=damage_numbers,
         )
+
+        row += SETTING_WIDE_ROW_HEIGHT
+        self._draw_setting_row(surface,row,'GUIAS ANCESTRAIS','Consulte Loja, Mochila e Aprimoramento.')
+        self.visuals.button(surface,self.review_button,'REVER TUTORIAIS',assets.small_font,
+                            hover=self.review_button.collidepoint(mouse))
+        self.visuals.button(surface,self.exit_button,'SAIR PARA O MENU',assets.small_font,
+                            hover=self.exit_button.collidepoint(mouse),danger=True)
 
     def _draw_controls(self, surface):
         assets = self.asset_manager
