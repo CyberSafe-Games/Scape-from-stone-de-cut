@@ -4,11 +4,13 @@ Os demais módulos devem solicitar sons por identificadores (ex.: "ui.confirm"),
 sem carregar arquivos ou manipular diretamente o mixer do Pygame.
 """
 
-from pathlib import Path
 import logging
+from pathlib import Path
 
 import pygame
+
 from src.config.audio_mix import DAMAGE_SOUND_IDS, INTERFACE_SOUND_IDS
+from src.config.settings import ASSETS_DIR
 
 logger = logging.getLogger(__name__)
 
@@ -21,8 +23,7 @@ class AudioManager:
     """
 
     def __init__(self, assets_dir=None, master_volume=1.0, sfx_volume=1.0, music_volume=0.7, combat_volume=1.0, damage_volume=1.0):
-        project_root = Path(__file__).resolve().parents[2]
-        self.assets_dir = Path(assets_dir) if assets_dir else project_root / "assets" / "audio"
+        self.assets_dir = Path(assets_dir) if assets_dir else Path(ASSETS_DIR) / "audio"
         self._sound_paths = {}
         self._sounds = {}
         self._sound_volumes = {}

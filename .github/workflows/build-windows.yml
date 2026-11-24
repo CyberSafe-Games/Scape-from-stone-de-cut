@@ -1,0 +1,76 @@
+name: Build Windows
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Configure Python x64
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: "3.12"
+          architecture: x64
+
+      - name: Confirmar Python de 64 bits
+        shell: pwsh
+        run: |
+          python -c "import struct, sys; print(sys.version); print(str(struct.calcsize('P') * 8) + ' bits'); assert struct.calcsize('P') == 8"
+
+      - name: Instalar dependências e gerar pasta do jogo
+        shell: pwsh
+        run: |
+          python -m pip install -r requirements.txt -r requirements-build.txt
+          python -m PyInstaller --noconfirm --clean scape_from_stone.spec
+          if (-not (Test-Path "dist/ScapeFromStoneDeCut/ScapeFromStoneDeCut.exe")) { throw "Executável PyInstaller não foi gerado." }
+
+      - name: Instalar Inno Setup
+        shell: pwsh
+        run: |
+          choco install innosetup --yes --no-progress
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) { throw "ISCC.exe não encontrado após instalar Inno Setup." }
+          "ISCC_PATH=$iscc" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Compilar instalador e ZIP portátil
+        shell: pwsh
+        run: |
+          if ($env:GITHUB_REF_TYPE -eq "tag") {
+            $version = $env:GITHUB_REF_NAME -replace '^v', ''
+          } else {
+            $version = (Get-Content VERSION -Raw).Trim()
+          }
+          if ($version -notmatch '^\d+\.\d+\.\d+$') { throw "Versão inválida: $version" }
+          & $env:ISCC_PATH "/DMyAppVersion=$version" "installer/scape_from_stone.iss"
+          if ($LASTEXITCODE -ne 0) { throw "ISCC terminou com código $LASTEXITCODE" }
+          Compress-Archive -Path "dist/ScapeFromStoneDeCut" -DestinationPath "dist/ScapeFromStoneDeCut-portable-$version.zip" -CompressionLevel Optimal
+
+      - name: Publicar artefatos do workflow
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: ScapeFromStoneDeCut-Windows
+          path: |
+            ScapeFromStoneDeCut-Setup-*.exe
+            dist/ScapeFromStoneDeCut-portable-*.zip
+          if-no-files-found: error
+          compression-level: 0
+
+      - name: Anexar arquivos ao GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2.2.2
+        with:
+          files: |
+            ScapeFromStoneDeCut-Setup-*.exe
+            dist/ScapeFromStoneDeCut-portable-*.zip

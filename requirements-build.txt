@@ -1,0 +1,2 @@
+# Ferramenta de empacotamento; não é dependência necessária para jogar.
+pyinstaller==6.11.1
