@@ -180,9 +180,8 @@ class CombatEngine:
         self.deck_manager.discard_card(index)
 
         # Aplica o efeito polimórfico da carta (Open/Closed Principle)
-        enemy_hp = self.enemy.hp
         card.execute(self.player, self.enemy, context=self)
-        self._resolve_player_action(self.enemy.hp < enemy_hp)
+        self._resolve_player_action(card.card_type == 'attack')
 
         return True
 
@@ -264,12 +263,12 @@ class CombatEngine:
         self.player.use_energy(self.ultimate.energy_cost)
         self.player.consume_ultimate()
 
-        result = self.ultimate.activate(self.player, self.enemy, context=self) or {}
-        self._resolve_player_action(bool(result.get('damage')))
+        self.ultimate.activate(self.player, self.enemy, context=self)
+        self._resolve_player_action(self.ultimate.is_attack)
         return True
 
-    def _resolve_player_action(self, dealt_damage):
-        if dealt_damage and self.player.is_alive():
+    def _resolve_player_action(self, attacked):
+        if attacked and self.player.is_alive():
             self._bleed_on_attack(self.player)
         if not self.player.is_alive():
             self._game_over()
@@ -294,9 +293,8 @@ class CombatEngine:
             self.on_event('boss_phase_transition')
             self.show_message('A dupla caiu... mas Tekks ainda quer lutar!', duration=4000)
             return
-        if not self.is_replay and not getattr(self, 'training', False):
-            from src.systems.roguelite import ROAD_GOLD, BOSS_GOLD
-            amount = (BOSS_GOLD if self.enemy.is_miniboss else ROAD_GOLD)[min(6, getattr(self, 'level', 1) - 1)]
+        amount = self.victory_gold()
+        if amount:
             self.player.add_coins(amount)
             self.on_event("coin_drop", amount=amount, x=ENEMY_X, y=ENEMY_Y)
         self.player.clear_damage_stacks()
@@ -304,6 +302,13 @@ class CombatEngine:
         self.state = "victory"
         self.generate_rewards()
         self.on_event("victory")
+
+    def victory_gold(self):
+        """Informa o ouro da vitória, inclusive ao reabrir sua recompensa."""
+        if self.is_replay or getattr(self, 'training', False):
+            return 0
+        from src.systems.roguelite import ROAD_GOLD, BOSS_GOLD
+        return (BOSS_GOLD if self.enemy.is_miniboss else ROAD_GOLD)[min(6, getattr(self, 'level', 1) - 1)]
 
     def finish_boss_transition(self):
         """Troca somente o inimigo; não reinicia a luta ou concede recompensa."""
@@ -344,7 +349,7 @@ class CombatEngine:
             self.state = 'enemy_resolving'
             return
         action = getattr(self.enemy, "current_action", None)
-        actual_damage = 0
+        attacks_player = action.action_type == 'attack' if action is not None else self.enemy.intent == 'attack'
         if action is not None:
             self.enemy.use_energy(action.energy_cost)
             if action.action_type == "heal":
@@ -361,10 +366,9 @@ class CombatEngine:
                 if ultimate or animated_boss:
                     self.trigger_attack('enemy', action=action.visual_effect or 'atk', ultimate=ultimate)
                 damage = self._apply_weakness_modifier(action.damage)
-                protected = 'totem' in self.player.statuses
                 actual_damage = self.player.receive_attack(damage + self.enemy.attack_bonus)
                 self._resolve_totem_trigger(self.player, self.enemy)
-                if not protected and self.player.is_alive():
+                if actual_damage and self.player.is_alive():
                     for key,turns,potency in action_status_effects(action):
                         if key == 'shock':
                             self.player.add_stacks('shock', potency, turns=1)
@@ -402,7 +406,7 @@ class CombatEngine:
         if 'burn_on_action' in self.enemy.statuses:
             self.enemy.add_stacks('burn', self.enemy.statuses['burn_on_action']['potency'])
         self.enemy_actions_remaining = max(0, self.enemy_actions_remaining - 1)
-        if actual_damage:
+        if attacks_player:
             self._bleed_on_attack(self.enemy)
 
         if not self.player.is_alive():
@@ -446,6 +450,7 @@ class CombatEngine:
         shock = self.player.statuses.pop('shock', None)
         if shock:
             self.player.energy = max(0, self.player.energy - shock['potency'])
+            self.on_event('status_trigger', status='shock', target='player')
         self.player.turn_count += 1
         self.deck_manager.refill_hand(self.player.get_hand_size())
         self.cemetery_swap_used = False
@@ -477,12 +482,21 @@ class CombatEngine:
     def _bleed_on_attack(self, combatant):
         damage = combatant.on_attack()
         if damage:
-            self.spawn_damage_text(combatant, f'Sangramento -{damage}', RED)
+            self.on_event('status_trigger', status='bleed', damage=damage,
+                          target='player' if combatant.is_player else 'enemy')
 
     def _tick_statuses(self, combatant):
+        previous_block = combatant.block
+        burn_triggered = False
         for name, damage in combatant.end_turn_statuses():
+            if name == 'poison' and damage:
+                self.on_event('status_trigger', status=name, target='player' if combatant.is_player else 'enemy')
+            if name in ('fire', 'burn') and (damage or (name == 'fire' and combatant.block < previous_block)):
+                burn_triggered = True
             labels = {'fire': 'Fogo', 'poison': 'Veneno', 'burn': 'Queimadura'}
             self.spawn_damage_text(combatant, f'{labels.get(name, name)} -{damage}', RED)
+        if burn_triggered:
+            self.on_event('status_trigger', status='burn', target='player' if combatant.is_player else 'enemy')
 
     # ========================================================
     # PROGRESSÃO E RECOMPENSAS

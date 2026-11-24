@@ -45,9 +45,13 @@ seus textos experimentais não são regras de cartas jogáveis.
 
 - Veneno: 1–2 stacks/aplicação, máximo 5, duração renovada para 2 turnos.
   Fim do turno: 5×stacks direto, ignora Escudo, decrementa duração e zera ao expirar.
-- Sangramento: 1–2 stacks, máximo 5, duração 2 renovável. Após ação ofensiva que
-  tire vida do alvo: 3×stacks direto, no máximo duas ativações/turno. Multigolpe
-  conta uma ação; reset do contador no início; duração decresce no fim sem tick.
+- Sangramento: 1–2 stacks, máximo 5, duração 2 renovável. Após o primeiro ataque
+  do turno: 3×stacks direto à vida de quem sangra, mesmo se o alvo absorver todo
+  o golpe. Multigolpe conta uma ação; limite de uma ativação/turno. O contador
+  reinicia no início; a duração decresce no fim sem dano extra.
+- Debuffs vinculados a golpes só aplicam ou renovam quando o golpe tira vida;
+  quebrar Escudo com dano exato impede a aplicação. Ganhar Escudo não purifica.
+  Efeitos diretos, como Poção Venenosa, seguem suas próprias regras.
 - Choque: somente inimigo contra jogador; perde uma energia por stack no próximo
   início, mínimo zero; todos os stacks removidos após aplicar.
 - Fogo segue intensidades/duração em entity.py e consome Escudo antes da vida.

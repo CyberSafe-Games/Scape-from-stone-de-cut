@@ -14,7 +14,7 @@
     },
     "maximum": 5,
     "turns": 2,
-    "bleed_trigger_limit": 2
+    "bleed_trigger_limit": 1
   },
   "cards": [
     {
@@ -489,7 +489,7 @@
     "bosses": [
       {
         "level": 1,
-        "territory": "Pedra do Corte",
+        "territory": "Stone de Cut",
         "internal": "Guardião da Pedra",
         "display": "Octav, o lobisomem"
       },

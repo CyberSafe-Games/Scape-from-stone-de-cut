@@ -1,0 +1,22 @@
+{
+  "victory_altar_background.png": {
+    "origem": "Gerador de imagens integrado",
+    "referencias": [
+      "assets/ui/workshop/altar_background.png",
+      "assets/ui/backpack/expedition_background.png"
+    ],
+    "composicao": "Ruínas tomadas pela floresta, altar de espólios em pedra, runas douradas, brasas quentes e tecidos rústicos. Zona central de baixo contraste para cartas e prévia. Sem interface ou texto no asset.",
+    "prompt": "Create a NEW 16:9 in-game full screen background plate for the post-combat spoils altar of this exact game. Both input images are style references only, maintain their detailed low-resolution pixel art, rustic original tribal dark fantasy style, warm amber and burnished gold torchlight, dark moss green shadow, reddish brown fabrics and ancient stone. Depict a battle spoils memorial in overgrown ruined forest, old low stone altar across bottom third with soft gold and moss green carved runes, worn wood, tribal cloth, small unimportant artifacts/coins along sides, lit braziers near outer edges, rising sparking embers. Upper 70% center and right-center should be low-contrast and very dark so game cards and a preview UI can be overlaid crisply. Most architectural and cloth details near outer sides and bottom, dark layered ruin depth behind. Strong pixel clusters and limited palette, high craft like exact references. No text, words, letters, portraits, people, no buttons, cards, site layout, interface, or floating UI. Landscape 16:9.",
+    "proporcao": "16:9"
+  },
+  "coin_pouch.png": {
+    "origem": "Gerador de imagens integrado",
+    "referencias": ["assets/ui/rewards/victory_altar_background.png"],
+    "prompt": "One isolated small readable game icon: upright tied coin sack made of worn dark brown leather with stitched seams, burlap drawstring, a large old golden sun medallion resembling the altar motifs, 3-5 amber gold coins against its base. Left flame rim lighting on the aged gold and material, moss-hued shadows. Match reference pixel-art clusters, warm amber palette and dark rustic ancient tribal art. Clean readable dominant silhouette at 60px, no scene, no floor, no cast shadow, no letters or labels. Centered object nearly fills a square, genuinely transparent background."
+  },
+  "victory_crest.png": {
+    "origem": "Gerador de imagens integrado",
+    "referencias": ["assets/ui/rewards/victory_altar_background.png"],
+    "prompt": "One isolated game UI component, a wide shallow horizontal victory crest frame (object aspect ratio 3.7:1), centered. Match the reference altar's warm ember lit ancient stone, weathered golden bronze inlay, twisted vine and leaf filigree, carved tribal sun motif, red woven fabric accents and tiny moss accents. Dense detailed authentic pixel art, visibly defined gold edge and dimensional stone. Symmetrical extended leaf scrollwork, compact small golden sun disk centered atop. Large blank uniformly dark green-black stone inner face occupying the middle 58% width and 55% height, reserved for the word supplied by game code. No text, no lettering, no readable runes in center, no background, no surrounding scene or floor, and no additional components. Genuinely transparent outside the single continuous crest. Wide landscape."
+  }
+}

@@ -47,7 +47,9 @@
         "TestCommonEnemyAudio.test_guardian_pilot_sounds_follow_action_and_ultimate_release",
         "TestCommonEnemyAudio.test_guardian_cancelled_or_late_ultimate_does_not_play",
         "TestCommonEnemyAudio.test_common_attacks_use_matching_sound_once_at_visual_contact",
+        "TestCommonEnemyAudio.test_forest_warrior_syncs_and_keeps_the_breaking_tail_for_both_attacks",
         "TestCommonEnemyAudio.test_centaur_arrow_has_distinct_launch_and_contact",
+        "TestCommonEnemyAudio.test_golem_plasma_plays_the_laser_at_release_and_energy_at_contact",
         "TestCommonEnemyAudio.test_common_defense_and_heal_sound_at_activation",
         "TestCommonEnemyAudio.test_bosses_and_unmapped_actions_remain_without_new_sound",
         "TestCommonEnemyAudio.test_only_basic_unarmed_boss_attacks_reuse_body_impacts",
@@ -74,12 +76,14 @@
         "TestPunchImpactAudio.test_blowgun_plays_sound_once_at_launch",
         "TestPunchImpactAudio.test_bloody_dagger_preserves_composed_contact_impact",
         "TestPunchImpactAudio.test_simple_punch_sound_runs_during_motion_until_contact",
-        "TestTutorialGuideAudio.test_tutorial_victory_does_not_play_fanfare",
+        "TestTutorialGuideAudio.test_tutorial_victory_plays_fanfare_after_enemy_defeat",
         "TestTutorialGuideAudio.test_guide_blocks_card_hover_but_keeps_advance_click",
         "TestCardHoverTiming.test_card_hover_limits_rapid_transitions",
         "TestCardHoverTiming.test_card_hover_ignores_hand_rearrangement_after_play",
-        "TestCardGameplayAudio.test_victory_plays_sound_once",
-        "TestCardGameplayAudio.test_game_over_event_plays_sound",
+        "TestCardGameplayAudio.test_rugido_plays_fireball_once_when_avatar_is_released",
+        "TestCardGameplayAudio.test_status_ticks_use_contact_sounds_with_full_tails",
+        "TestCardGameplayAudio.test_lethal_arrow_delays_fanfare_and_gold_reveal",
+        "TestCardGameplayAudio.test_game_over_waits_for_attack_then_plays_once",
         "TestCardGameplayAudio.test_card_hover_sound_on_entry_only",
         "TestCardGameplayAudio.test_card_click_does_not_play_movement_sound",
         "TestCardGameplayAudio.test_end_turn_plays_sound",
@@ -345,7 +349,7 @@
       "file": "tests/test_cutscene_final.py",
       "cases": [
         "FinalCutsceneTests.test_vitoria_final_abre_dez_imagens_em_ordem_e_volta_ao_mapa",
-        "FinalCutsceneTests.test_laboratorio_exibe_epilogo_sem_registrar_recompensa",
+        "FinalCutsceneTests.test_revanche_final_exibe_epilogo_sem_registrar_recompensa",
         "FinalCutsceneTests.test_falha_ao_salvar_mantem_a_batalha",
         "FinalCutsceneTests.test_outros_encontros_e_revanche_voltam_ao_mapa"
       ]
@@ -480,6 +484,13 @@
         "DocumentationContractTests.test_stack_rules_and_campaign_match_documented_contract",
         "DocumentationContractTests.test_test_inventory_includes_every_python_test_file_and_case",
         "DocumentationContractTests.test_old_reports_are_explicitly_marked_and_current_guides_are_linked"
+      ]
+    },
+    {
+      "file": "tests/test_enemy_defeats.py",
+      "cases": [
+        "EnemyDefeatTests.test_campaign_kits_have_a_defeat_pose_or_dedicated_sequence",
+        "EnemyDefeatTests.test_bat_landing_plays_impact_before_victory_and_only_once"
       ]
     },
     {
@@ -672,7 +683,7 @@
         "MerchantWorkshopTests.test_material_purchase_and_limit",
         "MerchantWorkshopTests.test_every_card_compares_real_levels_and_additional_effects",
         "MerchantWorkshopTests.test_empty_collection_and_all_shop_pages_draw",
-        "MerchantWorkshopTests.test_hover_preview_leaves_purchase_hit_target_active",
+        "MerchantWorkshopTests.test_hover_preview_closes_on_frame_or_purchase_button",
         "MerchantWorkshopTests.test_cost_composition_replaces_previous_number_for_every_card",
         "MerchantWorkshopTests.test_framed_card_keeps_padding_and_refreshes_when_cost_changes",
         "MerchantWorkshopTests.test_upgraded_saved_copy_keeps_lv2_across_backpack_altar_and_base_shop_offer"
@@ -683,6 +694,8 @@
       "cases": [
         "MusicRoutingTests.test_every_boss_uses_chase_except_final_boss",
         "MusicRoutingTests.test_victory_and_defeat_leave_space_for_existing_stingers",
+        "MusicRoutingTests.test_zanzara_track_continues_until_the_black_frame",
+        "MusicRoutingTests.test_zanzara_game_over_still_releases_the_music",
         "MusicRoutingTests.test_menu_to_map_does_not_restart_music",
         "MusicRoutingTests.test_fade_waits_then_uses_latest_requested_context",
         "MusicRoutingTests.test_phase_change_and_modal_keep_boss_track",
@@ -766,6 +779,17 @@
         "PosePlaybackTests.test_transition_keeps_one_solid_outline_when_an_arm_changes_position",
         "PosePlaybackTests.test_outlier_is_bridged_without_a_second_silhouette",
         "PosePlaybackTests.test_stance_alignment_preserves_the_ready_foot_center_and_floor"
+      ]
+    },
+    {
+      "file": "tests/test_post_combat_rewards.py",
+      "cases": [
+        "PostCombatRewardTests.test_card_selection_saves_once_after_pulse",
+        "PostCombatRewardTests.test_material_respects_capacity_and_preserves_copies",
+        "PostCombatRewardTests.test_skip_preserves_collection_and_gold",
+        "PostCombatRewardTests.test_quitting_during_confirmation_persists_selection",
+        "PostCombatRewardTests.test_resuming_victory_recovers_gold_label_without_crediting_again",
+        "PostCombatRewardTests.test_final_victory_saves_and_opens_epilogue_without_an_offer"
       ]
     },
     {
@@ -893,7 +917,7 @@
       "cases": [
         "SwampBossTests.test_last_missing_boss_is_assigned_to_swamp_only",
         "SwampBossTests.test_crossed_guard_adds_shield_without_attacking",
-        "SwampBossTests.test_claws_apply_bleed_that_can_trigger_twice_per_turn",
+        "SwampBossTests.test_claws_apply_bleed_that_triggers_once_per_turn",
         "SwampBossTests.test_ultimate_leaps_toward_player_and_closes_on_ready",
         "SwampBossTests.test_real_guard_animation_uses_all_twelve_frames"
       ]
@@ -905,9 +929,14 @@
         "TacticalCardTests.test_every_card_consumes_its_cost_and_has_a_valid_effect",
         "TacticalCardTests.test_attacks_match_printed_damage_and_darts_total_ten",
         "TacticalCardTests.test_fire_stacks_and_burns_shield_while_poison_bypasses_it",
+        "TacticalCardTests.test_fire_and_burn_share_one_audio_event_per_tick",
         "TacticalCardTests.test_poison_ticks_once_after_all_boss_actions_and_kill_rewards_once",
-        "TacticalCardTests.test_bleeding_only_after_damage_and_at_most_twice_for_a_boss",
-        "TacticalCardTests.test_player_bleed_skips_defense_and_full_block_then_triggers_after_hits",
+        "TacticalCardTests.test_bleeding_uses_all_stacks_once_per_turn_for_a_boss",
+        "TacticalCardTests.test_player_bleed_skips_defense_and_triggers_on_shield_damage",
+        "TacticalCardTests.test_adaga_bleed_triggers_when_enemy_only_hits_player_shield",
+        "TacticalCardTests.test_totem_blocks_the_hit_but_the_attacker_still_bleeds",
+        "TacticalCardTests.test_dagger_does_not_apply_or_refresh_bleed_without_hp_damage",
+        "TacticalCardTests.test_enemy_attack_statuses_require_hp_damage",
         "TacticalCardTests.test_lethal_bleed_happens_after_player_action_and_clears_battle_stacks",
         "TacticalCardTests.test_only_damaging_ultimate_triggers_bleed",
         "TacticalCardTests.test_shield_survives_two_full_rounds_not_two_boss_actions",
@@ -992,6 +1021,8 @@
         "TestTutorialOverlay.test_skip_finishes_overlay",
         "TestTutorialOverlay.test_screen_click_advances",
         "TestTutorialOverlay.test_draw_helpers_do_not_crash",
+        "TestTutorialSceneIntegration.test_practice_tip_only_appears_over_review_button",
+        "TestTutorialSceneIntegration.test_clicking_review_button_reopens_guide",
         "TestTutorialSceneIntegration.test_save_on_exit_keeps_initial_deck_unchanged",
         "TestTutorialSceneIntegration.test_floating_bubbles_positioned_near_targets",
         "TestTutorialSceneIntegration.test_bubble_text_stays_inside_bubble",
@@ -1122,6 +1153,6 @@
       ]
     }
   ],
-  "modules": 77,
-  "methods": 732
+  "modules": 79,
+  "methods": 753
 }

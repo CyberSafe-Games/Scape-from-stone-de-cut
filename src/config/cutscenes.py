@@ -4,6 +4,7 @@
 INTRO_CUTSCENE = [
         {
         "image": "cutscenes/intro_01.png",
+        "music_context": "battle",
         "dialogues": [
             ("Jaum Manel", "Moravamos em terras isoládas do resto do mundo, conhecida pelos estrangeiros como Stone de Cut, respeitavamos a natureza e assim vivíamos em paz."),
             ("Jaum Manel", "Porém mal sabíamos que essa paz estava prestes a se acabar..."),
@@ -12,6 +13,7 @@ INTRO_CUTSCENE = [
     },
     {
         "image": "cutscenes/intro_02.png",
+        "music_context": "boss",
         "dialogues": [
             ("Jaum Manel", "Nossa aldeia foi invadida por um grupo de estrangeiros."),
             ("Jaum Manel", "Em questão de minutos nossa aldeia estava cercada."),
@@ -20,6 +22,7 @@ INTRO_CUTSCENE = [
     },
     {
         "image": "cutscenes/intro_03.png",
+        "music_context": "boss",
         "dialogues": [
             ("Jaum Manel", "Eles queimaram nossas casas, capturaram nossa tribo, não tivemos chance de reagir..."),
             ("Jaum Manel", "Eles eram monstros que atacavam sem piedade, toda tribo foi capturada."),
@@ -28,6 +31,7 @@ INTRO_CUTSCENE = [
     },
     {
         "image": "cutscenes/intro_04.png",
+        "music_context": "boss",
         "dialogues": [
             ("Jaum Manel", "Eles festejavam, se aproveitando de nossa cultura e de nossas sagradas terras."),
             ("Jaum Manel", "Estávamos já sem forças, porém nossa esperança não iria se acabar tão facilmente."),
@@ -36,6 +40,7 @@ INTRO_CUTSCENE = [
     },
     {
         "image": "cutscenes/intro_05.png",
+        "music_context": "boss",
         "dialogues": [
             ("Jaum Manel", "Ao anoitecer, uma brasa das fogueiras enfraqueceu as cordas da minha cela, parecia que nossas terras estavam tentando me ajudar..."),
             ("Jaum Manel", "Passei a noite inteira tentando me libertar, e ao nascer do sol consegui escapar da prisão."),
@@ -48,6 +53,7 @@ INTRO_CUTSCENE = [
 POST_TUTORIAL_CUTSCENE = [
     {
         "image": "cutscenes/pos_tutorial.png",
+        "music_context": "menu",
         "dialogues": [
             ("Jaum Manel", "Ouvindo minha tribo torcendo por mim, consegui derrotar o primeiro inimigo"),
             ("Jaum Manel", "Porém eu sabia que minha jornada estava apenas começando."),
@@ -62,6 +68,8 @@ POST_TUTORIAL_CUTSCENE = [
 FINAL_CUTSCENE = [
     {
         "image": f"cutscenes/final_{number:02d}.png",
+        "music_context": None if number == 3 else "final_boss" if number <= 2 else "farewell",
+        **({"dialogue_music_context": "farewell"} if number == 3 else {}),
         "dialogues": dialogues,
         "position": "bottom",
     }
@@ -124,6 +132,7 @@ FINAL_CUTSCENE = [
 # Tela preta entre as imagens 02 e 03. Use "" como nome para narrar sem personagem.
 FINAL_CUTSCENE.insert(2, {
     "image": None,
+    "music_context": None,
     "dialogues": [("", "Quando o som da batalha cessou, só era possível ouivr as correntes arrastando Zanzara para o além. A floresta ficou em silêncio."),
                   ("","Enquanto isso, a existência de seu clã ia desaparecendo aos poucos...")],
     "position": "bottom",

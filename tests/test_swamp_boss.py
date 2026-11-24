@@ -49,7 +49,7 @@ class SwampBossTests(unittest.TestCase):
         self.assertEqual(boss.block, 10)
         self.assertEqual(boss.block_turns, 2)
 
-    def test_claws_apply_bleed_that_can_trigger_twice_per_turn(self):
+    def test_claws_apply_bleed_that_triggers_once_per_turn(self):
         engine = self.engine()
         engine.end_turn()
         attack = engine.enemy.actions[0]
@@ -58,9 +58,8 @@ class SwampBossTests(unittest.TestCase):
         self.assertEqual(engine.player.statuses['bleed'], {'turns': 2, 'potency': 2})
         hp = engine.player.hp
         self.assertEqual(engine.player.on_attack(), 6)
-        self.assertEqual(engine.player.on_attack(), 6)
         self.assertEqual(engine.player.on_attack(), 0)
-        self.assertEqual(engine.player.hp, hp-12)
+        self.assertEqual(engine.player.hp, hp-6)
 
     def test_ultimate_leaps_toward_player_and_closes_on_ready(self):
         boss = create_gordofera()

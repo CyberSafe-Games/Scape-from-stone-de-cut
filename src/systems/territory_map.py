@@ -23,7 +23,7 @@ class Territory:
 
 
 TERRITORIES = (
-    Territory("stone_the_cut", "Pedra do Corte", "O despertar", "Monólitos ancestrais marcam a clareira.", 1, (197, 822), "Guardião da Pedra"),
+    Territory("stone_the_cut", "Stone de Cut", "O despertar", "Monólitos ancestrais marcam a clareira.", 1, (197, 822), "Guardião da Pedra"),
     Territory("mata_sombria", "Mata Sombria", "O chamado", "A dupla espreita entre as árvores.", 2, (395, 678), "Álvaro e Tex"),
     Territory("ruinas_ancestrais", "Ruínas Ancestrais", "Ecos do passado", "Artefatos esquecidos alimentam engenhocas no meio das ruínas.", 3, (249, 476), "Goblin Nerd"),
     Territory("pantano_abissal", "Pântano Abissal", "Águas escuras", "Garras e chifres guardam a lama ancestral.", 4, (534, 353), "Gordofera"),

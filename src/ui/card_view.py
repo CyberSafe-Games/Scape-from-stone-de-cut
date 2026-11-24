@@ -114,21 +114,3 @@ class CardView:
             rects.append(pygame.Rect(x, y, card_width, card_height))
 
         return rects
-
-    @staticmethod
-    def get_reward_rects(count):
-        """Calcula os retângulos de colisão para as cartas oferecidas como recompensa."""
-        rects = []
-        if count == 0:
-            return rects
-
-        spacing = 30
-        total_width = count * CARD_WIDTH + (count - 1) * spacing
-        start_x = WIDTH // 2 - total_width // 2
-        y = HEIGHT // 2 - CARD_HEIGHT // 2
-
-        for index in range(count):
-            x = start_x + index * (CARD_WIDTH + spacing)
-            rects.append(pygame.Rect(x, y, CARD_WIDTH, CARD_HEIGHT))
-
-        return rects

@@ -101,6 +101,10 @@ class EntityView:
     e renderizar o Jogador e o Inimigo na tela.
     """
 
+    SLIME_MELT_MS = 680
+    BAT_FALL_MS = 710
+    BAT_LANDING_FRACTION = .60
+
     # duração, lançamento e impacto como frações da animação completa.
     GOBLIN_RANGED_ATTACKS = {"atk1": (1100, 0.30, 0.74), "atk2": (900, 0.30, 0.58)}
     RANGED_ATTACKS = {
@@ -141,6 +145,8 @@ class EntityView:
         self.player_idle_timer = 0
         self.player_victory_timer = 0
         self._player_victory_active = False
+        self.enemy_fall_progress = None
+        self._enemy_defeat_pose = None
         self._zanzara_defeat_timer = None
 
     def trigger_attack(self, attacker, action=None, enemy_name=None, ultimate=False):
@@ -237,7 +243,28 @@ class EntityView:
             self.attacker = None
             self.attack_timer = 0
 
-    def is_enemy_defeat_done(self,enemy):
+    def reset_enemy_defeat(self):
+        self.enemy_fall_progress = None
+        self._enemy_defeat_pose = None
+        self._zanzara_defeat_timer = None
+
+    def advance_enemy_defeat(self, enemy, elapsed, fall_duration):
+        if enemy.name.lower() == "zanzara":
+            from src.ui.zanzara_necromancer import available
+            if available():
+                if self._zanzara_defeat_timer is None:
+                    self._zanzara_defeat_timer = 0
+                return self.is_enemy_defeat_done(enemy)
+        if enemy.name.lower() == "slime":
+            fall_duration = self.SLIME_MELT_MS
+        elif enemy.name.lower() == "morcego sombrio":
+            fall_duration = self.BAT_FALL_MS
+        elif enemy.name.lower() == "vinimuth":
+            fall_duration = 650
+        self.enemy_fall_progress = min(1.0, elapsed / fall_duration)
+        return self.enemy_fall_progress >= 1.0
+
+    def is_enemy_defeat_done(self, enemy):
         if enemy.name.lower() != 'zanzara':
             return True
         from src.ui.zanzara_necromancer import DEFEAT_DURATION
@@ -688,6 +715,71 @@ class EntityView:
 
         return None
 
+    @staticmethod
+    def _draw_slime_melt(surface, frame, rect, progress, blend_flags):
+        bounds = frame.get_bounding_rect()
+        if not bounds:
+            return
+        body = frame.subsurface(bounds)
+        x, ground = rect.x + bounds.x, rect.y + bounds.bottom
+        width, height = body.get_size()
+
+        pool_progress = min(1.0, progress * 2)
+        if pool_progress:
+            spread = round(105 * pool_progress)
+            center = rect.centerx + 16
+            base = rect.bottom - 3
+            outline = (
+                (-1.0, -3), (-0.91, -9), (-0.67, -11), (-0.48, -17),
+                (-0.07, -16), (0.18, -20), (0.44, -16), (0.59, -10),
+                (0.90, -9), (1.0, -4), (0.77, 1), (0.33, 3),
+                (-0.17, 2), (-0.65, 3), (-0.92, 0),
+            )
+            points = [(center + round(px * spread), base + round(py * pool_progress))
+                      for px, py in outline]
+            pygame.draw.polygon(surface, (59, 92, 32), points)
+            pygame.draw.polygon(surface, (117, 150, 46),
+                                [(center + round((px - 0.04) * spread * 0.82),
+                                  base + round((py - 2) * pool_progress * 0.67))
+                                 for px, py in outline])
+
+        # As faixas descem em velocidades diferentes e somem ao tocar o chão.
+        strip = max(1, width // 28)
+        for column in range(0, width, strip):
+            phase = column / width * math.tau
+            flow = 0.76 + 0.19 * math.cos(phase * 2) + 0.08 * math.sin(phase * 3)
+            drop = round(height * min(1, progress ** flow))
+            remaining = height - drop
+            if remaining:
+                area = pygame.Rect(column, 0, min(strip, width - column), remaining)
+                surface.blit(body, (x + column, ground - remaining), area,
+                             special_flags=blend_flags)
+
+    @classmethod
+    def _draw_bat_fall(cls, surface, frame, rect, progress, blend_flags):
+        bounds = frame.get_bounding_rect()
+        if not bounds:
+            return
+        ratio = min(1.0, progress / cls.BAT_LANDING_FRACTION)
+        ground = rect.y + bounds.bottom
+        ground += round((PLAYER_GROUND_Y - 2 - ground) * ratio * ratio)
+        surface.blit(frame, (rect.x + bounds.x - round(18 * ratio), ground - bounds.height),
+                     bounds, special_flags=blend_flags)
+
+    @classmethod
+    def _draw_bat_landing(cls, surface, center, progress):
+        elapsed = (progress - cls.BAT_LANDING_FRACTION) / (1 - cls.BAT_LANDING_FRACTION)
+        if not 0 <= elapsed < 1:
+            return
+        dust = pygame.Surface((240, 75), pygame.SRCALPHA)
+        for index in range(12):
+            drift = elapsed * (32 + index % 4 * 10)
+            x = 120 + (-1 if index % 2 else 1) * (12 + index * 4 + drift)
+            y = 59 - (10 + index % 3 * 9) * math.sin(elapsed * math.pi * .85)
+            pygame.draw.circle(dust, (181, 147, 98, round(135 * (1 - elapsed))),
+                               (round(x), round(y)), max(1, 4 - index % 3))
+        surface.blit(dust, dust.get_rect(midbottom=(center, PLAYER_GROUND_Y + 11)))
+
     def draw_enemy(self, surface, enemy_or_color, maybe_color=None):
         """Calcula pose e renderiza o inimigo com sprite real ou fallback procedural."""
         if hasattr(enemy_or_color, "name"):
@@ -717,12 +809,43 @@ class EntityView:
         if enemy is not None and self.asset_manager.has_enemy_sprites(enemy.name):
             name = enemy.name.lower()
             light = BOSS_BODY_LIGHT.get(name, ARENA_ACTOR_LIGHT)
-            frame, blend_flags = display_pose(self.get_enemy_frame(enemy, interpolate=True), light)
+            defeat = self.asset_manager.get_enemy_sprite_group(name, "defeat") if self.enemy_fall_progress is not None else ()
+            if defeat:
+                fall = self.enemy_fall_progress
+                bat = name == "morcego sombrio"
+                if len(defeat) > 1 or fall >= (self.BAT_LANDING_FRACTION if bat else .38):
+                    index = min(len(defeat) - 1, int(fall * len(defeat)))
+                    frame, blend_flags = display_pose(defeat[index], light)
+                    rect = frame.get_rect(midbottom=(int(enemy_x), PLAYER_GROUND_Y))
+                    surface.blit(frame, rect, special_flags=blend_flags)
+                    if bat:
+                        self._draw_bat_landing(surface, int(enemy_x), fall)
+                    return
+            if self.enemy_fall_progress is not None and self._enemy_defeat_pose is not None:
+                frame, blend_flags = self._enemy_defeat_pose
+            else:
+                frame, blend_flags = display_pose(self.get_enemy_frame(enemy, interpolate=True), light)
             if frame is not None:
                 hover = 42 + round(4.5 * math.sin(self.enemy_idle_timer / 300)) if enemy.name == 'Morcego Sombrio' else 0
                 if self.enemy_ultimate:
                     _, hover = boss_ultimate_pose(self.enemy_ultimate, self.attack_timer/max(1, self.enemy_attack_duration), ENEMY_X, PLAYER_X+158)
                 rect = frame.get_rect(midbottom=(int(enemy_x), PLAYER_GROUND_Y-hover))
+                if self.enemy_fall_progress is not None:
+                    self._enemy_defeat_pose = (frame, blend_flags)
+                    fall = self.enemy_fall_progress
+                    if name == "slime":
+                        self._draw_slime_melt(surface, frame, rect, fall, blend_flags)
+                    elif defeat and name != "morcego sombrio":
+                        damage = self.asset_manager.get_enemy_sprite_group(name, "dano")
+                        if len(damage) >= 6:
+                            frame, blend_flags = display_pose(damage[4 if fall < .18 else 5], light)
+                            rect = frame.get_rect(midbottom=(int(enemy_x), PLAYER_GROUND_Y))
+                        surface.blit(frame, rect, special_flags=blend_flags)
+                    elif name == "morcego sombrio":
+                        self._draw_bat_fall(surface, frame, rect, fall, blend_flags)
+                    else:
+                        surface.blit(frame, rect, special_flags=blend_flags)
+                    return
                 # Eco visual discreto acompanha o giro, sem piscar frames nem
                 # trocar artificialmente a posição do personagem.
                 if is_corpo and self.attacker == "enemy" and self.enemy_action == "atk4":

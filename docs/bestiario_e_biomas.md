@@ -7,7 +7,7 @@ comuns, dois por região, e 14 encontros do caminho por campanha.
 
 | Nível | Região | Comuns sorteados | Chefe |
 |---:|---|---|---|
-| 1 | Pedra do Corte | Slime, Viniurgo | Octav, o lobisomem |
+| 1 | Stone de Cut | Slime, Viniurgo | Octav, o lobisomem |
 | 2 | Mata Sombria | Macaco Selvagem, Guerreiro da Mata | Alvar & Tekks, Rastreadores |
 | 3 | Ruínas Ancestrais | Golem das Ruínas, Lagarto Couraçado | Jozephino, o Inventor |
 | 4 | Pântano Abissal | Putrefato do Pântano, Crocodilo Abissal | Sir Thomas, a Besta Fera |

@@ -1,0 +1,8 @@
+{
+  "efeito": "gameplay.status.burn_tick",
+  "fonte": "assets/audio/bola_de_fogo_continua.ogg",
+  "sha256_fonte": "a8110db1f80e2832bdd60ac2a8c719d5f95a8e52f4eafe96ec29c9f5a3a68863",
+  "derivado": "assets/audio/queimadura_debuff_chama_v2.ogg",
+  "sha256_derivado": "6e772be71847f8a52f1ef49ec8991a97e50f58aecdf283b9581cd7f1515cdd3a",
+  "filtros_ffmpeg": "atrim=start=0.46:end=1.56,asetpts=PTS-STARTPTS,volume=-3dB,afade=t=in:d=0.06,afade=t=out:st=0.82:d=0.28"
+}

@@ -8,6 +8,7 @@ DEFAULT_ULTIMATE_ID = "mana_ancestral"
 
 
 class UltimateAbility(ABC):
+    is_attack = False
     """Interface base para habilidades ultimate do herói."""
 
     ultimate_id = "base"
@@ -74,6 +75,7 @@ class RugidoDaFlorestaUltimate(UltimateAbility):
     para atingir múltiplos alvos quando o sistema for expandido.
     """
 
+    is_attack = True
     ultimate_id = "rugido_da_floresta"
     name = "Rugido da Floresta"
     action_name = "Rugido da Floresta"
@@ -99,11 +101,9 @@ class RugidoDaFlorestaUltimate(UltimateAbility):
         for enemy in targets:
             damage = self.damage + user.attack_bonus
             enemy.block = 0
-            protected = 'totem' in enemy.statuses
             actual = enemy.receive_attack(damage)
-            if not protected:
-                if enemy.apply_status("weak", self.weak_turns, 25):
-                    weakened_targets += 1
+            if actual and enemy.apply_status("weak", self.weak_turns, 25):
+                weakened_targets += 1
             total_damage += actual
             hits += 1
         if targets:

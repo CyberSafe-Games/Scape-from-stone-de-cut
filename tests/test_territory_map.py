@@ -32,6 +32,7 @@ class TestTerritoryMap(unittest.TestCase):
             self.assertIs(by_level(t.level), t)
 
     def test_map_titles_match_boss_names_without_changing_combat_keys(self):
+        self.assertEqual(by_id("stone_the_cut").title, "Stone de Cut")
         expected = (
             'Octav, o lobisomem', 'Alvar & Tekks, Rastreadores',
             'Jozephino, o Inventor', 'Sir Thomas, a Besta Fera',

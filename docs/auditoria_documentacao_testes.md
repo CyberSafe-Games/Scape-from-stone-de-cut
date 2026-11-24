@@ -32,6 +32,7 @@ do Boss6 externo de Labrro. Nenhuma regra de jogo foi alterada nesta auditoria.
 | [docs/audio_polimento_final.md](audio_polimento_final.md) | Histórico | Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes. |
 | [docs/auditoria_documentacao_testes.md](auditoria_documentacao_testes.md) | Vigente | Novo índice completo por documento, cobertura dos testes, comandos e resultado da auditoria. |
 | [docs/bestiario_e_biomas.md](bestiario_e_biomas.md) | Vigente | 14 tipos, dois por bioma, duas lutas; Viniurgo e nomes atuais dos chefes. |
+| [docs/build_windows.md](build_windows.md) | Vigente | Preserva build PyInstaller/Inno Setup, instalação e dados locais do executável recebidos na PR #29. |
 | [docs/boss_twelve_frames.md](boss_twelve_frames.md) | Histórico | Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes. |
 | [docs/boss_ultimate_eight_effects.md](boss_ultimate_eight_effects.md) | Histórico | Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes. |
 | [docs/boss_ultimates_e_ruinas.md](boss_ultimates_e_ruinas.md) | Histórico | Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes. |
@@ -137,3 +138,26 @@ Concluído: 732 testes, 0 módulos com falha.
 Os 58 documentos foram classificados (25 vigentes e 33 históricos). Os
 relatórios históricos preservam seus resultados e apontam explicitamente
 para as regras vigentes. A auditoria estática também verifica os links locais.
+
+## Integração das PRs #29/#30 — 24/11/2026
+
+O bloqueio da PR #28 vinha de quatro conflitos em README.md, AGENTS.md,
+assets/audio/README.md e docs/cartas_e_estados.md. A conciliação mantém a
+auditoria e as reações de dano, o instalador, o altar de espólios, as derrotas
+e os áudios da main. O guia docs/build_windows.md foi incorporado ao manifesto
+de documentação vigente, totalizando 59 documentos.
+
+A regra integrada de Sangramento passou a uma ativação após o primeiro ataque
+do turno, mesmo absorvido; debuffs de impacto exigem perda de vida. Essas
+alterações da main estão refletidas no contrato e nos guias, sem reverter as
+regras trazidas pelo grupo. O primeiro território se chama Stone de Cut.
+
+Nova validação da versão combinada em
+[validacao_integracao_pr28.json](validacao_integracao_pr28.json).
+
+Resultado da integração: **753 testes em 79 módulos, zero falhas**,
+execução integral nova em 175.32 segundos.
+
+~~~text
+Concluído: 753 testes, 0 módulos com falha.
+~~~

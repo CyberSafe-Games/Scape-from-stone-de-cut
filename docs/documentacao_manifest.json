@@ -81,6 +81,11 @@
       "summary": "Cadência distinta de Jan-Pietro, fontes8 e reação segura em560 ms."
     },
     {
+      "file": "docs/build_windows.md",
+      "kind": "current",
+      "summary": "Build PyInstaller/Inno Setup, instalação, distribuição e dados graváveis do Windows preservados na integração das PRs #29/#30."
+    },
+    {
       "file": "docs/carrasco_audio_piloto.md",
       "kind": "historical",
       "summary": "Marcado histórico; preserva resultados, prompts e fontes sem tratar regras/caminhos antigos como vigentes."

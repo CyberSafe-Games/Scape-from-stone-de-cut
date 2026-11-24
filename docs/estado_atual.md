@@ -1,4 +1,4 @@
-# Estado atual do projeto — 23/11/2026
+# Estado atual do projeto — 24/11/2026
 
 Referência vigente conferida no código. O [contrato JSON](contrato_atual.json)
 e o [catálogo LV1/LV2](cartas_e_estados.md) registram valores reais.
@@ -45,9 +45,13 @@ Cemitério: descarte por uma energia, uma troca grátis por turno.
 - Veneno: 1–2 stacks/aplicação, teto 5, duração 2 renovada inclusive no teto.
   No fim do turno do afetado causa 5×stacks direto ignorando Escudo, reduz
   duração e zera ao expirar.
-- Sangramento: 1–2 stacks, teto 5, duração 2 renovável. Após ação ofensiva que
-  tire vida do alvo: 3×stacks direto, máximo duas ativações/turno. Multigolpe
-  conta uma ação; reset do contador no início; duração decresce no fim sem tick.
+- Sangramento: 1–2 stacks, teto 5, duração 2 renovável. Após o primeiro ataque
+  de cada turno: 3×stacks direto à vida de quem sangra, mesmo se o golpe for
+  absorvido. Uma ativação/turno; multigolpe conta uma ação. O contador reinicia
+  no início e a duração decresce no fim sem dano extra.
+- Debuffs de impacto só aplicam ou renovam quando o golpe tira vida. Escudo
+  que absorva todo o dano impede a aplicação, mesmo quebrando. Ganhar Escudo
+  preserva os negativos ativos; efeitos diretos mantêm suas próprias regras.
 - Choque: somente inimigos aplicam ao jogador; -1 energia por stack no próximo
   início, mínimo zero; todos os stacks removidos após aplicar. Jozephino: 1 na
   descarga comum, 2 no especial.
@@ -83,7 +87,7 @@ Vida persiste; chefe vencido pela primeira vez recupera 30% da vida máxima.
 
 | Nível | Território | Nome interno | Nome de exibição |
 |---:|---|---|---|
-| 1 | Pedra do Corte | Guardião da Pedra | Octav, o lobisomem |
+| 1 | Stone de Cut | Guardião da Pedra | Octav, o lobisomem |
 | 2 | Mata Sombria | Álvaro e Tex | Alvar & Tekks, Rastreadores |
 | 3 | Ruínas Ancestrais | Goblin Nerd | Jozephino, o Inventor |
 | 4 | Pântano Abissal | Gordofera | Sir Thomas, a Besta Fera |
@@ -134,3 +138,20 @@ python -B devtools/audit_project_docs.py --output docs/auditoria_documentacao.js
 O executor usa unittest, módulos isolados e SDL dummy. Não confundir resultado
 incremental com nova suíte integral. Veja [a auditoria por arquivo](auditoria_documentacao_testes.md)
 e as convenções completas no [AGENTS.md](../AGENTS.md).
+
+## Integração de 24/11/2026 — instalador, áudio e espólios
+
+As PRs #29 e #30 adicionam build Windows por PyInstaller/Inno Setup e workflow
+do GitHub Actions, com dados graváveis em LOCALAPPDATA no executável. No modo
+fonte os dados continuam no repositório. Ver [build Windows](build_windows.md).
+
+O altar de espólios pós-combate usa assets/ui/rewards/, seleção de carta nova
+ou materiais, preview lateral, confirmação com pulso e pulo mantendo o ouro.
+A decisão é aplicada uma única vez, incluindo fechar a janela durante o pulso.
+Vitória sobre Zanzara segue para o epílogo sem altar de espólios.
+
+As animações de derrota (Slime, Morcego, Vinimuth e poses dos demais kits)
+coexistem com as reações de dano suavizadas. Os novos áudios de debuffs e
+contextos musicais da abertura/epílogo são preservados. Lost Time toca a partir
+da primeira fala de Octav no epílogo; fonte/licença no
+[guia de áudio](../assets/audio/README.md).

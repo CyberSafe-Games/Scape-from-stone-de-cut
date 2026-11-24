@@ -85,8 +85,9 @@ Consulte o código/nome e esclareça divergências sem trocar personagens.
 - Veneno: 1–2 stacks por aplicação, máximo 5, poison_turns=2 renovado inclusive
   no teto. Fim do turno: 5*poison_stacks direto, sem Escudo; decrementar duração,
   zerar stacks ao expirar.
-- Sangramento: 1–2 stacks, máximo 5, bleed_turns=2 renovado. Após ação ofensiva
-  que tire vida do alvo: 3*bleed_stacks direto, se bleed_triggers_this_turn<2.
+- Sangramento: 1–2 stacks, máximo 5, bleed_turns=2 renovado. Após o primeiro ataque
+  de cada turno: 3*bleed_stacks direto, mesmo se o alvo bloquear todo o golpe;
+  limite bleed_triggers_this_turn<1.
   Multigolpe conta uma ação. Resetar contador no início; reduzir duração no fim
   sem dano extra. Zerar stacks quando expirar.
 - Choque: somente inimigos aplicam ao jogador. Cada stack tira uma energia no
@@ -217,3 +218,42 @@ Resume/recheck são incrementais; não chamá-los de nova suíte integral.
   temporários. Não tocar nos três slots reais para QA.
 - Atualizar documentação, inventário/contrato e relatório quando o código mudar.
   Ao concluir, informar arquivos, validação e limitações materiais.
+
+## 10. Integração das PRs #29 e #30 — 24/11/2026
+
+- Primeiro território agora se chama Stone de Cut; IDs internos dos chefes permanecem estáveis.
+- Sangramento dispara uma vez por turno após o primeiro ataque, mesmo absorvido.
+  Dano direto de 3 por stack, teto 5, duração 2 renovável; contador reinicia no turno.
+- Debuffs vinculados a golpes só aplicam/renovam quando o golpe tira vida.
+  Escudo que absorva todo o dano impede a aplicação; receber Escudo preserva negativos.
+- Empacotamento: PyInstaller e Inno Setup em installer/ e workflow build-windows.
+  Paths de recursos e dados diferem no executável; preservar a configuração de
+  src/config/settings.py e a persistência em LOCALAPPDATA no jogo instalado.
+  Ver [build Windows](docs/build_windows.md).
+
+## 17. Altar de espólios pós-combate
+
+- `src/ui/post_combat_reward_view.py` desenha o cenário em `assets/ui/rewards/`, com procedência em `art_manifest.json`. Reutiliza moldura, padding e custo dinâmico da Loja/Altar, preview lateral e moldura prateada para uma cópia LV2 existente.
+- Carta Nova desbloqueia o tipo pelas regras da run. Materiais entram na reserva de evolução do tipo, respeitando o limite 9. Mostre a quantidade de cópias existentes e a reserva. Preserve as regras do motor, ouro, fragmentos, revanches e transações de save.
+- Brasas no cenário, runas e faíscas no hover, pulso dourado ao confirmar. A cena encaminha a decisão uma única vez após o pulso e conclui a escolha se a janela for fechada durante ele. Pular mantém o ouro conquistado.
+- Piloto sem slots reais em `testar_polimento_audio.bat recompensa`. Teste rápido com `--smoke` e testes de seleção, pulo, materiais e fechamento em `tests/test_post_combat_rewards.py`.
+- A vitória sobre Zanzara preserva a celebração e segue automaticamente para o epílogo depois de salvar a conclusão da campanha. O altar de espólios fica reservado aos demais encontros.
+
+## 18. Animações de derrota
+
+- Slime derrete e deixa uma poça. Morcego Sombrio cai e solta poeira e som ao tocar o chão. Vinimuth, Zanzara e a transição de Alvar para Tekks têm sequências próprias.
+- Os demais kits de campanha usam a reação de dano antes da pose final em `assets/enemies/defeat/`. Bípedes apoiam um joelho. Quadrúpedes cedem de acordo com a anatomia. Procedência em `art_manifest.json` e exportação em `devtools/prepare_enemy_defeats.py`.
+- Pilotos `testar_polimento_audio.bat derrotas-comuns` e `testar_polimento_audio.bat derrotas-chefes`. Use as setas para trocar o inimigo, Espaço para o golpe final e R para repetir.
+
+## 19. Áudio dos debuffs — 24/11/2026
+
+- Veneno e Sangramento aprovados no piloto. Veneno usa só a cauda corrosiva da Poção Venenosa. Sangramento usa só o escoamento da Adaga Sangrenta e toca com o aviso do debuff, após o som de contato.
+- Fogo e Queimadura usam a cauda de chama da Bola de Fogo, aprovada no piloto `testar_polimento_audio.bat queimadura`. Fonte e recorte em `docs/queimadura_debuff_chama_v2.json`.
+- Choque aprovado no piloto. Usa o mesmo OGG da Esfera Protetora, com identificador próprio no grupo de volume de dano e disparo quando a energia é reduzida. Piloto `testar_polimento_audio.bat debuffs`, tecla 3.
+- Rugido da Floresta aprovado no piloto com o som da Bola de Fogo no lançamento do avatar e o som comum na ativação. As três cartas especiais usam o feedback padrão ao entrar com o mouse nas cartas da mão.
+- Avanço dos diálogos aprovado com `ui.navigate` em volume reduzido. Epílogo aprovado com Jungle Tribe da batalha final até as últimas falas de Zanzara, saída gradual na tela preta e Lost Time, de Kevin MacLeod, a partir da primeira fala de Octav. Fonte, licença e conversão em `assets/audio/README.md`.
+- Abertura aprovada no piloto exclusivo `testar_polimento_audio.bat abertura`. The Last Stand toca no primeiro quadro. Jungle Chase entra quando Zanzara aparece no navio, no segundo quadro.
+- Guerreiro da Mata aprovado no piloto. Varredura do Mangual e Abalo da Floresta usam o mesmo OGG do Machado Quebra-Escudo, agendado 250 ms antes do contato para alinhar o transiente pesado e preservar a cauda de quebra. No piloto único, pressione 2 e use A ou S para comparar os golpes.
+- Game Over e vitória do tutorial aprovados no piloto. O brasão de derrota e o áudio original entram após o golpe fatal. O tutorial usa a fanfarra e o brasão padrão de vitória antes da tela de conclusão. No piloto único, use 6 para Game Over ou 7 e V para a vitória do tutorial.
+- Revisão em janela única com `testar_polimento_audio.bat polimento-final`. Teclas 1–8 alternam Rugido, Mangual, diálogos, abertura, epílogo, Game Over, tutorial e recompensa. Usa saves temporários. O teste rápido do piloto valida os disparos pelo mixer e as mudanças de contexto musical. A avaliação de timbre e volume é feita ouvindo o piloto.
+- Fechamento técnico de 24/11/2026 nesta branch: suíte completa isolada com 724 testes em 77 módulos, todos aprovados. O mixer dummy iniciou 84 efeitos e cinco trilhas, e a entrada real `main.py` abriu e desenhou o menu no teste automático. A conferência da campanha no jogo aberto é manual.

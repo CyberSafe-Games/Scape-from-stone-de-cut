@@ -1,12 +1,12 @@
 import pygame
 from src.ui.helpers import draw_text, draw_panel, wrap_text
-from src.models.entity import STACK_STATUS_DAMAGE, STACK_STATUS_LIMIT, BLEED_TRIGGER_LIMIT
+from src.models.entity import STACK_STATUS_DAMAGE, STACK_STATUS_LIMIT
 
 INFO = {
  'shock': ('Choque', 'Cada acúmulo retira 1 de energia no início do próximo turno e então expira.'),
  'fire': ('Fogo', '3 de dano por intensidade ao fim do turno; atinge Escudo. Máximo: 3 intensidades.'),
  'poison': ('Veneno', 'Causa dano à vida no fim do turno do afetado, ignorando Escudo.'),
- 'bleed': ('Sangramento', f'Causa dano à vida depois que o afetado causa dano à vida do alvo. Ignora Escudo e pode disparar até {BLEED_TRIGGER_LIMIT} vezes por turno.'),
+ 'bleed': ('Sangramento', 'O afetado sofre dano direto à vida no primeiro ataque que fizer no turno.'),
  'burn': ('Queimadura', 'Cada acúmulo causa 1 de dano direto à vida ao fim do turno; dura 3 turnos por aplicação.'),
  'vulnerable': ('Fragilidade', 'Recebe 25% a mais de dano de ataques; não amplifica efeitos de dano contínuo.'),
  'weak': ('Fraqueza', 'Causa 25% a menos de dano; a duração é contada em turnos do afetado.'),

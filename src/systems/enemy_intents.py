@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 import unicodedata
 from src.models.action import action_status_effects
-from src.models.entity import STACK_STATUS_DAMAGE, STACK_STATUS_LIMIT, STACK_STATUS_TURNS, BLEED_TRIGGER_LIMIT
+from src.models.entity import STACK_STATUS_DAMAGE, STACK_STATUS_LIMIT, STACK_STATUS_TURNS
 
 
 @dataclass(frozen=True)
@@ -70,7 +70,7 @@ def preview_intents(engine):
                 if key == 'bleed':
                     noun = 'stack' if potency == 1 else 'stacks'
                     text += (f' Aplica {potency} {noun} de Sangramento por {STACK_STATUS_TURNS} turnos. '
-                             f'Cada stack causa {STACK_STATUS_DAMAGE[key]} de dano direto após uma ação do alvo que cause dano à vida, até {BLEED_TRIGGER_LIMIT} vezes por turno.')
+                             f'Cada stack causa {STACK_STATUS_DAMAGE[key]} de dano direto no primeiro ataque do afetado em cada turno.')
                 elif key == 'poison':
                     noun = 'stack' if potency == 1 else 'stacks'
                     text += (f' Aplica {potency} {noun} de Veneno por {STACK_STATUS_TURNS} turnos. '

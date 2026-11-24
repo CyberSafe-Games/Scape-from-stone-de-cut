@@ -2,7 +2,7 @@
 import os
 import tempfile
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
@@ -127,7 +127,7 @@ class MerchantWorkshopTests(unittest.TestCase):
         self.scene.draw(self.surface)
         self.assertIsNone(self.scene._selected_copy())
 
-    def test_hover_preview_leaves_purchase_hit_target_active(self):
+    def test_hover_preview_closes_on_frame_or_purchase_button(self):
         name = next(n for n in AVAILABLE_CARD_NAMES if n not in ("Soco Simples", "Esfera Protetora"))
         p = self.data["progresso"]
         p["cartas_colecao"].remove(name)
@@ -138,8 +138,17 @@ class MerchantWorkshopTests(unittest.TestCase):
         self.scene = ShopScene(MagicMock(), self.window, self.assets, self.manager, self.data)
         from src.systems.shop_system import CARD_OFFERS
         self.scene._set_page(list(CARD_OFFERS).index(name) // self.scene.PAGE_SIZE)
-        self.window.get_virtual_mouse_pos.return_value = self.scene.card_rects[name].center
-        self.scene.draw(self.surface)
+        card_rect = self.scene.card_rects[name]
+        button_rect = self.scene.offer_rects[name]
+        preview = (748, 194, 424, 630)
+        with patch.object(self.scene.visuals, "card", wraps=self.scene.visuals.card) as draw_card:
+            for mouse, expanded in ((card_rect.center, True), (card_rect.topleft, False),
+                                    (card_rect.center, True), (button_rect.center, False)):
+                self.window.get_virtual_mouse_pos.return_value = mouse
+                draw_card.reset_mock()
+                self.scene.draw(self.surface)
+                self.assertEqual(any(call.args[2] == preview for call in draw_card.call_args_list),
+                                 expanded)
         self.click(self.scene.offer_rects[name])
         self.assertIn(name, self.data["progresso"]["cartas_colecao"])
         self.assertTrue(self.scene.message_positive)
