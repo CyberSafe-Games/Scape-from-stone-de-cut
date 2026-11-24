@@ -303,6 +303,7 @@ Estas decisões atualizam as descrições históricas de Zanzara e áudio acima:
 - Carta Nova desbloqueia o tipo pelas regras da run. Materiais entram na reserva de evolução do tipo, respeitando o limite 9. Mostre a quantidade de cópias existentes e a reserva. Preserve as regras do motor, ouro, fragmentos, revanches e transações de save.
 - Brasas no cenário, runas e faíscas no hover, pulso dourado ao confirmar. A cena encaminha a decisão uma única vez após o pulso e conclui a escolha se a janela for fechada durante ele. Pular mantém o ouro conquistado.
 - Piloto sem slots reais em `testar_polimento_audio.bat recompensa`. Teste rápido com `--smoke` e testes de seleção, pulo, materiais e fechamento em `tests/test_post_combat_rewards.py`.
+- A vitória sobre Zanzara preserva a celebração e segue automaticamente para o epílogo depois de salvar a conclusão da campanha. O altar de espólios fica reservado aos demais encontros.
 
 ## 18. Animações de derrota
 
@@ -313,6 +314,7 @@ Estas decisões atualizam as descrições históricas de Zanzara e áudio acima:
 ## 19. Áudio dos debuffs — 24/11/2026
 
 - Veneno e Sangramento aprovados no piloto. Veneno usa só a cauda corrosiva da Poção Venenosa. Sangramento usa só o escoamento da Adaga Sangrenta e toca com o aviso do debuff, após o som de contato.
+- Fogo e Queimadura usam a cauda de chama da Bola de Fogo, aprovada no piloto `testar_polimento_audio.bat queimadura`. Fonte e recorte em `docs/queimadura_debuff_chama_v2.json`.
 - Choque aprovado no piloto. Usa o mesmo OGG da Esfera Protetora, com identificador próprio no grupo de volume de dano e disparo quando a energia é reduzida. Piloto `testar_polimento_audio.bat debuffs`, tecla 3.
 - Rugido da Floresta aprovado no piloto com o som da Bola de Fogo no lançamento do avatar e o som comum na ativação. As três cartas especiais usam o feedback padrão ao entrar com o mouse nas cartas da mão.
 - Avanço dos diálogos aprovado com `ui.navigate` em volume reduzido. Epílogo aprovado com Jungle Tribe da batalha final até as últimas falas de Zanzara, saída gradual na tela preta e Lost Time, de Kevin MacLeod, a partir da primeira fala de Octav. Fonte, licença e conversão em `assets/audio/README.md`.

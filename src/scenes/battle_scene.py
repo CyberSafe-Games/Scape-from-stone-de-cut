@@ -9,7 +9,7 @@ from src.scenes.pause_menu_modal import PauseMenuModal
 from src.systems.combat_engine import CombatEngine
 from src.systems.game_preferences import enemy_windup_ms
 from src.config.preferences import ENEMY_SPEED_NORMAL
-from src.systems.save_manager import SaveError, is_test_save
+from src.systems.save_manager import SaveError
 from src.systems.campaign_progress import record_victory, record_road_victory
 from src.systems.territory_map import TERRITORIES
 from src.ui.card_view import CardView
@@ -84,8 +84,13 @@ class BattleScene(BaseScene):
 
     @property
     def _victory_ready(self):
-        return (self.engine.state == "victory" and self._outcome_elapsed is not None
+        return (self.engine.state == "victory" and not self._is_final_encounter(self.engine.level)
+                and self._outcome_elapsed is not None
                 and self._outcome_elapsed >= self.VICTORY_POSE_MS)
+
+    def _is_final_encounter(self, level):
+        return (getattr(self, "map_mode", False) and self.encounter_kind == "point"
+                and level == TERRITORIES[-1].level)
 
     @property
     def _game_over_ready(self):
@@ -379,7 +384,6 @@ class BattleScene(BaseScene):
             # Modo legado sem mapa: o motor ainda avança de andar sozinho.
             self._save_progress()
         elif event_name == "phase_complete":
-            # Uma fase só é concluída após a escolha (ou pulo) da recompensa.
             self._finalize_map_phase(kwargs["level"])
         elif event_name == "cemetery_swap":
             card = kwargs.get("new_card")
@@ -767,9 +771,11 @@ class BattleScene(BaseScene):
         if self._outcome_elapsed is not None:
             previous = self._outcome_elapsed
             self._outcome_elapsed += dt
-            if (state == "victory" and self._reward_gold
-                    and previous < self.VICTORY_POSE_MS <= self._outcome_elapsed):
-                self.play_ui_sound("gameplay.reward_gold", volume=0.45)
+            if state == "victory" and previous < self.VICTORY_POSE_MS <= self._outcome_elapsed:
+                if self._is_final_encounter(self.engine.level):
+                    self.engine.finish_map_phase()
+                elif self._reward_gold:
+                    self.play_ui_sound("gameplay.reward_gold", volume=0.45)
             return
         view = self.entity_view
         if view.player_action is not None or view.attacker is not None:
@@ -2076,9 +2082,9 @@ class BattleScene(BaseScene):
         """Grava vitória, recompensa e desbloqueio antes de trocar de cena."""
         if not self.map_mode or self.save_manager is None or self.save_data is None:
             return
-        final_boss = self.encounter_kind == "point" and level == TERRITORIES[-1].level
+        final_boss = self._is_final_encounter(level)
         if self.engine.is_replay:
-            if final_boss and is_test_save(self.save_data):
+            if final_boss:
                 self._show_final_cutscene()
             else:
                 self._return_to_map()
@@ -2131,6 +2137,9 @@ class BattleScene(BaseScene):
 
     def save_on_exit(self):
         """Salva ao fechar a janela, inclusive após um desbloqueio pendente."""
+        if self.engine.state == "victory" and self._is_final_encounter(self.engine.level):
+            self.engine.finish_map_phase()
+            return self.scene_manager.current_scene is not self
         if self.engine.state == "victory" and self.reward_view.pending:
             self._commit_reward(self.reward_view.take_confirmation())
             if self.scene_manager.current_scene is not self:

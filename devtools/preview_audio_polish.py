@@ -75,6 +75,7 @@ PILOTS = {
     "recompensa": ("Escolha, materiais e pulo", ("recompensa",)),
     "rugido": ("Impacto do Rugido da Floresta", ("rugido",)),
     "debuffs": ("Áudio dos debuffs", tuple(DEBUFF_SOUNDS)),
+    "queimadura": ("Cauda de chama da Queimadura", ("queimadura",)),
     "dialogos": ("Transição de texto", ("texto",)),
     "abertura": ("Trilha da abertura", ("intro",)),
     "trilha": ("Da floresta à invasão e ao epílogo", ("intro", "epilogo")),
@@ -83,6 +84,7 @@ PILOTS = {
     "derrota": ("Impacto e Game Over", ("derrota",)),
     "tutorial": ("Áudio no tutorial", ("tutorial", "tutorial-vitoria")),
     "polimento-final": ("Revisão de áudio", tuple(REVIEW_CASES)),
+    "loja-epilogo": ("Loja e epílogo", ("loja", "final-musical")),
 }
 
 
@@ -107,6 +109,7 @@ def main():
     from src.core.window import WindowManager
     from src.scenes.battle_scene import BattleScene
     from src.scenes.cutscene_scene import CutsceneScene
+    from src.scenes.shop_scene import ShopScene
     from src.scenes.tutorial_scene import TutorialScene
     from src.systems.card_catalog import CARD_BY_NAME
     from src.systems.enemy_factory import create_alvaro_tex, create_point_enemy, create_road_enemy, create_zanzara
@@ -149,6 +152,14 @@ def main():
 
     def setup(case, folder):
         audio.set_music_volume(0 if case in DEBUFF_SOUNDS or case == "texto" else MUSIC_VOLUME)
+        if case == "loja":
+            manager = SaveManager(tempfile.mkdtemp(dir=folder))
+            data = manager.create_save("preview")
+            data["progresso"]["moedas"] = 1000
+            manager.save(data)
+            scene = ShopScene(scenes, window, assets, manager, data)
+            scenes.change_scene(scene)
+            return scene
         if case in CUTSCENE_CASES:
             frames = FINAL_CUTSCENE if case == "epilogo" else INTRO_CUTSCENE
             scene = CutsceneScene(scenes, window, assets, frames, lambda: None)
@@ -254,6 +265,12 @@ def main():
             if args.smoke:
                 for case in cases:
                     scene = setup(case, folder)
+                    if case == "loja":
+                        name = next(iter(scene.card_rects))
+                        for mouse in (scene.card_rects[name].center, scene.offer_rects[name].center):
+                            with patch.object(window, "get_virtual_mouse_pos", return_value=mouse):
+                                scenes.draw(window.screen)
+                        continue
                     if case == "rugido":
                         assert scene.engine.active_ultimate_id == "rugido_da_floresta"
                         assert scene.engine.ultimate_ready
@@ -293,7 +310,7 @@ def main():
                         assert channels and all(channel is not None for channel in channels), (case, channels)
                         if case in DEBUFF_SOUNDS:
                             assert len(channels) == 1, (case, channels)
-                    if case in LETHAL_ARROW_CASES and case != "tekks":
+                    if case in LETHAL_ARROW_CASES and case not in ("tekks", "final-musical"):
                         assert scene._victory_ready and scene._reward_gold > 0, case
                     if case in ("vinimuth", "tutorial-vitoria"):
                         assert checked_banner
@@ -315,15 +332,10 @@ def main():
                         assert contexts == {"final_boss", None, "farewell"}, contexts
                     if case == "final-musical":
                         assert scene.music_context == "final_boss"
-                        view = scene.reward_view
-                        choice = view.click(view.SKIP.center, scene.engine, scene._reward_progress())
-                        view.confirm(choice)
-                        with patch.object(audio, "play_music") as restart, patch.object(audio, "stop_music") as stop:
-                            scenes.update(view.CONFIRM_MS)
-                            assert isinstance(scenes.current_scene, CutsceneScene)
-                            assert scenes.current_scene.music_context == "final_boss"
-                            restart.assert_not_called()
-                            stop.assert_not_called()
+                        assert not scene._victory_ready
+                        assert isinstance(scenes.current_scene, CutsceneScene)
+                        assert scenes.current_scene.music_context == "final_boss"
+                        assert scene.save_data["progresso"]["estado"] == "concluida"
                 if args.pilot == "polimento-final":
                     draw_shortcuts(window.screen)
                 print(f"Smoke aprovado: {args.pilot}")
@@ -381,7 +393,7 @@ def main():
                         if event.key == pygame.K_SPACE and show_shortcuts:
                             show_shortcuts = False
                             continue
-                        if (event.key == pygame.K_SPACE and case not in CUTSCENE_CASES
+                        if (event.key == pygame.K_SPACE and case not in (*CUTSCENE_CASES, "loja")
                                 and scenes.current_scene is scene):
                             if not played:
                                 trigger(case, scene, enemy_attack=int(case == "mangual-abalo"))
@@ -397,19 +409,23 @@ def main():
                 if len(cases) > 1:
                     controls += (f"  ·  1–{len(cases)} ouvir efeitos" if case in DEBUFF_SOUNDS else
                                  f"  ·  ←/→ escolher teste ({index + 1}/{len(cases)})")
-                if case == "final-musical":
+                if case == "loja":
+                    controls += "  ·  1 Loja  ·  2 Zanzara  ·  Passe na carta e depois em Comprar"
+                elif case == "final-musical":
                     if scenes.current_scene is not scene:
                         controls += "  ·  Espaço avança"
-                    elif scene._victory_ready:
-                        controls += "  ·  Escolha ou pule a recompensa para seguir"
-                    else:
+                    elif not played:
                         controls += "  ·  Espaço executa o golpe final"
+                    if args.pilot == "loja-epilogo":
+                        controls += "  ·  1 Loja  ·  2 Zanzara"
                 elif case in ("tutorial", "tutorial-vitoria"):
                     controls += "  ·  Espaço ataque do Slime  ·  V vitória"
                 elif case.startswith("mangual"):
                     controls += "  ·  A Varredura  ·  S Abalo"
                 elif case in ("golem-plasma", "golem-escudo"):
                     controls += "  ·  1 Plasma  ·  2 Escudo  ·  Espaço executa"
+                elif case == "queimadura":
+                    controls += "  ·  Espaço encerra o turno e dispara a Queimadura"
                 else:
                     controls += "  ·  Espaço avançar" if case in CUTSCENE_CASES else "  ·  Espaço executar"
                 if args.pilot == "polimento-final":

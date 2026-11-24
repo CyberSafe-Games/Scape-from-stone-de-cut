@@ -52,7 +52,7 @@ def configure_audio(audio_manager):
             "gameplay.status.poison_tick": "veneno_dano_corrosivo_v1.ogg",
             "gameplay.status.bleed_tick": "sangramento_debuff_escoamento_v1.ogg",
             "gameplay.status.shock_tick": "esfera_protetora_leve_curta.ogg",
-            "gameplay.status.burn_tick": "queimadura_debuff_brasas_v1.ogg",
+            "gameplay.status.burn_tick": "queimadura_debuff_chama_v2.ogg",
             "gameplay.potion.weaken": "pocao_fragilizante_composta.ogg",
             "gameplay.skill.dispel": "amuleto_dissipador_ativacao.ogg",
             "gameplay.skill.mask": "mascara_ancestral_canto_curto.ogg",

@@ -2,12 +2,14 @@
 
 import tempfile
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pygame
 
 from src.scenes.battle_scene import BattleScene
+from src.scenes.cutscene_scene import CutsceneScene
 from src.systems.save_manager import SaveManager
+from src.systems.territory_map import ROAD_FIGHTS, TERRITORIES, complete
 
 
 class PostCombatRewardTests(unittest.TestCase):
@@ -102,3 +104,36 @@ class PostCombatRewardTests(unittest.TestCase):
         self.assertEqual(scene.engine.state, "victory")
         self.assertEqual(scene._reward_gold, self.scene._reward_gold)
         self.assertEqual(scene.engine.player.coins, self.initial_gold + scene._reward_gold)
+
+    def test_final_victory_saves_and_opens_epilogue_without_an_offer(self):
+        self.data["progresso"]["combat_snapshot"] = None
+        for territory in TERRITORIES[:-1]:
+            complete(self.data, territory.id)
+        final = TERRITORIES[-1]
+        self.data["progresso"]["encontros_por_territorio"][final.id] = ROAD_FIGHTS
+        initial = self.data["progresso"]
+        owned = list(initial["cartas_colecao"])
+        gold = initial["moedas"]
+        self.scenes.reset_mock()
+        scene = BattleScene(self.scenes, self.window, MagicMock(), self.manager,
+                            self.data, map_mode=True, selected_level=final.level,
+                            encounter_kind="point")
+        scene.boss_dialogue = None
+        scene.engine.enemy.hp = 0
+        scene.engine._on_enemy_defeated()
+        scene._outcome_elapsed = 0
+        scene.reward_view = MagicMock()
+        scene.update(scene.VICTORY_POSE_MS - 1)
+        self.scenes.change_scene.assert_not_called()
+        with patch.object(CutsceneScene, "_build_layer"):
+            scene.update(1)
+        self.assertFalse(scene._victory_ready)
+        scene.reward_view.update.assert_not_called()
+        self.scenes.change_scene.assert_called_once()
+        self.assertIsInstance(self.scenes.change_scene.call_args.args[0], CutsceneScene)
+        saved = self.manager.load_save("slot_1")
+        self.assertEqual(saved["progresso"]["estado"], "concluida")
+        self.assertEqual(saved["progresso"]["cartas_colecao"], owned)
+        self.assertEqual(saved["progresso"]["moedas"], gold + scene._reward_gold)
+        self.assertIsNone(saved["progresso"]["combat_snapshot"])
+        self.assertEqual(saved["perfil"]["campanhas_concluidas"], 1)

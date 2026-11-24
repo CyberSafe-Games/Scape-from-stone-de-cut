@@ -91,12 +91,21 @@ class MerchantWorkshopView:
         if image is not None:
             surface.blit(image, pygame.Rect(rect).topleft)
 
+    @staticmethod
+    def _framed_card_inner(rect):
+        rect = pygame.Rect(rect)
+        padding = max(12, round(rect.width * .055))
+        return rect.inflate(-padding * 2, -padding * 2)
+
+    def framed_card_image_rect(self, card, rect):
+        inner = self._framed_card_inner(rect)
+        image = self._card_image(card, inner.size)
+        return image.get_rect(center=inner.center) if image is not None else inner
+
     def framed_card(self, surface, card, rect, selected=False):
         """Reserva uma margem real entre a arte da carta e o ornamento externo."""
         rect = pygame.Rect(rect)
-        padding = max(12, round(rect.width * .055))
-        inner = rect.inflate(-padding * 2, -padding * 2)
-        self.card(surface, card, inner, selected)
+        self.card(surface, card, self._framed_card_inner(rect), selected)
         # Desenha o ornamento por último para manter todos os seus detalhes visíveis.
         self.frame(surface, rect.inflate(24, 28))
 
@@ -107,21 +116,24 @@ class MerchantWorkshopView:
             rotated.set_alpha(65)
             surface.blit(rotated, rotated.get_rect(center=center))
 
-    def card(self, surface, card, rect, selected=False):
-        """Enquadra a carta completa e compõe custo e regras do modelo atual."""
-        rect = pygame.Rect(rect)
-        key = (card.name, card.description, card.cost, getattr(card, "level", 1), rect.size)
+    def _card_image(self, card, size):
+        key = (card.name, card.description, card.cost, getattr(card, "level", 1), size)
         if key not in self.cards:
             image = self.assets.get_card_image(
                 card.name, level=getattr(card, "level", 1),
                 cost=card.cost, description=card.description)
             if image is not None:
-                scale = min(rect.width / image.get_width(), rect.height / image.get_height())
+                scale = min(size[0] / image.get_width(), size[1] / image.get_height())
                 self.cards[key] = pygame.transform.smoothscale(
                     image, (round(image.get_width() * scale), round(image.get_height() * scale)))
             else:
                 self.cards[key] = None
-        image = self.cards[key]
+        return self.cards[key]
+
+    def card(self, surface, card, rect, selected=False):
+        """Enquadra a carta completa e compõe custo e regras do modelo atual."""
+        rect = pygame.Rect(rect)
+        image = self._card_image(card, rect.size)
         if selected:
             glow = pygame.Surface((rect.width + 32, rect.height + 32), pygame.SRCALPHA)
             alpha = round(70 + 25 * math.sin(self.elapsed / 250))
