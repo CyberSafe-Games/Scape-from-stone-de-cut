@@ -23,8 +23,39 @@ class MusicRoutingTests(unittest.TestCase):
 
     def test_victory_and_defeat_leave_space_for_existing_stingers(self):
         for state in ('victory','game_over','phase_complete'):
-            self.assertIsNone(self.scene(create_zanzara(),state).music_context)
+            scene = self.scene(create_alvaro_tex(), state)
+            if state != 'phase_complete':
+                self.assertEqual(scene.music_context, 'boss')
+                scene._outcome_elapsed = 0
+            self.assertIsNone(scene.music_context)
         self.assertEqual(BaseScene.music_context.fget(None),'menu')
+
+    def test_zanzara_track_continues_until_the_black_frame(self):
+        from src.config.cutscenes import FINAL_CUTSCENE, INTRO_CUTSCENE
+
+        self.assertEqual(INTRO_CUTSCENE[0]["music_context"], "battle")
+        self.assertEqual(INTRO_CUTSCENE[1]["music_context"], "boss")
+        audio = MagicMock()
+        manager = SceneManager(audio)
+        scene = self.scene(create_zanzara())
+        scene.update = MagicMock()
+        manager.change_scene(scene)
+        for state in ("victory", "phase_complete"):
+            scene.engine.state = state
+            scene._outcome_elapsed = 0
+            manager.update(16)
+        for frame in FINAL_CUTSCENE[:2]:
+            manager.change_scene(SimpleNamespace(music_context=frame["music_context"]))
+        audio.play_music.assert_called_once()
+        audio.stop_music.assert_not_called()
+        manager.change_scene(SimpleNamespace(music_context=FINAL_CUTSCENE[2]["music_context"]))
+        audio.stop_music.assert_called_once_with(fade_ms=350)
+
+    def test_zanzara_game_over_still_releases_the_music(self):
+        scene = self.scene(create_zanzara(), "game_over")
+        self.assertEqual(scene.music_context, "final_boss")
+        scene._outcome_elapsed = 0
+        self.assertIsNone(scene.music_context)
 
     def test_menu_to_map_does_not_restart_music(self):
         audio=MagicMock();manager=SceneManager(audio)
@@ -60,7 +91,9 @@ class MusicRoutingTests(unittest.TestCase):
         manager.update(16)
         self.assertEqual(audio.play_music.call_count,1)
         self.assertEqual(audio.play_music.call_args.args,('music/chefes_jungle_chase_v2.ogg',))
-        scene.engine.state='game_over';manager.update(16)
+        scene.engine.state = 'game_over'
+        scene._outcome_elapsed = 0
+        manager.update(16)
         audio.stop_music.assert_called_once_with(fade_ms=350)
         manager.update(1000)
         self.assertEqual(audio.play_music.call_count,1)

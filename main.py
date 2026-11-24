@@ -19,24 +19,7 @@ from src.scenes.menu_scene import MenuScene
 from src.ui.fps_counter import draw_fps
 
 
-def main():
-    """Ponto de entrada principal da aplicação.
-
-    Inicializa o motor Pygame, os gerenciadores centrais e executa o ciclo de vida do jogo.
-    """
-    pygame.init()
-
-    # Preferências globais do computador (áudio, vídeo e jogo), independentes
-    # dos slots de save.
-    preferences = GamePreferences()
-
-    # O jogo abre em janela 1280x720 e renderiza em Full HD (1920x1080).
-    # F11 alterna entre tela cheia e a janela 1280x720; F10 alterna a janela
-    # entre 1280x720 e o maior tamanho 16:9 que cabe na tela.
-    window_manager = WindowManager(WIDTH, HEIGHT, TITLE)
-    preferences.apply_video(window_manager)
-    asset_manager = AssetManager()
-    audio_manager = AudioManager(music_volume=MUSIC_VOLUME)
+def configure_audio(audio_manager):
     audio_manager.register_sounds(
         {
             "ui.click": "ui/click.ogg",
@@ -47,6 +30,7 @@ def main():
             "gameplay.ultimate_activate": "ultimate_xamanico_opcao_2.ogg",
             "gameplay.game_over": "game_over_risada_apos_fala_v4.ogg",
             "gameplay.victory": "victory_fanfare_2_curta.ogg",
+            "gameplay.reward_gold": "chip-lay-1.ogg",
             "gameplay.attack.punch": "soco_impacto_suave_v2.ogg",
             "gameplay.attack.dagger": "adaga_corte_sangramento.ogg",
             "gameplay.attack.blowgun": "freesound_community-052708_blowgun-39165_sync.ogg",
@@ -65,6 +49,10 @@ def main():
             "gameplay.potion.heal": "pocao_cura_sync.ogg",
             "gameplay.potion.cleanse": "pocao_purificadora_sync.ogg",
             "gameplay.potion.poison": "pocao_venenosa_corrosao.ogg",
+            "gameplay.status.poison_tick": "veneno_dano_corrosivo_v1.ogg",
+            "gameplay.status.bleed_tick": "sangramento_debuff_escoamento_v1.ogg",
+            "gameplay.status.shock_tick": "esfera_protetora_leve_curta.ogg",
+            "gameplay.status.burn_tick": "queimadura_debuff_brasas_v1.ogg",
             "gameplay.potion.weaken": "pocao_fragilizante_composta.ogg",
             "gameplay.skill.dispel": "amuleto_dissipador_ativacao.ogg",
             "gameplay.skill.mask": "mascara_ancestral_canto_curto.ogg",
@@ -124,6 +112,27 @@ def main():
     # Ganho por efeito, multiplicado pelos volumes geral, de SFX e da chamada.
     for sound_id, gain in SOUND_VOLUMES.items():
         audio_manager.set_sound_volume(sound_id, gain)
+
+
+def main():
+    """Ponto de entrada principal da aplicação.
+
+    Inicializa o motor Pygame, os gerenciadores centrais e executa o ciclo de vida do jogo.
+    """
+    pygame.init()
+
+    # Preferências globais do computador (áudio, vídeo e jogo), independentes
+    # dos slots de save.
+    preferences = GamePreferences()
+
+    # O jogo abre em janela 1280x720 e renderiza em Full HD (1920x1080).
+    # F11 alterna entre tela cheia e a janela 1280x720; F10 alterna a janela
+    # entre 1280x720 e o maior tamanho 16:9 que cabe na tela.
+    window_manager = WindowManager(WIDTH, HEIGHT, TITLE)
+    preferences.apply_video(window_manager)
+    asset_manager = AssetManager()
+    audio_manager = AudioManager(music_volume=MUSIC_VOLUME)
+    configure_audio(audio_manager)
     audio_preferences = preferences
     audio_preferences.apply(audio_manager)
     scene_manager = SceneManager(audio_manager=audio_manager, audio_preferences=audio_preferences)

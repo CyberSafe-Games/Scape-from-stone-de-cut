@@ -118,7 +118,10 @@ class FinalVisualTests(unittest.TestCase):
         scene._draw_victory=MagicMock()
         scene.draw(pygame.Surface((1920,1080)))
         scene._draw_victory.assert_not_called()
-        scene.entity_view.update(2200)
+        scene.update(2200)
+        scene.draw(pygame.Surface((1920,1080)))
+        scene._draw_victory.assert_not_called()
+        scene.update(scene.VICTORY_POSE_MS)
         scene.draw(pygame.Surface((1920,1080)))
         scene._draw_victory.assert_called_once()
 

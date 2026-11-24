@@ -1,0 +1,16 @@
+{
+  "sangramento": {
+    "fonte": "assets/audio/adaga_corte_sangramento.ogg",
+    "sha256_fonte": "1cb26bd79515f02cf3d78fcbe07ea0cf96deaeafd8e02c3d6dd94b359de590d5",
+    "derivado": "assets/audio/sangramento_debuff_escoamento_v1.ogg",
+    "sha256_derivado": "d9725975873a8ef0eed693048a388dcca2f5781dd0873d82949027b7a3ad1275",
+    "filtros_ffmpeg": "atrim=start=0.48:end=1.26,asetpts=PTS-STARTPTS,highpass=f=75,afade=t=in:d=0.035,afade=t=out:st=0.60:d=0.18,volume=0.87"
+  },
+  "choque": {
+    "fonte": "assets/audio/esfera_escudo_v2_continuacao_natural.ogg",
+    "sha256_fonte": "0917cef87ea8a3b924d0719417835ad6e427af274ecb3dadcedb223fd1c48980",
+    "derivado": "assets/audio/choque_debuff_campo_estatico_v1.ogg",
+    "sha256_derivado": "3ae965b1790d69903c558c031358eedd8aa24d14784aced26f13005df1d11e6e",
+    "filtros_ffmpeg": "atrim=start=0.49:end=1.13,asetpts=PTS-STARTPTS,highpass=f=750,lowpass=f=6300,afade=t=in:d=0.055,afade=t=out:st=0.40:d=0.24,volume=0.72"
+  }
+}

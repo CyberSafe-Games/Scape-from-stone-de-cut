@@ -53,6 +53,8 @@ class FinalCutsceneTests(unittest.TestCase):
             for index in range(len(images)):
                 scene.update(500)
                 self.assertEqual(scene.index, index)
+                if index in (2, 3):
+                    self.assertIsNone(scene.music_context)
                 if images[index] is None:
                     surface = pygame.Surface((32, 32))
                     surface.fill("white")
@@ -62,6 +64,8 @@ class FinalCutsceneTests(unittest.TestCase):
                 dialogues = scene.scenes[index]["dialogues"]
                 for speaker, line in dialogues:
                     scene.update(scene.DIALOGUE_DELAY_MS)
+                    if index == 3:
+                        self.assertEqual(scene.music_context, "farewell")
                     self.assertEqual(scene._current_dialogue(), (speaker, line))
                     scene.update(1000 * len(line))
                     scene.handle_event(event)

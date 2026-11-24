@@ -15,6 +15,8 @@ from src.systems.territory_map import TERRITORIES
 from src.ui.card_view import CardView
 from src.ui.entity_view import EntityView
 from src.ui.floating_text import FloatingTextManager
+from src.ui.victory_banner import build_outcome_banner, draw_victory_embers
+from src.ui.post_combat_reward_view import PostCombatRewardView
 from src.ui.coin_hud import CoinHUD
 from src.ui.energy_hud import EnergyHUD
 from src.ui.battle_hud import BattleHUD
@@ -33,6 +35,7 @@ from src.systems.common_animation_kits import COMMON_KITS
 from src.systems.common_enemy_audio import (
     BASIC_BOSS_ATTACK_SOUNDS, COMMON_ATTACK_SOUNDS, COMMON_SUPPORT_SOUNDS, SOUND_WINDOWS_MS,
     BOSS_ATTACK_SOUNDS, BOSS_SUPPORT_SOUNDS, BOSS_ULTIMATE_SOUNDS,
+    SHIELD_BREAK_IMPACT_MS,
 )
 from src.ui.helpers import (
     draw_text,
@@ -59,6 +62,7 @@ from src.config.layout import (
     PLAYER_X,
     ENEMY_X,
     POST_ENEMY_PAUSE,
+    VICTORY_FRAME_MS,
 )
 
 
@@ -67,14 +71,37 @@ class BattleScene(BaseScene):
 
     boss_dialogue = None
     preferences = None
+    _outcome_elapsed = None
+    _reward_gold = 0
+    _fall_elapsed = None
+    _status_audio = ()
+    BLEED_FEEDBACK_DELAY_MS = 400
+    _ultimate_enemy_snapshot = None
+    victory_sound = "gameplay.victory"
+    VICTORY_POSE_MS = 12 * VICTORY_FRAME_MS
+    VICTORY_BANNER_MS = 6 * VICTORY_FRAME_MS
+    ENEMY_FALL_MS = 420
+
+    @property
+    def _victory_ready(self):
+        return (self.engine.state == "victory" and self._outcome_elapsed is not None
+                and self._outcome_elapsed >= self.VICTORY_POSE_MS)
+
+    @property
+    def _game_over_ready(self):
+        return self.engine.state == "game_over" and self._outcome_elapsed is not None
+
 
     @property
     def music_context(self):
-        if self.engine.state in ('game_over', 'victory', 'phase_complete'):
+        state = self.engine.state
+        if state == 'game_over' and self._outcome_elapsed is not None:
             return None
         enemy = self.engine.enemy
         if getattr(enemy, 'is_final_boss', False) or enemy.name.lower() == 'zanzara':
             return 'final_boss'
+        if state == 'phase_complete' or (state == 'victory' and self._outcome_elapsed is not None):
+            return None
         if getattr(enemy, 'is_miniboss', False) or getattr(enemy, 'boss_id', None):
             return 'boss'
         return 'battle'
@@ -147,27 +174,25 @@ class BattleScene(BaseScene):
         self.menu_button_rect = pygame.Rect(WIDTH - 162, 27, 129, 42)
         self.end_turn_rect = pygame.Rect(WIDTH - 180, HEIGHT - 198, 150, 150)
         self.cemetery_button_rect = pygame.Rect(42, HEIGHT - 231, 138, 186)
-        self.skip_reward_rect = pygame.Rect(WIDTH // 2 - 90, HEIGHT - 150, 180, 60)
         self.ultimate_button_rect = pygame.Rect(0, 0, 0, 0)
         self.ultimate_hand_rect = None
         self._hovered_hand_card = None
         self._last_card_hover_sound_at = -120
-        self.material_page = 0
-        self.material_chooser = False
-        self.material_button = pygame.Rect(WIDTH // 2 - 330, HEIGHT - 285, 660, 66)
-        self.material_rects = {}
+        self.reward_view = PostCombatRewardView(asset_manager)
         self._logical_saved = None
         self._save_failed = False
         self.new_run_rect = pygame.Rect(WIDTH // 2 - 220, HEIGHT // 2 + 145, 440, 66)
         if self.map_mode:
             if self.engine.state == 'boss_transition':
                 self._phase_transition_pending = True
+            if self.engine.state == 'victory':
+                self._reward_gold = self.engine.victory_gold()
             self._persist_logical_state()
 
     def _handle_combat_event(self, event_name, **kwargs):
         """Reage a eventos emitidos pelo motor de combate."""
         ultimate = ULTIMATE_ANIMATIONS.get(self.entity_view.player_action)
-        if ultimate and event_name in ("floating_text", "coin_drop"):
+        if ultimate and event_name == "floating_text":
             self._ultimate_events.append(
                 (ultimate.duration * ultimate.impact, event_name, kwargs)
             )
@@ -184,14 +209,14 @@ class BattleScene(BaseScene):
             self._boss_events.append((impact, kwargs))
             return
         if event_name == "game_over":
-            self.play_ui_sound("gameplay.game_over")
             if getattr(self, 'map_mode', False) and self.save_manager and not self.engine.is_replay:
                 ok, message = self.save_manager.end_run(self.save_data, self.engine.level)
                 self._save_failed = not ok
                 if not ok:
                     self.engine.show_message(message, 6000)
-        elif event_name == "victory":
-            self.play_ui_sound("gameplay.victory")
+        elif event_name == "status_trigger":
+            self._status_audio = (*self._status_audio, (kwargs["status"], kwargs["target"],
+                                                        kwargs.get("damage"), None))
         elif event_name == "boss_phase_transition":
             self._phase_transition_pending = True
         elif event_name == "boss_phase_started":
@@ -328,11 +353,15 @@ class BattleScene(BaseScene):
                         self.entity_view.player_action_duration + 600,
                     )
             self._ultimate_clock = 0
-            self._ultimate_enemy_snapshot = (
-                deepcopy(self.engine.enemy)
-                if kwargs.get("action") == "Rugido da Floresta"
-                else None
-            )
+            self._ultimate_enemy_snapshot = None
+            if kwargs.get("action") == "Rugido da Floresta":
+                rugido = ULTIMATE_ANIMATIONS["Rugido da Floresta"]
+                self._ultimate_enemy_snapshot = deepcopy(self.engine.enemy)
+                self._pending_attack_sound = (
+                    "Rugido da Floresta", rugido.duration * rugido.release,
+                    "gameplay.attack.fireball", None,
+                )
+                self._attack_latest_start_ms = rugido.duration * rugido.impact
         elif event_name == "enemy_action":
             self.entity_view.trigger_enemy_action(
                 kwargs.get("action"),
@@ -344,8 +373,9 @@ class BattleScene(BaseScene):
                 kwargs["x"], kwargs["y"], kwargs["text"], kwargs["color"]
             )
         elif event_name == "coin_drop":
-            self.coin_hud.spawn_coins(kwargs["amount"], kwargs["x"], kwargs["y"])
+            self._reward_gold = kwargs["amount"]
         elif event_name == "checkpoint":
+            self._reset_outcome()
             # Modo legado sem mapa: o motor ainda avança de andar sozinho.
             self._save_progress()
         elif event_name == "phase_complete":
@@ -380,8 +410,6 @@ class BattleScene(BaseScene):
             or getattr(enemy, "boss_id", None) is not None
             or name in KITS
         )
-        if getattr(self, "overlay", None) is not None and self.overlay.is_active:
-            return
         if is_ultimate:
             if not is_boss or not is_attack:
                 return
@@ -513,7 +541,15 @@ class BattleScene(BaseScene):
                 name, action, is_attack, duration * view.enemy_ranged_attack[1],
                 "gameplay.attack.arrow_launch",
             ))
-        self._pending_enemy_audio.append((name, action, is_attack, duration * fraction, sound_id))
+        if is_attack and name == "golem das ruínas" and action == "atk1":
+            self._pending_enemy_audio.append((
+                name, action, is_attack, duration * view.enemy_ranged_attack[1],
+                "gameplay.boss.goblin.beam",
+            ))
+        start = duration * fraction
+        if sound_id == "gameplay.attack.shield_break":
+            start = max(0, start - SHIELD_BREAK_IMPACT_MS)
+        self._pending_enemy_audio.append((name, action, is_attack, start, sound_id))
 
     def update(self, dt):
         if getattr(self, 'map_mode', False) and not self._persist_logical_state():
@@ -523,6 +559,12 @@ class BattleScene(BaseScene):
             if self.boss_dialogue.finished:
                 self.boss_dialogue = None
             return
+        reward_view = getattr(self, "reward_view", None)
+        if self._victory_ready and reward_view is not None:
+            choice = reward_view.update(dt)
+            if choice:
+                self._commit_reward(choice)
+                return
         self.floating_texts.set_enabled(self._damage_numbers_enabled())
         pending_attack = getattr(self, "_pending_attack_sound", None)
         if pending_attack is not None:
@@ -623,12 +665,12 @@ class BattleScene(BaseScene):
                     kwargs["x"], kwargs["y"] - offset, kwargs["text"], kwargs["color"]
                 )
                 text_offsets[key] = offset + 35
-            else:
-                self.coin_hud.spawn_coins(kwargs["amount"], kwargs["x"], kwargs["y"])
         self._ultimate_events = pending
         spec = ULTIMATE_ANIMATIONS.get(self.entity_view.player_action)
         if spec is None or self._ultimate_clock >= spec.duration * spec.impact:
             self._ultimate_enemy_snapshot = None
+        self._update_status_audio(dt)
+        self._update_outcome(dt)
 
         # The finishing card/ultimate completes before the supplied eight-frame fall.
         if self.engine.state == "boss_transition":
@@ -642,6 +684,7 @@ class BattleScene(BaseScene):
                 self.entity_view.enemy_flash = 0
                 self.entity_view.pending_enemy_hit_at = None
                 self.entity_view.phase_transition_timer = 0
+                self.play_ui_sound("gameplay.attack.charge_impact", volume=0.45)
             if (
                 self.entity_view.phase_transition_timer is not None
                 and self.entity_view.phase_transition_timer >= TRANSITION_MS
@@ -675,6 +718,84 @@ class BattleScene(BaseScene):
                 self.engine.finish_enemy_turn()
         if getattr(self, 'map_mode', False):
             self._persist_logical_state()
+
+    def _reset_outcome(self):
+        self._outcome_elapsed = None
+        self._fall_elapsed = None
+        self._reward_gold = 0
+        self._status_audio = ()
+        self.entity_view.reset_enemy_defeat()
+        if hasattr(self, "reward_view"):
+            self.reward_view = PostCombatRewardView(self.asset_manager)
+
+    def _update_status_audio(self, dt):
+        view = self.entity_view
+        sounds = {
+            "poison": ("gameplay.status.poison_tick", 0.60),
+            "bleed": ("gameplay.status.bleed_tick", 1.0),
+            "shock": ("gameplay.status.shock_tick", 1.0),
+            "burn": ("gameplay.status.burn_tick", 1.0),
+        }
+        waiting = []
+        for status, target, damage, remaining in self._status_audio:
+            if status == "bleed" and (
+                (target == "player" and view.pending_enemy_hit_at is not None)
+                or (target == "enemy" and view.pending_player_hit_at is not None)
+            ):
+                waiting.append((status, target, damage, remaining))
+                continue
+            if status == "bleed":
+                remaining = self.BLEED_FEEDBACK_DELAY_MS if remaining is None else remaining - dt
+                if remaining > 0:
+                    waiting.append((status, target, damage, remaining))
+                    continue
+                if damage is not None:
+                    if target == "player":
+                        self.engine.spawn_player_text(f"Sangramento -{damage}", RED)
+                    else:
+                        self.engine.spawn_enemy_text(f"Sangramento -{damage}", RED)
+            if status == "poison":
+                view.trigger_flash(target)
+            sound_id, volume = sounds[status]
+            self.play_ui_sound(sound_id, volume=volume)
+        self._status_audio = tuple(waiting)
+
+    def _update_outcome(self, dt):
+        state = self.engine.state
+        if state not in ("victory", "game_over"):
+            return
+        if self._outcome_elapsed is not None:
+            previous = self._outcome_elapsed
+            self._outcome_elapsed += dt
+            if (state == "victory" and self._reward_gold
+                    and previous < self.VICTORY_POSE_MS <= self._outcome_elapsed):
+                self.play_ui_sound("gameplay.reward_gold", volume=0.45)
+            return
+        view = self.entity_view
+        if view.player_action is not None or view.attacker is not None:
+            return
+        if state == "game_over":
+            self._outcome_elapsed = 0
+            self.play_ui_sound("gameplay.game_over")
+            return
+        if view.pending_enemy_hit_at is not None or view.enemy_flash > 0:
+            return
+        bat = self.engine.enemy.name.lower() == "morcego sombrio"
+        fall_progress = view.enemy_fall_progress or 0
+        if self._fall_elapsed is None:
+            self._fall_elapsed = 0
+            if not bat:
+                self.play_ui_sound("gameplay.attack.charge_impact", volume=0.45)
+        else:
+            self._fall_elapsed += dt
+        done = view.advance_enemy_defeat(self.engine.enemy, self._fall_elapsed, self.ENEMY_FALL_MS)
+        if bat and fall_progress < view.BAT_LANDING_FRACTION <= view.enemy_fall_progress:
+            self.play_ui_sound("gameplay.attack.charge_impact", volume=0.45)
+        if not done:
+            return
+        self._outcome_elapsed = 0
+        if self.victory_sound:
+            self.play_ui_sound(self.victory_sound)
 
     def _persist_logical_state(self):
         """Salva só quando a consequência lógica mudou, nunca por quadro visual."""
@@ -808,6 +929,17 @@ class BattleScene(BaseScene):
     def _get_battle_hand_rects(self):
         total = len(self.engine.hand) + (1 if self._ultimate_in_hand() else 0)
         return CardView.get_hand_rects(total)
+
+    def _hand_card_at(self, position):
+        if self.engine.state != "player_turn":
+            return None
+        rects = self._get_battle_hand_rects()
+        for card, rect in zip(self.engine.hand, rects):
+            if rect.collidepoint(position):
+                return card
+        if len(rects) > len(self.engine.hand) and rects[-1].collidepoint(position):
+            return self.engine.ultimate
+        return None
 
     def _draw_ultimate_hand_card(self, surface, rect, hovered=False):
         shadow = pygame.Surface((rect.width + 21, rect.height + 21), pygame.SRCALPHA)
@@ -1151,7 +1283,7 @@ class BattleScene(BaseScene):
             surface.blit(icon, (x + 12, y + 9))
         draw_text(
             surface,
-            str(self.engine.player.coins),
+            str(self.engine.player.coins - self._reward_gold),
             self.asset_manager.font,
             (255, 231, 110),
             x + 75,
@@ -1338,7 +1470,10 @@ class BattleScene(BaseScene):
         draw_ultimate_fx(surface, self.entity_view, behind=True)
         draw_boss_ultimate_fx(surface, self.entity_view, behind=True)
         self.entity_view.draw_enemy(surface, enemy, enemy_color)
-        self.entity_view.draw_player(surface, self.engine.state)
+        player_pose = self.engine.state
+        if player_pose == "victory" and self._outcome_elapsed is None:
+            player_pose = "player_turn"
+        self.entity_view.draw_player(surface, player_pose)
         self.entity_view.draw_enemy_projectile(surface)
         draw_player_projectile(surface, self.entity_view)
         draw_ultimate_fx(surface, self.entity_view)
@@ -1411,15 +1546,14 @@ class BattleScene(BaseScene):
             surface, self.window_manager.get_virtual_mouse_pos()
         )
 
-        if self.engine.state == "game_over" and self.entity_view.attacker != "enemy":
+        if self._game_over_ready:
             self._draw_game_over(surface)
-        if (
-            self.engine.state == "victory"
-            and self.entity_view.player_action is None
-            and self.entity_view.attacker is None
-            and self.entity_view.is_enemy_defeat_done(self.engine.enemy)
-        ):
+        if self._victory_ready:
             self._draw_victory(surface)
+        elif (self.engine.state == "victory" and self.victory_sound
+              and self._outcome_elapsed is not None
+              and self._outcome_elapsed >= self.VICTORY_BANNER_MS):
+            self._draw_victory_banner(surface)
         if self.engine.state == "phase_complete":
             self._draw_pending_save(surface)
 
@@ -1578,9 +1712,17 @@ class BattleScene(BaseScene):
         overlay.fill(BLACK)
         surface.blit(overlay, (0, 0))
 
+        if not hasattr(self, "_defeat_banner"):
+            crest = self.asset_manager.get_service_image("rewards/victory_crest")
+            self._defeat_banner = build_outcome_banner(self.asset_manager.title_font, crest, defeat=True)
+        rise = min(1.0, self._outcome_elapsed / 220)
+        self._defeat_banner.set_alpha(round(255 * rise))
+        center = (WIDTH // 2, HEIGHT // 2 - 180 + round(23 * (1 - rise) ** 2))
+        surface.blit(self._defeat_banner, self._defeat_banner.get_rect(center=center))
+
         draw_text(
             surface,
-            "VOCÊ MORREU",
+            "VOCÊ PERDEU",
             self.asset_manager.big_font,
             RED,
             WIDTH // 2,
@@ -1607,85 +1749,40 @@ class BattleScene(BaseScene):
             HEIGHT // 2 + 90,
             center=True,
         )
-        self._draw_action_button(surface, self.new_run_rect, 'PREPARAR NOVA RUN',
-                                 (55, 57, 63), GOLD, text_color=WHITE)
+        if self.map_mode:
+            self._draw_action_button(surface, self.new_run_rect, 'PREPARAR NOVA RUN',
+                                     (55, 57, 63), GOLD, text_color=WHITE)
+
+    def _draw_victory_banner(self, surface):
+        elapsed = self._outcome_elapsed - self.VICTORY_BANNER_MS
+        rise = min(1.0, elapsed / 220)
+        center_y = 250 + round(24 * (1 - rise) ** 2)
+        if not hasattr(self, "_victory_banner"):
+            crest = self.asset_manager.get_service_image("rewards/victory_crest")
+            self._victory_banner = build_outcome_banner(self.asset_manager.title_font, crest)
+        banner = self._victory_banner
+        banner.set_alpha(round(255 * rise))
+        center = (WIDTH // 2, center_y)
+        draw_victory_embers(surface, center, elapsed, rise)
+        surface.blit(banner, banner.get_rect(center=center))
+
+    def _reward_progress(self):
+        if self.map_mode and self.save_data:
+            return self.save_data["progresso"]
+        return None
 
     def _draw_victory(self, surface):
-        has_rewards = bool(self.engine.reward_cards)
-        if self.engine.is_replay:
-            description = "Fase já concluída. Sem recompensas nesta revanche."
-        elif has_rewards:
-            description = "Recompensa da fase concluída"
+        self.reward_view.draw(surface, self.engine, self._reward_progress(), self._reward_gold,
+                              self.window_manager.get_virtual_mouse_pos())
+
+    def _commit_reward(self, choice):
+        kind, value = choice
+        if kind == "card":
+            self.engine.choose_reward(value)
+        elif kind == "material":
+            self.engine.choose_material(value)
         else:
-            description = "Sua coleção já tem todas as cartas disponíveis."
-        if self.map_mode and not self.engine.is_replay and self.engine.enemy.is_miniboss:
-            from src.systems.roguelite import FRAGMENTS
-            description = f"+{FRAGMENTS[self.engine.level - 1]} fragmento(s) permanente(s) · escolha tipo ou materiais"
-
-        overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        overlay.fill((6, 7, 14, 228))
-        surface.blit(overlay, (0, 0))
-        title_rect = pygame.Rect(WIDTH // 2 - 375, 69, 750, 114)
-        draw_panel(surface, title_rect, fill=(22, 18, 31, 235), border=GOLD, radius=27)
-        draw_text(
-            surface,
-            "VITÓRIA! ESCOLHA UMA CARTA" if has_rewards else "VITÓRIA!",
-            self.asset_manager.big_font,
-            GOLD,
-            title_rect.centerx,
-            title_rect.y + 42,
-            center=True,
-        )
-        draw_text(
-            surface,
-            description,
-            self.asset_manager.small_font,
-            WHITE,
-            title_rect.centerx,
-            title_rect.y + 83,
-            center=True,
-        )
-
-        mouse_pos = self.window_manager.get_virtual_mouse_pos()
-        reward_rects = CardView.get_reward_rects(len(self.engine.reward_cards))
-        for rect, card in zip(reward_rects, self.engine.reward_cards):
-            hovered = rect.collidepoint(mouse_pos)
-            CardView.draw_card(surface, rect, card, self.asset_manager, hovered)
-        for rect, card in zip(reward_rects, self.engine.reward_cards):
-            if rect.collidepoint(mouse_pos):
-                CardView.draw_tooltip(surface, card, self.asset_manager, mouse_pos)
-                break
-        self._draw_action_button(
-            surface,
-            self.skip_reward_rect,
-            "Pular" if has_rewards else "Continuar",
-            (55, 57, 63),
-            (148, 148, 148),
-            text_color=WHITE,
-        )
-        if self.map_mode and not self.engine.is_replay:
-            amount = 3 if self.engine.enemy.is_miniboss else 1
-            self._draw_action_button(surface, self.material_button,
-                f'OU ESCOLHER {amount} MATERIAL(IS) DE UM TIPO', (35, 45, 38), GOLD, text_color=WHITE)
-            if self.material_chooser:
-                self._draw_material_options(surface, amount)
-
-    def _draw_material_options(self, surface, amount):
-        panel = pygame.Rect(80, 200, WIDTH - 160, 700)
-        draw_panel(surface, panel, fill=(8, 18, 16, 255), border=GOLD, radius=15)
-        draw_text(surface, f'ESCOLHA UM TIPO · +{amount} MATERIAL(IS) NA RESERVA',
-                  self.asset_manager.menu_font, GOLD, WIDTH // 2, 245, center=True)
-        self.material_rects = {}
-        p = self.save_data['progresso']
-        for i, name in enumerate(p['cartas_colecao']):
-            rect = pygame.Rect(110 + (i % 4) * 425, 300 + (i // 4) * 100, 400, 75)
-            self.material_rects[name] = rect
-            count = p['materials'].get(name, 0)
-            theme.button(surface, rect, f'{name} ({count}/9)', self.asset_manager.small_font,
-                         hover=rect.collidepoint(self.window_manager.get_virtual_mouse_pos()),
-                         enabled=count + amount <= 9)
-        self._draw_action_button(surface, self.material_button, 'CANCELAR ESCOLHA DE MATERIAL',
-                                 (35, 45, 38), GOLD, text_color=WHITE)
+            self.engine.skip_reward()
 
     def _draw_pending_save(self, surface):
         """Recuperação caso falhe a gravação do desbloqueio após a vitória."""
@@ -1731,20 +1828,7 @@ class BattleScene(BaseScene):
             )
 
     def handle_event(self, event):
-        if getattr(self, 'map_mode', False) and self.engine.state == 'victory' and not self.engine.is_replay:
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                point = self.window_manager.map_to_virtual(event.pos)
-                if self.material_button.collidepoint(point):
-                    if self._persist_logical_state():
-                        self.material_chooser = not self.material_chooser
-                    return
-                if self.material_chooser:
-                    for name, rect in self.material_rects.items():
-                        if rect.collidepoint(point) and self._persist_logical_state():
-                            self.engine.choose_material(name)
-                            return
-                    return
-        if getattr(self, 'map_mode', False) and self.engine.state == 'game_over':
+        if getattr(self, 'map_mode', False) and self._game_over_ready:
             restart = (event.type == pygame.KEYDOWN and event.key == pygame.K_r)
             restart = restart or (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1
                 and self.new_run_rect.collidepoint(self.window_manager.map_to_virtual(event.pos)))
@@ -1758,6 +1842,16 @@ class BattleScene(BaseScene):
         # Trata atalho de tela cheia ou redimensionamento
         if self.window_manager.handle_window_event(event):
             return
+        if self._victory_ready:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                position = self.window_manager.map_to_virtual(event.pos)
+                choice = self.reward_view.click(position, self.engine, self._reward_progress())
+                if choice:
+                    self.reward_view.confirm(choice)
+                    self.play_ui_sound("ui.confirm")
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and not self.reward_view.pending:
+                self._open_menu_confirmation()
+            return
         if self.boss_dialogue is not None:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self._open_menu_confirmation()
@@ -1767,13 +1861,7 @@ class BattleScene(BaseScene):
                 self.boss_dialogue = None
             return
         if event.type == pygame.MOUSEMOTION:
-            hovered_card = None
-            if self.engine.state == "player_turn":
-                virt_pos = self.window_manager.map_to_virtual(event.pos)
-                for card, rect in zip(self.engine.hand, self._get_battle_hand_rects()):
-                    if rect.collidepoint(virt_pos):
-                        hovered_card = card
-                        break
+            hovered_card = self._hand_card_at(self.window_manager.map_to_virtual(event.pos))
             if (
                 hovered_card is not None
                 and hovered_card is not getattr(self, "_hovered_hand_card", None)
@@ -1814,41 +1902,19 @@ class BattleScene(BaseScene):
                     if ultimate_rect.collidepoint(virt_pos):
                         if self.engine.activate_ultimate():
                             self.play_ui_sound("gameplay.ultimate_activate")
+                            self._hovered_hand_card = self._hand_card_at(virt_pos)
                         return
                     hand_rects = hand_rects[:normal_count]
 
                 for index, rect in enumerate(hand_rects[:normal_count]):
                     if rect.collidepoint(virt_pos):
                         self.engine.play_card(index)
-                        self._hovered_hand_card = None
-                        for card, new_rect in zip(
-                            self.engine.hand, self._get_battle_hand_rects()
-                        ):
-                            if new_rect.collidepoint(virt_pos):
-                                self._hovered_hand_card = card
-                                break
+                        self._hovered_hand_card = self._hand_card_at(virt_pos)
                         return
 
                 if self.end_turn_rect.collidepoint(virt_pos):
                     self.engine.end_turn()
                     self.play_ui_sound("gameplay.turn_end")
-                    return
-
-            # Recompensa de Vitória: Escolher Carta ou Pular
-            elif (
-                self.engine.state == "victory"
-                and self.entity_view.player_action is None
-                and self.entity_view.attacker is None
-                and self.entity_view.is_enemy_defeat_done(self.engine.enemy)
-            ):
-                reward_rects = CardView.get_reward_rects(len(self.engine.reward_cards))
-                for index, rect in enumerate(reward_rects):
-                    if rect.collidepoint(virt_pos):
-                        self.engine.choose_reward(index)
-                        return
-
-                if self.skip_reward_rect.collidepoint(virt_pos):
-                    self.engine.skip_reward()
                     return
 
         elif event.type == pygame.KEYDOWN:
@@ -1858,8 +1924,7 @@ class BattleScene(BaseScene):
                 return
             if (
                 event.key == pygame.K_r
-                and self.engine.state == "game_over"
-                and self.entity_view.attacker != "enemy"
+                and self._game_over_ready
             ):
                 self.engine = CombatEngine(
                     on_event_callback=self._handle_combat_event,
@@ -1883,6 +1948,7 @@ class BattleScene(BaseScene):
                 self.coin_hud = CoinHUD(self.engine.player, anchor_x=99, anchor_y=153)
                 self.energy_hud = EnergyHUD(self.engine.player)
                 self.entity_view = EntityView(self.asset_manager)
+                self._reset_outcome()
                 self.floating_texts.clear()
                 self.enemy_turn_timer = 0
 
@@ -2065,6 +2131,10 @@ class BattleScene(BaseScene):
 
     def save_on_exit(self):
         """Salva ao fechar a janela, inclusive após um desbloqueio pendente."""
+        if self.engine.state == "victory" and self.reward_view.pending:
+            self._commit_reward(self.reward_view.take_confirmation())
+            if self.scene_manager.current_scene is not self:
+                return True
         if self.engine.state == "phase_complete":
             self._finalize_map_phase(self.engine.level)
             return self.scene_manager.current_scene is not self

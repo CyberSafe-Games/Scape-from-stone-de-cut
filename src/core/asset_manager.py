@@ -85,6 +85,7 @@ class AssetManager:
         self._load_player_eight_frames()
         self._load_boss_ultimate_sprites()
         self._load_boss_eight_frame_sprites()
+        self._load_defeat_poses()
         self._load_coin_icon()
         self._load_ui_images()
         self._load_ultimate_images()
@@ -99,6 +100,13 @@ class AssetManager:
                 font.set_bold(bold)
                 return font
         return pygame.font.SysFont(None, size, bold=bold)
+
+    def _load_defeat_poses(self):
+        from src.systems.common_animation_kits import COMMON_KITS
+        for name, (slug, _) in (COMMON_KITS | KITS).items():
+            path = os.path.join(ASSETS_DIR, 'enemies', 'defeat', f'{slug}.png')
+            if name in self._enemy_sprites and os.path.isfile(path):
+                self._enemy_sprites[name]['defeat'] = [pygame.image.load(path).convert_alpha()]
 
     def _load_game_font(self, style, size):
         """Carrega a fonte autoral; símbolos ausentes nela usam fonte de símbolos."""
@@ -794,6 +802,10 @@ class AssetManager:
             for group in groups:
                 current[group] = [pygame.image.load(os.path.join(root, slug, f'{group}_{i}.png')).convert_alpha()
                                   for i in range(1, 9)]
+            if name == 'vinimuth':
+                defeat_paths = [os.path.join(root, slug, f'defeat_{i}.png') for i in range(1, 4)]
+                if all(os.path.isfile(path) for path in defeat_paths):
+                    current['defeat'] = [pygame.image.load(path).convert_alpha() for path in defeat_paths]
             if 'atk1' in current:
                 current['atk'] = current['atk1']
             projectile = os.path.join(root, slug, 'projectile_atk.png')

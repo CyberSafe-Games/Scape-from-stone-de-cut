@@ -1,15 +1,17 @@
 """Efeitos dos inimigos comuns e exceções físicas básicas dos chefes."""
 
+# Primeiro transiente pesado da gravação do Machado Quebra-Escudo.
+SHIELD_BREAK_IMPACT_MS = 250
+
 COMMON_ATTACK_SOUNDS = {
     "viniurgo": {"atk1": "gameplay.attack.punch", "atk2": "gameplay.attack.punch"},
     "slime": {"atk": "gameplay.enemy.slime"},
     "vinimuth": {"atk1": "gameplay.attack.punch", "atk2": "gameplay.skill.energy"},
     "esqueleto saqueador": {"atk1": "gameplay.enemy.blade", "atk2": "gameplay.attack.spear"},
-    "golem das ruínas": {"atk1": "gameplay.attack.charge_impact"},
+    "golem das ruínas": {"atk1": "gameplay.boss.goblin.energy_hit"},
     "centauro vigia": {"atk1": "gameplay.attack.arrow_impact", "atk2": "gameplay.attack.charge_impact"},
     "putrefato do pântano": {"atk1": "gameplay.enemy.acid"},
-    # O mangual usa provisoriamente impacto pesado, sem som de lâmina.
-    "guerreiro da mata": {"atk1": "gameplay.attack.charge_impact", "atk2": "gameplay.attack.charge_impact"},
+    "guerreiro da mata": {"atk1": "gameplay.attack.shield_break", "atk2": "gameplay.attack.shield_break"},
     "lagarto couraçado": {"atk1": "gameplay.attack.punch"},
     "morcego sombrio": {"atk1": "gameplay.attack.punch", "atk2": "gameplay.skill.energy"},
     "lutador mascarado": {"atk1": "gameplay.attack.punch", "atk2": "gameplay.attack.charge_impact"},
@@ -26,7 +28,7 @@ BASIC_BOSS_ATTACK_SOUNDS = {
 
 COMMON_SUPPORT_SOUNDS = {
     "slime": {"def": "gameplay.skill.shield_light"},
-    "golem das ruínas": {"def": "gameplay.skill.shield_light"},
+    "golem das ruínas": {"def": "gameplay.boss.guardian.stone"},
     "lagarto couraçado": {"def": "gameplay.skill.shield_light"},
     "crocodilo abissal": {"def": "gameplay.skill.shield_light"},
     "putrefato do pântano": {"healer2": "gameplay.enemy.heal"},
@@ -122,4 +124,5 @@ SOUND_WINDOWS_MS = {
     "gameplay.enemy.heal": 650,
     "gameplay.attack.arrow_launch": 600,
     "gameplay.attack.arrow_impact": 350,
+    "gameplay.attack.shield_break": 2150,
 }

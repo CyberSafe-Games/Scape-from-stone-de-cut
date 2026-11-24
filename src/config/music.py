@@ -7,4 +7,5 @@ MUSIC_TRACKS = {
     'battle': 'music/combate_tambores_v1.ogg',
     'boss': 'music/chefes_jungle_chase_v2.ogg',
     'final_boss': 'music/chefes_jungle_tribe_v2.ogg',
+    'farewell': 'music/epilogo_lost_time_v1.ogg',
 }

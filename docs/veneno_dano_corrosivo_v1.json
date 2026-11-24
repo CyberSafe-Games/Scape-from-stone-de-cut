@@ -1,0 +1,9 @@
+{
+  "efeito": "gameplay.status.poison_tick",
+  "fonte": "assets/audio/pocao_venenosa_corrosao.ogg",
+  "sha256_fonte": "b988fdd323c188a96d959341db83a71e533f82c6ee731cb062f46aa22cb44810",
+  "derivado": "assets/audio/veneno_dano_corrosivo_v1.ogg",
+  "sha256_derivado": "5e31d52ba460e26459d6f479330f963c19ee52c00d563d588ba2ac2a5a3deb0e",
+  "filtros_ffmpeg": "atrim=start=0.85,asetpts=PTS-STARTPTS,afade=t=in:d=0.025,volume=0.65",
+  "composicao": "Só a cauda corrosiva da poção, a partir de 850 ms. Conserva o decaimento original e deixa o lançamento e a quebra do frasco na carta."
+}

@@ -54,7 +54,13 @@ class CutsceneScene(BaseScene):
     @property
     def music_context(self):
         """Mantém a trilha em execução ao trocar para esta cena."""
-        return self._music_context
+        if not self.scenes:
+            return self._music_context
+        frame = self.scenes[self.index]
+        context = frame.get("music_context", self._music_context)
+        if self._phase in ("idle", "exit") and self._dialogue_wait_ms <= 0:
+            return frame.get("dialogue_music_context", context)
+        return context
 
     def _finish(self):
         if self._finished:
@@ -169,6 +175,7 @@ class CutsceneScene(BaseScene):
                 self._visible_characters = len(full_text)
                 return
             if self._dialogue_index + 1 < len(self._dialogues()):
+                self.play_ui_sound("ui.navigate", volume=0.55)
                 self._dialogue_index += 1
                 self._visible_characters = 0
                 self._typing_elapsed = 0.0
@@ -179,6 +186,7 @@ class CutsceneScene(BaseScene):
             self._elapsed_ms = 0.0
             return
 
+        self.play_ui_sound("ui.navigate", volume=0.55)
         self._previous_layer = self._current_layer
         self.index += 1
         self._reset_dialogue()

@@ -1,0 +1,10 @@
+{
+  "origem": "Gerador de imagens integrado com os sprites de espera do jogo como referência",
+  "preparo": "devtools/prepare_enemy_defeats.py",
+  "prompt": "Atlas transparente 3×2. Manter identidade, roupas, cores, anatomia, proporções, orientação à esquerda e textura pixel art. Para bípedes, apoiar um joelho e manter o pé dianteiro plantado com o joelho erguido. Para quadrúpedes, ceder nas patas dianteiras. Para o Morcego, corpo no chão e asas baixas após a queda. Manter cada personagem isolado em sua célula.",
+  "atlas": {
+    "bosses": "exec-4876c399-e2db-4f42-8527-3884b253ee69.png",
+    "comuns-a": "exec-7c927ad6-82c5-4b09-b64c-3f47cf23db06.png",
+    "comuns-b": "exec-a8f3aaec-dc95-4867-9b07-270a19aedc84.png"
+  }
+}

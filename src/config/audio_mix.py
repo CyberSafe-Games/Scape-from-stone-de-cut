@@ -6,6 +6,10 @@ Não recupera saturação presente na gravação nem limita a soma dos canais.
 """
 
 SOUND_VOLUMES = {
+    "gameplay.status.poison_tick": 1.0,
+    "gameplay.status.bleed_tick": 1.0,
+    "gameplay.status.shock_tick": 1.0,
+    "gameplay.status.burn_tick": 0.85,
     "gameplay.boss.zanzara.ferry_hit": 1.0,
     "gameplay.boss.zanzara.souls": 1.0,
     "gameplay.boss.zanzara.laugh": 1.0,
@@ -61,6 +65,7 @@ SOUND_VOLUMES = {
     "gameplay.ultimate_activate": 0.38,
     "gameplay.game_over": 0.51,
     "gameplay.victory": 0.45,
+    "gameplay.reward_gold": 0.40,
     # A atenuação do soco já está incorporada no derivado v2 (-28 dBFS ativo).
     "gameplay.attack.punch": 1.0,
     "gameplay.attack.dagger": 0.38,
@@ -92,6 +97,8 @@ SOUND_VOLUMES = {
 
 # Impactos de contato são independentes das armas, movimentos e poderes.
 DAMAGE_SOUND_IDS = frozenset({
+    'gameplay.status.poison_tick',
+    'gameplay.status.bleed_tick', 'gameplay.status.shock_tick', 'gameplay.status.burn_tick',
     'gameplay.attack.punch', 'gameplay.attack.dagger',
     'gameplay.attack.arrow_impact', 'gameplay.attack.charge_impact',
     'gameplay.boss.guardian.claw_hit', 'gameplay.boss.duo.heavy_hit',
@@ -102,4 +109,5 @@ DAMAGE_SOUND_IDS = frozenset({
 })
 INTERFACE_SOUND_IDS = frozenset({
     'gameplay.card_hover', 'gameplay.turn_end', 'gameplay.game_over', 'gameplay.victory',
+    'gameplay.reward_gold',
 })

@@ -27,7 +27,6 @@ class ZanzaraDifficultyTests(unittest.TestCase):
                 self.assertEqual(engine.player.statuses['bleed'],{'turns':2,'potency':1})
                 self.assertNotIn('poison', engine.player.statuses)
                 self.assertEqual(engine.player.on_attack(),3)
-                self.assertEqual(engine.player.on_attack(),3)
                 self.assertEqual(engine.player.on_attack(),0)
             else:
                 self.assertNotIn('bleed', engine.player.statuses)
