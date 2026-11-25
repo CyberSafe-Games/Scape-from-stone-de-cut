@@ -1,4 +1,4 @@
-"""Empacota menu, Slime e gerenciamento persistente, sem outros encontros ou dados pessoais."""
+"""Gera campanha web estática, recursos por contexto e PWA; --poc mantém a prova anterior."""
 import argparse
 import hashlib
 import json
@@ -109,6 +109,7 @@ def main():
     parser.add_argument("--prepare-only",action="store_true")
     parser.add_argument("--serve",action="store_true")
     parser.add_argument("--poc",action="store_true",help="Preserva o piloto das Etapas 1–3.")
+    parser.add_argument("--dist-dir",default="dist/web",help="Subpasta de dist/ para hospedagem estática.")
     args=parser.parse_args()
     prepare()
     if args.poc:
@@ -119,7 +120,7 @@ def main():
         print(json.dumps({"full_assets":len(manifest["files"]),"groups":len(manifest["groups"]),
                           "initial_asset_bytes":manifest["initial_asset_bytes"]}))
     if not args.prepare_only:
-        command=[sys.executable,"-m","pygbag","--no_opt","--ume_block","0","--width","1280","--height","720","--title","Scape From Stone — Prova Web"]
+        command=[sys.executable,"-m","pygbag","--no_opt","--ume_block","0","--width","1280","--height","720","--title","Scape From Stone"]
         command.append("--build")
         subprocess.run([*command,str(STAGE)],cwd=ROOT,check=True)
         output=STAGE/"build/web"
@@ -141,14 +142,25 @@ def main():
         html=html.replace("</body>",'<script src="bridge.js"></script><script src="storage.js"></script><script src="resources.js"></script></body>')
         import re
         fragment=(ROOT/"web/index.html").read_text(encoding="utf-8")
+        pwa_head=re.search(r"<!-- PWA_HEAD -->(.*?)<!-- /PWA_HEAD -->",fragment,re.DOTALL)
+        if pwa_head:
+            if not args.poc:html=html.replace("</head>",pwa_head.group(1)+"</head>")
+            fragment=fragment.replace(pwa_head.group(0),"")
         viewport=re.search(r'<meta name="viewport"[^>]*>',fragment).group()
         html=re.sub(r'<meta\s+name="viewport"[^>]*>',"",html,flags=re.IGNORECASE)
         html=html.replace("</head>",viewport+"</head>")
         html=html.replace("</body>",fragment.replace(viewport,"")+"</body>")
         index.write_text(html,encoding="utf-8")
+        destination=output
+        if not args.poc:
+            from devtools.web_distribution import distribution
+            release=distribution(ROOT,STAGE,output,ROOT/args.dist_dir)
+            destination=ROOT/args.dist_dir
+            print(json.dumps({"distribution":str(destination),"release":release["version"],
+                              "essential_bytes":release["essential_bytes"],"runtime_bytes":release["runtime_bytes"]}))
         if args.serve:
             subprocess.run([sys.executable,"-m","http.server","8765","--bind","127.0.0.1",
-                            "--directory",str(output)],cwd=ROOT,check=True)
+                            "--directory",str(destination)],cwd=ROOT,check=True)
 
 
 if __name__=="__main__":

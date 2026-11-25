@@ -23,3 +23,8 @@ settings/.audio-*.tmp
 
 # Ambiente isolado da prova web
 .venv-web/
+
+# Bytecode avulso e caches locais do empacotador web
+*.py[cod]
+/.pygbag/
+/web-cache/

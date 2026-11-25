@@ -771,6 +771,12 @@
       ]
     },
     {
+      "file": "tests/test_native_packaging.py",
+      "cases": [
+        "NativeEntrySmokeTests.test_menu_source_smoke_is_isolated_and_rendered"
+      ]
+    },
+    {
       "file": "tests/test_normal_bestiary.py",
       "cases": [
         "NormalBestiaryTests.test_fourteen_unique_types_follow_the_requested_biome_distribution",
@@ -1244,6 +1250,30 @@
       ]
     },
     {
+      "file": "tests/test_web_distribution.py",
+      "cases": [
+        "ManifestTests.test_pwa_identity_and_relative_scope",
+        "ManifestTests.test_standalone_landscape_palette",
+        "ManifestTests.test_icons_exist_have_declared_dimensions",
+        "ManifestTests.test_maskable_is_separate_from_any_icon",
+        "ManifestTests.test_maskable_identity_fits_safe_circle",
+        "ManifestTests.test_icon_sources_and_derivatives_match_manifest",
+        "ManifestTests.test_apple_touch_icon_is_180",
+        "PackageValidationTests.test_valid_package_inventory",
+        "PackageValidationTests.test_truncated_package_rejected",
+        "PackageValidationTests.test_same_size_corruption_rejected",
+        "PackageValidationTests.test_traversal_inside_tar_rejected",
+        "PackageValidationTests.test_symlink_member_rejected",
+        "PackageValidationTests.test_inventory_mismatch_rejected",
+        "PackageValidationTests.test_untrusted_paths_rejected",
+        "PackageValidationTests.test_duplicate_inventory_rejected",
+        "PackageValidationTests.test_unknown_runtime_origin_rejected_before_download",
+        "PackageValidationTests.test_corrupted_runtime_cache_rejected",
+        "PackageValidationTests.test_distribution_rejects_unlisted_files",
+        "RuntimeLockTests.test_runtime_includes_python_wasm_data_and_pygame"
+      ]
+    },
+    {
       "file": "tests/test_web_proof.py",
       "cases": [
         "WebLoopTests.test_web_yields_between_frames_and_returns_without_exit",
@@ -1333,6 +1363,6 @@
       ]
     }
   ],
-  "modules": 87,
-  "methods": 889
+  "modules": 89,
+  "methods": 909
 }

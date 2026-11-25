@@ -58,8 +58,8 @@ var
 begin
   if CurUninstallStep = usPostUninstall then
   begin
-    if MsgBox('Deseja também apagar seus saves e configurações?',
-      mbConfirmation, MB_YESNO or MB_DEFBUTTON2) = IDYES then
+    if SuppressibleMsgBox('Deseja também apagar seus saves e configurações?',
+      mbConfirmation, MB_YESNO or MB_DEFBUTTON2, IDNO) = IDYES then
     begin
       DataDirectory := ExpandConstant('{localappdata}\ScapeFromStoneDeCut');
       if DirExists(DataDirectory) then

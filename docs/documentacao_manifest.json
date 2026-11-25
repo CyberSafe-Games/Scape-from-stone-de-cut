@@ -319,6 +319,16 @@
       "file": "docs/web_mobile.md",
       "kind": "current",
       "summary": "Layout compacto, orientação, entrada touch, confirmação e perfil leve web."
+    },
+    {
+      "file": "docs/build_web.md",
+      "kind": "current",
+      "summary": "Build estático PWA, integridade, cache, atualização segura, hospedagem e validação."
+    },
+    {
+      "file": "docs/arquitetura_multiplataforma.md",
+      "kind": "current",
+      "summary": "Fronteiras dos três modos, build Windows/Web, smoke isolado e higiene final."
     }
   ]
 }

@@ -251,3 +251,38 @@ A Etapa 4 integra a campanha Web PC com recursos por contexto, cenas nativas e e
 
 A Etapa 5 adiciona controles compactos, inspeção por toque e orientação paisagem no host web. Veja [layout e entrada mobile](docs/web_mobile.md). Desktop e Web PC amplo mantêm o layout anterior.
 Validação da Etapa 5: 889 testes Python aprovados, 22 verificações mobile e 11 Web PC. Veja o [relatório completo](docs/validacao_web_etapa5.json).
+
+A Etapa 6 prepara o PWA e a distribuição estática em `dist/web/`: manifesto e
+ícones oficiais, cache versionado do shell/runtime e do território inicial,
+recursos adicionais sob demanda e atualização coordenada no menu.
+O indicador informa quando o início está pronto offline; isso não significa
+que todos os territórios já foram baixados. Gere com `python devtools/build_web.py`.
+Veja [build, hospedagem e instalação](docs/build_web.md). O workflow
+`.github/workflows/build-web.yml` gera um artefato revisável, sem deploy automático.
+Validação da Etapa 6: 908 testes Python e 10 verificações PWA aprovados no Chromium, incluindo instalação standalone, jornada offline e atualização entre abas. [Relatório completo](docs/validacao_web_etapa6.json).
+
+## Entrega multiplataforma — Etapa 7
+
+Desktop nativo, Web PC e Web mobile/PWA coexistem na branch feat/web-mobile-port.
+O instalador Windows foi recompilado com Python 3.12.13/Pygame 2.6.1, sem Pygbag
+ou Playwright: executável portátil, instalação temporária, renderização do menu
+e desinstalação silenciosa aprovados, preservando os dados pessoais.
+Os 2.528 assets do pacote Windows conferem com as fontes por SHA-256.
+
+Para empacotar com PyInstaller 6.11.1, use Python 3.12 ou 3.13 x64 e Inno Setup 6.
+O batch prefere o ambiente .venv-build existente. Saídas locais e ambientes
+virtuais permanecem ignorados no Git.
+
+~~~powershell
+installer/build_installer.bat
+.venv-web/Scripts/python.exe devtools/build_web.py
+.venv-web/Scripts/python.exe devtools/build_web.py --serve
+~~~
+
+O último comando serve o jogo em http://127.0.0.1:8765; a pasta publicável é
+dist/web/. Consulte a [arquitetura e comandos completos](docs/arquitetura_multiplataforma.md).
+Suíte final: **909 testes em 89 módulos, zero falhas**, em 215,39 segundos.
+A validação automatizada não substitui testes em aparelhos físicos iOS/Safari.
+
+Fechamento cruzado: 11 verificações Web PC, 22 mobile e 10 PWA aprovadas.
+Resultados e limites no [relatório final](docs/validacao_multiplataforma_final.json).

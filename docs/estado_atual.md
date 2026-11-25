@@ -204,7 +204,7 @@ protege cabeças de águia/bordas e a composição é idêntica nos dois lados.
 
 Há uma prova Pygbag limitada a menu e Slime. A camada src/platforms separa
 recursos/dados e saída desktop/web; o canvas web acompanha foco/visibilidade e
-Fullscreen API sem alterar o controlador nativo. Persistência web v15 implementada no piloto da Etapa 3; Naquele piloto a campanha era limitada; a Etapa 4 está descrita abaixo. PWA/mobile continuam pendentes. Ver [plataformas](web_platforms.md).
+Fullscreen API sem alterar o controlador nativo. Persistência web v15 implementada no piloto da Etapa 3; Naquele piloto a campanha era limitada; a Etapa 4 está descrita abaixo. PWA/mobile foram concluídos nas Etapas 5 e 6. Ver [plataformas](web_platforms.md).
 
 
 ## Persistência híbrida v15
@@ -216,6 +216,19 @@ Ver [regras e validação da Etapa 3](web_storage.md).
 
 ## Campanha Web PC
 
-A Etapa 4 conecta o fluxo completo às cenas e regras nativas, com pacotes por contexto e confirmação IndexedDB. Veja [arquitetura e validação](web_campaign.md). O host compacto e o toque seguem o [contrato da Etapa 5](web_mobile.md); PWA/offline permanecem para a Etapa 6.
+A Etapa 4 conecta o fluxo completo às cenas e regras nativas, com pacotes por contexto e confirmação IndexedDB. Veja [arquitetura e validação](web_campaign.md). O host compacto e o toque seguem o [contrato da Etapa 5](web_mobile.md); PWA/offline estão implementados conforme a Etapa 6.
 
 Etapa 5 validada em 25/11/2026: 889 testes Python, viewports Android/iPhone com toque e regressão Web PC aprovados. Resultados e limites da emulação no [relatório da Etapa 5](validacao_web_etapa5.json).
+
+A Etapa 6 adiciona PWA, cache offline por contexto e distribuição estática verificável. Consulte [build e hospedagem](build_web.md).
+Etapa 6 validada: 908 testes, instalação real no Chromium, jornada offline e atualização coordenada com save preservado. Veja o [relatório da Etapa 6](validacao_web_etapa6.json).
+
+## Fechamento multiplataforma — Etapa 7
+
+Desktop nativo e instalador recompilados sem dependências web; portátil e instalação
+temporária desenham o menu, desinstalação preserva dados e 2.528 assets conferem
+por SHA-256. Suíte final: 909 testes em 89 módulos, zero falhas (215,39 s).
+Ver [arquitetura e comandos](arquitetura_multiplataforma.md).
+
+Fechamento cruzado: 11 verificações Web PC, 22 mobile e 10 PWA aprovadas.
+Resultados e limites no [relatório final](validacao_multiplataforma_final.json).

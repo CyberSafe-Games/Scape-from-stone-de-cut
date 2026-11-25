@@ -448,3 +448,30 @@ As restrições desta seção descrevem --poc; a campanha padrão segue a Etapa 
 - Partículas procedurais são limitadas a seis por emissão e 24 por frame no perfil transitório apenas compacto. Caches de imagens do host são limitados e liberados por cena.
 - Ver [contrato mobile](docs/web_mobile.md) e [estado atual](docs/estado_atual.md). Emulação não autoriza alegar desempenho em dispositivos físicos.
 - Fechamento técnico de 25/11/2026: 889 testes em 87 módulos aprovados; 22 verificações Chromium mobile e 11 Web PC aprovadas. O host deve manter uma única meta viewport no head, com viewport-fit=cover. Também foram conferidos tablet touch 1280×800, rotação e Web PC amplo. Relatório: docs/validacao_web_etapa5.json.
+
+## 29. PWA, offline e distribuição — Etapa 6
+
+- Checkpoint anterior: 4967b58. O build padrão gera dist/web, com release.json e SHA-256 de shell/pacotes. Não alterar o workflow do instalador Windows para hospedar a web.
+- web/manifest.webmanifest usa start_url/scope relativos. O id é omitido intencionalmente para derivar a identidade do start_url na subpasta; id "./" resolveria contra a origem e poderia colidir com outro projeto.
+- Ícones são exportações técnicas do retrato aprovado de Jaum; preservar a fonte. Web/icons/art_manifest.json registra fonte/hash, tamanhos e área segura maskable.
+- web/runtime-lock.json fixa os recursos externos Pygbag/Python/WASM/pygame-ce. Não atualizar hashes automaticamente quando uma origem divergir. O primeiro preparo exige conexão; o teste offline deve desativar cache HTTP.
+- Service Worker separa shell/runtime por versão e packs por hash, com namespace por scope. Nunca publicar resposta parcial, opaca ou divergente. CacheStorage não é backend de saves.
+- O indicador offline pronto cobre os 29 packs essenciais, não todos os territórios. Pacotes ainda não baixados precisam de conexão; falhas devem permitir retentativa sem interromper o combate atual.
+- Atualizações instalam em waiting. skipWaiting somente após confirmação de todas as abas no menu inicial, sem modal ou gravação pendente. Bloquear entrada na aprovação e recarregar apenas depois da ativação coordenada. A primeira ativação não reinicia a partida.
+- O manifesto de distribuição deve ser verificado antes de publicar; deploy atômico, HTTPS, index/service-worker com revalidação e packs com cache immutable. Não remover packs de releases ainda em uso.
+- A página install.html oferece uma entrada leve de instalação; não carrega nem grava slots. A instalação Chromium é validada em perfil temporário e desinstalada ao final.
+- Ver [build web](docs/build_web.md) e [estado atual](docs/estado_atual.md). PWA no Chromium não comprova instalação física iOS/Safari. Etapa 7 cobre fechamento/instalador/push.
+- Fechamento técnico de 25/11/2026: 908 testes em 88 módulos e 10 verificações PWA aprovados. Instalação/abertura standalone e atualização entre abas foram testadas em perfil Chromium temporário. Mobile conferido sem sobreposição do indicador. Relatório: docs/validacao_web_etapa6.json.
+
+## 30. Fechamento multiplataforma — Etapa 7
+
+- Preservar os três caminhos: Desktop síncrono/JSON v15, Web PC proporcional e host mobile/PWA. Não importar Pygbag/Playwright no runtime ou instalador nativo.
+- PyInstaller 6.11.1 exige Python 3.12/3.13 x64; installer/build_installer.bat prefere .venv-build e rejeita versões incompatíveis. Não elevar dependências nativas apenas para acompanhar ferramentas web.
+- main.py --smoke-report é uma verificação opcional de quatro frames do menu, com drivers dummy e preferências isoladas. A entrada normal permanece igual; esse teste não representa uma campanha jogada.
+- devtools/validate_windows_build.py usa o batch oficial e verifica assets por SHA-256, portátil, instalação temporária e desinstalação. Não substituir instalação pessoal registrada. /SUPPRESSMSGBOXES preserva dados por padrão; diálogo interativo de remoção permanece.
+- build/, dist/, instaladores, ambientes virtuais, bytecode, caches, logs/screenshots de QA e _arquivos_antigos_para_deletar/ não são fontes versionadas. Adicionar explicitamente apenas arquivos revisados.
+- Validação final local: 909 testes em 89 módulos, zero falhas. Build Windows com Python 3.12.13/Pygame 2.6.1 sem bibliotecas web; 2.528 assets íntegros. Não alegar validação física iOS/Safari ou sucesso do workflow remoto com base apenas na execução local.
+- Ver [arquitetura multiplataforma](docs/arquitetura_multiplataforma.md) e [build web](docs/build_web.md).
+
+Fechamento cruzado: 11 verificações Web PC, 22 mobile e 10 PWA aprovadas.
+Resultados e limites no [relatório final](docs/validacao_multiplataforma_final.json).

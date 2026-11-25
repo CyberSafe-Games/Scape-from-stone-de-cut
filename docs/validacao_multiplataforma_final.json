@@ -1,0 +1,206 @@
+{
+  "stage": 7,
+  "date": "2026-11-25",
+  "branch": "feat/web-mobile-port",
+  "checkpoint_stage5": "4967b58",
+  "python_tests": {
+    "total": 909,
+    "modules": 89,
+    "failures": 0,
+    "seconds": 215.39
+  },
+  "windows": {
+    "passed": true,
+    "python": "Python 3.12.13",
+    "no_web_libraries": {
+      "pygbag": false,
+      "playwright": false
+    },
+    "installer": {
+      "path": "ScapeFromStoneDeCut-Setup-0.1.0.exe",
+      "bytes": 358854334,
+      "sha256": "508506e8aed4ffbf2ecfa6246da76e8a8f5e4c669550e54990ec9507fd5ea5b1"
+    },
+    "executable": {
+      "path": "dist/ScapeFromStoneDeCut/ScapeFromStoneDeCut.exe",
+      "bytes": 3237501
+    },
+    "portable": {
+      "passed": true,
+      "frames": 4,
+      "scene": "MenuScene",
+      "window": "WindowManager",
+      "virtual_size": [
+        1920,
+        1080
+      ],
+      "python": "3.12.13",
+      "pygame": "2.6.1",
+      "frozen": true,
+      "assets_exist": true,
+      "unique_sample_colors": 361,
+      "frame_sha256": "8d69efddb73561e95bb960f9038e9c290ca5fb3545a20e0ffae41f8ab7e25fb1",
+      "web_dependencies_loaded": []
+    },
+    "installed": {
+      "passed": true,
+      "frames": 4,
+      "scene": "MenuScene",
+      "window": "WindowManager",
+      "virtual_size": [
+        1920,
+        1080
+      ],
+      "python": "3.12.13",
+      "pygame": "2.6.1",
+      "frozen": true,
+      "assets_exist": true,
+      "unique_sample_colors": 361,
+      "frame_sha256": "8d69efddb73561e95bb960f9038e9c290ca5fb3545a20e0ffae41f8ab7e25fb1",
+      "web_dependencies_loaded": []
+    },
+    "silent_uninstall": true,
+    "personal_json_data_preserved": true,
+    "assets": {
+      "files": 2528,
+      "bytes": 370075213,
+      "sha256_match": true
+    }
+  },
+  "web_pc": {
+    "passed": true,
+    "shop_fps_median": 43.11626625061035,
+    "shop_draw_ms_median": 16.399999500000817,
+    "checks": [
+      "shop_purchase",
+      "shop_wheel",
+      "backpack_equipment",
+      "ultimate_equipment",
+      "upgrade_comparison_lv1_lv2",
+      "settings_keyboard",
+      "settings_slider",
+      "settings_tabs",
+      "guides",
+      "indexeddb_reload",
+      "preferences_reload"
+    ]
+  },
+  "mobile": [
+    {
+      "device": "android",
+      "viewport": [
+        915,
+        412
+      ],
+      "passed": true,
+      "checks": [
+        "orientation_pause_resume",
+        "focus_suspend_resume",
+        "shop_inspect_confirm",
+        "backpack_tabs_equipment_ultimate",
+        "upgrade_copy_before_after",
+        "settings_persist_reload",
+        "ultimate_inspect_confirm",
+        "pointercancel_clears_selection",
+        "touch_inspection_rotation_cancel",
+        "battle_reward_confirm",
+        "minimum_touch_targets"
+      ],
+      "fps_median": 31.05590057373047,
+      "memory": {
+        "js": 188000000,
+        "wasm": 386662400
+      },
+      "errors": []
+    },
+    {
+      "device": "iphone",
+      "viewport": [
+        844,
+        390
+      ],
+      "passed": true,
+      "checks": [
+        "orientation_pause_resume",
+        "focus_suspend_resume",
+        "shop_inspect_confirm",
+        "backpack_tabs_equipment_ultimate",
+        "upgrade_copy_before_after",
+        "settings_persist_reload",
+        "ultimate_inspect_confirm",
+        "pointercancel_clears_selection",
+        "touch_inspection_rotation_cancel",
+        "battle_reward_confirm",
+        "minimum_touch_targets"
+      ],
+      "fps_median": 38.75969314575195,
+      "memory": {
+        "js": 188000000,
+        "wasm": 463994880
+      },
+      "errors": []
+    }
+  ],
+  "pwa": {
+    "passed": true,
+    "browser": "159.0.8154.6",
+    "checks": [
+      "manifest_installability_and_subpath_scope",
+      "install_and_launch_standalone",
+      "cold_reload_offline_runtime_without_http_cache",
+      "offline_new_slot_intro_tutorial_and_indexeddb",
+      "offline_context_loading_and_live_battle",
+      "offline_missing_context_friendly_retry",
+      "interrupted_package_not_cached_and_retry_succeeds",
+      "waiting_update_does_not_interrupt_battle",
+      "update_rejected_while_other_tab_is_in_battle",
+      "safe_menu_update_all_tabs_and_save_preserved"
+    ],
+    "installability": {
+      "installabilityErrors": []
+    },
+    "pwa_installed_launched": true,
+    "initial_version": "5055f475d8b47f35",
+    "updated_version": "5055f475d8b47f35-qa2",
+    "offline_resources": {
+      "runtime": 12,
+      "essential_packs": 29
+    },
+    "storage_estimate": {
+      "quota": 10944894355,
+      "usage": 207476115,
+      "usageDetails": {
+        "caches": 207176448,
+        "indexedDB": 90102,
+        "serviceWorkerRegistrations": 209565
+      }
+    },
+    "errors": []
+  },
+  "distribution": {
+    "version": "5055f475d8b47f35",
+    "initial_package_bytes": 6888615,
+    "shell_bytes": 14639291,
+    "runtime_bytes": 22967309,
+    "essential_bytes": 158347658,
+    "essential_packs": 29,
+    "campaign_pack_bytes": 376144379,
+    "pack_count": 71
+  },
+  "distribution_files": 92,
+  "all_distribution_hashes_verified": true,
+  "ignored_outputs": [
+    "dist/web/index.html",
+    "build/web-stage7/windows-result.json",
+    ".venv-build/pyvenv.cfg",
+    ".venv-web/pyvenv.cfg",
+    "ScapeFromStoneDeCut-Setup-0.1.0.exe",
+    "_arquivos_antigos_para_deletar/test.png"
+  ],
+  "obsolete_assets_replaced": false,
+  "limits": [
+    "Chromium emulado; sem validação física Android/iOS/Safari.",
+    "Smoke Windows valida inicialização e renderização do menu, não uma campanha completa jogada.",
+    "Workflow remoto será disparado pelo push; não foi tratado como validado localmente."
+  ]
+}

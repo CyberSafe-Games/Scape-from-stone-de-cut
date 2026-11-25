@@ -1,7 +1,7 @@
 /* APIs do navegador ficam nesta fronteira, fora de regras/cenas. */
 (() => {
   let focused = document.hasFocus(), resume = 0, lastActive = true;
-  const active = () => !document.hidden && focused && !(window.scapeMobile && JSON.parse(window.scapeMobile.viewport()).blocked);
+  const active = () => !document.hidden && focused && !window.scapePWA?.updating && !(window.scapeMobile && JSON.parse(window.scapeMobile.viewport()).blocked);
   const overlay = document.createElement("div");
   overlay.id = "web-paused";
   overlay.textContent = "PAUSADO · VOLTE À JANELA PARA CONTINUAR";

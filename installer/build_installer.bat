@@ -17,21 +17,25 @@ if errorlevel 1 (
     exit /b 1
 )
 
+set "VENV=%ROOT%\.venv-build"
+set "BUILD_PYTHON=%VENV%\Scripts\python.exe"
+if exist "%BUILD_PYTHON%" goto build_environment_ready
+
 set "PYTHON_CMD="
 where py >nul 2>nul
 if not errorlevel 1 (
-    py -3.12 -c "import sys; raise SystemExit(0 if sys.version_info >= (3,12) and sys.maxsize > 2**32 else 1)" >nul 2>nul
+    py -3.12 -c "import sys; raise SystemExit(0 if (3,12) <= sys.version_info[:2] < (3,14) and sys.maxsize > 2**32 else 1)" >nul 2>nul
     if not errorlevel 1 set "PYTHON_CMD=py -3.12"
 )
 if not defined PYTHON_CMD (
     where python >nul 2>nul
     if not errorlevel 1 (
-        python -c "import sys; raise SystemExit(0 if sys.version_info >= (3,12) and sys.maxsize > 2**32 else 1)" >nul 2>nul
+        python -c "import sys; raise SystemExit(0 if (3,12) <= sys.version_info[:2] < (3,14) and sys.maxsize > 2**32 else 1)" >nul 2>nul
         if not errorlevel 1 set "PYTHON_CMD=python"
     )
 )
 if not defined PYTHON_CMD (
-    echo ERRO: Python 3.12 de 64 bits nao encontrado. Instale Python 3.12 x64 e tente novamente.
+    echo ERRO: Python 3.12/3.13 de 64 bits nao encontrado. Instale Python 3.12 x64 e tente novamente.
     exit /b 1
 )
 
@@ -41,9 +45,10 @@ if not exist "%VENV%\Scripts\python.exe" (
     if errorlevel 1 exit /b 1
 )
 set "BUILD_PYTHON=%VENV%\Scripts\python.exe"
-"%BUILD_PYTHON%" -c "import sys; print('Python usado no build: ' + sys.version.split()[0] + ' (' + str(sys.maxsize.bit_length()+1) + ' bits)'); raise SystemExit(0 if sys.version_info >= (3,12) and sys.maxsize > 2**32 else 1)"
+:build_environment_ready
+"%BUILD_PYTHON%" -c "import sys; print('Python usado no build: ' + sys.version.split()[0] + ' (' + str(sys.maxsize.bit_length()+1) + ' bits)'); raise SystemExit(0 if (3,12) <= sys.version_info[:2] < (3,14) and sys.maxsize > 2**32 else 1)"
 if errorlevel 1 (
-    echo ERRO: o ambiente de build precisa de Python 3.12 ou superior, de 64 bits.
+    echo ERRO: o ambiente de build precisa de Python 3.12 ou 3.13, de 64 bits, para PyInstaller 6.11.1.
     exit /b 1
 )
 

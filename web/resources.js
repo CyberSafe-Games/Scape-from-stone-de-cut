@@ -7,7 +7,10 @@
       const id=++sequence,job={pending:true,received:0,total:0};jobs.set(id,job);
       (async()=>{
         const response=await fetch(url,{cache:"force-cache"});
-        if(!response.ok)throw new Error("Falha HTTP "+response.status);
+        if(!response.ok){
+          const error=response.headers.get("X-Scape-Offline") ? (await response.json()).message : "Falha HTTP "+response.status;
+          throw new Error(error);
+        }
         job.total=Number(response.headers.get("content-length")||0);
         const reader=response.body.getReader(),chunks=[];
         while(true){const {done,value}=await reader.read();if(done)break;
