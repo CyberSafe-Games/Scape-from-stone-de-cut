@@ -25,6 +25,8 @@ class WebWindowManager:
         self.windowed_size = tuple(window_size or LEGACY_WINDOW_SIZE)
         self.display_surface = pygame.display.set_mode(self.windowed_size)
         self.screen = pygame.Surface((width, height)).convert()
+        self.compact = False
+        self.touch_position = None
         self.is_large_window = False
         self.render_cache = RenderCache()
 
@@ -38,12 +40,35 @@ class WebWindowManager:
 
     def configure_viewport(self,layout):
         """O layout não força downscale; o buffer acompanha CSS × DPR limitado."""
+        if bool(layout.compact)!=self.compact:
+            self.compact=bool(layout.compact)
+            from src.core.mobile_canvas import MobileCanvas
+            self.screen=MobileCanvas((self.width,self.height),(1280,720)) if self.compact else pygame.Surface((self.width,self.height)).convert()
+            self._mobile_context=None
         self._sync_backing_size()
+
+    def draw_scene(self,scenes):
+        if not self.compact:return scenes.draw(self.screen)
+        from src.core.mobile_canvas import drawing_coordinates
+        context=(id(scenes.current_scene),getattr(getattr(scenes.current_scene,"asset_manager",None),"active_context",None))
+        if context!=self._mobile_context:
+            self._mobile_context=context
+            for value in vars(getattr(scenes.current_scene,"asset_manager",scenes.assets)).values():self.screen.remember(value)
+        scene=scenes.current_scene
+        # Camadas geradas pelo compositor são imutáveis depois de preparadas.
+        for name in ("_background_layer","_current_layer","_previous_layer"):
+            self.screen.freeze(getattr(scene,name,None))
+        hud=getattr(scene,"battle_hud",None)
+        if hud:
+            for value in vars(hud).values():self.screen.remember(value)
+        for layer in (scene,*scenes.modal_stack):
+            self.screen.remember(getattr(getattr(layer,"visuals",None),"scaled",{}))
+        with drawing_coordinates():scenes.draw(self.screen)
 
     def _sync_backing_size(self):
         try:
             viewport=self.platform.render_viewport()
-            size=backing_size(viewport["width"],viewport["height"],viewport["dpr"],
+            size=(1280,720) if self.compact else backing_size(viewport["width"],viewport["height"],viewport["dpr"],
                               (self.width,self.height))
         except (AttributeError,TypeError,ValueError,KeyError):
             # Pilotos/bridges antigos não expõem a densidade.
@@ -62,13 +87,17 @@ class WebWindowManager:
         return (point[0]-x)/scale, (point[1]-y)/scale
 
     def get_virtual_mouse_pos(self):
-        return self.map_to_virtual(pygame.mouse.get_pos())
+        return self.touch_position if self.compact and self.touch_position is not None else self.map_to_virtual(pygame.mouse.get_pos())
 
     def present(self):
         self._sync_backing_size()
         scale, x, y = self.get_scale_and_offset()
         size = max(1,round(self.width*scale)), max(1,round(self.height*scale))
         # Reutiliza o destino; nenhum Surface novo por quadro.
+        if self.compact:
+            self.display_surface.blit(self.screen,(0,0))
+            pygame.display.flip()
+            return
         if size==self.screen.get_size():
             target=self.screen
         else:

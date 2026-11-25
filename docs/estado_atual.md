@@ -232,3 +232,18 @@ Ver [arquitetura e comandos](arquitetura_multiplataforma.md).
 
 Fechamento cruzado: 11 verificações Web PC, 22 mobile e 10 PWA aprovadas.
 Resultados e limites no [relatório final](validacao_multiplataforma_final.json).
+
+## Mobile com a arte original
+
+Todas as telas mobile usam as cenas originais, sem HUD/menu/grid HTML paralelo.
+A camada de toque oferece apenas inspeção artística e confirmação explícita;
+os hits invisíveis são ampliados para 44×44 CSS. O buffer mobile é realmente
+1280×720, DPR 1, com coordenadas lógicas originais e caches limitados; Web PC e
+Desktop mantêm seus caminhos. Laterais recebem a ambientação e o indicador
+offline não rouba espaço da cena. Instalação/atualização continua no menu.
+Ver [regras, arquitetura e validação](web_mobile.md).
+
+Validação desta correção: **931 testes em 91 módulos, zero falhas**; 14 telas e
+11 verificações de toque no Chromium. Combate: 46,3 FPS medianos na emulação;
+comparação controlada: 24,6 → 44,2 FPS. Não equivale a medição no celular físico.
+Veja o [relatório e limites](validacao_mobile_arte_original.json).

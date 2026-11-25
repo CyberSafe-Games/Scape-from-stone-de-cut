@@ -39,6 +39,7 @@ def scaled_image(image, size):
 
 def blit_actor(surface, frame, rect, blend_flags=0):
     """Evita percorrer margens transparentes de uma pose imutável."""
+    if hasattr(surface,"freeze"):surface.freeze(frame)
     bounds = actor_bounds(frame)
     if bounds.width and bounds.height:
         return surface.blit(frame, (rect.x+bounds.x, rect.y+bounds.y),

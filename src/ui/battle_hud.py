@@ -23,6 +23,7 @@ class BattleHUD:
         if cache_key not in self._scaled:
             self._scaled[cache_key] = (horizontal_frame(image, rect.size) if key == 'hud_health'
                                        else pygame.transform.smoothscale(image, rect.size))
+        if hasattr(surface,"freeze"):surface.freeze(self._scaled[cache_key])
         surface.blit(self._scaled[cache_key], rect)
         return True
 
@@ -31,6 +32,7 @@ class BattleHUD:
         portrait = self.assets.get_character_portrait(portrait_name, rect.size)
         if portrait is not None:
             self._portraits[(portrait_name, rect.size)] = portrait
+            if hasattr(surface,"freeze"):surface.freeze(portrait)
             surface.blit(portrait, rect)
         else:
             # Ausência do asset é visível, sem ressuscitar a moldura antiga.

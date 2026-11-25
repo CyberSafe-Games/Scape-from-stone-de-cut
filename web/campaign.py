@@ -387,6 +387,9 @@ async def main():
             music_volume=pygame.mixer.music.get_volume() if audio.available else 0,
             max_sfx_gain=max((sound.get_volume() for sound in audio._sounds.values()),default=0))
         report["render_buffer"]=list(window.display_surface.get_size())
+        report["physical_canvas"]=list(pygame.Surface.get_size(window.screen))
+        report["mobile_render_cache"]=dict(bytes=getattr(window.screen,"cache_bytes",0),
+            hits=getattr(window.screen,"cache_hits",0),misses=getattr(window.screen,"cache_misses",0))
         report["missing_sounds"]=sorted(audio._failed_sounds)
         report["music_path"]=str(audio._music_path or "")
         report["draw_profile"]=scenes.draw_profile
@@ -425,7 +428,7 @@ async def main():
             report["reward_offers"]=[dict(kind=option[0],value=option[1],rect=list(rect))
                 for option,rect in scene.reward_view.offers(engine,scene._reward_progress())]
         if getattr(scene,"management_guide",None):
-            report["guide"]=dict(active=scene.management_guide.active,key=scene.management_guide.key)
+            report["guide"]=dict(active=scene.management_guide.active,key=scene.management_guide.key,rects=[list(r) for r in scene.management_guide.layout()])
         platform.window.webStorageMetrics=json.dumps(report,ensure_ascii=True)
     try:await app.run_web(observe)
     except Exception:

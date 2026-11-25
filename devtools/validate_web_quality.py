@@ -140,10 +140,10 @@ def main():
             page.on("pageerror",lambda e:errors.append(str(e)))
             page.goto(args.url);scene("CampaignMenu")
             canvas=page.locator("#canvas").bounding_box()
-            factor=min(canvas["width"]*2/1920,canvas["height"]*2/1080,1)
-            expected=(round(1920*factor),round(1080*factor))
+            expected=(1280,720)
+            assert page.evaluate("JSON.parse(scapePlatform.renderViewport()).dpr")==1
             density(3,expected)
-            result["checks"].append("mobile_dpr3_capped_to_two")
+            result["checks"].append("mobile_dpr3_uses_fixed_720p_and_dpr_one")
             page.screenshot(path=str(out/"mobile-dpr3.png"))
             result["errors"]=errors
             result["passed"]=True

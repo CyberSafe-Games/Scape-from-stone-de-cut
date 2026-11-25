@@ -25,6 +25,7 @@ class CompositionCache:
             image=surface.copy().convert(surface)
             draw(image)
             self._put(cache_key,image)
+        if hasattr(surface,"freeze"):surface.freeze(image)
         surface.blit(image,(0,0))
     def panel(self,surface,rect,selected,draw):
         rect=pygame.Rect(rect)
@@ -38,6 +39,7 @@ class CompositionCache:
             image=source.copy().convert(surface)
             draw(image,rect.move(-area.x,-area.y),selected)
             self._put(key,image)
+        if hasattr(surface,"freeze"):surface.freeze(image)
         surface.blit(image,area)
     def begin_frame(self):
         self.covered=[]
@@ -54,6 +56,7 @@ class CompositionCache:
             image=surface.subsurface(area).copy().convert(surface)
             draw(image,rect.move(-area.x,-area.y),selected)
             self._put(key,image)
+        if hasattr(surface,"freeze"):surface.freeze(image)
         surface.blit(image,area)
     def sparse_blit(self,surface,image,position,edge=30):
         if image not in self.regions:

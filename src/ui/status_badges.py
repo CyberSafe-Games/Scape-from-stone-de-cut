@@ -42,6 +42,7 @@ def draw_status_badges(surface, combatant, x, y, width, assets, mouse):
     per_row = max(1, width // 66)
     for i, (name, count, potency) in enumerate(states):
         rect = pygame.Rect(x + (i % per_row) * 66, y + (i // per_row) * 38, 63, 35)
+        if hasattr(surface,"register_hit"):surface.register_hit(rect,INFO.get(name,(name,""))[0])
         hovered = rect.collidepoint(mouse)
         pygame.draw.rect(surface, (12, 20, 20), rect, border_radius=6)
         gold_outline(surface, rect, hovered, compact=True)

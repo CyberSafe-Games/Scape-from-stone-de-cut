@@ -76,9 +76,16 @@ class Application:
         before = time.perf_counter() if web else 0
         self.scenes.update(dt)
         after_update = time.perf_counter() if web else 0
-        self.scenes.draw(self.window.virtual_screen)
+        if web and getattr(self.window,"compact",False):
+            self.window.draw_scene(self.scenes)
+        else:
+            self.scenes.draw(self.window.virtual_screen)
         if self.preferences.get("show_fps"):
-            draw_fps(self.window.virtual_screen, self.assets.small_font, self.clock.get_fps())
+            if web and getattr(self.window,"compact",False):
+                from src.core.mobile_canvas import drawing_coordinates
+                with drawing_coordinates():draw_fps(self.window.virtual_screen,self.assets.small_font,self.clock.get_fps())
+            else:
+                draw_fps(self.window.virtual_screen, self.assets.small_font, self.clock.get_fps())
         after_draw = time.perf_counter() if web else 0
         self.window.present()
         if web:

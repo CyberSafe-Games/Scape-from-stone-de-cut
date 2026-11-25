@@ -39,6 +39,7 @@ class CardView:
             scale = min(draw_rect.width / image.get_width(), draw_rect.height / image.get_height())
             scaled = scaled_image(image, (
                 round(image.get_width() * scale), round(image.get_height() * scale)))
+            if hasattr(surface,"freeze"):surface.freeze(scaled)
             surface.blit(scaled, scaled.get_rect(center=draw_rect.center))
             if hovered:
                 gold_outline(surface, scaled.get_rect(center=draw_rect.center).inflate(8, 8), True)

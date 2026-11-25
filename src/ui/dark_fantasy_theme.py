@@ -76,6 +76,7 @@ def divider(surface, x1, x2, y, color=BRONZE_DARK):
 
 def button(surface, rect, label, font, hover=False, prominent=False, enabled=True, danger=False):
     rect = pygame.Rect(rect)
+    if hasattr(surface,"register_hit"):surface.register_hit(rect,label)
     if not enabled:
         bg, edge, fg = (26, 29, 29), DISABLED, (114, 119, 114)
     elif danger:

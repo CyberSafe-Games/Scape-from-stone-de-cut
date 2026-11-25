@@ -438,14 +438,14 @@ As restrições desta seção descrevem --poc; a campanha padrão segue a Etapa 
 ## 28. Host compacto e toque — Etapa 5
 
 - Checkpoint da Etapa 4: 62de681. A campanha web instala web/mobile.py; o Desktop não instala esse adaptador.
-- responsive_layout.py define os limiares 1000×600 úteis, controles compactos também em tablets com apontador primário touch e o bloqueio em retrato somente nesses dispositivos. O canvas virtual permanece 1920×1080; WebWindowManager dimensiona a saída pelo tamanho CSS × DPR (máximo 2), limitada à arte nativa 1920×1080.
+- responsive_layout.py define os limiares 1000×600 úteis, controles compactos também em tablets com apontador primário touch e o bloqueio em retrato somente nesses dispositivos. Coordenadas lógicas 1920×1080; MobileCanvas físico 1280×720 e DPR 1. Web PC mantém HiDPI até 1920×1080.
 - web/index.html é um fragmento do host Pygbag, não outro runtime. Preservar safe areas, 100dvh e orientação/foco na bridge.
 - MobileInterface reutiliza cenas, handlers, instâncias reais de cartas e persist_command. Não duplicar regras/transações nos arquivos JavaScript.
 - Primeiro toque inspeciona; JOGAR/COMPRAR/EQUIPAR/REMOVER/APRIMORAR/ESCOLHER confirma. Nenhuma inspeção pode gastar recursos.
 - Época de composição + geração de orientação invalidam comandos antigos. Bloquear durante commit e consumir confirmação uma vez. Cancelar seleção/arraste no blur, pointercancel, rotação e troca de cena.
 - ActiveTimeline afeta apenas o runtime web e congela ticks durante suspensão. Não alterar pygame.time.get_ticks no Desktop.
 - Controles compactos têm mínimo 44×44 CSS, contain/padding, texto via textContent e spotlight sobre elementos reais. Preservar identidade e níveis da arte via AssetManager.
-- Partículas procedurais são limitadas a seis por emissão e 24 por frame no perfil transitório apenas compacto. Caches de imagens do host são limitados e liberados por cena.
+- Partículas procedurais são limitadas a três por emissão e 12 por frame no perfil transitório apenas compacto. Caches de imagens do host são limitados e liberados por cena.
 - Ver [contrato mobile](docs/web_mobile.md) e [estado atual](docs/estado_atual.md). Emulação não autoriza alegar desempenho em dispositivos físicos.
 - Fechamento técnico de 25/11/2026: 889 testes em 87 módulos aprovados; 22 verificações Chromium mobile e 11 Web PC aprovadas. O host deve manter uma única meta viewport no head, com viewport-fit=cover. Também foram conferidos tablet touch 1280×800, rotação e Web PC amplo. Relatório: docs/validacao_web_etapa5.json.
 
@@ -479,7 +479,8 @@ Resultados e limites no [relatório final](docs/validacao_multiplataforma_final.
 ## Nitidez e áudio na Web — correção posterior à Etapa 7
 
 A bridge informa tamanho CSS e devicePixelRatio. Apenas SDL/Pygame altera o
-backing buffer: CSS × DPR limitado a 2 e ao tamanho da arte nativa 1920×1080.
+backing buffer Web PC: CSS × DPR limitado a 2 e à arte nativa 1920×1080;
+mobile usa o perfil físico 1280×720/DPR 1 descrito abaixo.
 Não atribuir canvas.width/height por JavaScript, pois isso desincroniza SDL e
 entrada. Não forçar 960×540 no compacto. O último downscale usa smoothscale;
 em 1920×1080 ocorre blit direto, sem redução intermediária. CSS pixelated evita
@@ -492,3 +493,28 @@ máximo 0,16 e música × 0,25 reservam margem de mix (soma teórica 0,89).
 Sliders continuam multiplicativos e desbloqueio/retomada não criam nova trilha
 ou ganho master. Não alterar volumes, canais ou inicialização do Desktop.
 A medição de PCM no Chromium não substitui escuta em dispositivos físicos.
+
+## Mobile com a arte original
+
+Todas as telas mobile usam as cenas originais, sem HUD/menu/grid HTML paralelo.
+A camada de toque oferece apenas inspeção artística e confirmação explícita;
+os hits invisíveis são ampliados para 44×44 CSS. O buffer mobile é realmente
+1280×720, DPR 1, com coordenadas lógicas originais e caches limitados; Web PC e
+Desktop mantêm seus caminhos. Laterais recebem a ambientação e o indicador
+offline não rouba espaço da cena. Instalação/atualização continua no menu.
+Ver [regras, arquitetura e validação](docs/web_mobile.md).
+
+Não reintroduzir a antiga mobile-header/mobile-grid/mobile-footer em nenhuma
+cena. MobileCanvas adapta primitivas só no draw síncrono e restaura o módulo;
+nunca alterar globalmente o renderizador nativo. Congelar somente superfícies
+imutáveis: LRU de arte 24 MiB, textos 8 MiB. Limpar composições na troca de perfil.
+A regra 1280×720 mobile substitui a adoção anterior de backing HiDPI nesse perfil.
+
+Validação desta correção: **931 testes em 91 módulos, zero falhas**; 14 telas e
+11 verificações de toque no Chromium. Combate: 46,3 FPS medianos na emulação;
+comparação controlada: 24,6 → 44,2 FPS. Não equivale a medição no celular físico.
+Veja o [relatório e limites](docs/validacao_mobile_arte_original.json).
+
+Os hits ampliados das Configurações devem considerar somente os controles da
+aba ativa; controles ocultos não podem interceptar sliders. Assinaturas de
+preview usam digest da imagem cacheada, evitando serializar base64 a cada frame.

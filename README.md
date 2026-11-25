@@ -290,7 +290,7 @@ Resultados e limites no [relatório final](docs/validacao_multiplataforma_final.
 
 ## Correção de nitidez e áudio no navegador
 
-O canvas acompanha a densidade física da tela (DPR até 2, com buffer máximo
+No Web PC, o canvas acompanha a densidade física da tela (DPR até 2, com buffer máximo
 1920×1080), sem a redução fixa anterior para 960×540 no mobile. Música e efeitos
 usam buffer 4096 e margem de volume exclusivos da Web, mantendo o desbloqueio
 após interação. O Desktop conserva janela, mixer e volumes anteriores.
@@ -302,11 +302,26 @@ python devtools/generate_web_campaign_fixtures.py
 .venv-web/Scripts/python.exe devtools/validate_web_quality.py
 ~~~
 
-O teste usa Chromium temporário, escalas 125%/150%/200% e mobile DPR 3 limitado
-a 2. Saves usados são checkpoints de QA em build/, sem tocar nos slots pessoais.
+O teste usa Chromium temporário e escalas PC 125%/150%/200%; mobile DPR 3 usa
+o perfil 1280×720/DPR 1 descrito abaixo. Saves usados são checkpoints de QA em build/, sem tocar nos slots pessoais.
 Ver os detalhes em [build web](docs/build_web.md).
 
 Validação da correção: **919 testes em 90 módulos, zero falhas** e cinco
 verificações de qualidade Chromium aprovadas. A comparação controlada passou
 de 33,7 para 32,5 FPS com buffer 2,25 vezes maior; não é garantia de FPS em
 aparelhos físicos. [Medições e limites](docs/validacao_web_qualidade.json).
+
+## Mobile com a arte original
+
+Todas as telas mobile usam as cenas originais, sem HUD/menu/grid HTML paralelo.
+A camada de toque oferece apenas inspeção artística e confirmação explícita;
+os hits invisíveis são ampliados para 44×44 CSS. O buffer mobile é realmente
+1280×720, DPR 1, com coordenadas lógicas originais e caches limitados; Web PC e
+Desktop mantêm seus caminhos. Laterais recebem a ambientação e o indicador
+offline não rouba espaço da cena. Instalação/atualização continua no menu.
+Ver [regras, arquitetura e validação](docs/web_mobile.md).
+
+Validação desta correção: **931 testes em 91 módulos, zero falhas**; 14 telas e
+11 verificações de toque no Chromium. Combate: 46,3 FPS medianos na emulação;
+comparação controlada: 24,6 → 44,2 FPS. Não equivale a medição no celular físico.
+Veja o [relatório e limites](docs/validacao_mobile_arte_original.json).

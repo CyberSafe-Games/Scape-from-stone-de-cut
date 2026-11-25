@@ -111,9 +111,11 @@ class SceneManager:
     def draw(self, surface):
         """Desenha a cena atual e, se houver, os modais por cima."""
         if self.current_scene:
+            if hasattr(surface,"begin_owner"):surface.begin_owner(self.current_scene)
             self.current_scene.draw(surface)
 
         for modal in self.modal_stack:
+            if hasattr(surface,"begin_owner"):surface.begin_owner(modal)
             modal.draw(surface)
         if (self.saving and self.pending_ms > 100) or self.storage_error:
             font = pygame.font.Font(None, 30)

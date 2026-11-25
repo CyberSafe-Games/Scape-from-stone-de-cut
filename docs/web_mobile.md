@@ -1,89 +1,83 @@
-# Layout compacto e entrada por toque — Etapa 5
+# Mobile com arte original e toque
 
 Referência complementar ao [estado atual](estado_atual.md).
-Checkpoint da Etapa 4: `62de681`, branch `feat/web-mobile-port`.
+Branch: feat/web-mobile-port. Esta regra substitui a apresentação compacta
+da Etapa 5 e a regra de HiDPI mobile anterior.
 
-## Limites de plataforma
+## Uma única composição em todas as telas
 
-O Desktop continua com seu controlador, canvas virtual 1920×1080, mouse e teclado.
-Apenas o host da campanha web instala MobileInterface. A viewport web útil abaixo
-de 1000 px de largura ou 600 px de altura ativa controles compactos. Dispositivos
-com apontador primário por toque também usam esses controles em tablets amplos. O buffer
-Pygame acompanha o tamanho CSS do canvas multiplicado pelo DPR (teto 2), limitado
-a 1920×1080, preservando as coordenadas internas e controles em viewports amplas.
+Menu, slots, mapa, combate, recompensa, loja, mochila, altar, configurações,
+guias, quadrinhos e epílogo usam as cenas Pygame originais. Não reconstruir
+HUDs, cartas da mão, listas, botões ou barras de vida em painéis HTML.
+O canvas mantém enquadramento 16:9 completo, sem cortar rodapé/retratos.
+Telas mais largas mostram a própria ambientação nas laterais; não esticar
+nem cortar a composição para preencher a proporção 19,5:9.
 
-O fragmento web/index.html é injetado no bootstrap gerado por Pygbag. Não substituir
-o bootstrap inteiro: web/styles.css, bridge.js e mobile.js compõem o host.
-Safe areas usam env(safe-area-inset-*), viewport-fit=cover e altura dinâmica.
-Dispositivos de toque em retrato exibem "Gire o aparelho para continuar".
-Foco/visibilidade e orientação bloqueiam entrada, updates e desenho. ActiveTimeline
-congela também pygame.time.get_ticks no runtime web; a retomada descarta o intervalo
-suspenso e gestos antigos, sem avançar timers de animação.
+web/mobile.js apenas encaminha toque e mostra a carta artística selecionada
+com a confirmação flutuante. Não desenha header/grid/footer paralelos.
+Os PNGs de cartas continuam vindo de AssetManager, com custo e nível reais.
+Intenções com arte dedicada preservam essa arte e regras; ações comuns sem
+PNG ganham uma carta composta com moldura e retrato originais.
 
-## Interação e apresentação
+## Interação sem alterar regras
 
-A camada compacta reutiliza as ilustrações existentes e PNGs produzidos pelo mesmo
-AssetManager, com custo real e nível da cópia. Não cria regras paralelas de combate,
-inventário ou preços. O HTML usa textContent para descrições, sem interpretar
-strings do save como marcação.
+- Primeiro toque inspeciona. JOGAR, COMPRAR, EQUIPAR, REMOVER, APRIMORAR ou
+  ESCOLHER confirma. A inspeção não gasta energia, ouro ou recompensa.
+- Mochila conserva as abas, slots e coleção originais; a paginação não é
+  substituída por outro layout. Altar mantém sua comparação nativa e oferece
+  ANTES/DEPOIS na inspeção.
+- Menus, mapa, sliders, modais e guias recebem eventos dos handlers originais.
+  Apenas a área invisível de hit cresce para pelo menos 44×44 CSS.
+- Comandos carregam época e geração. Descartar toques antigos, duplos commits,
+  gestos cancelados e ações durante gravação. Troca de imagem ANTES/DEPOIS é
+  neutra; não deve consumir o registro da confirmação seguinte.
+- Rotação em aparelhos touch pausa em retrato; blur/visibilitychange cancela
+  seleção/arraste e congela o ActiveTimeline. Web PC amplo mantém mouse/hover.
+- O indicador PWA não ocupa espaço no mobile. Instalar/atualizar fica disponível
+  discretamente no menu inicial; aplicação da atualização mantém a coordenação
+  segura entre abas. O aviso de atualização em curso ainda pode bloquear a UI.
 
-- Primeiro toque em carta/Ultimate abre inspeção. JOGAR confirma explicitamente.
-- Intenções e status abrem descrição legível; FECHAR ou toque no fundo dispensa.
-- Compra, equipamento, remoção e recompensa exigem seleção seguida de confirmação.
-- Mochila separa Reserva, Equipado e Ultimates; reserva e ofertas reduzem paginação.
-- Altar compara as descrições reais de LV1/LV2 antes de evoluir somente a cópia.
-- Configurações oferecem abas e área rolável, ranges e botões −/+ de volume.
-- Botões têm alvos CSS mínimos de 44×44; imagens preservam contain e padding.
-- Guias usam seus textos/flags/transações existentes. O spotlight compacto é
-  calculado com o elemento DOM atual, acompanhando rotação, abas e rolagem.
+## Renderização real em 1280×720
 
-MobileInterface registra callbacks da cena atual, associadas à época da composição
-e geração de orientação/foco. Comandos repetidos, obsoletos ou recebidos durante
-commit pendente não executam. O canvas compacto não recebe eventos sintéticos
-touch+mouse. Cancelamento limpa seleção e arraste; o Web PC amplo conserva seus
-eventos de mouse, hover, roda e teclado.
+A viewport compacta/touch usa MobileCanvas com armazenamento físico **1280×720**
+e DPR de apresentação **1**. As coordenadas lógicas permanecem 1920×1080 para
+reutilizar integralmente a arte e os handlers. Não desenhar primeiro um quadro
+Full HD para só depois reduzi-lo: blits e primitivas vão diretamente ao buffer
+720p. A apresentação é um blit direto. Web PC conserva o backing por CSS × DPR
+limitado a 2/1920×1080; Desktop conserva WindowManager e mixer nativo.
 
-## Perfil leve e persistência
+drawing_coordinates adapta primitivas somente durante o draw síncrono mobile e
+restaura as funções em finally. Superfícies auxiliares comuns não têm coordenadas
+alteradas. Cópias/subsuperfícies para composições antigas são materializadas nas
+coordenadas lógicas; suas camadas estáticas são preparadas uma vez.
 
-O perfil compacto limita partículas procedurais compartilhadas a seis por emissão e 24 por frame.
-Não muda sprites, dano ou cadência de combate. A camada de prévias usa cache limitado
-de 48 entradas, descartado ao mudar de cena/modal. A liberação dos recursos e caches
-por contexto continua sob responsabilidade de CampaignAssets.
-IndexedDB e confirmações/rollback permanecem os mesmos da Etapa 3.
+Artes imutáveis escaladas têm LRU de 24 MiB; textos têm cache de 8 MiB.
+Não congelar camadas mutáveis como preenchimento de HP. Alpha global é aplicado
+no blit sem refazer o resize. Limpar composições ao sair do perfil compacto,
+evitando reutilizar uma composição de baixa resolução no Web PC.
+Partículas procedurais ficam limitadas a **3 por emissão / 12 por frame**.
+Sprites, dano, energia, turnos e persistência v15 não mudam.
 
-## Reprodução
+## Validação
 
 ~~~powershell
+python devtools/generate_web_campaign_fixtures.py
 .venv-web/Scripts/python.exe devtools/build_web.py --serve
-# Outro terminal:
-.venv-web/Scripts/python.exe devtools/validate_web_mobile.py
-python -B devtools/validate_isolated_tests.py --report build/web-stage5-python-tests.json
+# Em outro terminal:
+.venv-web/Scripts/python.exe devtools/validate_web_mobile_art.py
+.venv-web/Scripts/python.exe devtools/validate_web_management.py
+python -B devtools/validate_isolated_tests.py --report build/mobile-art-tests.json
 ~~~
 
-A emulação Chromium usa toque real de Playwright, viewports Android/iPhone e
-checkpoints QA v15 declarados. Não equivale a medição em Android/Safari/iPhone
-físicos. PWA, offline e distribuição pertencem à Etapa 6.
+Checkpoints e screenshots ficam em build/; não gravar nos slots pessoais nem
+versionar artefatos de QA. Os relatórios das Etapas 5–7 são históricos; consulte
+o [relatório desta correção](validacao_mobile_arte_original.json). Meta de desempenho: 45–60 FPS.
+Emulação Chromium não comprova FPS em um celular físico, Android ou Safari/iOS.
 
-## Validação final — 25/11/2026
+A persistência e a liberação de recursos por contexto seguem os contratos de
+[persistência](web_storage.md) e [campanha](web_campaign.md).
 
-Relatório: [resultados da Etapa 5](validacao_web_etapa5.json).
-
-- Checkpoint da Etapa 4: `62de681`; alterações da Etapa 5 locais na mesma branch.
-- Suíte completa: **889 testes, 87 módulos, zero falhas**, em 181,28 segundos.
-  Conferência final direcionada: **67 testes aprovados**.
-- Chromium: **11 verificações por viewport**, Android 915×412 e iPhone 844×390.
-  Rotação, congelamento/retomada, foco, cancelamento de seleção, Ultimate,
-  combate/recompensa, Loja, Mochila, Altar e preferências após F5 aprovados.
-- Web PC amplo: **11 verificações aprovadas** com mouse, roda, teclado, sliders
-  e persistência. Mediana observada na Loja: **58,66 FPS**.
-- FPS mediano do combate de QA: **41,50** no viewport Android e **35,66** no iPhone.
-- Heap WASM reservado: **442,50 MiB** em ambos; amostra de heap JS ao final:
-  **179,29 MiB** em ambos. Heap reservado não equivale a RSS.
-- Build inicial: **6,57 MiB**, mantendo os recursos da campanha sob demanda.
-- O instalador Windows e os requisitos nativos não foram alterados; nenhum
-  asset foi substituído ou movido nesta etapa.
-
-A medição usa Chromium no computador, DPR 1, sem limitação de CPU/rede, e um
-combate Slime com checkpoint QA v15. Não mede a campanha completa em celular
-físico, Android real ou Safari/iOS. A Etapa 6 ainda não foi iniciada.
-
+Validação desta correção: **931 testes em 91 módulos, zero falhas**; 14 telas e
+11 verificações de toque no Chromium. Combate: 46,3 FPS medianos na emulação;
+comparação controlada: 24,6 → 44,2 FPS. Não equivale a medição no celular físico.
+Veja o [relatório e limites](validacao_mobile_arte_original.json).

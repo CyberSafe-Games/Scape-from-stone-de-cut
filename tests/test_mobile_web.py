@@ -105,6 +105,35 @@ class MobileCommandTests(unittest.TestCase):
         self.bridge.drain.return_value=json.dumps([dict(id="buy",epoch="3",generation=1)]*2)
         self.ui.poll()
         action.assert_called_once()
+    def test_inspection_variants_do_not_drop_the_following_neutral_action(self):
+        before=Mock();after=Mock()
+        self.ui.callbacks={"variant-before":lambda _:before(),"variant-after":lambda _:after()}
+        self.bridge.drain.return_value=json.dumps([dict(id=k,epoch="0",generation=1)
+            for k in ("variant-before","variant-after")])
+        self.ui.poll()
+        before.assert_called_once();after.assert_called_once()
+    def test_invisible_targets_are_at_least_44_css_pixels_and_stay_inside_canvas(self):
+        for rect in (pygame.Rect(1880,10,38,38),pygame.Rect(0,0,42,20)):
+            hit=self.ui.touch_hit_rect(rect)
+            self.assertGreaterEqual(hit.w*self.ui.layout.scale,44)
+            self.assertGreaterEqual(hit.h*self.ui.layout.scale,44)
+            self.assertTrue(pygame.Rect(0,0,1920,1080).contains(hit))
+    def test_actual_slider_track_wins_over_a_nearby_enlarged_button(self):
+        scene=SimpleNamespace(sliders={"master":pygame.Rect(200,300,400,60)},
+                              minus_button=pygame.Rect(150,300,40,60))
+        self.ui.click=Mock()
+        self.ui.tap(scene,(205,330))
+        self.assertEqual(self.ui.click.call_args.args[1].topleft,(205,330))
+        self.assertEqual(self.scenes.window.touch_position,(205,330))
+        self.ui.tap(scene,(205,280))
+        self.assertEqual(self.ui.click.call_args.args[1].topleft,(205,330))
+        from src.scenes.options_scene import OptionsScene
+        options=object.__new__(OptionsScene);options.tab="audio"
+        options.sliders={"master":pygame.Rect(940,442,360,14)}
+        options.window_size_buttons={"large":pygame.Rect(1030,386,190,64)}
+        self.ui.tap(options,(1066,424))
+        self.assertEqual(self.ui.click.call_args.args[1].topleft,(1066,449))
+        self.assertNotIn("large",[c["label"] for c in self.ui.native_controls(options)])
     def test_stale_epoch_does_not_execute(self):
         action=Mock();self.ui.callbacks={"buy":action}
         self.bridge.drain.return_value=json.dumps([dict(id="buy",epoch="old",generation=1)])
@@ -126,7 +155,7 @@ class MobileCommandTests(unittest.TestCase):
     def test_compact_quality_reduces_particles_only(self):
         from src.config.visual_quality import begin_frame
         begin_frame()
-        self.assertEqual(particle_amount(24),6)
+        self.assertEqual(particle_amount(24),3)
         set_compact_effects(False)
         self.assertEqual(particle_amount(24),24)
 
@@ -165,7 +194,19 @@ class RealCompactSceneTests(unittest.TestCase):
         self.ui.callbacks[model["items"][0]["id"]](None)
         self.assertIsNotNone(self.ui.selection)
         self.assertEqual(self.data["progresso"]["moedas"],before)
-        self.assertEqual(scene.PAGE_SIZE,2)
+        self.assertEqual(scene.PAGE_SIZE,4)
+        self.assertNotIn("data:image/png;base64,",self.ui.last_model)
+        self.assertEqual(self.ui.model_signature({"text":"a","image":"uri"}),
+                         self.ui.model_signature({"image":"uri","text":"a"}))
+    def test_native_shop_price_button_opens_inspection_without_spending(self):
+        from src.scenes.shop_scene import ShopScene
+        scene=ShopScene(self.scenes,self.window,self.assets,self.manager,self.data)
+        self.publish(scene)
+        before=self.data["progresso"]["moedas"]
+        self.ui.tap(scene,next(iter(scene.offer_rects.values())).center)
+        self.assertIsNotNone(self.ui.selection)
+        self.assertEqual(self.data["progresso"]["moedas"],before)
+
     def test_altar_exposes_both_level_art_variants(self):
         from src.scenes.roguelite_scene import RogueliteScene
         scene=RogueliteScene(self.scenes,self.window,self.assets,self.manager,self.data)
@@ -183,7 +224,7 @@ class ParticleBudgetTests(unittest.TestCase):
         set_compact_effects(True)
         try:
             begin_frame()
-            self.assertEqual(sum(particle_amount(20) for _ in range(10)),24)
+            self.assertEqual(sum(particle_amount(20) for _ in range(10)),12)
             begin_frame()
-            self.assertEqual(particle_amount(20),6)
+            self.assertEqual(particle_amount(20),3)
         finally:set_compact_effects(False)

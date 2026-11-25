@@ -144,7 +144,8 @@ Resultados e limites no [relatório final](validacao_multiplataforma_final.json)
 ## Nitidez e áudio na Web — correção posterior à Etapa 7
 
 A bridge informa tamanho CSS e devicePixelRatio. Apenas SDL/Pygame altera o
-backing buffer: CSS × DPR limitado a 2 e ao tamanho da arte nativa 1920×1080.
+backing buffer Web PC: CSS × DPR limitado a 2 e à arte nativa 1920×1080.
+Mobile usa o perfil físico 1280×720/DPR 1 do contrato abaixo.
 Não atribuir canvas.width/height por JavaScript, pois isso desincroniza SDL e
 entrada. Não forçar 960×540 no compacto. O último downscale usa smoothscale;
 em 1920×1080 ocorre blit direto, sem redução intermediária. CSS pixelated evita
@@ -162,3 +163,18 @@ Validação da correção: **919 testes em 90 módulos, zero falhas** e cinco
 verificações de qualidade Chromium aprovadas. A comparação controlada passou
 de 33,7 para 32,5 FPS com buffer 2,25 vezes maior; não é garantia de FPS em
 aparelhos físicos. [Medições e limites](validacao_web_qualidade.json).
+
+## Mobile com a arte original
+
+Todas as telas mobile usam as cenas originais, sem HUD/menu/grid HTML paralelo.
+A camada de toque oferece apenas inspeção artística e confirmação explícita;
+os hits invisíveis são ampliados para 44×44 CSS. O buffer mobile é realmente
+1280×720, DPR 1, com coordenadas lógicas originais e caches limitados; Web PC e
+Desktop mantêm seus caminhos. Laterais recebem a ambientação e o indicador
+offline não rouba espaço da cena. Instalação/atualização continua no menu.
+Ver [regras, arquitetura e validação](web_mobile.md).
+
+Validação desta correção: **931 testes em 91 módulos, zero falhas**; 14 telas e
+11 verificações de toque no Chromium. Combate: 46,3 FPS medianos na emulação;
+comparação controlada: 24,6 → 44,2 FPS. Não equivale a medição no celular físico.
+Veja o [relatório e limites](validacao_mobile_arte_original.json).

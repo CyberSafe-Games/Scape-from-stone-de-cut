@@ -724,6 +724,19 @@
       ]
     },
     {
+      "file": "tests/test_mobile_native_canvas.py",
+      "cases": [
+        "ReducedCanvasTests.test_physical_storage_is_720p_with_original_logical_coordinates",
+        "ReducedCanvasTests.test_native_primitives_and_alpha_blits_keep_positions",
+        "ReducedCanvasTests.test_static_scaled_art_is_cached_but_mutable_layers_are_not",
+        "ReducedCanvasTests.test_drawing_scope_restores_native_functions_on_failure",
+        "ReducedCanvasTests.test_mobile_output_ignores_high_dpr_and_desktop_returns_to_native_path",
+        "ReducedCanvasTests.test_cached_art_tracks_global_alpha_without_stale_pixels",
+        "ReducedCanvasTests.test_text_cache_preserves_native_font_pixels",
+        "ReducedCanvasTests.test_clipping_is_mapped_without_changing_logical_bounds"
+      ]
+    },
+    {
       "file": "tests/test_mobile_web.py",
       "cases": [
         "ResponsiveTests.test_desktop_never_enables_compact",
@@ -745,6 +758,9 @@
         "TimelineTests.test_repeated_pause_notifications_are_idempotent",
         "TimelineTests.test_multiple_rotations_remain_monotonic",
         "MobileCommandTests.test_duplicate_commands_execute_once",
+        "MobileCommandTests.test_inspection_variants_do_not_drop_the_following_neutral_action",
+        "MobileCommandTests.test_invisible_targets_are_at_least_44_css_pixels_and_stay_inside_canvas",
+        "MobileCommandTests.test_actual_slider_track_wins_over_a_nearby_enlarged_button",
         "MobileCommandTests.test_stale_epoch_does_not_execute",
         "MobileCommandTests.test_pending_commit_blocks_actions",
         "MobileCommandTests.test_rotation_clears_inspection_and_drag",
@@ -752,6 +768,7 @@
         "MobileCommandTests.test_compact_quality_reduces_particles_only",
         "RealCompactSceneTests.test_map_uses_real_territory_titles",
         "RealCompactSceneTests.test_shop_inspection_does_not_purchase",
+        "RealCompactSceneTests.test_native_shop_price_button_opens_inspection_without_spending",
         "RealCompactSceneTests.test_altar_exposes_both_level_art_variants",
         "RealCompactSceneTests.test_tablet_with_primary_touch_uses_safe_controls",
         "ParticleBudgetTests.test_compact_frame_budget_is_bounded_and_resets"
@@ -1378,6 +1395,6 @@
       ]
     }
   ],
-  "modules": 90,
-  "methods": 919
+  "modules": 91,
+  "methods": 931
 }
