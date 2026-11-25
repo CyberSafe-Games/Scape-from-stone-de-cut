@@ -1,0 +1,5 @@
+# Ambiente separado do desktop. O pygame-ce WASM é fornecido pelo runtime Pygbag.
+pygbag==0.9.3
+# Somente validação automatizada de navegador, sem dependência no jogo:
+playwright==1.65.2
+

@@ -57,7 +57,8 @@ def enemy_windup_ms(speed, combo_followup=False):
 class GamePreferences:
     """Fonte única das preferências globais do computador."""
 
-    def __init__(self, path=None):
+    def __init__(self, path=None, store=None):
+        self.store = store
         self.path = Path(path) if path is not None else Path(PREFERENCES_PATH)
         self.values = dict(DEFAULT_PREFERENCES)
         self.load()
@@ -66,7 +67,7 @@ class GamePreferences:
         """Lê o arquivo e devolve os valores validados, completando chaves ausentes."""
         self.values = dict(DEFAULT_PREFERENCES)
         try:
-            data = json.loads(self.path.read_text(encoding="utf-8-sig"))
+            data = self.store.load_preferences() if self.store is not None else json.loads(self.path.read_text(encoding="utf-8-sig"))
         except (OSError, ValueError, UnicodeError):
             return dict(self.values)
 
@@ -130,6 +131,10 @@ class GamePreferences:
         if window_manager is not None:
             self.sync_video(window_manager)
 
+        if self.store is not None:
+            self.store.save_preferences({key:_sanitize(key,self.values.get(key),default)
+                                         for key,default in DEFAULT_PREFERENCES.items()})
+            return
         self.path.parent.mkdir(parents=True, exist_ok=True)
         temporary = None
         try:

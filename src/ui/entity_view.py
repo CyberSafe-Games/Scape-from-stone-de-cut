@@ -1,5 +1,6 @@
 import math
 import pygame
+from src.ui.render_cache import blit_actor, actor_bounds, scaled_image
 
 from src.config.colors import WHITE
 from src.config.layout import (
@@ -76,7 +77,7 @@ def recoil_amount(remaining):
 def draw_recoiling_actor(surface, frame, rect, remaining, direction, blend_flags=0):
     amount = recoil_amount(remaining)
     if amount <= 0:
-        surface.blit(frame, rect, special_flags=blend_flags)
+        blit_actor(surface, frame, rect, blend_flags)
         return
 
     bounds = frame.get_bounding_rect()
@@ -580,7 +581,7 @@ class EntityView:
         if hurt and len(self.asset_manager.get_player_sprite_group("dano")) == 8:
             hurt = 0
         draw_recoiling_actor(surface, player_frame, player_rect, hurt, -1, blend_flags)
-        ink = player_frame.get_bounding_rect(min_alpha=50).move(player_rect.topleft)
+        ink = actor_bounds(player_frame, 50).move(player_rect.topleft)
         self.player_ground_anchor = (ink.centerx, ink.bottom)
 
     def get_enemy_frame(self, enemy, *, interpolate=False):
@@ -706,7 +707,7 @@ class EntityView:
                 frame = sprites[0]
                 breath = (1 - math.cos(now * math.tau / 2800)) / 2
                 width, height = frame.get_size()
-                return pygame.transform.smoothscale(frame, (width, height + round(2 * breath)))
+                return scaled_image(frame, (width, height + round(2 * breath)))
             idle_ms = {"corpo seco": 800, "goblin nerd": 320, 'guardião da pedra': 400}.get(enemy_name, 360)
             index = int(now // idle_ms) % len(sprites)
             if enemy_name == 'guardião da pedra' and len(sprites) == 4:
@@ -817,7 +818,7 @@ class EntityView:
                     index = min(len(defeat) - 1, int(fall * len(defeat)))
                     frame, blend_flags = display_pose(defeat[index], light)
                     rect = frame.get_rect(midbottom=(int(enemy_x), PLAYER_GROUND_Y))
-                    surface.blit(frame, rect, special_flags=blend_flags)
+                    blit_actor(surface, frame, rect, blend_flags)
                     if bat:
                         self._draw_bat_landing(surface, int(enemy_x), fall)
                     return
@@ -840,11 +841,11 @@ class EntityView:
                         if len(damage) >= 6:
                             frame, blend_flags = display_pose(damage[4 if fall < .18 else 5], light)
                             rect = frame.get_rect(midbottom=(int(enemy_x), PLAYER_GROUND_Y))
-                        surface.blit(frame, rect, special_flags=blend_flags)
+                        blit_actor(surface, frame, rect, blend_flags)
                     elif name == "morcego sombrio":
                         self._draw_bat_fall(surface, frame, rect, fall, blend_flags)
                     else:
-                        surface.blit(frame, rect, special_flags=blend_flags)
+                        blit_actor(surface, frame, rect, blend_flags)
                     return
                 # Eco visual discreto acompanha o giro, sem piscar frames nem
                 # trocar artificialmente a posição do personagem.

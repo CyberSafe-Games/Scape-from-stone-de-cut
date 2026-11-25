@@ -304,6 +304,9 @@ class OptionsScene(BaseScene):
         if self.modal and getattr(self.scene_manager,'current_scene',None) is not owner:
             return
         self._persist()
+        if getattr(getattr(owner, "save_manager", None), "async_commands", False) is True:
+            self.scene_manager.request_exit()
+            return
         from src.scenes.menu_scene import MenuScene
         self.scene_manager.change_scene(MenuScene(self.scene_manager,self.window_manager,self.asset_manager))
 

@@ -1,4 +1,8 @@
 import sys
+if sys.platform != "emscripten" and "--smoke-report" in sys.argv:
+    import os
+    os.environ.setdefault("SDL_VIDEODRIVER","dummy")
+    os.environ.setdefault("SDL_AUDIODRIVER","dummy")
 import pygame
 
 from src.config.settings import (
@@ -8,7 +12,7 @@ from src.config.settings import (
     FPS,
     LEGACY_WINDOW_SIZE,
 )
-from src.core.window import WindowManager
+from src.core.window import create_window_manager
 from src.core.asset_manager import AssetManager
 from src.core.scene_manager import SceneManager
 from src.core.audio_manager import AudioManager
@@ -114,7 +118,7 @@ def configure_audio(audio_manager):
         audio_manager.set_sound_volume(sound_id, gain)
 
 
-def main():
+def main(smoke_report=None):
     """Ponto de entrada principal da aplicação.
 
     Inicializa o motor Pygame, os gerenciadores centrais e executa o ciclo de vida do jogo.
@@ -123,12 +127,16 @@ def main():
 
     # Preferências globais do computador (áudio, vídeo e jogo), independentes
     # dos slots de save.
-    preferences = GamePreferences()
+    if smoke_report is not None:
+        from pathlib import Path
+        smoke_report=Path(smoke_report).resolve()
+        smoke_report.parent.mkdir(parents=True,exist_ok=True)
+    preferences = GamePreferences(path=smoke_report.parent/"preferences-smoke.json" if smoke_report else None)
 
     # O jogo abre em janela 1280x720 e renderiza em Full HD (1920x1080).
     # F11 alterna entre tela cheia e a janela 1280x720; F10 alterna a janela
     # entre 1280x720 e o maior tamanho 16:9 que cabe na tela.
-    window_manager = WindowManager(WIDTH, HEIGHT, TITLE)
+    window_manager = create_window_manager(WIDTH, HEIGHT, TITLE)
     preferences.apply_video(window_manager)
     asset_manager = AssetManager()
     audio_manager = AudioManager(music_volume=MUSIC_VOLUME)
@@ -141,41 +149,28 @@ def main():
     # Inicializa a aplicação com a cena do Menu Principal
     scene_manager.change_scene(MenuScene(scene_manager, window_manager, asset_manager))
 
-    running = True
-    while running:
-        dt = clock.tick(FPS)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-                break
-            # Tela cheia (F11), janela 1280x720 (F10) e redimensionamento valem
-            # em qualquer tela, inclusive com modais abertos.
-            is_window_shortcut = event.type == pygame.KEYDOWN and event.key in (pygame.K_F11, pygame.K_F10)
-            if window_manager.handle_window_event(event):
-                if is_window_shortcut:
-                    audio_manager.play_sfx("ui.click", volume=1.0)
-                    preferences.set("fullscreen", window_manager.is_fullscreen)
-                    preferences.set(
-                        "window_size",
-                        "legacy"
-                        if window_manager.windowed_size == LEGACY_WINDOW_SIZE
-                        else "large",
-                    )
-                    try:
-                        preferences.save()
-                    except OSError:
-                        pass
-                continue
-            scene_manager.handle_event(event)
-
-        scene_manager.update(dt)
-
-        # Renderiza a cena atual na resolução virtual fixa e apresenta com escala adaptativa
-        scene_manager.draw(window_manager.virtual_screen)
-        if preferences.get("show_fps"):
-            draw_fps(window_manager.virtual_screen, asset_manager.small_font, clock.get_fps())
-        window_manager.present()
+    from src.core.application import Application
+    app = Application(window_manager, asset_manager, audio_manager, preferences, scene_manager, clock)
+    if smoke_report is None:
+        app.run_desktop()
+    else:
+        import hashlib,json
+        from src.config.settings import ASSETS_DIR,SAVES_DIR
+        for _ in range(4):
+            app.frame()
+        screen=window_manager.virtual_screen
+        colors={screen.get_at((x,y))[:3] for x in range(0,WIDTH,80) for y in range(0,HEIGHT,60)}
+        screenshot=smoke_report.with_suffix(".png")
+        pygame.image.save(screen,str(screenshot))
+        report=dict(passed=app.frames==4 and len(colors)>8,frames=app.frames,
+            scene=type(scene_manager.current_scene).__name__,window=type(window_manager).__name__,
+            virtual_size=list(screen.get_size()),python=sys.version.split()[0],pygame=pygame.version.ver,
+            frozen=bool(getattr(sys,"frozen",False)),assets_exist=Path(ASSETS_DIR).is_dir(),
+            save_directory=str(SAVES_DIR),unique_sample_colors=len(colors),
+            frame_sha256=hashlib.sha256(pygame.image.tobytes(screen,"RGB")).hexdigest(),
+            web_dependencies_loaded=[name for name in sys.modules if name.split(".")[0] in ("pygbag","playwright")])
+        smoke_report.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+        if not report["passed"]:raise RuntimeError("Falha ao desenhar o menu no smoke nativo.")
 
     # Persiste o checkpoint também quando a janela é fechada diretamente.
     active_scene = scene_manager.current_scene
@@ -184,8 +179,20 @@ def main():
 
     audio_manager.shutdown()
     pygame.quit()
-    sys.exit()
+    return
 
 
 if __name__ == "__main__":
-    main()
+    from src.platforms.capabilities import detect_capabilities
+    if detect_capabilities().is_web:
+        import asyncio
+        from web.poc import main as web_main
+        asyncio.run(web_main())
+    else:
+        if "--smoke-report" in sys.argv:
+            import argparse
+            parser=argparse.ArgumentParser(description="Verificação headless do menu nativo, sem slots.")
+            parser.add_argument("--smoke-report",required=True)
+            main(smoke_report=parser.parse_args().smoke_report)
+        else:
+            main()

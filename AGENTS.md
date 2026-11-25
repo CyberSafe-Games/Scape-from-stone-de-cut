@@ -364,3 +364,179 @@ Resume/recheck são incrementais; não chamá-los de nova suíte integral.
   O texto de HP é centralizado na abertura, não no canvas decorativo inteiro.
 - test_health_bar cobre pontas no HP máximo, proporção parcial, zero, limites,
   preservação dos ornamentos e simetria dos dois lados. A arte PNG não mudou.
+
+## 24. Prova web — Etapa 1
+
+As restrições desta seção descrevem --poc; a campanha padrão segue a Etapa 4.
+
+- Branch feat/web-mobile-port a partir de b19cfcf. Entradas web/main.py e web/poc.py,
+  empacotadas por devtools/build_web.py. Não executar a campanha/saves no navegador.
+- Application compartilha um frame: desktop síncrono; web cede com asyncio.sleep(0).
+  Não usar sys.exit no caminho web. Não alterar instalador, schema v15 ou layouts mobile.
+- AssetManager(preload=False) carrega somente fontes e fundo. ProofAssets prepara
+  somente jogador/cartas iniciais/Mana/Slime/HUD em lotes cooperativos.
+- O fallback NotoSansSymbols2/OFL é baixado pelo preparador para o build ignorado;
+  não incluir fontes do Windows no pacote. Desktop mantém a fonte anterior.
+- AudioManager(defer_initialization=True) aguarda gesto e conserva música pendente.
+  O construtor padrão desktop continua inicializando imediatamente.
+- ProofWindow mantém canvas virtual 1920x1080, saída 1280x720 e CSS proporcional, sem
+  alterar a resolução virtual ou sprites. Isso não constitui layout compacto mobile. O cenário estático e os textos usam
+  caches exclusivos da prova; o teste de pixels preserva a composição original.
+- No piloto `?render=1`, preferências vivem só em memória e nenhum slot real é acessado.
+  Bibliotecas/runtime web versionados em requirements-web.txt; ambiente .venv-web separado.
+- Veja [prova web](docs/web_poc.md) e [estado atual](docs/estado_atual.md).
+
+## 25. Isolamento de plataforma — Etapa 2
+
+- src/platforms define capacidades e serviços; não introduzir Pygame em caminhos
+  ou capacidades. Emscripten é detectado em runtime; não inferir pelo tamanho.
+- Resources são separados de user_data_path. Desktop preserva _MEIPASS/
+  LOCALAPPDATA. Web tem FS de sessão e capacidade de IndexedDB (disponibilidade validada ao abrir):
+  não tratar esse diretório como save durável; usar BrowserStore para persistência.
+- Usar SceneManager.request_exit em cenas; não sys.exit/pygame.quit.
+  Main conserva encerramento e save desktop; web volta à home_factory.
+- WindowManager é o controlador desktop original. create_window_manager
+  seleciona WebWindowManager; APIs do browser ficam em web/bridge.js.
+- Pausa web por visibilidade/foco: suspender updates/entrada/áudio e descartar
+  tempo/eventos acumulados. Conferir a geração de retomada, além do booleano.
+- RenderCache usa fontes imutáveis. Não modificar pixels de imagens cacheadas.
+  Blit recortado mantém origem e flags; não recortar o canvas das sprites.
+- Bandeja RGB é uma otimização exclusiva do Slime na prova, com fallback para
+  Ultimates; não aplicar cegamente a bosses/FX que cruzem a mão.
+- [Contrato e validação de plataformas](docs/web_platforms.md).
+
+
+## 26. Persistência web — Etapa 3
+
+- Save JSON permanece v15; IndexedDB v1 tem stores saves e backups. Não incrementar SAVE_VERSION por adicionar backend.
+- DiskStore preserva fsync/replace e caminhos nativos. Nunca usar FS virtual web como save durável.
+- BrowserSaveManager.run/transact_async executam regras numa candidata isolada; somente oncomplete publica a candidata e confirma UI. Não chamar save síncrono do manager web.
+- SceneManager.submit bloqueia entrada duplicada, preservando desenho e cooperação asyncio. Falha descarta candidata; combate restaura snapshot confirmado.
+- Revisão e run de origem verificadas dentro do readwrite IndexedDB. Duas abas não podem sobrescrever silenciosamente o mesmo slot.
+- JSON na fronteira Python/JavaScript deve usar escapes ASCII nos dois sentidos; textos em português precisam sobreviver intactos a múltiplos commits e importações.
+- Preferências leves no localStorage; perfil, run, guias vistos e snapshots no IndexedDB. Mesmas migrações, normalização e validações nativas.
+- Checkpoints lógicos e comandos confirmados são a garantia principal; pagehide/visibilitychange são complementares, sem garantia ao fechar a aba.
+- Backup .json validado e limitado a 5 MiB; substituição de slot exige confirmação. Preservar originais e instalador.
+- Ver [persistência web](docs/web_storage.md) e [estado atual](docs/estado_atual.md). Campanha web completa, mobile e PWA permanecem fora desta etapa.
+
+
+## 27. Campanha Web PC — Etapa 4
+
+- Checkpoint anterior: 742218f. O build padrão agora usa web/campaign.py e recursos por contexto; --poc preserva a prova anterior.
+- src/systems/web_resources.py e devtools/web_asset_packs.py definem propriedade única, dependências, hashes e pacotes estáticos. Não incluir saves, ambientes ou arte de outros contextos no pacote inicial.
+- CampaignAssets libera arquivos/superfícies de contextos anteriores; os loaders nativos aceitam filtro opcional de nomes, com default None preservando o carregamento Desktop completo.
+- Transições web devem carregar o contexto antes de construir/desenhar cenas que leem imagens. Erros permitem tentar novamente; não prosseguir com arte incompleta silenciosamente.
+- web/campaign.py reutiliza cenas/regras nativas, com confirmação IndexedDB para tutorial, flags, recompensas e nova run. Não introduzir regras alternativas de dano/progressão para a web.
+- InputRouter conserva event.pos nativo; não substituir por coordenadas virtuais e converter novamente na cena. InspectionController não deve capturar cliques dos ícones ao exibir preview.
+- Recursos de mouse, hover, roda, teclado e botões equivalentes continuam no layout desktop proporcional. A camada compacta/touch é isolada conforme a Etapa 5; PWA pertence à Etapa 6.
+- QA por checkpoints fica exclusivamente em build/; atributos controlados são explícitos no relatório, nunca aplicados ao jogo normal.
+- Ver [campanha web](docs/web_campaign.md) e [estado atual](docs/estado_atual.md).
+
+- Composições web de fundos/painéis ficam em src/ui/composition_cache.py; preservar equivalência de pixels, transparência de previews e limite de memória. Não aplicar a composição de um painel raiz sobre conteúdo dinâmico.
+- combat_snapshot.restore deve recuperar também level/kind/index; motores temporários de recompensa não podem permanecer no nível padrão 1. A finalização automática de Zanzara confirma o save antes do epílogo.
+
+## 28. Host compacto e toque — Etapa 5
+
+- Checkpoint da Etapa 4: 62de681. A campanha web instala web/mobile.py; o Desktop não instala esse adaptador.
+- responsive_layout.py define os limiares 1000×600 úteis, controles compactos também em tablets com apontador primário touch e o bloqueio em retrato somente nesses dispositivos. Coordenadas lógicas 1920×1080; MobileCanvas físico 1280×720 e DPR 1. Web PC mantém HiDPI até 1920×1080.
+- web/index.html é um fragmento do host Pygbag, não outro runtime. Preservar safe areas, 100dvh e orientação/foco na bridge.
+- MobileInterface reutiliza cenas, handlers, instâncias reais de cartas e persist_command. Não duplicar regras/transações nos arquivos JavaScript.
+- Primeiro toque inspeciona; JOGAR/COMPRAR/EQUIPAR/REMOVER/APRIMORAR/ESCOLHER confirma. Nenhuma inspeção pode gastar recursos.
+- Época de composição + geração de orientação invalidam comandos antigos. Bloquear durante commit e consumir confirmação uma vez. Cancelar seleção/arraste no blur, pointercancel, rotação e troca de cena.
+- ActiveTimeline afeta apenas o runtime web e congela ticks durante suspensão. Não alterar pygame.time.get_ticks no Desktop.
+- Controles compactos têm mínimo 44×44 CSS, contain/padding, texto via textContent e spotlight sobre elementos reais. Preservar identidade e níveis da arte via AssetManager.
+- Partículas procedurais são limitadas a três por emissão e 12 por frame no perfil transitório apenas compacto. Caches de imagens do host são limitados e liberados por cena.
+- Ver [contrato mobile](docs/web_mobile.md) e [estado atual](docs/estado_atual.md). Emulação não autoriza alegar desempenho em dispositivos físicos.
+- Fechamento técnico de 25/11/2026: 889 testes em 87 módulos aprovados; 22 verificações Chromium mobile e 11 Web PC aprovadas. O host deve manter uma única meta viewport no head, com viewport-fit=cover. Também foram conferidos tablet touch 1280×800, rotação e Web PC amplo. Relatório: docs/validacao_web_etapa5.json.
+
+## 29. PWA, offline e distribuição — Etapa 6
+
+- Checkpoint anterior: 4967b58. O build padrão gera dist/web, com release.json e SHA-256 de shell/pacotes. Não alterar o workflow do instalador Windows para hospedar a web.
+- web/manifest.webmanifest usa start_url/scope relativos. O id é omitido intencionalmente para derivar a identidade do start_url na subpasta; id "./" resolveria contra a origem e poderia colidir com outro projeto.
+- Ícones são exportações técnicas do retrato aprovado de Jaum; preservar a fonte. Web/icons/art_manifest.json registra fonte/hash, tamanhos e área segura maskable.
+- web/runtime-lock.json fixa os recursos externos Pygbag/Python/WASM/pygame-ce. Não atualizar hashes automaticamente quando uma origem divergir. O primeiro preparo exige conexão; o teste offline deve desativar cache HTTP.
+- Service Worker separa shell/runtime por versão e packs por hash, com namespace por scope. Nunca publicar resposta parcial, opaca ou divergente. CacheStorage não é backend de saves.
+- O indicador offline pronto cobre os 29 packs essenciais, não todos os territórios. Pacotes ainda não baixados precisam de conexão; falhas devem permitir retentativa sem interromper o combate atual.
+- Atualizações instalam em waiting. skipWaiting somente após confirmação de todas as abas no menu inicial, sem modal ou gravação pendente. Bloquear entrada na aprovação e recarregar apenas depois da ativação coordenada. A primeira ativação não reinicia a partida.
+- O manifesto de distribuição deve ser verificado antes de publicar; deploy atômico, HTTPS, index/service-worker com revalidação e packs com cache immutable. Não remover packs de releases ainda em uso.
+- A página install.html oferece uma entrada leve de instalação; não carrega nem grava slots. A instalação Chromium é validada em perfil temporário e desinstalada ao final.
+- Ver [build web](docs/build_web.md) e [estado atual](docs/estado_atual.md). PWA no Chromium não comprova instalação física iOS/Safari. Etapa 7 cobre fechamento/instalador/push.
+- Fechamento técnico de 25/11/2026: 908 testes em 88 módulos e 10 verificações PWA aprovados. Instalação/abertura standalone e atualização entre abas foram testadas em perfil Chromium temporário. Mobile conferido sem sobreposição do indicador. Relatório: docs/validacao_web_etapa6.json.
+
+## 30. Fechamento multiplataforma — Etapa 7
+
+- Preservar os três caminhos: Desktop síncrono/JSON v15, Web PC proporcional e host mobile/PWA. Não importar Pygbag/Playwright no runtime ou instalador nativo.
+- PyInstaller 6.11.1 exige Python 3.12/3.13 x64; installer/build_installer.bat prefere .venv-build e rejeita versões incompatíveis. Não elevar dependências nativas apenas para acompanhar ferramentas web.
+- main.py --smoke-report é uma verificação opcional de quatro frames do menu, com drivers dummy e preferências isoladas. A entrada normal permanece igual; esse teste não representa uma campanha jogada.
+- devtools/validate_windows_build.py usa o batch oficial e verifica assets por SHA-256, portátil, instalação temporária e desinstalação. Não substituir instalação pessoal registrada. /SUPPRESSMSGBOXES preserva dados por padrão; diálogo interativo de remoção permanece.
+- build/, dist/, instaladores, ambientes virtuais, bytecode, caches, logs/screenshots de QA e _arquivos_antigos_para_deletar/ não são fontes versionadas. Adicionar explicitamente apenas arquivos revisados.
+- Validação final local: 909 testes em 89 módulos, zero falhas. Build Windows com Python 3.12.13/Pygame 2.6.1 sem bibliotecas web; 2.528 assets íntegros. Não alegar validação física iOS/Safari ou sucesso do workflow remoto com base apenas na execução local.
+- Ver [arquitetura multiplataforma](docs/arquitetura_multiplataforma.md) e [build web](docs/build_web.md).
+
+Fechamento cruzado: 11 verificações Web PC, 22 mobile e 10 PWA aprovadas.
+Resultados e limites no [relatório final](docs/validacao_multiplataforma_final.json).
+
+## Nitidez e áudio na Web — correção posterior à Etapa 7
+
+A bridge informa tamanho CSS e devicePixelRatio. Apenas SDL/Pygame altera o
+backing buffer Web PC: CSS × DPR limitado a 2 e à arte nativa 1920×1080;
+mobile usa o perfil físico 1280×720/DPR 1 descrito abaixo.
+Não atribuir canvas.width/height por JavaScript, pois isso desincroniza SDL e
+entrada. Não forçar 960×540 no compacto. O último downscale usa smoothscale;
+em 1920×1080 ocorre blit direto, sem redução intermediária. CSS pixelated evita
+interpolação borrada quando há ampliação residual. O Desktop mantém WindowManager.
+
+Somente em emscripten, preparar mixer antes dos subsistemas com 44100 Hz,
+signed 16-bit, estéreo e buffer 4096. A abertura continua após gesto real;
+o backend pode negociar 48000 Hz com o navegador. Quatro canais SFX × ganho
+máximo 0,16 e música × 0,25 reservam margem de mix (soma teórica 0,89).
+Sliders continuam multiplicativos e desbloqueio/retomada não criam nova trilha
+ou ganho master. Não alterar volumes, canais ou inicialização do Desktop.
+A medição de PCM no Chromium não substitui escuta em dispositivos físicos.
+
+## Mobile com a arte original
+
+Todas as telas mobile usam as cenas originais, sem HUD/menu/grid HTML paralelo.
+A camada de toque oferece apenas inspeção artística e confirmação explícita;
+os hits invisíveis são ampliados para 44×44 CSS. O buffer mobile é realmente
+1280×720, DPR 1, com coordenadas lógicas originais e caches limitados; Web PC e
+Desktop mantêm seus caminhos. Laterais recebem a ambientação e o indicador
+offline não rouba espaço da cena. Instalação/atualização continua no menu.
+Ver [regras, arquitetura e validação](docs/web_mobile.md).
+
+Não reintroduzir a antiga mobile-header/mobile-grid/mobile-footer em nenhuma
+cena. MobileCanvas adapta primitivas só no draw síncrono e restaura o módulo;
+nunca alterar globalmente o renderizador nativo. Congelar somente superfícies
+imutáveis: LRU de arte 24 MiB, textos 8 MiB. Limpar composições na troca de perfil.
+A regra 1280×720 mobile substitui a adoção anterior de backing HiDPI nesse perfil.
+
+Validação desta correção: **931 testes em 91 módulos, zero falhas**; 14 telas e
+11 verificações de toque no Chromium. Combate: 46,3 FPS medianos na emulação;
+comparação controlada: 24,6 → 44,2 FPS. Não equivale a medição no celular físico.
+Veja o [relatório e limites](docs/validacao_mobile_arte_original.json).
+
+Os hits ampliados das Configurações devem considerar somente os controles da
+aba ativa; controles ocultos não podem interceptar sliders. Assinaturas de
+preview usam digest da imagem cacheada, evitando serializar base64 a cada frame.
+
+## Blindagens Web de memória e hospedagem
+
+- `web/memfs.py` só limpa animações PNG do MEMFS depois dos loaders. Marcar grupos
+  incompletos e repor os arquivos antes de carregar novamente. Nunca remover
+  OGG em streaming, JSON de manifesto, fontes ou UI/retratos ainda lazy.
+- Extração sequencial: hash/tamanho/inventário verificados, arquivos parciais e
+  temporário removidos também no erro/cancelamento; liberar bytes JS antes de
+  extrair. Não confundir remoção do MEMFS com redução física do heap WASM.
+- Preservar EXPORTAR/IMPORTAR da seleção de saves, schema v15 e confirmação de
+  substituição. Não criar outro formato de save nem duplicar a lógica no JS.
+- Service Worker é opcional. Getter/registro podem falhar em iframe; degradar
+  silenciosamente sem esconder falhas de IndexedDB. Persistência solicitada é
+  consultiva; sem concessão garantida. Downloads dependem da política do host.
+- `devtools/web_hosting.py` audita arquivos reais ao final do build, incluindo
+  auxiliares, e avisa sobre Cloudflare Pages/itch.io. Relatório em build/, jamais
+  fora do inventário de release em dist/. Atualizar limites com fontes oficiais.
+- Ver [contratos e tamanhos medidos](docs/build_web.md).
+
+Blindagens Web de memória/hospedagem validadas: 942 testes, 6 verificações
+iframe/backup, 10 PWA/offline e 14 telas mobile. Nenhum limite auditado excedido.
+Ver [resultados e restrições](docs/validacao_web_blindagens.json).

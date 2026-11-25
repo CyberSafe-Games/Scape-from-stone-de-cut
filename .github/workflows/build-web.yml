@@ -1,0 +1,41 @@
+name: Build Web PWA
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: ['assets/**', 'src/**', 'web/**', 'devtools/**', 'tests/**', 'main.py', 'requirements*.txt', '.github/workflows/build-web.yml']
+  push:
+    branches: [main, feat/web-mobile-port]
+    paths: ['assets/**', 'src/**', 'web/**', 'devtools/**', 'tests/**', 'main.py', 'requirements*.txt', '.github/workflows/build-web.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.6.0
+        with:
+          python-version: '3.12'
+      - name: Instalar ferramentas de build e testes
+        run: python -m pip install -r requirements-dev.txt -r requirements-web.txt
+      - name: Executar suíte isolada
+        run: python -B devtools/validate_isolated_tests.py --report build/ci-web-tests.json
+      - name: Gerar e verificar distribuição estática
+        run: python -B devtools/build_web.py
+      - name: Conferir hashes da distribuição
+        run: python -c "from devtools.web_distribution import verify_distribution; print(verify_distribution('dist/web')['version'])"
+      - name: Publicar artefato para revisão
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: scape-from-stone-web
+          path: dist/web/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

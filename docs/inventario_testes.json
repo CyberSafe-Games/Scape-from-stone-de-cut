@@ -633,6 +633,13 @@
       ]
     },
     {
+      "file": "tests/test_isolated_test_runner.py",
+      "cases": [
+        "FreshCheckoutRunnerTests.test_fresh_checkout_creates_nested_report_directory",
+        "FreshCheckoutRunnerTests.test_failed_module_still_writes_report_and_returns_failure"
+      ]
+    },
+    {
       "file": "tests/test_jan_pietro_stance.py",
       "cases": [
         "JanPietroStanceTests.test_all_48_frames_have_the_same_boot_anchor",
@@ -724,6 +731,57 @@
       ]
     },
     {
+      "file": "tests/test_mobile_native_canvas.py",
+      "cases": [
+        "ReducedCanvasTests.test_physical_storage_is_720p_with_original_logical_coordinates",
+        "ReducedCanvasTests.test_native_primitives_and_alpha_blits_keep_positions",
+        "ReducedCanvasTests.test_static_scaled_art_is_cached_but_mutable_layers_are_not",
+        "ReducedCanvasTests.test_drawing_scope_restores_native_functions_on_failure",
+        "ReducedCanvasTests.test_mobile_output_ignores_high_dpr_and_desktop_returns_to_native_path",
+        "ReducedCanvasTests.test_cached_art_tracks_global_alpha_without_stale_pixels",
+        "ReducedCanvasTests.test_text_cache_preserves_native_font_pixels",
+        "ReducedCanvasTests.test_clipping_is_mapped_without_changing_logical_bounds"
+      ]
+    },
+    {
+      "file": "tests/test_mobile_web.py",
+      "cases": [
+        "ResponsiveTests.test_desktop_never_enables_compact",
+        "ResponsiveTests.test_web_wide_is_unchanged",
+        "ResponsiveTests.test_android_landscape",
+        "ResponsiveTests.test_iphone_portrait_is_blocked",
+        "ResponsiveTests.test_desktop_portrait_window_is_not_rotation_locked",
+        "ResponsiveTests.test_safe_areas_reduce_useful_geometry",
+        "ResponsiveTests.test_exact_breakpoints",
+        "ResponsiveTests.test_point_mapping_accounts_for_canvas_offset",
+        "ResponsiveTests.test_point_outside_canvas_is_rejected",
+        "TouchInspectionTests.test_touch_select_does_not_confirm_implicitly",
+        "TouchInspectionTests.test_confirmation_is_consumed_only_once",
+        "TouchInspectionTests.test_wrong_or_stale_target_cannot_confirm",
+        "TouchInspectionTests.test_hover_does_not_override_touch_selection",
+        "TouchInspectionTests.test_normalized_sdl_touch_uses_virtual_dimensions",
+        "TimelineTests.test_pause_freezes_ticks",
+        "TimelineTests.test_resume_excludes_elapsed_time_without_jump",
+        "TimelineTests.test_repeated_pause_notifications_are_idempotent",
+        "TimelineTests.test_multiple_rotations_remain_monotonic",
+        "MobileCommandTests.test_duplicate_commands_execute_once",
+        "MobileCommandTests.test_inspection_variants_do_not_drop_the_following_neutral_action",
+        "MobileCommandTests.test_invisible_targets_are_at_least_44_css_pixels_and_stay_inside_canvas",
+        "MobileCommandTests.test_actual_slider_track_wins_over_a_nearby_enlarged_button",
+        "MobileCommandTests.test_stale_epoch_does_not_execute",
+        "MobileCommandTests.test_pending_commit_blocks_actions",
+        "MobileCommandTests.test_rotation_clears_inspection_and_drag",
+        "MobileCommandTests.test_old_orientation_gesture_is_rejected",
+        "MobileCommandTests.test_compact_quality_reduces_particles_only",
+        "RealCompactSceneTests.test_map_uses_real_territory_titles",
+        "RealCompactSceneTests.test_shop_inspection_does_not_purchase",
+        "RealCompactSceneTests.test_native_shop_price_button_opens_inspection_without_spending",
+        "RealCompactSceneTests.test_altar_exposes_both_level_art_variants",
+        "RealCompactSceneTests.test_tablet_with_primary_touch_uses_safe_controls",
+        "ParticleBudgetTests.test_compact_frame_budget_is_bounded_and_resets"
+      ]
+    },
+    {
       "file": "tests/test_music_director.py",
       "cases": [
         "MusicRoutingTests.test_every_boss_uses_chase_except_final_boss",
@@ -734,6 +792,12 @@
         "MusicRoutingTests.test_fade_waits_then_uses_latest_requested_context",
         "MusicRoutingTests.test_phase_change_and_modal_keep_boss_track",
         "MusicPlaybackTests.test_music_fades_in_without_altering_effects"
+      ]
+    },
+    {
+      "file": "tests/test_native_packaging.py",
+      "cases": [
+        "NativeEntrySmokeTests.test_menu_source_smoke_is_isolated_and_rendered"
       ]
     },
     {
@@ -790,6 +854,29 @@
         "PauseMenuLayoutTests.test_subtitle_and_divider_respect_header_spacing",
         "PauseMenuLayoutTests.test_height_grows_by_one_button_row_each_step",
         "PauseMenuLayoutTests.test_requires_at_least_one_button"
+      ]
+    },
+    {
+      "file": "tests/test_platform_services.py",
+      "cases": [
+        "CapabilityTests.test_detects_wasm_and_native_without_guessing_from_screen_size",
+        "CapabilityTests.test_runtime_detection",
+        "CapabilityTests.test_desktop_resources_preserve_meipass",
+        "CapabilityTests.test_desktop_writable_data_never_use_meipass",
+        "CapabilityTests.test_unfrozen_data_stay_in_project",
+        "CapabilityTests.test_web_paths_are_posix_and_temporary_without_claiming_persistence",
+        "CapabilityTests.test_web_bridge_reports_visibility_and_resume_generation",
+        "CapabilityTests.test_desktop_exit_is_a_request_not_system_exit",
+        "CapabilityTests.test_web_exit_returns_home_without_ending_interpreter",
+        "CapabilityTests.test_hidden_loop_does_not_advance_and_resume_discards_elapsed_time",
+        "WindowAndRenderTests.test_web_window_never_queries_monitor_and_preserves_mapping",
+        "WindowAndRenderTests.test_desktop_factory_keeps_original_controller",
+        "WindowAndRenderTests.test_web_fullscreen_uses_browser_service",
+        "WindowAndRenderTests.test_destination_surface_is_reused",
+        "WindowAndRenderTests.test_card_scale_cache_preserves_original_smoothscale_pixels",
+        "WindowAndRenderTests.test_cropped_blit_is_pixel_identical_for_alpha_and_premultiplied",
+        "CompositionAndAudioTests.test_audio_suspend_resume_is_idempotent",
+        "CompositionAndAudioTests.test_web_tray_preserves_pixels_during_supported_combat_actions"
       ]
     },
     {
@@ -960,6 +1047,34 @@
       ]
     },
     {
+      "file": "tests/test_storage_backends.py",
+      "cases": [
+        "DiskContractTests.test_atomic_replace_and_fsync_are_used",
+        "DiskContractTests.test_failed_replace_preserves_previous_document_and_transact_rolls_back",
+        "DiskContractTests.test_export_import_v15_moves_profile_and_run_between_slots",
+        "DiskContractTests.test_invalid_future_import_does_not_replace_slot",
+        "DiskContractTests.test_legacy_read_keeps_backup_and_migrates",
+        "BrowserTransactionTests.test_purchase_is_not_published_until_commit_completes",
+        "BrowserTransactionTests.test_write_failure_rolls_back_entire_document",
+        "BrowserTransactionTests.test_double_command_is_rejected_while_pending",
+        "BrowserTransactionTests.test_stale_tab_cannot_overwrite_newer_revision",
+        "BrowserTransactionTests.test_upgrade_and_guide_use_shared_rules",
+        "BrowserTransactionTests.test_new_slot_is_created_only_after_durable_commit",
+        "BrowserTransactionTests.test_sync_save_cannot_fake_acknowledgment",
+        "BridgeContractTests.test_bridge_yields_while_pending_and_waits_for_confirmation",
+        "BridgeContractTests.test_bridge_reports_revision_conflict_and_preserves_cache",
+        "BridgeContractTests.test_successful_commit_updates_cache_only_with_confirmed_revision",
+        "BridgeContractTests.test_browser_v14_migration_is_normalized_then_written_as_v15",
+        "BridgeContractTests.test_failed_upgrade_preserves_materials_gold_and_levels",
+        "BridgeContractTests.test_failed_death_commit_preserves_active_run",
+        "BridgeContractTests.test_import_replaces_only_after_confirmation_and_creates_new_revision",
+        "BrowserPreferencesTests.test_local_preferences_sanitized_and_survive_new_preferences_instance",
+        "BrowserPreferencesTests.test_restricted_local_storage_uses_defaults_and_reports_failure",
+        "UnicodeWireTests.test_python_to_javascript_uses_ascii_json_without_changing_names",
+        "UnicodeWireTests.test_javascript_ascii_json_decodes_portuguese_names_and_errors"
+      ]
+    },
+    {
       "file": "tests/test_swamp_boss.py",
       "cases": [
         "SwampBossTests.test_last_missing_boss_is_assigned_to_swamp_only",
@@ -1125,6 +1240,109 @@
       ]
     },
     {
+      "file": "tests/test_web_campaign.py",
+      "cases": [
+        "ContextManifestTests.test_menu_does_not_depend_on_campaign",
+        "ContextManifestTests.test_boss_phases_share_one_context",
+        "ContextManifestTests.test_common_defeat_has_same_owner_as_animated_poses",
+        "ContextManifestTests.test_cutscenes_have_distinct_contexts",
+        "ContextManifestTests.test_battle_loads_only_requested_enemy_groups",
+        "ContextManifestTests.test_outside_assets_and_traversal_rejected",
+        "ContextManifestTests.test_complete_active_resource_inventory_has_one_owner",
+        "ContextManifestTests.test_native_loaders_default_to_all_characters",
+        "InputRouterTests.test_mouse_uses_virtual_position_and_preserves_original_event",
+        "InputRouterTests.test_wheel_preserves_both_axes",
+        "InputRouterTests.test_keyboard_keeps_escape_and_browser_fullscreen_shortcuts",
+        "InspectionTests.test_hover_finds_first_target_and_clears_outside",
+        "InspectionTests.test_pinned_inspection_is_independent_of_hover_until_explicit_clear",
+        "InspectionTests.test_repeated_hover_does_not_invalidate_generation",
+        "InspectionTests.test_preview_is_bounded_for_landscape_and_small_viewport",
+        "ContextMemoryTests.test_shared_files_reused_but_previous_enemy_is_not_retained",
+        "CompositionPixelTests.test_backdrop_is_pixel_identical_after_cached_draw",
+        "CompositionPixelTests.test_cached_panel_matches_native_over_changing_underlay_and_overlap",
+        "CompositionPixelTests.test_sparse_frame_matches_complete_alpha_blit",
+        "CompositionPixelTests.test_filled_frame_keeps_center_pixels",
+        "CompositionPixelTests.test_memory_bound_is_enforced",
+        "CompositionPixelTests.test_root_panel_cache_preserves_overlapping_previews",
+        "FinalCampaignTransactionTests.test_final_phase_commits_run_before_opening_epilogue",
+        "FinalCampaignTransactionTests.test_failed_final_commit_does_not_open_epilogue",
+        "RealShopPixelTests.test_web_composition_matches_real_shop_including_hover_preview",
+        "SnapshotContextTests.test_temporary_engine_restores_territory_kind_and_index",
+        "ContextReachabilityTests.test_dual_boss_intent_cards_share_loaded_boss_context",
+        "ContextReachabilityTests.test_all_enemy_resource_groups_are_reachable_by_registered_kits",
+        "ContextCacheReleaseTests.test_leaving_context_releases_pose_and_support_lru_references"
+      ]
+    },
+    {
+      "file": "tests/test_web_distribution.py",
+      "cases": [
+        "ManifestTests.test_pwa_identity_and_relative_scope",
+        "ManifestTests.test_standalone_landscape_palette",
+        "ManifestTests.test_icons_exist_have_declared_dimensions",
+        "ManifestTests.test_maskable_is_separate_from_any_icon",
+        "ManifestTests.test_maskable_identity_fits_safe_circle",
+        "ManifestTests.test_icon_sources_and_derivatives_match_manifest",
+        "ManifestTests.test_apple_touch_icon_is_180",
+        "PackageValidationTests.test_valid_package_inventory",
+        "PackageValidationTests.test_truncated_package_rejected",
+        "PackageValidationTests.test_same_size_corruption_rejected",
+        "PackageValidationTests.test_traversal_inside_tar_rejected",
+        "PackageValidationTests.test_symlink_member_rejected",
+        "PackageValidationTests.test_inventory_mismatch_rejected",
+        "PackageValidationTests.test_untrusted_paths_rejected",
+        "PackageValidationTests.test_duplicate_inventory_rejected",
+        "PackageValidationTests.test_unknown_runtime_origin_rejected_before_download",
+        "PackageValidationTests.test_corrupted_runtime_cache_rejected",
+        "PackageValidationTests.test_distribution_rejects_unlisted_files",
+        "RuntimeLockTests.test_runtime_includes_python_wasm_data_and_pygame"
+      ]
+    },
+    {
+      "file": "tests/test_web_hardening.py",
+      "cases": [
+        "MemfsTests.test_download_releases_bridge_before_stream_extraction_and_removes_temp",
+        "MemfsTests.test_invalid_digest_leaves_no_extracted_or_temporary_files",
+        "MemfsTests.test_inventory_failure_removes_partial_extraction",
+        "MemfsTests.test_prune_keeps_lazy_ui_music_metadata_and_only_drops_animation_png",
+        "MemfsTests.test_pruned_group_is_downloaded_again_before_loading_next_context",
+        "MemfsTests.test_asset_cleanup_rejects_traversal_and_non_asset_paths",
+        "HostingLimitsTests.test_exact_limits_are_accepted",
+        "HostingLimitsTests.test_file_above_25_mib_warns_cloudflare",
+        "HostingLimitsTests.test_itch_total_and_single_file_limits",
+        "HostingLimitsTests.test_count_limits_are_distinct",
+        "HostingLimitsTests.test_long_path_warns_and_metrics_include_all_files"
+      ]
+    },
+    {
+      "file": "tests/test_web_proof.py",
+      "cases": [
+        "WebLoopTests.test_web_yields_between_frames_and_returns_without_exit",
+        "WebLoopTests.test_desktop_keeps_synchronous_loop",
+        "ProofIsolationTests.test_preferences_never_read_or_write_disk",
+        "ProofIsolationTests.test_manifest_excludes_other_enemies_and_source_art",
+        "ProofIsolationTests.test_menu_does_not_preload_combat",
+        "ProofIsolationTests.test_web_audio_waits_for_gesture_and_preserves_requested_music",
+        "ProofIsolationTests.test_desktop_audio_still_initializes_immediately",
+        "WebRenderCacheTests.test_font_cache_does_not_share_mutable_alpha",
+        "WebRenderCacheTests.test_background_cache_preserves_original_pixels"
+      ]
+    },
+    {
+      "file": "tests/test_web_quality.py",
+      "cases": [
+        "WebDensityTests.test_windows_fractional_dpi_uses_physical_pixels",
+        "WebDensityTests.test_mobile_density_is_capped_at_two_and_native_art",
+        "WebDensityTests.test_invalid_viewport_is_rejected",
+        "WebDensityTests.test_present_resizes_once_and_maps_the_physical_center",
+        "WebDensityTests.test_native_resolution_is_blitted_without_downscale",
+        "WebAudioTests.test_preinit_only_configures_web_and_does_not_unlock",
+        "WebAudioTests.test_unlock_initializes_explicit_format_once",
+        "WebAudioTests.test_web_mix_has_headroom_even_at_all_volumes_maximum",
+        "WebAudioTests.test_volume_and_unlock_do_not_duplicate_music",
+        "WebAudioTests.test_desktop_keeps_original_format_channels_and_gain"
+      ]
+    },
+    {
       "file": "tests/test_window_modes.py",
       "cases": [
         "TestWindowModes.test_render_is_full_hd_and_game_opens_in_720p_window",
@@ -1200,6 +1418,6 @@
       ]
     }
   ],
-  "modules": 82,
-  "methods": 781
+  "modules": 93,
+  "methods": 944
 }

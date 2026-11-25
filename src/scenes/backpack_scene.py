@@ -327,6 +327,13 @@ class BackpackScene(BaseScene):
                 if rect.collidepoint(point) and uid != self.save_data["progresso"].get(
                     "ultimate_equipada"
                 ):
+                    if getattr(self.save_manager,"async_commands",False) is True:
+                        def complete(result):
+                            self._notice(*result)
+                            if result[0]:
+                                self.visuals.celebrate(self.ultimate_rects[uid])
+                        self.persist_command(lambda m,d:equip_ultimate(m,d,uid),complete)
+                        break
                     success, message = equip_ultimate(
                         self.save_manager,
                         self.save_data,
@@ -375,11 +382,29 @@ class BackpackScene(BaseScene):
                     self._add(name)
                     return
 
+    def _web_slots(self, slots, message):
+        def command(manager,data):
+            if deck_is_ready_for_exit(slots):
+                return commit_deck(manager,data,slots)
+            return True, "Rascunho alterado; último deck válido preservado."
+        def complete(result):
+            if result[0]:
+                self.draft_slots=list(slots)
+                self._set_page(self.page)
+                self.play_ui_sound("ui.confirm",volume=.65)
+            self._notice(*result)
+        return self.persist_command(command,complete)
+
     def _add_selected(self):
         if self.selected_card in AVAILABLE_CARD_NAMES:
             self._add(self.selected_card)
 
     def _add(self, name):
+        if getattr(self.save_manager,"async_commands",False) is True:
+            success,message,slots=add_card_to_slots(self.draft_slots,self.save_data["progresso"]["cartas_colecao"],name)
+            if success:
+                return self._web_slots(slots,message)
+            return self._notice(False,message)
         target_slot = next((i for i, value in enumerate(self.draft_slots) if value is None), None)
         success, message, slots = add_card_to_slots(
             self.draft_slots,
@@ -398,6 +423,11 @@ class BackpackScene(BaseScene):
             self.play_ui_sound("ui.confirm", volume=0.65)
 
     def _remove_slot(self, slot_index):
+        if getattr(self.save_manager,"async_commands",False) is True:
+            success,message,slots=remove_card_from_slots(self.draft_slots,slot_index)
+            if success:
+                return self._web_slots(slots,message)
+            return self._notice(False,message)
         success, message, slots = remove_card_from_slots(
             self.draft_slots, slot_index
         )
@@ -492,6 +522,13 @@ class BackpackScene(BaseScene):
         )
 
     def _apply_random_deck(self, play_sound=False):
+        if getattr(self.save_manager,"async_commands",False) is True:
+            def complete(result):
+                if result[0]:
+                    self.draft_slots=list(self.save_data["progresso"]["deck_slots"])
+                    self._set_page(self.page)
+                self._notice(*result)
+            return self.persist_command(lambda m,d:set_random_deck(m,d),complete)
         success, message = set_random_deck(self.save_manager, self.save_data)
         if success:
             self.draft_slots = list(
@@ -516,6 +553,15 @@ class BackpackScene(BaseScene):
         )
 
     def _back(self):
+        if getattr(self.save_manager,"async_commands",False) is True:
+            if not deck_is_ready_for_exit(self.draft_slots):
+                return self._notice(False,self._missing_cards_notice())
+            def complete(result):
+                if result[0]:
+                    self.management_back()
+                else:
+                    self._notice(*result)
+            return self.persist_command(lambda m,d:commit_deck(m,d,self.draft_slots),complete)
         if not deck_is_ready_for_exit(self.draft_slots):
             self._notice(False, self._missing_cards_notice())
             return
@@ -545,6 +591,11 @@ class BackpackScene(BaseScene):
         Fechar a janela nunca falha: erros de gravação são apenas
         registrados no retorno, sem propagar exceção.
         """
+        if getattr(self.save_manager, "async_commands", False) is True:
+            # Cada alteração válida já foi confirmada; rascunho incompleto fica só na sessão.
+            return not self.scene_manager.saving and (
+                not deck_is_ready_for_exit(self.draft_slots)
+                or self.draft_slots == self.save_data["progresso"]["deck_slots"])
         try:
             if deck_is_ready_for_exit(self.draft_slots):
                 saved, _ = commit_deck(

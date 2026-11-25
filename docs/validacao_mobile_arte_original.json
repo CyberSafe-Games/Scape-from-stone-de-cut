@@ -1,0 +1,693 @@
+{
+  "data": "2026-11-25",
+  "branch": "feat/web-mobile-port",
+  "base": "b42142c8bf62c4f5d5968599756d8b55ff400d73",
+  "testes": {
+    "modulos": [
+      {
+        "modulo": "tests.test_alvaro_tex",
+        "exit_code": 0,
+        "testes": 13,
+        "segundos": 0.57
+      },
+      {
+        "modulo": "tests.test_audio_enemies",
+        "exit_code": 0,
+        "testes": 30,
+        "segundos": 0.63
+      },
+      {
+        "modulo": "tests.test_audio_gameplay",
+        "exit_code": 0,
+        "testes": 28,
+        "segundos": 0.46
+      },
+      {
+        "modulo": "tests.test_audio_manager",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 0.42
+      },
+      {
+        "modulo": "tests.test_audio_mix",
+        "exit_code": 0,
+        "testes": 1,
+        "segundos": 0.14
+      },
+      {
+        "modulo": "tests.test_audio_options",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 0.55
+      },
+      {
+        "modulo": "tests.test_audio_punch_polish",
+        "exit_code": 0,
+        "testes": 1,
+        "segundos": 0.26
+      },
+      {
+        "modulo": "tests.test_audio_ui",
+        "exit_code": 0,
+        "testes": 36,
+        "segundos": 0.5
+      },
+      {
+        "modulo": "tests.test_audio_zanzara",
+        "exit_code": 0,
+        "testes": 3,
+        "segundos": 0.5
+      },
+      {
+        "modulo": "tests.test_backpack_ultimates",
+        "exit_code": 0,
+        "testes": 12,
+        "segundos": 4.76
+      },
+      {
+        "modulo": "tests.test_backpack_visual",
+        "exit_code": 0,
+        "testes": 10,
+        "segundos": 5.79
+      },
+      {
+        "modulo": "tests.test_balance_simulation",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.23
+      },
+      {
+        "modulo": "tests.test_boss_sheet_update",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 5.03
+      },
+      {
+        "modulo": "tests.test_boss_twelve_frames",
+        "exit_code": 0,
+        "testes": 12,
+        "segundos": 13.61
+      },
+      {
+        "modulo": "tests.test_boss_ultimate_animations",
+        "exit_code": 0,
+        "testes": 12,
+        "segundos": 5.69
+      },
+      {
+        "modulo": "tests.test_boss_ultimate_twelve_effects",
+        "exit_code": 0,
+        "testes": 3,
+        "segundos": 11.3
+      },
+      {
+        "modulo": "tests.test_card_collection_pages",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.44
+      },
+      {
+        "modulo": "tests.test_carrasco_da_vigilia",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 4.56
+      },
+      {
+        "modulo": "tests.test_cemetery_system",
+        "exit_code": 0,
+        "testes": 13,
+        "segundos": 36.36
+      },
+      {
+        "modulo": "tests.test_character_portraits",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 6.6
+      },
+      {
+        "modulo": "tests.test_common_eight_frames",
+        "exit_code": 0,
+        "testes": 3,
+        "segundos": 4.91
+      },
+      {
+        "modulo": "tests.test_corpo_seco_animation",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 0.38
+      },
+      {
+        "modulo": "tests.test_corpo_seco_visual_scale",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.62
+      },
+      {
+        "modulo": "tests.test_cutscene_final",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.98
+      },
+      {
+        "modulo": "tests.test_cutscene_intro_selection",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.44
+      },
+      {
+        "modulo": "tests.test_cutscene_post_tutorial",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 0.32
+      },
+      {
+        "modulo": "tests.test_cutscene_save_flags",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.24
+      },
+      {
+        "modulo": "tests.test_cutscene_scene",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 0.59
+      },
+      {
+        "modulo": "tests.test_deck_archetype_comparison",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.22
+      },
+      {
+        "modulo": "tests.test_deck_clear_and_minimum",
+        "exit_code": 0,
+        "testes": 20,
+        "segundos": 0.73
+      },
+      {
+        "modulo": "tests.test_deck_draft_persistence",
+        "exit_code": 0,
+        "testes": 19,
+        "segundos": 1.01
+      },
+      {
+        "modulo": "tests.test_deck_slots",
+        "exit_code": 0,
+        "testes": 12,
+        "segundos": 0.5
+      },
+      {
+        "modulo": "tests.test_documentation_contract",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 0.73
+      },
+      {
+        "modulo": "tests.test_enemy_defeats",
+        "exit_code": 0,
+        "testes": 2,
+        "segundos": 0.52
+      },
+      {
+        "modulo": "tests.test_enemy_intents",
+        "exit_code": 0,
+        "testes": 15,
+        "segundos": 4.9
+      },
+      {
+        "modulo": "tests.test_enemy_reactions",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 8.3
+      },
+      {
+        "modulo": "tests.test_energy_system",
+        "exit_code": 0,
+        "testes": 11,
+        "segundos": 4.65
+      },
+      {
+        "modulo": "tests.test_extended_cards",
+        "exit_code": 0,
+        "testes": 10,
+        "segundos": 0.4
+      },
+      {
+        "modulo": "tests.test_goblin_monge",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 4.46
+      },
+      {
+        "modulo": "tests.test_goblin_ranged_attacks",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.24
+      },
+      {
+        "modulo": "tests.test_guardian_visual_polish",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.65
+      },
+      {
+        "modulo": "tests.test_guardiao_da_pedra",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 4.47
+      },
+      {
+        "modulo": "tests.test_hand_and_cemetery_flow",
+        "exit_code": 0,
+        "testes": 13,
+        "segundos": 0.17
+      },
+      {
+        "modulo": "tests.test_health_bar",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 0.38
+      },
+      {
+        "modulo": "tests.test_jan_pietro_stance",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 6.21
+      },
+      {
+        "modulo": "tests.test_life_recovery_after_combat",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 4.71
+      },
+      {
+        "modulo": "tests.test_management_guides",
+        "exit_code": 0,
+        "testes": 11,
+        "segundos": 1.27
+      },
+      {
+        "modulo": "tests.test_map_encounters",
+        "exit_code": 0,
+        "testes": 12,
+        "segundos": 0.76
+      },
+      {
+        "modulo": "tests.test_map_icons",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.74
+      },
+      {
+        "modulo": "tests.test_mata_sombria_boss",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 0.21
+      },
+      {
+        "modulo": "tests.test_merchant_workshop",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 2.04
+      },
+      {
+        "modulo": "tests.test_mobile_native_canvas",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 0.4
+      },
+      {
+        "modulo": "tests.test_mobile_web",
+        "exit_code": 0,
+        "testes": 33,
+        "segundos": 2.91
+      },
+      {
+        "modulo": "tests.test_music_director",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 0.68
+      },
+      {
+        "modulo": "tests.test_native_packaging",
+        "exit_code": 0,
+        "testes": 1,
+        "segundos": 5.37
+      },
+      {
+        "modulo": "tests.test_normal_bestiary",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 4.44
+      },
+      {
+        "modulo": "tests.test_options_menu",
+        "exit_code": 0,
+        "testes": 18,
+        "segundos": 0.68
+      },
+      {
+        "modulo": "tests.test_options_sanctuary",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 0.65
+      },
+      {
+        "modulo": "tests.test_pause_menu_layout",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.14
+      },
+      {
+        "modulo": "tests.test_platform_services",
+        "exit_code": 0,
+        "testes": 18,
+        "segundos": 0.99
+      },
+      {
+        "modulo": "tests.test_player_card_art",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 2.56
+      },
+      {
+        "modulo": "tests.test_player_twelve_frames",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 6.11
+      },
+      {
+        "modulo": "tests.test_pose_playback",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 0.25
+      },
+      {
+        "modulo": "tests.test_post_combat_rewards",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.66
+      },
+      {
+        "modulo": "tests.test_random_deck",
+        "exit_code": 0,
+        "testes": 18,
+        "segundos": 0.7
+      },
+      {
+        "modulo": "tests.test_roguelite",
+        "exit_code": 0,
+        "testes": 18,
+        "segundos": 0.8
+      },
+      {
+        "modulo": "tests.test_route_boss_and_backpack",
+        "exit_code": 0,
+        "testes": 13,
+        "segundos": 0.55
+      },
+      {
+        "modulo": "tests.test_save_integration",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.27
+      },
+      {
+        "modulo": "tests.test_save_system",
+        "exit_code": 0,
+        "testes": 13,
+        "segundos": 0.28
+      },
+      {
+        "modulo": "tests.test_shop_and_combat_reset",
+        "exit_code": 0,
+        "testes": 22,
+        "segundos": 0.77
+      },
+      {
+        "modulo": "tests.test_storage_backends",
+        "exit_code": 0,
+        "testes": 23,
+        "segundos": 0.64
+      },
+      {
+        "modulo": "tests.test_swamp_boss",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 4.11
+      },
+      {
+        "modulo": "tests.test_tactical_cards",
+        "exit_code": 0,
+        "testes": 31,
+        "segundos": 0.52
+      },
+      {
+        "modulo": "tests.test_territory_map",
+        "exit_code": 0,
+        "testes": 16,
+        "segundos": 0.38
+      },
+      {
+        "modulo": "tests.test_test_save",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 0.6
+      },
+      {
+        "modulo": "tests.test_text_wrap",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.37
+      },
+      {
+        "modulo": "tests.test_tutorial_save_flow",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.38
+      },
+      {
+        "modulo": "tests.test_tutorial_scene",
+        "exit_code": 0,
+        "testes": 22,
+        "segundos": 4.66
+      },
+      {
+        "modulo": "tests.test_ultimate_animations",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 4.4
+      },
+      {
+        "modulo": "tests.test_ultimate_cards_lv2",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.41
+      },
+      {
+        "modulo": "tests.test_ultimates",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 0.18
+      },
+      {
+        "modulo": "tests.test_web_campaign",
+        "exit_code": 0,
+        "testes": 29,
+        "segundos": 1.08
+      },
+      {
+        "modulo": "tests.test_web_distribution",
+        "exit_code": 0,
+        "testes": 19,
+        "segundos": 0.4
+      },
+      {
+        "modulo": "tests.test_web_proof",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 0.54
+      },
+      {
+        "modulo": "tests.test_web_quality",
+        "exit_code": 0,
+        "testes": 10,
+        "segundos": 0.42
+      },
+      {
+        "modulo": "tests.test_window_modes",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.51
+      },
+      {
+        "modulo": "tests.test_zanzara",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 4.33
+      },
+      {
+        "modulo": "tests.test_zanzara_difficulty",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.17
+      },
+      {
+        "modulo": "tests.test_zanzara_final",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 4.35
+      },
+      {
+        "modulo": "tests.test_zanzara_main_integration",
+        "exit_code": 0,
+        "testes": 3,
+        "segundos": 0.17
+      },
+      {
+        "modulo": "tests.test_zanzara_necromancer",
+        "exit_code": 0,
+        "testes": 16,
+        "segundos": 2.83
+      }
+    ],
+    "total_testes": 931,
+    "falhas": 0,
+    "concluido": true,
+    "retomado": false,
+    "segundos": 215.95
+  },
+  "chromium_mobile": {
+    "combat_fps_median": 46.30026626586914,
+    "frame_cost_ms": {
+      "update": 0.19999999999953388,
+      "draw": 17.900000000004468,
+      "present": 1.3999999999967372
+    },
+    "mobile_render_cache": {
+      "bytes": 23744692,
+      "hits": 13550,
+      "misses": 7688
+    },
+    "passed": true,
+    "checks": [
+      "shop_native_art_inspect_then_purchase",
+      "backpack_native_equip",
+      "backpack_native_ultimate",
+      "altar_native_art_before_after_confirm",
+      "settings_native_slider",
+      "native_intent_card_preview_and_cancel",
+      "native_ultimate_confirmation",
+      "native_hand_and_reward_confirmation",
+      "rotation_safe_pause_resume",
+      "native_intro_and_tutorial_touch",
+      "native_final_boss_and_epilogue"
+    ],
+    "screens": [
+      "menu",
+      "saves",
+      "mapa",
+      "loja",
+      "mochila",
+      "ultimates_mochila",
+      "altar",
+      "configuracoes",
+      "combate",
+      "intencao",
+      "recompensa",
+      "quadrinhos_intro",
+      "tutorial",
+      "epilogo"
+    ],
+    "errors": [],
+    "viewport": [
+      844,
+      390
+    ],
+    "device_dpr": 3,
+    "mobile_dpr": 1,
+    "physical_canvas": [
+      1280,
+      720
+    ]
+  },
+  "web_pc": {
+    "passed": true,
+    "checks": [
+      "shop_purchase",
+      "shop_wheel",
+      "backpack_equipment",
+      "ultimate_equipment",
+      "upgrade_comparison_lv1_lv2",
+      "settings_keyboard",
+      "settings_slider",
+      "settings_tabs",
+      "guides",
+      "indexeddb_reload",
+      "preferences_reload"
+    ]
+  },
+  "qualidade_web": {
+    "passed": true,
+    "checks": [
+      "windows_125_150_200_percent_backing_and_css",
+      "hidpi_mouse_mapping_and_gesture_audio",
+      "real_music_and_card_sfx_pcm_without_clipping",
+      "repeated_unlock_focus_no_duplicate_audio_output",
+      "mobile_dpr3_uses_fixed_720p_and_dpr_one"
+    ]
+  },
+  "comparacao_controlada": {
+    "baseline": {
+      "fps": 24.570024490356445,
+      "buffer": [
+        1301,
+        732
+      ],
+      "physical_canvas": [
+        1920,
+        1080
+      ],
+      "cache": {},
+      "frame_ms": {
+        "draw": 24.200000000000443,
+        "present": 12.599999999999056,
+        "update": 0.2999990000063235
+      }
+    },
+    "current": {
+      "fps": 44.24778747558594,
+      "buffer": [
+        1280,
+        720
+      ],
+      "physical_canvas": [
+        1280,
+        720
+      ],
+      "cache": {
+        "bytes": 11486928,
+        "hits": 13190,
+        "misses": 7549
+      },
+      "frame_ms": {
+        "draw": 18.2000010000003,
+        "present": 1.300000000000523,
+        "update": 0.2999999999993008
+      }
+    }
+  },
+  "metodo_comparacao": "Chromium headless, viewport 844x390 touch/DPR 3, mesmo checkpoint Slime, 25 amostras a cada 200 ms; prefetch PWA desativado nos dois builds; baseline b42142c vs renderizador novo.",
+  "distribuicao": {
+    "version": "5e7d853ca8831db7",
+    "arquivos_verificados": 92,
+    "pacotes": 71,
+    "initial_package_bytes": 6895326
+  },
+  "limites": [
+    "FPS medido em Chromium no computador com viewport mobile; nao comprova desempenho em celular fisico ou Safari/iOS.",
+    "Validacao funcional e PCM nao substituem escuta no aparelho real.",
+    "Instalador Windows nao foi recompilado nesta correcao; testes de empacotamento e startup nativo foram executados na suite."
+  ],
+  "assets": "Nenhuma arte foi substituida; cenas e assets originais reutilizados. Sem arquivos obsoletos para mover."
+}

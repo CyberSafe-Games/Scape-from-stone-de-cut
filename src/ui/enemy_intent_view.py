@@ -1,5 +1,6 @@
 """Ícones de habilidades em ordem e descrição detalhada sob o mouse."""
 import pygame
+from src.ui.inspection_controller import InspectionController
 from src.ui.helpers import draw_panel, draw_text, wrap_text
 from src.systems.enemy_intents import preview_intents
 from src.systems.boss_animation_kits import KITS
@@ -8,6 +9,7 @@ from src.systems.boss_animation_kits import KITS
 class EnemyIntentView:
     def __init__(self, assets):
         self.assets = assets
+        self.inspection = InspectionController()
         self.entries = []
         self.tooltip_rect = None
         self._icons = {}
@@ -152,6 +154,7 @@ class EnemyIntentView:
 
     def draw_tooltip(self, surface, mouse):
         self.tooltip_rect = None
+        self.inspection.hover(((i,rect) for i,(rect,_) in enumerate(self.entries)),mouse)
         bounds = surface.get_rect().inflate(-32, -32)
         for target, intent in self.entries:
             if not target.collidepoint(mouse):
@@ -161,7 +164,7 @@ class EnemyIntentView:
             if illustration is not None:
                 art = self._preview(illustration, (min(440, bounds.width), min(519, bounds.height)))
                 center = (bounds.centerx, round(surface.get_height() * .43))
-                rect = art.get_rect(center=center).clamp(bounds)
+                rect = self.inspection.bounded_preview(art.get_size(),surface.get_rect().inflate(-16,-16),center)
                 surface.blit(art, rect)
                 self.tooltip_rect = rect
                 return

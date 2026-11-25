@@ -1,0 +1,151 @@
+{
+  "date": "2026-11-25",
+  "branch": "feat/web-mobile-port",
+  "base_commit": "c5ed131",
+  "distribution_version": "11f6d027ce718481",
+  "distribution_hashes_verified": true,
+  "python_tests": {
+    "total": 919,
+    "modules": 90,
+    "failures": 0,
+    "seconds": 211.57
+  },
+  "chromium": {
+    "passed": true,
+    "density": [
+      {
+        "buffer": [
+          1600,
+          900
+        ],
+        "css": [
+          1280,
+          720
+        ],
+        "dpr": 1.25,
+        "rendering": "pixelated"
+      },
+      {
+        "buffer": [
+          1920,
+          1080
+        ],
+        "css": [
+          1280,
+          720
+        ],
+        "dpr": 1.5,
+        "rendering": "pixelated"
+      },
+      {
+        "buffer": [
+          1920,
+          1080
+        ],
+        "css": [
+          1280,
+          720
+        ],
+        "dpr": 2,
+        "rendering": "pixelated"
+      },
+      {
+        "buffer": [
+          1301,
+          732
+        ],
+        "css": [
+          650.65625,
+          365.984375
+        ],
+        "dpr": 3,
+        "rendering": "pixelated"
+      }
+    ],
+    "checks": [
+      "windows_125_150_200_percent_backing_and_css",
+      "hidpi_mouse_mapping_and_gesture_audio",
+      "real_music_and_card_sfx_pcm_without_clipping",
+      "repeated_unlock_focus_no_duplicate_audio_output",
+      "mobile_dpr3_capped_to_two"
+    ],
+    "before_gesture": {
+      "format": null,
+      "channels": 0,
+      "music_volume": 0,
+      "max_sfx_gain": 0
+    },
+    "combat_fps_median": 24.21435260772705,
+    "frame_cost_ms": {
+      "update": 0.4000010000027032,
+      "draw": 34.099998999998604,
+      "present": 6.500000000002615
+    },
+    "render_buffer": [
+      1920,
+      1080
+    ],
+    "audio": {
+      "samples": 509,
+      "audible_samples": 157,
+      "peak": 0.0606231689453125,
+      "clipped_samples": 0,
+      "mix": {
+        "format": [
+          48000,
+          -16,
+          2
+        ],
+        "channels": 4,
+        "music_volume": 0.25,
+        "max_sfx_gain": 0.09375
+      },
+      "connections": 1,
+      "browser_buffers": [
+        {
+          "buffer": 4096,
+          "sampleRate": 48000
+        }
+      ]
+    },
+    "errors": []
+  },
+  "controlled_rendering_comparison": {
+    "results": {
+      "baseline": {
+        "fps": 33.67003631591797,
+        "buffer": [
+          1280,
+          720
+        ],
+        "frame_ms": {
+          "draw": 24.699999999999278,
+          "present": 2.1999999999948727,
+          "update": 0.2999989999992181
+        }
+      },
+      "current": {
+        "fps": 32.467533111572266,
+        "buffer": [
+          1920,
+          1080
+        ],
+        "frame_ms": {
+          "draw": 23.800000000001376,
+          "present": 4.60000100000002,
+          "update": 0.2999989999992181
+        }
+      }
+    },
+    "fps_change_percent": -3.57,
+    "method": "Mesmo Chromium headless, viewport 1280x720 e DPR 1,5. Apenas web_window.py anterior foi restaurado em arquivo temporário, sem alterar fontes. Prefetch PWA desativado em ambos para isolar renderização; 25 amostras de 200 ms após aquecimento.",
+    "conclusion": "Buffer 2,25 vezes maior; custo extra de apresentação próximo de 2,4 ms no teste controlado."
+  },
+  "desktop_changes": "Nenhuma alteração no WindowManager, mixer/volumes nativos ou instalador. Testes cobrem inicialização nativa e ganhos originais.",
+  "limits": [
+    "PCM real medido sem saturação; não equivale a escuta crítica em hardware físico.",
+    "Resultados de FPS locais em Chromium headless variam com carga do computador; não prometem 60 FPS.",
+    "Máximo do backing buffer é a arte virtual 1920x1080; DPR solicitado é limitado a 2.",
+    "Quatro vozes de efeitos e ganhos menores são exclusivos da Web para reservar margem antes da soma."
+  ]
+}

@@ -11,6 +11,8 @@ def main():
  args=parser.parse_args()
  env=os.environ.copy();env['SDL_VIDEODRIVER']='dummy';env['SDL_AUDIODRIVER']='dummy'
  records=[];start=time.monotonic();report=ROOT/args.report
+ # Checkout limpo/CI não contém build/, que é ignorado pelo Git.
+ report.parent.mkdir(parents=True,exist_ok=True)
  previous={r['modulo']:r for r in json.loads(report.read_text(encoding='utf-8'))['modulos']} if args.resume and report.exists() else {}
  files=sorted((ROOT/'tests').glob('test_*.py'))
  for index,path in enumerate(files,1):

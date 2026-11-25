@@ -1,4 +1,5 @@
 import pygame
+from src.ui.render_cache import scaled_image
 from src.ui.frames import gold_outline
 from src.config.settings import WIDTH, HEIGHT
 from src.config.colors import CARD_BG, WHITE
@@ -36,8 +37,9 @@ class CardView:
             cost=card.cost, description=card.description)
         if image is not None:
             scale = min(draw_rect.width / image.get_width(), draw_rect.height / image.get_height())
-            scaled = pygame.transform.smoothscale(image, (
+            scaled = scaled_image(image, (
                 round(image.get_width() * scale), round(image.get_height() * scale)))
+            if hasattr(surface,"freeze"):surface.freeze(scaled)
             surface.blit(scaled, scaled.get_rect(center=draw_rect.center))
             if hovered:
                 gold_outline(surface, scaled.get_rect(center=draw_rect.center).inflate(8, 8), True)

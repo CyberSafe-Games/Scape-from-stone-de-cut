@@ -43,3 +43,6 @@ LINE_HEIGHT = 1.3
 # Usada apenas para símbolos que a fonte autoral não possui (ex.: ∞, ×, ✕, ▸, |),
 # renderizados no meio do texto sem trocar a fonte do restante.
 SYMBOL_FALLBACK_FONTS = ["segoeuisymbol", "dejavusans", "notosanssymbols", "arialunicodems"]
+
+# Fallback portátil incluído exclusivamente no pacote da prova web.
+PACKAGED_SYMBOL_FONT = os.path.join(FONTS_DIR, "NotoSansSymbols2-Regular.ttf")

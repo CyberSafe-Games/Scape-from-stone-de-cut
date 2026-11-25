@@ -1,0 +1,117 @@
+{
+  "etapa": 6,
+  "data": "2026-11-25",
+  "branch": "feat/web-mobile-port",
+  "checkpoint_etapa5": "4967b5811b441416787c06af816a44014d4ef745",
+  "python": {
+    "tests": 908,
+    "modules": 88,
+    "failures": 0,
+    "seconds": 205.96
+  },
+  "chromium": {
+    "passed": true,
+    "browser": "159.0.8154.6",
+    "checks": [
+      "manifest_installability_and_subpath_scope",
+      "install_and_launch_standalone",
+      "cold_reload_offline_runtime_without_http_cache",
+      "offline_new_slot_intro_tutorial_and_indexeddb",
+      "offline_context_loading_and_live_battle",
+      "offline_missing_context_friendly_retry",
+      "interrupted_package_not_cached_and_retry_succeeds",
+      "waiting_update_does_not_interrupt_battle",
+      "update_rejected_while_other_tab_is_in_battle",
+      "safe_menu_update_all_tabs_and_save_preserved"
+    ],
+    "installability": {
+      "installabilityErrors": []
+    },
+    "pwa_installed_launched": true,
+    "initial_version": "81c7938ba3eda8bb",
+    "updated_version": "81c7938ba3eda8bb-qa2",
+    "offline_resources": {
+      "runtime": 12,
+      "essential_packs": 29
+    },
+    "storage_estimate": {
+      "quota": 10944271763,
+      "usage": 206853523,
+      "usageDetails": {
+        "caches": 206553856,
+        "indexedDB": 90102,
+        "serviceWorkerRegistrations": 209565
+      }
+    },
+    "errors": []
+  },
+  "mobile_host": {
+    "passed": true,
+    "viewport": [
+      844,
+      390
+    ],
+    "footer_does_not_overlap_status": true,
+    "minimum_targets_44": true,
+    "portrait_blocks": true
+  },
+  "distribution": {
+    "path": "dist/web",
+    "version": "81c7938ba3eda8bb",
+    "files": 92,
+    "total_bytes": 390991335,
+    "initial_package_bytes": 6887592,
+    "shell_bytes": 14637395,
+    "runtime_bytes": 22967309,
+    "essential_bytes": 158347658,
+    "essential_packs": 29,
+    "campaign_pack_bytes": 376144379,
+    "pack_count": 71,
+    "integrity_verified": true
+  },
+  "documentation": {
+    "documents": 65,
+    "modules": 88,
+    "tests": 908,
+    "broken_local_links": 0
+  },
+  "native_or_windows_installer_changes": [],
+  "notes": [
+    "Instalação e abertura standalone reais no Chromium completo, em perfil temporário; app de teste desinstalado ao final.",
+    "Cache HTTP desativado/limpo durante a abertura sem rede; runtime fornecido pelo Service Worker.",
+    "Jornada nova, introdução e tutorial testados com valores normais; combate de atualização usa checkpoint QA v15.",
+    "Packs adicionais precisam de rede na primeira visita. Offline pronto cobre o território inicial, não a campanha inteira.",
+    "iOS/Safari e instalação em aparelho físico não foram testados.",
+    "Workflow preparado e build validado localmente; execução no GitHub depende da publicação na Etapa 7.",
+    "Nenhum commit/push das alterações da Etapa 6; checkpoint da Etapa 5 já salvo."
+  ],
+  "files": [
+    " M AGENTS.md",
+    " M README.md",
+    " M devtools/build_web.py",
+    " M docs/documentacao_manifest.json",
+    " M docs/estado_atual.md",
+    " M docs/inventario_testes.json",
+    " M web/bridge.js",
+    " M web/index.html",
+    " M web/resources.js",
+    " M web/styles.css",
+    "?? .github/workflows/build-web.yml",
+    "?? devtools/prepare_pwa_icons.py",
+    "?? devtools/validate_web_pwa.py",
+    "?? devtools/web_distribution.py",
+    "?? docs/build_web.md",
+    "?? docs/validacao_web_etapa6.json",
+    "?? tests/test_web_distribution.py",
+    "?? web/icons/apple-touch-icon.png",
+    "?? web/icons/art_manifest.json",
+    "?? web/icons/pwa-192.png",
+    "?? web/icons/pwa-512.png",
+    "?? web/icons/pwa-maskable-512.png",
+    "?? web/install.html",
+    "?? web/manifest.webmanifest",
+    "?? web/pwa.js",
+    "?? web/runtime-lock.json",
+    "?? web/service-worker.js"
+  ]
+}

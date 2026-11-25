@@ -199,3 +199,55 @@ A barra usa toda a abertura interna da arte hud_health.png, com máscara própri
 transformada pela mesma escala em faixas da moldura. HP máximo vai de ponta a
 ponta do canal; HP parcial é proporcional e HP zero não tem vermelho. A máscara
 protege cabeças de águia/bordas e a composição é idêntica nos dois lados.
+
+## Prova web e plataformas
+
+Há uma prova Pygbag limitada a menu e Slime. A camada src/platforms separa
+recursos/dados e saída desktop/web; o canvas web acompanha foco/visibilidade e
+Fullscreen API sem alterar o controlador nativo. Persistência web v15 implementada no piloto da Etapa 3; Naquele piloto a campanha era limitada; a Etapa 4 está descrita abaixo. PWA/mobile foram concluídos nas Etapas 5 e 6. Ver [plataformas](web_platforms.md).
+
+
+## Persistência híbrida v15
+
+Disco nativo preservado; navegador usa IndexedDB para perfil/run/snapshot e
+localStorage apenas para preferências. Confirmação exige commit real com revisão,
+rollback, checkpoint lógico e backup manual JSON.
+Ver [regras e validação da Etapa 3](web_storage.md).
+
+## Campanha Web PC
+
+A Etapa 4 conecta o fluxo completo às cenas e regras nativas, com pacotes por contexto e confirmação IndexedDB. Veja [arquitetura e validação](web_campaign.md). O host compacto e o toque seguem o [contrato da Etapa 5](web_mobile.md); PWA/offline estão implementados conforme a Etapa 6.
+
+Etapa 5 validada em 25/11/2026: 889 testes Python, viewports Android/iPhone com toque e regressão Web PC aprovados. Resultados e limites da emulação no [relatório da Etapa 5](validacao_web_etapa5.json).
+
+A Etapa 6 adiciona PWA, cache offline por contexto e distribuição estática verificável. Consulte [build e hospedagem](build_web.md).
+Etapa 6 validada: 908 testes, instalação real no Chromium, jornada offline e atualização coordenada com save preservado. Veja o [relatório da Etapa 6](validacao_web_etapa6.json).
+
+## Fechamento multiplataforma — Etapa 7
+
+Desktop nativo e instalador recompilados sem dependências web; portátil e instalação
+temporária desenham o menu, desinstalação preserva dados e 2.528 assets conferem
+por SHA-256. Suíte final: 909 testes em 89 módulos, zero falhas (215,39 s).
+Ver [arquitetura e comandos](arquitetura_multiplataforma.md).
+
+Fechamento cruzado: 11 verificações Web PC, 22 mobile e 10 PWA aprovadas.
+Resultados e limites no [relatório final](validacao_multiplataforma_final.json).
+
+## Mobile com a arte original
+
+Todas as telas mobile usam as cenas originais, sem HUD/menu/grid HTML paralelo.
+A camada de toque oferece apenas inspeção artística e confirmação explícita;
+os hits invisíveis são ampliados para 44×44 CSS. O buffer mobile é realmente
+1280×720, DPR 1, com coordenadas lógicas originais e caches limitados; Web PC e
+Desktop mantêm seus caminhos. Laterais recebem a ambientação e o indicador
+offline não rouba espaço da cena. Instalação/atualização continua no menu.
+Ver [regras, arquitetura e validação](web_mobile.md).
+
+Validação desta correção: **931 testes em 91 módulos, zero falhas**; 14 telas e
+11 verificações de toque no Chromium. Combate: 46,3 FPS medianos na emulação;
+comparação controlada: 24,6 → 44,2 FPS. Não equivale a medição no celular físico.
+Veja o [relatório e limites](validacao_mobile_arte_original.json).
+
+Blindagens Web de memória/hospedagem validadas: 942 testes, 6 verificações
+iframe/backup, 10 PWA/offline e 14 telas mobile. Nenhum limite auditado excedido.
+Ver [resultados e restrições](validacao_web_blindagens.json).

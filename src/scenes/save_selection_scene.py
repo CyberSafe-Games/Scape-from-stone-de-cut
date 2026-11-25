@@ -29,6 +29,7 @@ class SaveSelectionScene(BaseScene):
     def __init__(self, scene_manager, window_manager, asset_manager, save_manager=None):
         super().__init__(scene_manager, window_manager, asset_manager)
         self.save_manager = save_manager or SaveManager()
+        self.backup_buttons={op:pygame.Rect(1280+i*260,48,245,66) for i,op in enumerate(("export","import"))}
         self.back_button = pygame.Rect(57, 48, 240, 66)
         self.test_button = pygame.Rect(WIDTH // 2 - 315, 885, 630, 66)
         self.card_rects = [
@@ -70,6 +71,8 @@ class SaveSelectionScene(BaseScene):
     def draw(self, surface):
         theme.backdrop(surface, self.asset_manager.background, opacity=210)
         self._button(surface, self.back_button, "← VOLTAR")
+        for operation,rect in getattr(self,"backup_buttons",{}).items():
+            self._button(surface,rect,"EXPORTAR" if operation=="export" else "IMPORTAR")
         self.window_manager.draw_fullscreen_button(self.asset_manager.small_font)
         theme.eyebrow(
             surface,
@@ -311,6 +314,11 @@ class SaveSelectionScene(BaseScene):
                 return
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             point = self.window_manager.map_to_virtual(event.pos)
+            for operation,rect in getattr(self,"backup_buttons",{}).items():
+                if rect.collidepoint(point):
+                    from src.scenes.backup_modal import BackupModal
+                    self.scene_manager.push_modal(BackupModal(self,operation))
+                    return
             if self.window_manager.get_fullscreen_button_rect().collidepoint(point):
                 self.play_ui_sound("ui.click")
                 self.window_manager.toggle_fullscreen()

@@ -1,0 +1,985 @@
+{
+  "scope": "Etapa 1 — prova web, sem persistência/PWA/mobile",
+  "branch": "feat/web-mobile-port",
+  "base_commit": "b19cfcf",
+  "asset_manifest": {
+    "scope": "Etapa 1: menu e Slime; sem persistência",
+    "assets_count": 170,
+    "assets_bytes": 23996493,
+    "assets": [
+      "assets/audio/card-place-2.ogg",
+      "assets/audio/chip-lay-1.ogg",
+      "assets/audio/esfera_protetora_leve_curta.ogg",
+      "assets/audio/game_over_risada_apos_fala_v4.ogg",
+      "assets/audio/inimigo_acido.ogg",
+      "assets/audio/music/combate_tambores_v1.ogg",
+      "assets/audio/music/menu_floresta_v1.ogg",
+      "assets/audio/slime_corpo_fragilizante.ogg",
+      "assets/audio/soco_impacto_suave_v2.ogg",
+      "assets/audio/ui/click.ogg",
+      "assets/audio/ui/confirm.ogg",
+      "assets/audio/ui/navigate.ogg",
+      "assets/audio/ultimate_xamanico_opcao_2.ogg",
+      "assets/audio/veneno_dano_corrosivo_v1.ogg",
+      "assets/audio/victory_fanfare_2_curta.ogg",
+      "assets/background.png",
+      "assets/cards/art_manifest.json",
+      "assets/cards/esfera_protetora.png",
+      "assets/cards/soco_simples.png",
+      "assets/enemies/eight_frames/slime/atk_1.png",
+      "assets/enemies/eight_frames/slime/atk_2.png",
+      "assets/enemies/eight_frames/slime/atk_3.png",
+      "assets/enemies/eight_frames/slime/atk_4.png",
+      "assets/enemies/eight_frames/slime/atk_5.png",
+      "assets/enemies/eight_frames/slime/atk_6.png",
+      "assets/enemies/eight_frames/slime/atk_7.png",
+      "assets/enemies/eight_frames/slime/atk_8.png",
+      "assets/enemies/eight_frames/slime/dano_1.png",
+      "assets/enemies/eight_frames/slime/dano_2.png",
+      "assets/enemies/eight_frames/slime/dano_3.png",
+      "assets/enemies/eight_frames/slime/dano_4.png",
+      "assets/enemies/eight_frames/slime/dano_5.png",
+      "assets/enemies/eight_frames/slime/dano_6.png",
+      "assets/enemies/eight_frames/slime/dano_7.png",
+      "assets/enemies/eight_frames/slime/dano_8.png",
+      "assets/enemies/eight_frames/slime/def_1.png",
+      "assets/enemies/eight_frames/slime/def_2.png",
+      "assets/enemies/eight_frames/slime/def_3.png",
+      "assets/enemies/eight_frames/slime/def_4.png",
+      "assets/enemies/eight_frames/slime/def_5.png",
+      "assets/enemies/eight_frames/slime/def_6.png",
+      "assets/enemies/eight_frames/slime/def_7.png",
+      "assets/enemies/eight_frames/slime/def_8.png",
+      "assets/enemies/eight_frames/slime/idle_1.png",
+      "assets/enemies/eight_frames/slime/idle_2.png",
+      "assets/enemies/eight_frames/slime/idle_3.png",
+      "assets/enemies/eight_frames/slime/idle_4.png",
+      "assets/enemies/eight_frames/slime/idle_5.png",
+      "assets/enemies/eight_frames/slime/idle_6.png",
+      "assets/enemies/eight_frames/slime/idle_7.png",
+      "assets/enemies/eight_frames/slime/idle_8.png",
+      "assets/enemies/eight_frames/slime/projectile_atk.png",
+      "assets/enemies/eight_frames/slime/sequence.png",
+      "assets/fonts/IgarapePixel-Destaque.ttf",
+      "assets/fonts/IgarapePixel-Regular.ttf",
+      "assets/icons/moeda.png",
+      "assets/player/eight_frames/dano_1.png",
+      "assets/player/eight_frames/dano_2.png",
+      "assets/player/eight_frames/dano_3.png",
+      "assets/player/eight_frames/dano_4.png",
+      "assets/player/eight_frames/dano_5.png",
+      "assets/player/eight_frames/dano_6.png",
+      "assets/player/eight_frames/dano_7.png",
+      "assets/player/eight_frames/dano_8.png",
+      "assets/player/eight_frames/idle_1.png",
+      "assets/player/eight_frames/idle_2.png",
+      "assets/player/eight_frames/idle_3.png",
+      "assets/player/eight_frames/idle_4.png",
+      "assets/player/eight_frames/idle_5.png",
+      "assets/player/eight_frames/idle_6.png",
+      "assets/player/eight_frames/idle_7.png",
+      "assets/player/eight_frames/idle_8.png",
+      "assets/player/twelve_frames/esfera_protetora_1.png",
+      "assets/player/twelve_frames/esfera_protetora_10.png",
+      "assets/player/twelve_frames/esfera_protetora_11.png",
+      "assets/player/twelve_frames/esfera_protetora_12.png",
+      "assets/player/twelve_frames/esfera_protetora_2.png",
+      "assets/player/twelve_frames/esfera_protetora_3.png",
+      "assets/player/twelve_frames/esfera_protetora_4.png",
+      "assets/player/twelve_frames/esfera_protetora_5.png",
+      "assets/player/twelve_frames/esfera_protetora_6.png",
+      "assets/player/twelve_frames/esfera_protetora_7.png",
+      "assets/player/twelve_frames/esfera_protetora_8.png",
+      "assets/player/twelve_frames/esfera_protetora_9.png",
+      "assets/player/twelve_frames/mana_ancestral_1.png",
+      "assets/player/twelve_frames/mana_ancestral_10.png",
+      "assets/player/twelve_frames/mana_ancestral_11.png",
+      "assets/player/twelve_frames/mana_ancestral_12.png",
+      "assets/player/twelve_frames/mana_ancestral_2.png",
+      "assets/player/twelve_frames/mana_ancestral_3.png",
+      "assets/player/twelve_frames/mana_ancestral_4.png",
+      "assets/player/twelve_frames/mana_ancestral_5.png",
+      "assets/player/twelve_frames/mana_ancestral_6.png",
+      "assets/player/twelve_frames/mana_ancestral_7.png",
+      "assets/player/twelve_frames/mana_ancestral_8.png",
+      "assets/player/twelve_frames/mana_ancestral_9.png",
+      "assets/player/twelve_frames/mana_ancestral_effect_1.png",
+      "assets/player/twelve_frames/mana_ancestral_effect_10.png",
+      "assets/player/twelve_frames/mana_ancestral_effect_11.png",
+      "assets/player/twelve_frames/mana_ancestral_effect_12.png",
+      "assets/player/twelve_frames/mana_ancestral_effect_2.png",
+      "assets/player/twelve_frames/mana_ancestral_effect_3.png",
+      "assets/player/twelve_frames/mana_ancestral_effect_4.png",
+      "assets/player/twelve_frames/mana_ancestral_effect_5.png",
+      "assets/player/twelve_frames/mana_ancestral_effect_6.png",
+      "assets/player/twelve_frames/mana_ancestral_effect_7.png",
+      "assets/player/twelve_frames/mana_ancestral_effect_8.png",
+      "assets/player/twelve_frames/mana_ancestral_effect_9.png",
+      "assets/player/twelve_frames/soco_1.png",
+      "assets/player/twelve_frames/soco_10.png",
+      "assets/player/twelve_frames/soco_11.png",
+      "assets/player/twelve_frames/soco_12.png",
+      "assets/player/twelve_frames/soco_2.png",
+      "assets/player/twelve_frames/soco_3.png",
+      "assets/player/twelve_frames/soco_4.png",
+      "assets/player/twelve_frames/soco_5.png",
+      "assets/player/twelve_frames/soco_6.png",
+      "assets/player/twelve_frames/soco_7.png",
+      "assets/player/twelve_frames/soco_8.png",
+      "assets/player/twelve_frames/soco_9.png",
+      "assets/player/twelve_frames/soco_simples_1.png",
+      "assets/player/twelve_frames/soco_simples_10.png",
+      "assets/player/twelve_frames/soco_simples_11.png",
+      "assets/player/twelve_frames/soco_simples_12.png",
+      "assets/player/twelve_frames/soco_simples_2.png",
+      "assets/player/twelve_frames/soco_simples_3.png",
+      "assets/player/twelve_frames/soco_simples_4.png",
+      "assets/player/twelve_frames/soco_simples_5.png",
+      "assets/player/twelve_frames/soco_simples_6.png",
+      "assets/player/twelve_frames/soco_simples_7.png",
+      "assets/player/twelve_frames/soco_simples_8.png",
+      "assets/player/twelve_frames/soco_simples_9.png",
+      "assets/player/twelve_frames/vitoria_1.png",
+      "assets/player/twelve_frames/vitoria_10.png",
+      "assets/player/twelve_frames/vitoria_11.png",
+      "assets/player/twelve_frames/vitoria_12.png",
+      "assets/player/twelve_frames/vitoria_2.png",
+      "assets/player/twelve_frames/vitoria_3.png",
+      "assets/player/twelve_frames/vitoria_4.png",
+      "assets/player/twelve_frames/vitoria_5.png",
+      "assets/player/twelve_frames/vitoria_6.png",
+      "assets/player/twelve_frames/vitoria_7.png",
+      "assets/player/twelve_frames/vitoria_8.png",
+      "assets/player/twelve_frames/vitoria_9.png",
+      "assets/portraits/source/dedicated/slime.png",
+      "assets/portraits/source/framed/manel.png",
+      "assets/status/aura.png",
+      "assets/status/bleed.png",
+      "assets/status/energy.png",
+      "assets/status/fire.png",
+      "assets/status/poison.png",
+      "assets/status/shield.png",
+      "assets/status/strength.png",
+      "assets/status/totem.png",
+      "assets/status/vulnerable.png",
+      "assets/status/weakness.png",
+      "assets/ui/battle_hud_frame_bottom.png",
+      "assets/ui/battle_hud_frame_top.png",
+      "assets/ui/hud_cemetery.png",
+      "assets/ui/hud_hand_tray.png",
+      "assets/ui/hud_health.png",
+      "assets/ui/rewards/coin_pouch.png",
+      "assets/ui/rewards/victory_altar_background.png",
+      "assets/ui/rewards/victory_crest.png",
+      "assets/ultimates/art_manifest.json",
+      "assets/ultimates/forcas_ancestrais.png",
+      "assets/ultimates/mana_ancestral.png",
+      "assets/ultimates/rugido_da_floresta.png",
+      "assets/fonts/NotoSansSymbols2-Regular.ttf",
+      "assets/fonts/OFL.txt"
+    ],
+    "font_sources": {
+      "NotoSansSymbols2-Regular.ttf": {
+        "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssymbols2/NotoSansSymbols2-Regular.ttf",
+        "sha256": "7d5fb73b7ca67a6798101741f5d280a3d016a56a197afcd4199dbb57b4b82a21"
+      },
+      "OFL.txt": {
+        "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssymbols2/OFL.txt",
+        "sha256": "b118dd41337806a5d4797052c77caf3bd096aed783e5eb21b4d11154351e1ac0"
+      }
+    }
+  },
+  "package_tar_bytes": 22783729,
+  "browser": {
+    "browser": "159.0.8154.6",
+    "mode": "Chromium headless, viewport 1280x720, sem throttling",
+    "navigation_to_menu_seconds": 4.996203799999876,
+    "menu_click_to_battle_seconds": 1.0798260000001392,
+    "network_encoded_bytes": 33777912,
+    "menu": {
+      "scene": "ProofMenu",
+      "frames": 10,
+      "fps": 60.024009603841904,
+      "ready_seconds": 0.2535999999999996,
+      "audio_unlocked": false,
+      "music_playing": false,
+      "draw_parts_ms": {},
+      "frame_cost_ms": {
+        "update": 0.0,
+        "draw": 1.9000000000000128,
+        "present": 2.4999999999995026
+      },
+      "pygame": "2.5.7",
+      "python": "3.12.12",
+      "surfaces_bytes": 0
+    },
+    "first_battle": {
+      "scene": "ProofBattle",
+      "frames": 50,
+      "fps": 7.960515841426526,
+      "ready_seconds": 1.6315999999999997,
+      "audio_unlocked": true,
+      "music_playing": true,
+      "draw_parts_ms": {
+        "_draw_background": 1.40000000000029,
+        "_draw_combatant_panel": 1.5999999999998238,
+        "_draw_energy_gems": 0.0,
+        "_draw_energy_panel": 0.3999989999998732,
+        "_draw_coin_badge": 0.30000100000027174,
+        "_draw_menu_button": 0.0999989999996842,
+        "draw_enemy": 3.2000010000006185,
+        "draw_player": 3.5999999999996035,
+        "draw_enemy_projectile": 0.0,
+        "intent": 0.6999990000000622,
+        "_draw_bottom_hud": 9.10000100000019,
+        "_draw_cemetery_book": 1.000000000000334,
+        "_draw_cemetery_button": 1.000000000000334,
+        "_draw_ultimate_counter": 0.19999999999953388,
+        "_draw_end_turn_button": 0.5999990000002953,
+        "_draw_top_message": 0.0
+      },
+      "frame_cost_ms": {
+        "update": 0.09999999999976694,
+        "draw": 29.300000000000104,
+        "present": 2.200000000000202
+      },
+      "pygame": "2.5.7",
+      "python": "3.12.12",
+      "surfaces_bytes": 40202240,
+      "state": "player_turn",
+      "player_hp": 60,
+      "enemy_hp": 23,
+      "energy": 2,
+      "action": null,
+      "intents": [
+        [
+          1639,
+          234,
+          104,
+          112
+        ]
+      ],
+      "hand": [
+        {
+          "name": "Esfera Protetora",
+          "cost": 1,
+          "rect": [
+            717,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Soco Simples",
+          "cost": 1,
+          "rect": [
+            885,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Soco Simples",
+          "cost": 1,
+          "rect": [
+            1053,
+            795,
+            150,
+            258
+          ]
+        }
+      ]
+    },
+    "victory": {
+      "scene": "ProofBattle",
+      "frames": 500,
+      "fps": 41.050903119868515,
+      "ready_seconds": 18.0293,
+      "audio_unlocked": true,
+      "music_playing": true,
+      "draw_parts_ms": {
+        "_draw_background": 1.5000000000000568,
+        "_draw_combatant_panel": 1.7000009999996735,
+        "_draw_energy_gems": 0.09999999999976694,
+        "_draw_energy_panel": 0.30000099999938357,
+        "_draw_coin_badge": 0.19999899999945114,
+        "_draw_menu_button": 0.09999999999976694,
+        "draw_enemy": 2.1999990000018954,
+        "draw_player": 3.700000999998565,
+        "draw_enemy_projectile": 0.0,
+        "intent": 0.0,
+        "_draw_bottom_hud": 7.500000000000284,
+        "_draw_cemetery_book": 1.0000000000012221,
+        "_draw_cemetery_button": 1.0000000000012221,
+        "_draw_ultimate_counter": 0.30000099999938357,
+        "_draw_end_turn_button": 0.5999999999986017,
+        "_draw_top_message": 0.0
+      },
+      "frame_cost_ms": {
+        "update": 0.10000099999984968,
+        "draw": 20.800000000001262,
+        "present": 1.6999999999995907
+      },
+      "pygame": "2.5.7",
+      "python": "3.12.12",
+      "surfaces_bytes": 40202240,
+      "state": "victory",
+      "player_hp": 53,
+      "enemy_hp": 0,
+      "energy": 2,
+      "action": null,
+      "intents": [],
+      "hand": [
+        {
+          "name": "Esfera Protetora",
+          "cost": 1,
+          "rect": [
+            717,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Esfera Protetora",
+          "cost": 1,
+          "rect": [
+            885,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Esfera Protetora",
+          "cost": 1,
+          "rect": [
+            1053,
+            795,
+            150,
+            258
+          ]
+        }
+      ]
+    },
+    "defeat": {
+      "scene": "ProofBattle",
+      "frames": 1155,
+      "fps": 28.719126938540604,
+      "ready_seconds": 42.46040000000001,
+      "audio_unlocked": true,
+      "music_playing": false,
+      "draw_parts_ms": {
+        "_draw_background": 2.0000000000024443,
+        "_draw_combatant_panel": 1.599998999999741,
+        "_draw_energy_gems": 0.0,
+        "_draw_energy_panel": 0.39999999999906777,
+        "_draw_coin_badge": 0.30000000000285354,
+        "_draw_menu_button": 0.10000099999984968,
+        "draw_enemy": 3.3000000000029672,
+        "draw_player": 3.6999999999949296,
+        "draw_enemy_projectile": 0.0,
+        "intent": 0.0,
+        "_draw_bottom_hud": 7.600000000003604,
+        "_draw_cemetery_book": 0.9000000000014552,
+        "_draw_cemetery_button": 0.9000000000014552,
+        "_draw_ultimate_counter": 0.19999999999953388,
+        "_draw_end_turn_button": 0.5999999999986017,
+        "_draw_top_message": 0.0,
+        "_draw_game_over": 9.099999999996555
+      },
+      "frame_cost_ms": {
+        "update": 0.0999989999996842,
+        "draw": 31.800001000000577,
+        "present": 1.90000000000623
+      },
+      "pygame": "2.5.7",
+      "python": "3.12.12",
+      "surfaces_bytes": 40202240,
+      "state": "game_over",
+      "player_hp": 0,
+      "enemy_hp": 23,
+      "energy": 8,
+      "action": null,
+      "intents": [],
+      "hand": [
+        {
+          "name": "Soco Simples",
+          "cost": 1,
+          "rect": [
+            549,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Esfera Protetora",
+          "cost": 1,
+          "rect": [
+            717,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Soco Simples",
+          "cost": 1,
+          "rect": [
+            885,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Esfera Protetora",
+          "cost": 1,
+          "rect": [
+            1053,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Esfera Protetora",
+          "cost": 1,
+          "rect": [
+            1221,
+            795,
+            150,
+            258
+          ]
+        }
+      ]
+    },
+    "fps_median_combat": 28.60411899313511,
+    "fps_min_sample": 19.357336355565845,
+    "attack_clicks": 5,
+    "minimum_player_hp_during_win": 53,
+    "storage": {
+      "localStorageKeys": [],
+      "wasm_heap_bytes": 386662400,
+      "js_heap": 68000000
+    },
+    "passed": true
+  },
+  "python_tests": {
+    "modulos": [
+      {
+        "modulo": "tests.test_alvaro_tex",
+        "exit_code": 0,
+        "testes": 13,
+        "segundos": 0.57
+      },
+      {
+        "modulo": "tests.test_audio_enemies",
+        "exit_code": 0,
+        "testes": 30,
+        "segundos": 0.56
+      },
+      {
+        "modulo": "tests.test_audio_gameplay",
+        "exit_code": 0,
+        "testes": 28,
+        "segundos": 0.46
+      },
+      {
+        "modulo": "tests.test_audio_manager",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 0.41
+      },
+      {
+        "modulo": "tests.test_audio_mix",
+        "exit_code": 0,
+        "testes": 1,
+        "segundos": 0.14
+      },
+      {
+        "modulo": "tests.test_audio_options",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 0.55
+      },
+      {
+        "modulo": "tests.test_audio_punch_polish",
+        "exit_code": 0,
+        "testes": 1,
+        "segundos": 0.24
+      },
+      {
+        "modulo": "tests.test_audio_ui",
+        "exit_code": 0,
+        "testes": 36,
+        "segundos": 0.46
+      },
+      {
+        "modulo": "tests.test_audio_zanzara",
+        "exit_code": 0,
+        "testes": 3,
+        "segundos": 0.46
+      },
+      {
+        "modulo": "tests.test_backpack_ultimates",
+        "exit_code": 0,
+        "testes": 12,
+        "segundos": 4.29
+      },
+      {
+        "modulo": "tests.test_backpack_visual",
+        "exit_code": 0,
+        "testes": 10,
+        "segundos": 4.99
+      },
+      {
+        "modulo": "tests.test_balance_simulation",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.21
+      },
+      {
+        "modulo": "tests.test_boss_sheet_update",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 4.48
+      },
+      {
+        "modulo": "tests.test_boss_twelve_frames",
+        "exit_code": 0,
+        "testes": 12,
+        "segundos": 11.34
+      },
+      {
+        "modulo": "tests.test_boss_ultimate_animations",
+        "exit_code": 0,
+        "testes": 12,
+        "segundos": 5.43
+      },
+      {
+        "modulo": "tests.test_boss_ultimate_twelve_effects",
+        "exit_code": 0,
+        "testes": 3,
+        "segundos": 9.55
+      },
+      {
+        "modulo": "tests.test_card_collection_pages",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.43
+      },
+      {
+        "modulo": "tests.test_carrasco_da_vigilia",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 4.1
+      },
+      {
+        "modulo": "tests.test_cemetery_system",
+        "exit_code": 0,
+        "testes": 13,
+        "segundos": 29.94
+      },
+      {
+        "modulo": "tests.test_character_portraits",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 6.64
+      },
+      {
+        "modulo": "tests.test_common_eight_frames",
+        "exit_code": 0,
+        "testes": 3,
+        "segundos": 4.66
+      },
+      {
+        "modulo": "tests.test_corpo_seco_animation",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 0.37
+      },
+      {
+        "modulo": "tests.test_corpo_seco_visual_scale",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.62
+      },
+      {
+        "modulo": "tests.test_cutscene_final",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 1.0
+      },
+      {
+        "modulo": "tests.test_cutscene_intro_selection",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.41
+      },
+      {
+        "modulo": "tests.test_cutscene_post_tutorial",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 0.32
+      },
+      {
+        "modulo": "tests.test_cutscene_save_flags",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.22
+      },
+      {
+        "modulo": "tests.test_cutscene_scene",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 0.59
+      },
+      {
+        "modulo": "tests.test_deck_archetype_comparison",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.23
+      },
+      {
+        "modulo": "tests.test_deck_clear_and_minimum",
+        "exit_code": 0,
+        "testes": 20,
+        "segundos": 0.78
+      },
+      {
+        "modulo": "tests.test_deck_draft_persistence",
+        "exit_code": 0,
+        "testes": 19,
+        "segundos": 0.98
+      },
+      {
+        "modulo": "tests.test_deck_slots",
+        "exit_code": 0,
+        "testes": 12,
+        "segundos": 0.42
+      },
+      {
+        "modulo": "tests.test_documentation_contract",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 0.63
+      },
+      {
+        "modulo": "tests.test_enemy_defeats",
+        "exit_code": 0,
+        "testes": 2,
+        "segundos": 0.46
+      },
+      {
+        "modulo": "tests.test_enemy_intents",
+        "exit_code": 0,
+        "testes": 15,
+        "segundos": 4.77
+      },
+      {
+        "modulo": "tests.test_enemy_reactions",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 6.95
+      },
+      {
+        "modulo": "tests.test_energy_system",
+        "exit_code": 0,
+        "testes": 11,
+        "segundos": 4.42
+      },
+      {
+        "modulo": "tests.test_extended_cards",
+        "exit_code": 0,
+        "testes": 10,
+        "segundos": 0.38
+      },
+      {
+        "modulo": "tests.test_goblin_monge",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 4.17
+      },
+      {
+        "modulo": "tests.test_goblin_ranged_attacks",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.26
+      },
+      {
+        "modulo": "tests.test_guardian_visual_polish",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.66
+      },
+      {
+        "modulo": "tests.test_guardiao_da_pedra",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 4.36
+      },
+      {
+        "modulo": "tests.test_hand_and_cemetery_flow",
+        "exit_code": 0,
+        "testes": 13,
+        "segundos": 0.16
+      },
+      {
+        "modulo": "tests.test_health_bar",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 0.37
+      },
+      {
+        "modulo": "tests.test_jan_pietro_stance",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 5.09
+      },
+      {
+        "modulo": "tests.test_life_recovery_after_combat",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 4.37
+      },
+      {
+        "modulo": "tests.test_management_guides",
+        "exit_code": 0,
+        "testes": 11,
+        "segundos": 1.12
+      },
+      {
+        "modulo": "tests.test_map_encounters",
+        "exit_code": 0,
+        "testes": 12,
+        "segundos": 0.61
+      },
+      {
+        "modulo": "tests.test_map_icons",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.67
+      },
+      {
+        "modulo": "tests.test_mata_sombria_boss",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 0.18
+      },
+      {
+        "modulo": "tests.test_merchant_workshop",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 1.67
+      },
+      {
+        "modulo": "tests.test_music_director",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 0.4
+      },
+      {
+        "modulo": "tests.test_normal_bestiary",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 4.6
+      },
+      {
+        "modulo": "tests.test_options_menu",
+        "exit_code": 0,
+        "testes": 18,
+        "segundos": 0.64
+      },
+      {
+        "modulo": "tests.test_options_sanctuary",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 0.65
+      },
+      {
+        "modulo": "tests.test_pause_menu_layout",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.13
+      },
+      {
+        "modulo": "tests.test_player_card_art",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 2.53
+      },
+      {
+        "modulo": "tests.test_player_twelve_frames",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 5.93
+      },
+      {
+        "modulo": "tests.test_pose_playback",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 0.22
+      },
+      {
+        "modulo": "tests.test_post_combat_rewards",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.62
+      },
+      {
+        "modulo": "tests.test_random_deck",
+        "exit_code": 0,
+        "testes": 18,
+        "segundos": 0.63
+      },
+      {
+        "modulo": "tests.test_roguelite",
+        "exit_code": 0,
+        "testes": 18,
+        "segundos": 0.73
+      },
+      {
+        "modulo": "tests.test_route_boss_and_backpack",
+        "exit_code": 0,
+        "testes": 13,
+        "segundos": 0.48
+      },
+      {
+        "modulo": "tests.test_save_integration",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.25
+      },
+      {
+        "modulo": "tests.test_save_system",
+        "exit_code": 0,
+        "testes": 13,
+        "segundos": 0.26
+      },
+      {
+        "modulo": "tests.test_shop_and_combat_reset",
+        "exit_code": 0,
+        "testes": 22,
+        "segundos": 0.77
+      },
+      {
+        "modulo": "tests.test_swamp_boss",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 4.01
+      },
+      {
+        "modulo": "tests.test_tactical_cards",
+        "exit_code": 0,
+        "testes": 31,
+        "segundos": 0.46
+      },
+      {
+        "modulo": "tests.test_territory_map",
+        "exit_code": 0,
+        "testes": 16,
+        "segundos": 0.33
+      },
+      {
+        "modulo": "tests.test_test_save",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 0.48
+      },
+      {
+        "modulo": "tests.test_text_wrap",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.35
+      },
+      {
+        "modulo": "tests.test_tutorial_save_flow",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.21
+      },
+      {
+        "modulo": "tests.test_tutorial_scene",
+        "exit_code": 0,
+        "testes": 22,
+        "segundos": 4.5
+      },
+      {
+        "modulo": "tests.test_ultimate_animations",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 4.26
+      },
+      {
+        "modulo": "tests.test_ultimate_cards_lv2",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.39
+      },
+      {
+        "modulo": "tests.test_ultimates",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 0.18
+      },
+      {
+        "modulo": "tests.test_web_proof",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 0.52
+      },
+      {
+        "modulo": "tests.test_window_modes",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.51
+      },
+      {
+        "modulo": "tests.test_zanzara",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 4.3
+      },
+      {
+        "modulo": "tests.test_zanzara_difficulty",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.16
+      },
+      {
+        "modulo": "tests.test_zanzara_final",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 4.35
+      },
+      {
+        "modulo": "tests.test_zanzara_main_integration",
+        "exit_code": 0,
+        "testes": 3,
+        "segundos": 0.16
+      },
+      {
+        "modulo": "tests.test_zanzara_necromancer",
+        "exit_code": 0,
+        "testes": 16,
+        "segundos": 2.76
+      }
+    ],
+    "total_testes": 790,
+    "falhas": 0,
+    "concluido": true,
+    "retomado": false,
+    "segundos": 183.93
+  },
+  "preserved_files": [
+    "src/systems/save_manager.py",
+    "src/core/window.py",
+    "scape_from_stone.spec",
+    "installer/build_installer.bat",
+    ".github/workflows/build-windows.yml"
+  ]
+}

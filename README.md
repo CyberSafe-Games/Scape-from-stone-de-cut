@@ -229,3 +229,108 @@ A IA foi usada como ferramenta de apoio na criação e aceleração dos sprites 
 ## Licença
 
 <!-- TODO: definir licença -->
+
+## Prova web — Etapa 1
+
+Menu e combate contra Slime em Pygbag, sem saves e sem campanha web.
+O desktop e o instalador continuam independentes. Consulte
+[escopo e execução da prova](docs/web_poc.md).
+
+A Etapa 2 isola serviços desktop/web, saída, viewport e foco; também otimiza
+caches de renderização preservando o desktop. Consulte o
+[contrato de plataformas](docs/web_platforms.md).
+
+A Etapa 3 adiciona persistência híbrida v15: IndexedDB para slots/perfil/run,
+localStorage para preferências, confirmação assíncrona com rollback,
+controle de revisão entre abas, checkpoints e exportação/importação JSON.
+O piloto --poc inclui as telas reais de gerenciamento e o encontro Slime;
+o piloto anterior sem saves continua em `?render=1`.
+Veja [persistência web e validação](docs/web_storage.md).
+
+A Etapa 4 integra a campanha Web PC com recursos por contexto, cenas nativas e entrada unificada. Consulte [campanha web](docs/web_campaign.md). O build padrão é completo; use --poc para reproduzir a prova anterior.
+
+A Etapa 5 adiciona controles compactos, inspeção por toque e orientação paisagem no host web. Veja [layout e entrada mobile](docs/web_mobile.md). Desktop e Web PC amplo mantêm o layout anterior.
+Validação da Etapa 5: 889 testes Python aprovados, 22 verificações mobile e 11 Web PC. Veja o [relatório completo](docs/validacao_web_etapa5.json).
+
+A Etapa 6 prepara o PWA e a distribuição estática em `dist/web/`: manifesto e
+ícones oficiais, cache versionado do shell/runtime e do território inicial,
+recursos adicionais sob demanda e atualização coordenada no menu.
+O indicador informa quando o início está pronto offline; isso não significa
+que todos os territórios já foram baixados. Gere com `python devtools/build_web.py`.
+Veja [build, hospedagem e instalação](docs/build_web.md). O workflow
+`.github/workflows/build-web.yml` gera um artefato revisável, sem deploy automático.
+Validação da Etapa 6: 908 testes Python e 10 verificações PWA aprovados no Chromium, incluindo instalação standalone, jornada offline e atualização entre abas. [Relatório completo](docs/validacao_web_etapa6.json).
+
+## Entrega multiplataforma — Etapa 7
+
+Desktop nativo, Web PC e Web mobile/PWA coexistem na branch feat/web-mobile-port.
+O instalador Windows foi recompilado com Python 3.12.13/Pygame 2.6.1, sem Pygbag
+ou Playwright: executável portátil, instalação temporária, renderização do menu
+e desinstalação silenciosa aprovados, preservando os dados pessoais.
+Os 2.528 assets do pacote Windows conferem com as fontes por SHA-256.
+
+Para empacotar com PyInstaller 6.11.1, use Python 3.12 ou 3.13 x64 e Inno Setup 6.
+O batch prefere o ambiente .venv-build existente. Saídas locais e ambientes
+virtuais permanecem ignorados no Git.
+
+~~~powershell
+installer/build_installer.bat
+.venv-web/Scripts/python.exe devtools/build_web.py
+.venv-web/Scripts/python.exe devtools/build_web.py --serve
+~~~
+
+O último comando serve o jogo em http://127.0.0.1:8765; a pasta publicável é
+dist/web/. Consulte a [arquitetura e comandos completos](docs/arquitetura_multiplataforma.md).
+Suíte final: **909 testes em 89 módulos, zero falhas**, em 215,39 segundos.
+A validação automatizada não substitui testes em aparelhos físicos iOS/Safari.
+
+Fechamento cruzado: 11 verificações Web PC, 22 mobile e 10 PWA aprovadas.
+Resultados e limites no [relatório final](docs/validacao_multiplataforma_final.json).
+
+
+## Correção de nitidez e áudio no navegador
+
+No Web PC, o canvas acompanha a densidade física da tela (DPR até 2, com buffer máximo
+1920×1080), sem a redução fixa anterior para 960×540 no mobile. Música e efeitos
+usam buffer 4096 e margem de volume exclusivos da Web, mantendo o desbloqueio
+após interação. O Desktop conserva janela, mixer e volumes anteriores.
+
+Para repetir a validação de alta densidade e áudio PCM, sirva o build e execute:
+
+~~~powershell
+python devtools/generate_web_campaign_fixtures.py
+.venv-web/Scripts/python.exe devtools/validate_web_quality.py
+~~~
+
+O teste usa Chromium temporário e escalas PC 125%/150%/200%; mobile DPR 3 usa
+o perfil 1280×720/DPR 1 descrito abaixo. Saves usados são checkpoints de QA em build/, sem tocar nos slots pessoais.
+Ver os detalhes em [build web](docs/build_web.md).
+
+Validação da correção: **919 testes em 90 módulos, zero falhas** e cinco
+verificações de qualidade Chromium aprovadas. A comparação controlada passou
+de 33,7 para 32,5 FPS com buffer 2,25 vezes maior; não é garantia de FPS em
+aparelhos físicos. [Medições e limites](docs/validacao_web_qualidade.json).
+
+## Mobile com a arte original
+
+Todas as telas mobile usam as cenas originais, sem HUD/menu/grid HTML paralelo.
+A camada de toque oferece apenas inspeção artística e confirmação explícita;
+os hits invisíveis são ampliados para 44×44 CSS. O buffer mobile é realmente
+1280×720, DPR 1, com coordenadas lógicas originais e caches limitados; Web PC e
+Desktop mantêm seus caminhos. Laterais recebem a ambientação e o indicador
+offline não rouba espaço da cena. Instalação/atualização continua no menu.
+Ver [regras, arquitetura e validação](docs/web_mobile.md).
+
+Validação desta correção: **931 testes em 91 módulos, zero falhas**; 14 telas e
+11 verificações de toque no Chromium. Combate: 46,3 FPS medianos na emulação;
+comparação controlada: 24,6 → 44,2 FPS. Não equivale a medição no celular físico.
+Veja o [relatório e limites](docs/validacao_mobile_arte_original.json).
+
+A distribuição Web também audita os limites de arquivos do Cloudflare Pages e
+itch.io, libera temporários/animações consumidos do MEMFS e continua online quando
+o Service Worker é bloqueado em iframe. EXPORTAR/IMPORTAR na seleção de jornadas
+permite backup JSON v15 compatível com Desktop. Veja [memória, backup e hospedagem](docs/build_web.md).
+
+Blindagens Web de memória/hospedagem validadas: 942 testes, 6 verificações
+iframe/backup, 10 PWA/offline e 14 telas mobile. Nenhum limite auditado excedido.
+Ver [resultados e restrições](docs/validacao_web_blindagens.json).

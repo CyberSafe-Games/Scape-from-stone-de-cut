@@ -1,0 +1,199 @@
+{
+  "etapa": 5,
+  "data": "2026-11-25",
+  "checkpoint_etapa4": "62de681",
+  "branch": "feat/web-mobile-port",
+  "python": {
+    "tests": 889,
+    "modules": 87,
+    "failures": 0,
+    "seconds": 181.28,
+    "final_targeted_tests": 67
+  },
+  "chromium_mobile": [
+    {
+      "device": "android",
+      "viewport": [
+        915,
+        412
+      ],
+      "passed": true,
+      "checks": [
+        "orientation_pause_resume",
+        "focus_suspend_resume",
+        "shop_inspect_confirm",
+        "backpack_tabs_equipment_ultimate",
+        "upgrade_copy_before_after",
+        "settings_persist_reload",
+        "ultimate_inspect_confirm",
+        "pointercancel_clears_selection",
+        "touch_inspection_rotation_cancel",
+        "battle_reward_confirm",
+        "minimum_touch_targets"
+      ],
+      "fps_median": 41.500205993652344,
+      "memory": {
+        "js": 188000000,
+        "wasm": 463994880
+      },
+      "errors": []
+    },
+    {
+      "device": "iphone",
+      "viewport": [
+        844,
+        390
+      ],
+      "passed": true,
+      "checks": [
+        "orientation_pause_resume",
+        "focus_suspend_resume",
+        "shop_inspect_confirm",
+        "backpack_tabs_equipment_ultimate",
+        "upgrade_copy_before_after",
+        "settings_persist_reload",
+        "ultimate_inspect_confirm",
+        "pointercancel_clears_selection",
+        "touch_inspection_rotation_cancel",
+        "battle_reward_confirm",
+        "minimum_touch_targets"
+      ],
+      "fps_median": 35.65617370605469,
+      "memory": {
+        "js": 188000000,
+        "wasm": 463994880
+      },
+      "errors": []
+    }
+  ],
+  "chromium_web_pc": {
+    "passed": true,
+    "shop_fps_median": 58.65556526184082,
+    "shop_draw_ms_median": 13.449999500000587,
+    "checks": [
+      "shop_purchase",
+      "shop_wheel",
+      "backpack_equipment",
+      "ultimate_equipment",
+      "upgrade_comparison_lv1_lv2",
+      "settings_keyboard",
+      "settings_slider",
+      "settings_tabs",
+      "guides",
+      "indexeddb_reload",
+      "preferences_reload"
+    ]
+  },
+  "build": {
+    "initial_bytes": 6887592,
+    "asset_count": 2527,
+    "python_sources_match_validated_build": {
+      "web/mobile.py": true,
+      "web/campaign.py": true,
+      "src/core/application.py": true,
+      "src/core/input_router.py": true,
+      "src/core/web_window.py": true,
+      "src/config/visual_quality.py": true
+    }
+  },
+  "layout": {
+    "virtual": [
+      1920,
+      1080
+    ],
+    "compact_output": [
+      960,
+      540
+    ],
+    "compact_threshold": [
+      1000,
+      600
+    ],
+    "primary_touch_tablets": true,
+    "touch_target_css_px": [
+      44,
+      44
+    ],
+    "particle_limit_per_emission": 6,
+    "particle_limit_per_frame": 24,
+    "preview_cache_entries": 48
+  },
+  "documentation": {
+    "documents": 64,
+    "test_modules": 87,
+    "test_methods": 889,
+    "broken_local_links": 0
+  },
+  "limits": [
+    "Chromium com emulacao de viewport e toque, sem limitacao artificial de CPU/rede, DPR 1; nao e Safari nem aparelho fisico.",
+    "FPS de um combate Slime usando checkpoints QA v15, energia 8/Forca 36/escudo; nao representa a campanha inteira no celular.",
+    "Memoria WASM e capacidade reservada do heap, nao RSS. JS e amostra de usedJSHeapSize apos fluxo, aproximada pelo navegador.",
+    "PWA, cache offline e distribuicao pertencem a Etapa 6.",
+    "Sem commit ou push das alteracoes da Etapa 5."
+  ],
+  "validation_notes": [
+    "O validador Web PC passou a aguardar a aba Audio e a reducao efetiva de volume antes de verificar persistencia; eliminada corrida do teste."
+  ],
+  "desktop_installer_diff": [],
+  "files": [
+    " M AGENTS.md",
+    " M README.md",
+    " M devtools/build_web.py",
+    " M devtools/validate_web_management.py",
+    " M docs/documentacao_manifest.json",
+    " M docs/estado_atual.md",
+    " M docs/inventario_testes.json",
+    " M src/core/application.py",
+    " M src/core/input_router.py",
+    " M src/core/web_window.py",
+    " M src/ui/inspection_controller.py",
+    " M src/ui/ultimate_fx.py",
+    " M web/bridge.js",
+    " M web/campaign.py",
+    " M web/styles.css",
+    "?? devtools/validate_web_mobile.py",
+    "?? docs/validacao_web_etapa5.json",
+    "?? docs/web_mobile.md",
+    "?? src/config/responsive_layout.py",
+    "?? src/config/visual_quality.py",
+    "?? src/core/active_timeline.py",
+    "?? tests/test_mobile_web.py",
+    "?? web/index.html",
+    "?? web/mobile.js",
+    "?? web/mobile.py"
+  ],
+  "final_host": {
+    "single_viewport_meta_in_head": true,
+    "cases": [
+      {
+        "viewport": [
+          844,
+          390
+        ],
+        "touch": true,
+        "passed": true
+      },
+      {
+        "viewport": [
+          1280,
+          800
+        ],
+        "touch": true,
+        "passed": true
+      },
+      {
+        "viewport": [
+          1280,
+          720
+        ],
+        "touch": false,
+        "passed": true
+      }
+    ]
+  },
+  "host_sources_match": {
+    "mobile.js": true,
+    "bridge.js": true,
+    "styles.css": true
+  }
+}

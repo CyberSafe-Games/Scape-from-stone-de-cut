@@ -157,20 +157,24 @@ class ShopScene(BaseScene):
             self.play_ui_sound("ui.click")
             self._back()
         elif self.heal_button.collidepoint(pos):
-            result = purchase_heal(self.save_manager, self.save_data)
-            self._notify(result)
-            if result.success:
-                self.visuals.celebrate(self.heal_button, healing=True)
+            def complete(result):
+                self._notify(result)
+                if result.success:
+                    self.visuals.celebrate(self.heal_button, healing=True)
+            self.persist_command(lambda m,d: purchase_heal(m,d), complete)
         else:
             for name, rect in self.offer_rects.items():
                 if rect.collidepoint(pos):
-                    result = purchase_card(self.save_manager, self.save_data, name)
-                    self._notify(result)
-                    if result.success:
-                        self.visuals.celebrate(self.card_rects[name])
+                    def complete(result):
+                        self._notify(result)
+                        if result.success:
+                            self.visuals.celebrate(self.card_rects[name])
+                    self.persist_command(lambda m,d: purchase_card(m,d,name), complete)
                     break
 
     def _back(self):
+        if self.management_back():
+            return
         from src.scenes.map_scene import MapScene
         self.scene_manager.change_scene(MapScene(
             self.scene_manager, self.window_manager, self.asset_manager,

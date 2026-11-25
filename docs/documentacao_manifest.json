@@ -294,6 +294,41 @@
       "file": "docs/zanzara.md",
       "kind": "current",
       "summary": "Necromante atual; HP175, kit e efeitos reais, renderizador e epílogo."
+    },
+    {
+      "file": "docs/web_poc.md",
+      "kind": "current",
+      "summary": "Escopo, execução e limites da prova Pygbag sem saves."
+    },
+    {
+      "file": "docs/web_platforms.md",
+      "kind": "current",
+      "summary": "Serviços desktop/web, ciclo de vida, viewport e limites dos caches."
+    },
+    {
+      "file": "docs/web_storage.md",
+      "kind": "current",
+      "summary": "Persistencia hibrida v15, confirmacao assincrona, conflito entre abas, checkpoints e backup."
+    },
+    {
+      "file": "docs/web_campaign.md",
+      "kind": "current",
+      "summary": "Campanha Web PC, manifesto por contexto, entrada, memória e metodologia de QA."
+    },
+    {
+      "file": "docs/web_mobile.md",
+      "kind": "current",
+      "summary": "Layout compacto, orientação, entrada touch, confirmação e perfil leve web."
+    },
+    {
+      "file": "docs/build_web.md",
+      "kind": "current",
+      "summary": "Build estático PWA, integridade, cache, atualização segura, hospedagem e validação."
+    },
+    {
+      "file": "docs/arquitetura_multiplataforma.md",
+      "kind": "current",
+      "summary": "Fronteiras dos três modos, build Windows/Web, smoke isolado e higiene final."
     }
   ]
 }

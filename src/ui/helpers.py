@@ -40,8 +40,8 @@ def scale_to_display(image):
 
 def draw_text(surface, text, font, color, x, y, center=False):
     """Renderiza texto na superfície informada com sombra leve para contraste."""
-    rendered = font.render(str(text), True, color)
-    shadow = font.render(str(text), True, (0, 0, 0))
+    rendered = surface.render_text(font,text,color) if hasattr(surface,"render_text") else font.render(str(text), True, color)
+    shadow = surface.render_text(font,text,(0,0,0)) if hasattr(surface,"render_text") else font.render(str(text), True, (0, 0, 0))
     rect = rendered.get_rect()
     shadow_rect = shadow.get_rect()
     if center:
@@ -56,7 +56,7 @@ def draw_text(surface, text, font, color, x, y, center=False):
 
 def draw_text_shadow(surface, text, font, color, x, y, center=False, shadow_color=(0, 0, 0), offset=3):
     """Renderiza texto com uma sombra simples para melhorar o contraste."""
-    shadow = font.render(str(text), True, shadow_color)
+    shadow = surface.render_text(font,text,shadow_color) if hasattr(surface,"render_text") else font.render(str(text), True, shadow_color)
     shadow_rect = shadow.get_rect()
     if center:
         shadow_rect.center = (int(x + offset), int(y + offset))

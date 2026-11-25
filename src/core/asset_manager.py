@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import pygame
 from src.systems.common_animation_kits import COMMON_KITS
@@ -49,7 +50,7 @@ class AssetManager:
     CARD_IMAGE_FILES = {s[1]: s[0] + '.png' for s in CARD_SPECS}
     CARD_ACTION_FILES = {s[1]: s[0] for s in CARD_SPECS}
 
-    def __init__(self):
+    def __init__(self, preload=True):
         self._fonts = {}
         self._card_images = {}
         self._card_action_sprites = {}
@@ -76,23 +77,27 @@ class AssetManager:
 
         self._init_fonts()
         self._load_background()
-        self._load_tutorial_background()
-        self._load_territory_backgrounds()
-        self._load_player_sprites()
-        self._load_enemy_sprites()
-        self._load_common_eight_frames()
-        self._load_card_action_sprites()
-        self._load_player_eight_frames()
-        self._load_boss_ultimate_sprites()
-        self._load_boss_eight_frame_sprites()
-        self._load_defeat_poses()
-        self._load_coin_icon()
-        self._load_ui_images()
-        self._load_ultimate_images()
+        if preload:
+            self._load_tutorial_background()
+            self._load_territory_backgrounds()
+            self._load_player_sprites()
+            self._load_enemy_sprites()
+            self._load_common_eight_frames()
+            self._load_card_action_sprites()
+            self._load_player_eight_frames()
+            self._load_boss_ultimate_sprites()
+            self._load_boss_eight_frame_sprites()
+            self._load_defeat_poses()
+            self._load_coin_icon()
+            self._load_ui_images()
+            self._load_ultimate_images()
 
     @staticmethod
     def _pick_font(preferred_names, size, bold=False):
         """Usa uma família instalada; evita fallback silencioso na primeira opção."""
+        from src.config.typography import PACKAGED_SYMBOL_FONT
+        if sys.platform == "emscripten" and os.path.isfile(PACKAGED_SYMBOL_FONT):
+            return pygame.font.Font(PACKAGED_SYMBOL_FONT, size)
         for name in preferred_names:
             path = pygame.font.match_font(name, bold=bold)
             if path:
@@ -487,9 +492,11 @@ class AssetManager:
             if effects:
                 self._ultimate_effect_sprites[name] = effects
 
-    def _load_boss_ultimate_sprites(self):
+    def _load_boss_ultimate_sprites(self, names=None):
         from src.systems.boss_ultimate_animations import BOSS_ULTIMATE_ANIMATIONS, BOSS_ORIGINAL_CASTS
         for name, spec in BOSS_ULTIMATE_ANIMATIONS.items():
+            if names is not None and name not in names:
+                continue
             folder = os.path.join(os.path.dirname(ULTIMATE_ASSETS_DIR), 'boss_ultimate_effects', spec.asset_id)
             casts = []
             for group, index in BOSS_ORIGINAL_CASTS.get(name, ()):
@@ -542,7 +549,7 @@ class AssetManager:
     def get_boss_ultimate_sprites(self, name, effects=False):
         return (self._boss_ultimate_effects if effects else self._boss_ultimate_sprites).get(name.lower(), [])
 
-    def _load_boss_eight_frame_sprites(self):
+    def _load_boss_eight_frame_sprites(self, names=None):
         import json
         from src.config.settings import ASSETS_DIR
         root = os.path.join(ASSETS_DIR,'bosses','eight_frames')
@@ -559,6 +566,8 @@ class AssetManager:
         with open(os.path.join(root,'manifest.json'),encoding='utf8') as stream:
             prepared = json.load(stream)
         for name,(slug,groups) in KITS.items():
+            if names is not None and name not in names:
+                continue
             if name in SHEET_KITS:
                 self._load_boss_sheet_kit(name)
                 continue
@@ -785,7 +794,7 @@ class AssetManager:
         projectile = self._enemy_projectiles.get(key)
         return projectile[frame % len(projectile)] if isinstance(projectile, list) else projectile
 
-    def _load_common_eight_frames(self):
+    def _load_common_eight_frames(self, names=None):
         import json
         from src.systems.common_animation_kits import COMMON_KITS
         from src.config.settings import ASSETS_DIR
@@ -796,6 +805,8 @@ class AssetManager:
         with open(manifest_path, encoding='utf8') as stream:
             manifest = json.load(stream)
         for name, (slug, groups) in COMMON_KITS.items():
+            if names is not None and name not in names:
+                continue
             if slug not in manifest: continue
             current = self._enemy_sprites.setdefault(name, {})
             for group in groups:

@@ -1,0 +1,57 @@
+html, body { margin:0; width:100%; height:100%; overflow:hidden; background:#090e0d; }
+#canvas { position:fixed!important; inset:auto!important; margin:0!important; left:50%!important; top:50%!important;
+transform:translate(-50%,-50%); width:min(100vw,177.777778vh)!important;
+height:auto!important; max-height:100vh; aspect-ratio:16/9;
+image-rendering:-webkit-optimize-contrast; image-rendering:crisp-edges; image-rendering:pixelated; }
+
+#web-fullscreen { position:fixed;right:8px;bottom:8px;z-index:10;
+background:#101b18;color:#dbc28c;border:1px solid #9b7846;padding:5px;cursor:pointer; }
+#web-paused { position:fixed;inset:0;z-index:9;display:grid;place-items:center;
+background:#090e0dd9;color:#dbc28c;font:18px serif;pointer-events:none; }
+#web-paused[hidden] {display:none;}
+
+/* Camada compacta: unidades CSS reais, sem reescalar molduras/sprites. */
+:root { --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+--safe-left:env(safe-area-inset-left,0px);--safe-right:env(safe-area-inset-right,0px); }
+#canvas {max-width:calc(100vw - var(--safe-left) - var(--safe-right));
+max-height:calc(100dvh - var(--safe-top) - var(--safe-bottom));touch-action:none;}
+#mobile-ui[hidden],#mobile-rotate[hidden]{display:none!important}
+#mobile-rotate{position:fixed;inset:0;display:grid;place-items:center;z-index:100;
+padding:24px;background:radial-gradient(ellipse,#293326,#080e0d);color:#ecd7a8;text-align:center;}
+.rotate-rune{font-size:60px;color:#dab66f}
+.ancestral-panel{background:linear-gradient(135deg,#293027f5,#111b17fa);border:2px solid #b28e50;
+box-shadow:inset 0 0 0 3px #121b15,0 8px 28px #000a;border-radius:6px;padding:14px;}
+/* Estado offline ocupa uma faixa própria no compacto, fora dos alvos de ação. */
+:root{--pwa-height:24px}.pwa-actions{--pwa-height:50px}
+#pwa-status{position:fixed;left:8px;bottom:max(0px,env(safe-area-inset-bottom));z-index:35;
+color:#dfcb9d;background:#0b1711ee;border:1px solid #977544;border-radius:4px;
+font:12px Georgia,serif;max-width:calc(100vw - 16px);min-height:20px;display:flex;align-items:center;gap:7px;padding:1px 5px;box-sizing:border-box;pointer-events:none;}
+#pwa-status span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pwa-status button{color:#f2deb1;background:#26362a;border:1px solid #b18d4f;min-height:44px;min-width:44px;border-radius:4px;padding:5px 10px;pointer-events:auto}
+#pwa-status button[hidden]{display:none}
+#pwa-status.updating{inset:0;max-width:none;display:grid;place-items:center;z-index:110;background:#09130ff2;font-size:22px;pointer-events:auto}
+
+/* Mobile: uma única cena artística, com interação discreta sobre o canvas. */
+.compact{--pwa-height:0px}
+.compact body{background-color:#090e0d!important;background-image:var(--mobile-edge-art)!important;background-position:center;background-size:cover}
+.compact #canvas{pointer-events:auto;width:min(calc(100vw - var(--safe-left) - var(--safe-right)),calc((100dvh - var(--safe-top) - var(--safe-bottom))*1.77777778))!important;
+max-height:calc(100dvh - var(--safe-top) - var(--safe-bottom));top:calc((100dvh + var(--safe-top) - var(--safe-bottom))/2)!important}
+.compact #pwa-status:not(.updating),.compact #web-fullscreen{display:none}
+#mobile-ui{position:fixed;inset:0;z-index:25;pointer-events:none;background:none!important}
+#mobile-ui[hidden]{display:none}
+.portrait-blocked #mobile-ui{visibility:hidden}
+.art-inspection{position:absolute;inset:0;display:grid;place-items:center;background:#03090655;pointer-events:auto}
+.art-inspection-content{display:flex;flex-direction:column;align-items:center;gap:5px;max-height:100%;max-width:100%;padding:5px;box-sizing:border-box}
+.art-inspection-content>img{height:min(76dvh,560px);max-width:84vw;object-fit:contain}
+.art-inspection-actions{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
+.art-inspection-actions button{min-width:44px;min-height:44px;padding:6px 16px;border:2px solid #ac8a4f;
+background:linear-gradient(#29352c,#111b17);color:#f0dfb8;font:bold 14px Georgia;box-shadow:inset 0 0 0 2px #111710,0 2px 7px #0009;border-radius:4px;cursor:pointer}
+.art-inspection-actions button:disabled{opacity:.45}
+.art-status-description{max-width:min(600px,85vw);max-height:65dvh;overflow:auto;white-space:pre-line;
+padding:16px;border:2px solid #ac8a4f;color:#ecd7a8;background:#111b17ee}
+.compact #web-paused{z-index:90}
+
+/* Instalar/atualizar permanece acessível apenas no menu, sem roubar espaço da cena. */
+.compact[data-mobile-scene="CampaignMenu"].pwa-actions #pwa-status:not(.updating){
+display:flex;top:calc(var(--safe-top) + 6px);bottom:auto;left:auto;right:calc(var(--safe-right) + 6px);background:none;border:0;padding:0}
+.compact[data-mobile-scene="CampaignMenu"] #pwa-status:not(.updating)>span{display:none}

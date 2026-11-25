@@ -91,6 +91,10 @@ def capture(engine, include_random=True):
 def restore(engine, snapshot):
     from src.systems.card_catalog import CARD_BY_NAME
     data = deepcopy(snapshot)
+    # Motores temporários de confirmação também precisam recuperar o encontro.
+    engine.level = data["level"]
+    engine.encounter_kind = data["kind"]
+    engine.encounter_index = data["index"]
     engine.player.__dict__.update(data['player'])
     enemy_data = data['enemy']
     engine.enemy = Enemy(enemy_data['name'], enemy_data['max_hp'])

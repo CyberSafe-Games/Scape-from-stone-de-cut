@@ -1,0 +1,634 @@
+{
+  "etapa": 3,
+  "data": "2026-11-25",
+  "branch": "feat/web-mobile-port",
+  "base_commit": "b19cfcf",
+  "status": "aprovada nos testes do piloto; pronta para a Etapa 4",
+  "save_version": 15,
+  "indexeddb_version": 1,
+  "python": {
+    "tests": 831,
+    "modules": 85,
+    "failures": 0,
+    "complete": true,
+    "seconds": 250.86,
+    "executor": "python -B devtools/validate_isolated_tests.py --report build/web-stage3-python-tests.json",
+    "storage_contract_cases": 23,
+    "module_results": [
+      {
+        "modulo": "tests.test_alvaro_tex",
+        "exit_code": 0,
+        "testes": 13,
+        "segundos": 0.84
+      },
+      {
+        "modulo": "tests.test_audio_enemies",
+        "exit_code": 0,
+        "testes": 30,
+        "segundos": 0.79
+      },
+      {
+        "modulo": "tests.test_audio_gameplay",
+        "exit_code": 0,
+        "testes": 28,
+        "segundos": 0.67
+      },
+      {
+        "modulo": "tests.test_audio_manager",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 0.6
+      },
+      {
+        "modulo": "tests.test_audio_mix",
+        "exit_code": 0,
+        "testes": 1,
+        "segundos": 0.21
+      },
+      {
+        "modulo": "tests.test_audio_options",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 0.7
+      },
+      {
+        "modulo": "tests.test_audio_punch_polish",
+        "exit_code": 0,
+        "testes": 1,
+        "segundos": 0.33
+      },
+      {
+        "modulo": "tests.test_audio_ui",
+        "exit_code": 0,
+        "testes": 36,
+        "segundos": 0.65
+      },
+      {
+        "modulo": "tests.test_audio_zanzara",
+        "exit_code": 0,
+        "testes": 3,
+        "segundos": 0.64
+      },
+      {
+        "modulo": "tests.test_backpack_ultimates",
+        "exit_code": 0,
+        "testes": 12,
+        "segundos": 5.98
+      },
+      {
+        "modulo": "tests.test_backpack_visual",
+        "exit_code": 0,
+        "testes": 10,
+        "segundos": 6.86
+      },
+      {
+        "modulo": "tests.test_balance_simulation",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.3
+      },
+      {
+        "modulo": "tests.test_boss_sheet_update",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 6.64
+      },
+      {
+        "modulo": "tests.test_boss_twelve_frames",
+        "exit_code": 0,
+        "testes": 12,
+        "segundos": 17.39
+      },
+      {
+        "modulo": "tests.test_boss_ultimate_animations",
+        "exit_code": 0,
+        "testes": 12,
+        "segundos": 7.2
+      },
+      {
+        "modulo": "tests.test_boss_ultimate_twelve_effects",
+        "exit_code": 0,
+        "testes": 3,
+        "segundos": 14.18
+      },
+      {
+        "modulo": "tests.test_card_collection_pages",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.7
+      },
+      {
+        "modulo": "tests.test_carrasco_da_vigilia",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 5.62
+      },
+      {
+        "modulo": "tests.test_cemetery_system",
+        "exit_code": 0,
+        "testes": 13,
+        "segundos": 37.04
+      },
+      {
+        "modulo": "tests.test_character_portraits",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 7.35
+      },
+      {
+        "modulo": "tests.test_common_eight_frames",
+        "exit_code": 0,
+        "testes": 3,
+        "segundos": 5.55
+      },
+      {
+        "modulo": "tests.test_corpo_seco_animation",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 0.51
+      },
+      {
+        "modulo": "tests.test_corpo_seco_visual_scale",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.95
+      },
+      {
+        "modulo": "tests.test_cutscene_final",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 1.22
+      },
+      {
+        "modulo": "tests.test_cutscene_intro_selection",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.61
+      },
+      {
+        "modulo": "tests.test_cutscene_post_tutorial",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 0.42
+      },
+      {
+        "modulo": "tests.test_cutscene_save_flags",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.3
+      },
+      {
+        "modulo": "tests.test_cutscene_scene",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 0.76
+      },
+      {
+        "modulo": "tests.test_deck_archetype_comparison",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.28
+      },
+      {
+        "modulo": "tests.test_deck_clear_and_minimum",
+        "exit_code": 0,
+        "testes": 20,
+        "segundos": 0.93
+      },
+      {
+        "modulo": "tests.test_deck_draft_persistence",
+        "exit_code": 0,
+        "testes": 19,
+        "segundos": 1.29
+      },
+      {
+        "modulo": "tests.test_deck_slots",
+        "exit_code": 0,
+        "testes": 12,
+        "segundos": 0.57
+      },
+      {
+        "modulo": "tests.test_documentation_contract",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 0.81
+      },
+      {
+        "modulo": "tests.test_enemy_defeats",
+        "exit_code": 0,
+        "testes": 2,
+        "segundos": 0.58
+      },
+      {
+        "modulo": "tests.test_enemy_intents",
+        "exit_code": 0,
+        "testes": 15,
+        "segundos": 5.52
+      },
+      {
+        "modulo": "tests.test_enemy_reactions",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 8.37
+      },
+      {
+        "modulo": "tests.test_energy_system",
+        "exit_code": 0,
+        "testes": 11,
+        "segundos": 5.02
+      },
+      {
+        "modulo": "tests.test_extended_cards",
+        "exit_code": 0,
+        "testes": 10,
+        "segundos": 0.52
+      },
+      {
+        "modulo": "tests.test_goblin_monge",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 4.76
+      },
+      {
+        "modulo": "tests.test_goblin_ranged_attacks",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.32
+      },
+      {
+        "modulo": "tests.test_guardian_visual_polish",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.77
+      },
+      {
+        "modulo": "tests.test_guardiao_da_pedra",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 4.9
+      },
+      {
+        "modulo": "tests.test_hand_and_cemetery_flow",
+        "exit_code": 0,
+        "testes": 13,
+        "segundos": 0.21
+      },
+      {
+        "modulo": "tests.test_health_bar",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 0.48
+      },
+      {
+        "modulo": "tests.test_jan_pietro_stance",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 6.14
+      },
+      {
+        "modulo": "tests.test_life_recovery_after_combat",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 5.51
+      },
+      {
+        "modulo": "tests.test_management_guides",
+        "exit_code": 0,
+        "testes": 11,
+        "segundos": 1.73
+      },
+      {
+        "modulo": "tests.test_map_encounters",
+        "exit_code": 0,
+        "testes": 12,
+        "segundos": 1.11
+      },
+      {
+        "modulo": "tests.test_map_icons",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 0.97
+      },
+      {
+        "modulo": "tests.test_mata_sombria_boss",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 0.32
+      },
+      {
+        "modulo": "tests.test_merchant_workshop",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 2.98
+      },
+      {
+        "modulo": "tests.test_music_director",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 0.75
+      },
+      {
+        "modulo": "tests.test_normal_bestiary",
+        "exit_code": 0,
+        "testes": 4,
+        "segundos": 6.41
+      },
+      {
+        "modulo": "tests.test_options_menu",
+        "exit_code": 0,
+        "testes": 18,
+        "segundos": 1.24
+      },
+      {
+        "modulo": "tests.test_options_sanctuary",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 1.05
+      },
+      {
+        "modulo": "tests.test_pause_menu_layout",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.21
+      },
+      {
+        "modulo": "tests.test_platform_services",
+        "exit_code": 0,
+        "testes": 18,
+        "segundos": 1.37
+      },
+      {
+        "modulo": "tests.test_player_card_art",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 3.38
+      },
+      {
+        "modulo": "tests.test_player_twelve_frames",
+        "exit_code": 0,
+        "testes": 8,
+        "segundos": 9.14
+      },
+      {
+        "modulo": "tests.test_pose_playback",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 0.36
+      },
+      {
+        "modulo": "tests.test_post_combat_rewards",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.91
+      },
+      {
+        "modulo": "tests.test_random_deck",
+        "exit_code": 0,
+        "testes": 18,
+        "segundos": 0.95
+      },
+      {
+        "modulo": "tests.test_roguelite",
+        "exit_code": 0,
+        "testes": 18,
+        "segundos": 1.03
+      },
+      {
+        "modulo": "tests.test_route_boss_and_backpack",
+        "exit_code": 0,
+        "testes": 13,
+        "segundos": 0.75
+      },
+      {
+        "modulo": "tests.test_save_integration",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.34
+      },
+      {
+        "modulo": "tests.test_save_system",
+        "exit_code": 0,
+        "testes": 13,
+        "segundos": 0.4
+      },
+      {
+        "modulo": "tests.test_shop_and_combat_reset",
+        "exit_code": 0,
+        "testes": 22,
+        "segundos": 1.16
+      },
+      {
+        "modulo": "tests.test_storage_backends",
+        "exit_code": 0,
+        "testes": 23,
+        "segundos": 1.03
+      },
+      {
+        "modulo": "tests.test_swamp_boss",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 5.46
+      },
+      {
+        "modulo": "tests.test_tactical_cards",
+        "exit_code": 0,
+        "testes": 31,
+        "segundos": 0.67
+      },
+      {
+        "modulo": "tests.test_territory_map",
+        "exit_code": 0,
+        "testes": 16,
+        "segundos": 0.5
+      },
+      {
+        "modulo": "tests.test_test_save",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 0.71
+      },
+      {
+        "modulo": "tests.test_text_wrap",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.51
+      },
+      {
+        "modulo": "tests.test_tutorial_save_flow",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.34
+      },
+      {
+        "modulo": "tests.test_tutorial_scene",
+        "exit_code": 0,
+        "testes": 22,
+        "segundos": 6.5
+      },
+      {
+        "modulo": "tests.test_ultimate_animations",
+        "exit_code": 0,
+        "testes": 7,
+        "segundos": 6.12
+      },
+      {
+        "modulo": "tests.test_ultimate_cards_lv2",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.64
+      },
+      {
+        "modulo": "tests.test_ultimates",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 0.27
+      },
+      {
+        "modulo": "tests.test_web_proof",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 1.07
+      },
+      {
+        "modulo": "tests.test_window_modes",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 1.05
+      },
+      {
+        "modulo": "tests.test_zanzara",
+        "exit_code": 0,
+        "testes": 5,
+        "segundos": 6.73
+      },
+      {
+        "modulo": "tests.test_zanzara_difficulty",
+        "exit_code": 0,
+        "testes": 6,
+        "segundos": 0.34
+      },
+      {
+        "modulo": "tests.test_zanzara_final",
+        "exit_code": 0,
+        "testes": 9,
+        "segundos": 6.21
+      },
+      {
+        "modulo": "tests.test_zanzara_main_integration",
+        "exit_code": 0,
+        "testes": 3,
+        "segundos": 0.25
+      },
+      {
+        "modulo": "tests.test_zanzara_necromancer",
+        "exit_code": 0,
+        "testes": 16,
+        "segundos": 3.84
+      }
+    ],
+    "final_targeted_tests": 67
+  },
+  "chromium": {
+    "checks": {
+      "slot_creation_reload": true,
+      "desktop_import_v15": true,
+      "async_ack_and_double_click": true,
+      "quota_rollback": true,
+      "deck_reload": true,
+      "upgrade_and_guides_reload": true,
+      "preferences_reload": true,
+      "two_tab_revision_conflict": true,
+      "unicode_roundtrip": true,
+      "export_json": true,
+      "export_import_roundtrip": true,
+      "combat_checkpoint_reload": true,
+      "combat_checkpoint_rollback": true,
+      "victory_reward_reload": true,
+      "death_profile_reload": true,
+      "new_run_profile_reload": true,
+      "persistent_storage_request": true,
+      "indexeddb_legacy_migration_backup": true,
+      "indexeddb_unavailable": true
+    },
+    "passed": true,
+    "browser": "159.0.8154.6"
+  },
+  "build": {
+    "bytes": 46640278,
+    "mib": 44.48,
+    "sha256": "73cf10916a4dadef1be442d2e568887f30a124227caa1ec690a3b30dfe93c500",
+    "scope": "Menu, slots, telas reais de gerenciamento, preferências, backup e encontro Slime."
+  },
+  "async_confirmation": [
+    "Candidata isolada em memória executa as mesmas regras e migrações do Desktop.",
+    "IndexedDB compara revisão e run de origem dentro da transação saves/backups.",
+    "Interface bloqueia comandos duplicados mas continua desenhando e cedendo controle.",
+    "Somente IDBTransaction.oncomplete publica a candidata e confirma a ação.",
+    "Falha descarta a candidata; checkpoint de combate restaura o estado confirmado."
+  ],
+  "native_preserved": [
+    "Schema JSON v15",
+    "Caminhos locais/LOCALAPPDATA e recursos _MEIPASS",
+    "Gravação temporária + flush/fsync + os.replace",
+    "Instalador Windows sem alterações"
+  ],
+  "files_created": [
+    "src/storage/__init__.py",
+    "src/storage/base.py",
+    "src/storage/disk_store.py",
+    "src/storage/browser_store.py",
+    "src/storage/manager.py",
+    "src/storage/backup.py",
+    "src/scenes/backup_modal.py",
+    "web/storage.js",
+    "web/persistence.py",
+    "devtools/validate_web_storage.py",
+    "tests/test_storage_backends.py",
+    "docs/web_storage.md",
+    "docs/validacao_web_etapa3.json"
+  ],
+  "files_modified_in_stage3": [
+    "src/systems/save_manager.py",
+    "src/systems/game_preferences.py",
+    "src/systems/roguelite.py",
+    "src/core/application.py",
+    "src/core/scene_manager.py",
+    "src/platforms/capabilities.py",
+    "src/platforms/web.py",
+    "src/scenes/base_scene.py",
+    "src/scenes/backpack_scene.py",
+    "src/scenes/shop_scene.py",
+    "src/scenes/roguelite_scene.py",
+    "src/scenes/options_scene.py",
+    "src/scenes/save_selection_scene.py",
+    "src/ui/management_guide.py",
+    "web/main.py",
+    "web/bridge.js",
+    "devtools/build_web.py",
+    "devtools/validate_web_poc.py",
+    "tests/test_platform_services.py",
+    "README.md",
+    "AGENTS.md",
+    "docs/estado_atual.md",
+    "docs/web_platforms.md",
+    "docs/documentacao_manifest.json",
+    "docs/inventario_testes.json"
+  ],
+  "files_moved_or_deleted": [],
+  "documentation": {
+    "README.md": "Persistência híbrida, backup e distinção entre piloto persistente e render=1.",
+    "AGENTS.md": "Confirmação assíncrona, revisão/run, JSON ASCII, rollback e limites de fechamento.",
+    "docs/estado_atual.md": "Estado da Etapa 3 e limites das próximas etapas.",
+    "docs/web_storage.md": "Arquitetura, transações, backup, reprodução e resultados.",
+    "docs/web_platforms.md": "Liga a validação da Etapa 2 ao novo contrato de persistência.",
+    "docs/documentacao_manifest.json": "Registra novo guia como referência vigente.",
+    "docs/inventario_testes.json": "Inclui testes de contrato e casos async/Unicode."
+  },
+  "limits": [
+    "Campanha completa, layout mobile e PWA pertencem às etapas seguintes.",
+    "pagehide/visibilitychange são complemento; fechamento abrupto pode cancelar gravação em andamento.",
+    "Persistência do navegador é por origem e não sincroniza dispositivos; exportar backup JSON.",
+    "Assets do piloto são um subconjunto; não representam validação audiovisual de toda a campanha.",
+    "Alterações das Etapas 1/2 preexistentes foram preservadas; nenhum commit/push/merge executado."
+  ]
+}

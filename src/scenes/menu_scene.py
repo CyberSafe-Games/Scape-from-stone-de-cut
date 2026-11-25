@@ -1,4 +1,3 @@
-import sys
 import pygame
 from pygame import surface
 
@@ -131,8 +130,7 @@ class MenuScene(BaseScene):
 
             if self.quit_button.collidepoint(virt_pos):
                 self.play_ui_sound("ui.click")
-                pygame.quit()
-                sys.exit()
+                self.scene_manager.request_exit()
 
         elif event.type == pygame.KEYDOWN:
             if event.key in (pygame.K_RETURN, pygame.K_SPACE):
@@ -143,8 +141,7 @@ class MenuScene(BaseScene):
                 self._open_options()
             elif event.key == pygame.K_ESCAPE:
                 self.play_ui_sound("ui.click")
-                pygame.quit()
-                sys.exit()
+                self.scene_manager.request_exit()
 
     def _open_options(self):
         from src.scenes.options_scene import OptionsScene

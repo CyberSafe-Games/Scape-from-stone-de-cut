@@ -14,6 +14,17 @@ class BaseScene(ABC):
         self.window_manager = window_manager
         self.asset_manager = asset_manager
 
+    def persist_command(self, command, complete):
+        from src.storage.manager import persist_command
+        return persist_command(self, command, complete)
+
+    def management_back(self):
+        callback = getattr(self.scene_manager, "management_home", None)
+        if getattr(getattr(self, "save_manager", None), "async_commands", False) is True and callable(callback):
+            callback(self.save_manager, self.save_data)
+            return True
+        return False
+
     def play_ui_sound(self, sound_id, volume=1.0, maxtime=None):
         """Reproduz um efeito de interface se o áudio estiver disponível."""
         audio_manager = getattr(self.scene_manager, "audio_manager", None)

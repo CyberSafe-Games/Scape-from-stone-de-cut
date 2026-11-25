@@ -1,0 +1,39 @@
+{
+  "source": "assets/portraits/source/framed/manel.png",
+  "source_sha256": "30d4c39c255b96e2455b6060a43563d87e9a6bec3076820ee284142a4471f10b",
+  "treatment": "Exportação proporcional do retrato aprovado; fundo escuro e moldura dourada. Fonte preservada.",
+  "icons": {
+    "pwa-192.png": {
+      "size": [
+        192,
+        192
+      ],
+      "maskable": false,
+      "sha256": "d4b3beb00b531faa452a6dc393d7e7dd678516365d4ec7081678222e64130293"
+    },
+    "pwa-512.png": {
+      "size": [
+        512,
+        512
+      ],
+      "maskable": false,
+      "sha256": "ffd3a95e1556ed6ef7803cf7cb9a51d85b1371d19b46e306ed5e87c26328073d"
+    },
+    "pwa-maskable-512.png": {
+      "size": [
+        512,
+        512
+      ],
+      "maskable": true,
+      "sha256": "bf6f505f3a2b98d6aec98c0ceabf96d1a56dad655f8c58b551aa1d28186e782a"
+    },
+    "apple-touch-icon.png": {
+      "size": [
+        180,
+        180
+      ],
+      "maskable": false,
+      "sha256": "682617d17995d2d7aff67016034a7d6dc1fdf4d97183dfc57dceb9f2ae993ca9"
+    }
+  }
+}

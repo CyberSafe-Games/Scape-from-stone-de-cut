@@ -207,3 +207,11 @@ class WindowManager:
 
     def draw_fullscreen_button(self, font=None):
         return
+
+
+def create_window_manager(*args, platform_service=None, **kwargs):
+    """Seleciona o controlador sem alterar o contrato do WindowManager nativo."""
+    if platform_service is None:
+        from src.platforms import get_platform
+        platform_service = get_platform()
+    return platform_service.create_window(*args, **kwargs)
