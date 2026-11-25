@@ -633,6 +633,13 @@
       ]
     },
     {
+      "file": "tests/test_isolated_test_runner.py",
+      "cases": [
+        "FreshCheckoutRunnerTests.test_fresh_checkout_creates_nested_report_directory",
+        "FreshCheckoutRunnerTests.test_failed_module_still_writes_report_and_returns_failure"
+      ]
+    },
+    {
       "file": "tests/test_jan_pietro_stance.py",
       "cases": [
         "JanPietroStanceTests.test_all_48_frames_have_the_same_boot_anchor",
@@ -1411,6 +1418,6 @@
       ]
     }
   ],
-  "modules": 92,
-  "methods": 942
+  "modules": 93,
+  "methods": 944
 }

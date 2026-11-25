@@ -256,3 +256,19 @@ Para repetir o teste de iframe, mantenha o servidor local de `dist/web` na porta
 8765 e execute `.venv-web/Scripts/python.exe devtools/validate_web_hardening.py`.
 O script cria outra origem HTTP local temporária e perfil Chromium isolado; não
 usa slots pessoais nem publica em serviços externos.
+
+## CI em checkout limpo
+
+O workflow `.github/workflows/build-web.yml` executa Python 3.12 no Ubuntu,
+instala `requirements-dev.txt` + `requirements-web.txt`, roda a suíte isolada,
+gera a distribuição e verifica seus hashes antes de publicar o artefato.
+A pasta `build/` é ignorada pelo Git e não existe após `actions/checkout`.
+`validate_isolated_tests.py` cria o diretório pai do relatório antes de gravar,
+inclusive para caminhos aninhados; não depender de um build local anterior.
+`tests/test_isolated_test_runner.py` exercita esse caso com módulos reais de
+unittest, verificando tanto sucesso quanto falha preservada no relatório.
+
+A falha original do run 45696249941 foi `FileNotFoundError` em
+`build/ci-web-tests.json`; instalação das dependências passou e o build não
+chegou a executar. Não foi necessário trocar versões das dependências nem
+ignorar testes para corrigir esse erro.
