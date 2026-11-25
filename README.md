@@ -286,3 +286,27 @@ A validação automatizada não substitui testes em aparelhos físicos iOS/Safar
 
 Fechamento cruzado: 11 verificações Web PC, 22 mobile e 10 PWA aprovadas.
 Resultados e limites no [relatório final](docs/validacao_multiplataforma_final.json).
+
+
+## Correção de nitidez e áudio no navegador
+
+O canvas acompanha a densidade física da tela (DPR até 2, com buffer máximo
+1920×1080), sem a redução fixa anterior para 960×540 no mobile. Música e efeitos
+usam buffer 4096 e margem de volume exclusivos da Web, mantendo o desbloqueio
+após interação. O Desktop conserva janela, mixer e volumes anteriores.
+
+Para repetir a validação de alta densidade e áudio PCM, sirva o build e execute:
+
+~~~powershell
+python devtools/generate_web_campaign_fixtures.py
+.venv-web/Scripts/python.exe devtools/validate_web_quality.py
+~~~
+
+O teste usa Chromium temporário, escalas 125%/150%/200% e mobile DPR 3 limitado
+a 2. Saves usados são checkpoints de QA em build/, sem tocar nos slots pessoais.
+Ver os detalhes em [build web](docs/build_web.md).
+
+Validação da correção: **919 testes em 90 módulos, zero falhas** e cinco
+verificações de qualidade Chromium aprovadas. A comparação controlada passou
+de 33,7 para 32,5 FPS com buffer 2,25 vezes maior; não é garantia de FPS em
+aparelhos físicos. [Medições e limites](docs/validacao_web_qualidade.json).

@@ -5,6 +5,7 @@ sem carregar arquivos ou manipular diretamente o mixer do Pygame.
 """
 
 import logging
+import sys
 from pathlib import Path
 
 import pygame
@@ -13,6 +14,18 @@ from src.config.audio_mix import DAMAGE_SOUND_IDS, INTERFACE_SOUND_IDS
 from src.config.settings import ASSETS_DIR
 
 logger = logging.getLogger(__name__)
+
+WEB_MIXER = dict(frequency=44100, size=-16, channels=2, buffer=4096)
+WEB_SFX_CHANNELS = 4
+WEB_SFX_GAIN = 0.16
+WEB_MUSIC_GAIN = 0.25
+
+
+def prepare_web_audio():
+    """Configura antes de inicializar subsistemas; não abre áudio sem gesto."""
+    if sys.platform == "emscripten":
+        pygame.mixer.pre_init(**WEB_MIXER)
+
 
 
 class AudioManager:
@@ -23,6 +36,7 @@ class AudioManager:
     """
 
     def __init__(self, assets_dir=None, master_volume=1.0, sfx_volume=1.0, music_volume=0.7, combat_volume=1.0, damage_volume=1.0, defer_initialization=False):
+        self._web_audio = sys.platform == "emscripten"
         self.assets_dir = Path(assets_dir) if assets_dir else Path(ASSETS_DIR) / "audio"
         self._sound_paths = {}
         self._sounds = {}
@@ -79,7 +93,9 @@ class AudioManager:
         """Inicializa o mixer se necessário, sem interromper o jogo em caso de erro."""
         try:
             if not pygame.mixer.get_init():
-                pygame.mixer.init()
+                pygame.mixer.init(**WEB_MIXER) if self._web_audio else pygame.mixer.init()
+            if self._web_audio:
+                pygame.mixer.set_num_channels(WEB_SFX_CHANNELS)
             self._mixer_available = pygame.mixer.get_init() is not None
         except (pygame.error, AttributeError) as exc:
             self._mixer_available = False
@@ -149,8 +165,13 @@ class AudioManager:
         category_volume = (self.damage_volume if sound_id in DAMAGE_SOUND_IDS
                            else self.combat_volume if sound_id.startswith('gameplay.')
                            and sound_id not in INTERFACE_SOUND_IDS else 1.0)
-        return self._clamp_volume(self.master_volume * self.sfx_volume * call_volume
+        gain = WEB_SFX_GAIN if self._web_audio else 1.0
+        return gain * self._clamp_volume(self.master_volume * self.sfx_volume * call_volume
                                   * self._sound_volumes.get(sound_id, 1.0) * category_volume)
+
+    def _effective_music_volume(self):
+        gain = WEB_MUSIC_GAIN if self._web_audio else 1.0
+        return gain * self._clamp_volume(self.master_volume * self.music_volume)
 
     def _apply_sfx_volumes(self):
         for sound_id, sound in self._sounds.items():
@@ -177,7 +198,7 @@ class AudioManager:
             path = self.assets_dir / path
         try:
             pygame.mixer.music.load(str(path))
-            pygame.mixer.music.set_volume(self._clamp_volume(self.master_volume * self.music_volume))
+            pygame.mixer.music.set_volume(self._effective_music_volume())
             if fade_ms > 0:
                 pygame.mixer.music.play(loops=loops, start=start, fade_ms=int(fade_ms))
             else:
@@ -218,7 +239,7 @@ class AudioManager:
 
     def _apply_music_volume(self):
         if self.available:
-            pygame.mixer.music.set_volume(self._clamp_volume(self.master_volume * self.music_volume))
+            pygame.mixer.music.set_volume(self._effective_music_volume())
 
     def stop_all_sfx(self):
         """Interrompe os efeitos que estão tocando, sem parar a música."""

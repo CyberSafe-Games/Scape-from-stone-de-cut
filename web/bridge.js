@@ -24,6 +24,12 @@
   const service = {
     lastFullscreenError: null,
     refresh,
+    // SDL possui o canvas: somente Python altera o backing buffer via set_mode.
+    renderViewport: () => {
+      const rect = document.querySelector("#canvas")?.getBoundingClientRect();
+      return JSON.stringify({width: rect?.width || 1280, height: rect?.height || 720,
+        dpr: Math.min(2, Math.max(1, window.devicePixelRatio || 1))});
+    },
     snapshot: () => JSON.stringify({ active: active(), resume, fullscreen: Boolean(document.fullscreenElement),
       checkpoint: window.scapeStorage?.status.lifecycle_checkpoint || 0 }),
     toggleFullscreen: () => {

@@ -251,6 +251,8 @@ class StorageUnavailable(BaseScene):
 
 
 async def main():
+    from src.core.audio_manager import prepare_web_audio
+    prepare_web_audio()
     pygame.display.init();pygame.font.init()
     import platform
     platform.window.config.user_canvas_managed=1

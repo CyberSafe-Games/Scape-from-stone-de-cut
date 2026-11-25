@@ -1288,6 +1288,21 @@
       ]
     },
     {
+      "file": "tests/test_web_quality.py",
+      "cases": [
+        "WebDensityTests.test_windows_fractional_dpi_uses_physical_pixels",
+        "WebDensityTests.test_mobile_density_is_capped_at_two_and_native_art",
+        "WebDensityTests.test_invalid_viewport_is_rejected",
+        "WebDensityTests.test_present_resizes_once_and_maps_the_physical_center",
+        "WebDensityTests.test_native_resolution_is_blitted_without_downscale",
+        "WebAudioTests.test_preinit_only_configures_web_and_does_not_unlock",
+        "WebAudioTests.test_unlock_initializes_explicit_format_once",
+        "WebAudioTests.test_web_mix_has_headroom_even_at_all_volumes_maximum",
+        "WebAudioTests.test_volume_and_unlock_do_not_duplicate_music",
+        "WebAudioTests.test_desktop_keeps_original_format_channels_and_gain"
+      ]
+    },
+    {
       "file": "tests/test_window_modes.py",
       "cases": [
         "TestWindowModes.test_render_is_full_hd_and_game_opens_in_720p_window",
@@ -1363,6 +1378,6 @@
       ]
     }
   ],
-  "modules": 89,
-  "methods": 909
+  "modules": 90,
+  "methods": 919
 }

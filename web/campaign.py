@@ -338,6 +338,8 @@ class CampaignBattle(BattleScene):
 
 
 async def main():
+    from src.core.audio_manager import prepare_web_audio
+    prepare_web_audio()
     pygame.display.init();pygame.font.init()
     import platform
     platform.window.config.user_canvas_managed=1
@@ -381,6 +383,10 @@ async def main():
         report["compact"]=scenes.mobile.layout.compact
         report["portrait_blocked"]=scenes.mobile.layout.portrait_blocked
         report["audio_available"]=audio.available
+        report["audio_mix"]=dict(format=pygame.mixer.get_init(),channels=pygame.mixer.get_num_channels() if audio.available else 0,
+            music_volume=pygame.mixer.music.get_volume() if audio.available else 0,
+            max_sfx_gain=max((sound.get_volume() for sound in audio._sounds.values()),default=0))
+        report["render_buffer"]=list(window.display_surface.get_size())
         report["missing_sounds"]=sorted(audio._failed_sounds)
         report["music_path"]=str(audio._music_path or "")
         report["draw_profile"]=scenes.draw_profile

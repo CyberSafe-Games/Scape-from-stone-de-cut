@@ -204,6 +204,8 @@ class ProofMenu(MenuScene):
 
 
 async def main():
+    from src.core.audio_manager import prepare_web_audio
+    prepare_web_audio()
     # pygame.init inicializaria o mixer antes da interação.
     pygame.display.init()
     pygame.font.init()

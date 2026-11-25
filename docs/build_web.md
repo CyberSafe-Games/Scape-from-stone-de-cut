@@ -140,3 +140,25 @@ aqui são da validação local.
 
 Fechamento cruzado: 11 verificações Web PC, 22 mobile e 10 PWA aprovadas.
 Resultados e limites no [relatório final](validacao_multiplataforma_final.json).
+
+## Nitidez e áudio na Web — correção posterior à Etapa 7
+
+A bridge informa tamanho CSS e devicePixelRatio. Apenas SDL/Pygame altera o
+backing buffer: CSS × DPR limitado a 2 e ao tamanho da arte nativa 1920×1080.
+Não atribuir canvas.width/height por JavaScript, pois isso desincroniza SDL e
+entrada. Não forçar 960×540 no compacto. O último downscale usa smoothscale;
+em 1920×1080 ocorre blit direto, sem redução intermediária. CSS pixelated evita
+interpolação borrada quando há ampliação residual. O Desktop mantém WindowManager.
+
+Somente em emscripten, preparar mixer antes dos subsistemas com 44100 Hz,
+signed 16-bit, estéreo e buffer 4096. A abertura continua após gesto real;
+o backend pode negociar 48000 Hz com o navegador. Quatro canais SFX × ganho
+máximo 0,16 e música × 0,25 reservam margem de mix (soma teórica 0,89).
+Sliders continuam multiplicativos e desbloqueio/retomada não criam nova trilha
+ou ganho master. Não alterar volumes, canais ou inicialização do Desktop.
+A medição de PCM no Chromium não substitui escuta em dispositivos físicos.
+
+Validação da correção: **919 testes em 90 módulos, zero falhas** e cinco
+verificações de qualidade Chromium aprovadas. A comparação controlada passou
+de 33,7 para 32,5 FPS com buffer 2,25 vezes maior; não é garantia de FPS em
+aparelhos físicos. [Medições e limites](validacao_web_qualidade.json).

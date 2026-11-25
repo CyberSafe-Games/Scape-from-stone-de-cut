@@ -8,9 +8,9 @@ Checkpoint da Etapa 4: `62de681`, branch `feat/web-mobile-port`.
 O Desktop continua com seu controlador, canvas virtual 1920×1080, mouse e teclado.
 Apenas o host da campanha web instala MobileInterface. A viewport web útil abaixo
 de 1000 px de largura ou 600 px de altura ativa controles compactos. Dispositivos
-com apontador primário por toque também usam esses controles em tablets amplos. A saída
-Pygame compacta é 960×540 proporcional, mantendo regras e coordenadas internas
-1920×1080. Viewports amplas preservam os controles e renderização anteriores.
+com apontador primário por toque também usam esses controles em tablets amplos. O buffer
+Pygame acompanha o tamanho CSS do canvas multiplicado pelo DPR (teto 2), limitado
+a 1920×1080, preservando as coordenadas internas e controles em viewports amplas.
 
 O fragmento web/index.html é injetado no bootstrap gerado por Pygbag. Não substituir
 o bootstrap inteiro: web/styles.css, bridge.js e mobile.js compõem o host.

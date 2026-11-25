@@ -438,7 +438,7 @@ As restrições desta seção descrevem --poc; a campanha padrão segue a Etapa 
 ## 28. Host compacto e toque — Etapa 5
 
 - Checkpoint da Etapa 4: 62de681. A campanha web instala web/mobile.py; o Desktop não instala esse adaptador.
-- responsive_layout.py define os limiares 1000×600 úteis, controles compactos também em tablets com apontador primário touch e o bloqueio em retrato somente nesses dispositivos. O canvas virtual permanece 1920×1080; WebWindowManager usa saída proporcional 960×540 no compacto.
+- responsive_layout.py define os limiares 1000×600 úteis, controles compactos também em tablets com apontador primário touch e o bloqueio em retrato somente nesses dispositivos. O canvas virtual permanece 1920×1080; WebWindowManager dimensiona a saída pelo tamanho CSS × DPR (máximo 2), limitada à arte nativa 1920×1080.
 - web/index.html é um fragmento do host Pygbag, não outro runtime. Preservar safe areas, 100dvh e orientação/foco na bridge.
 - MobileInterface reutiliza cenas, handlers, instâncias reais de cartas e persist_command. Não duplicar regras/transações nos arquivos JavaScript.
 - Primeiro toque inspeciona; JOGAR/COMPRAR/EQUIPAR/REMOVER/APRIMORAR/ESCOLHER confirma. Nenhuma inspeção pode gastar recursos.
@@ -475,3 +475,20 @@ As restrições desta seção descrevem --poc; a campanha padrão segue a Etapa 
 
 Fechamento cruzado: 11 verificações Web PC, 22 mobile e 10 PWA aprovadas.
 Resultados e limites no [relatório final](docs/validacao_multiplataforma_final.json).
+
+## Nitidez e áudio na Web — correção posterior à Etapa 7
+
+A bridge informa tamanho CSS e devicePixelRatio. Apenas SDL/Pygame altera o
+backing buffer: CSS × DPR limitado a 2 e ao tamanho da arte nativa 1920×1080.
+Não atribuir canvas.width/height por JavaScript, pois isso desincroniza SDL e
+entrada. Não forçar 960×540 no compacto. O último downscale usa smoothscale;
+em 1920×1080 ocorre blit direto, sem redução intermediária. CSS pixelated evita
+interpolação borrada quando há ampliação residual. O Desktop mantém WindowManager.
+
+Somente em emscripten, preparar mixer antes dos subsistemas com 44100 Hz,
+signed 16-bit, estéreo e buffer 4096. A abertura continua após gesto real;
+o backend pode negociar 48000 Hz com o navegador. Quatro canais SFX × ganho
+máximo 0,16 e música × 0,25 reservam margem de mix (soma teórica 0,89).
+Sliders continuam multiplicativos e desbloqueio/retomada não criam nova trilha
+ou ganho master. Não alterar volumes, canais ou inicialização do Desktop.
+A medição de PCM no Chromium não substitui escuta em dispositivos físicos.

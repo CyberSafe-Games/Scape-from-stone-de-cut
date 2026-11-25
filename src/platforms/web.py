@@ -35,6 +35,9 @@ class WebPlatform:
     def checkpoint_serial(self):
         return int(json.loads(str(self.bridge.snapshot())).get("checkpoint",0))
 
+    def render_viewport(self):
+        return json.loads(str(self.bridge.renderViewport()))
+
     def fullscreen_state(self):
         return bool(json.loads(str(self.bridge.snapshot())).get("fullscreen", False))
 
