@@ -1,0 +1,347 @@
+{
+  "data": "2026-11-25",
+  "branch": "feat/web-mobile-port",
+  "base": "2e2c11aa88c62a6d8811db4d1327af45966cb62d",
+  "release": "cf4ccee097a31ddb",
+  "testes": {
+    "total": 942,
+    "modulos": 92,
+    "falhas": 0,
+    "segundos": 213.68
+  },
+  "memoria": {
+    "primeiro_combate": {
+      "screen": "combate",
+      "memfs": {
+        "freed_bytes": 38451166,
+        "temporary_bytes": 0,
+        "pruned_groups": [
+          "enemy:slime",
+          "enemy:viniurgo",
+          "player"
+        ]
+      },
+      "heap": {
+        "wasm": 463994880,
+        "js": 50400000
+      }
+    },
+    "amostras": [
+      {
+        "screen": "menu",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 268435456,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "saves",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 268435456,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "mapa",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 268435456,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "loja",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 268435456,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "mochila",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 268435456,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "ultimates_mochila",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 268435456,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "altar",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 322174976,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "configuracoes",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 322174976,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "combate",
+        "memfs": {
+          "freed_bytes": 38451166,
+          "temporary_bytes": 0,
+          "pruned_groups": [
+            "enemy:slime",
+            "enemy:viniurgo",
+            "player"
+          ]
+        },
+        "heap": {
+          "wasm": 463994880,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "intencao",
+        "memfs": {
+          "freed_bytes": 38451166,
+          "temporary_bytes": 0,
+          "pruned_groups": [
+            "enemy:slime",
+            "enemy:viniurgo",
+            "player"
+          ]
+        },
+        "heap": {
+          "wasm": 463994880,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "recompensa",
+        "memfs": {
+          "freed_bytes": 38451166,
+          "temporary_bytes": 0,
+          "pruned_groups": [
+            "enemy:slime",
+            "enemy:viniurgo",
+            "player"
+          ]
+        },
+        "heap": {
+          "wasm": 556793856,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "quadrinhos_intro",
+        "memfs": {
+          "freed_bytes": 38451166,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 556793856,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "tutorial",
+        "memfs": {
+          "freed_bytes": 76902332,
+          "temporary_bytes": 0,
+          "pruned_groups": [
+            "enemy:slime",
+            "enemy:viniurgo",
+            "player"
+          ]
+        },
+        "heap": {
+          "wasm": 556793856,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "epilogo",
+        "memfs": {
+          "freed_bytes": 58052968,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 463994880,
+          "js": 793000000
+        }
+      }
+    ],
+    "contrato": "Temporário e parciais removidos no erro; bytes JS liberados antes da extração por blocos. PNGs de animação removidos após loaders; grupos repostos apenas antes de outra decodificação. UI lazy, fontes, manifestos e áudio em streaming preservados."
+  },
+  "iframe": {
+    "passed": true,
+    "checks": [
+      "cross_origin_iframe_registration_denied_silent_with_persistence_request",
+      "iframe_import_desktop_v15_via_native_slot_ui",
+      "iframe_download_is_valid_native_desktop_save",
+      "invalid_import_rejected_without_mutating_existing_slot",
+      "iframe_indexeddb_survives_reload_without_service_worker",
+      "service_worker_getter_security_error_is_silent"
+    ],
+    "errors": []
+  },
+  "pwa": {
+    "passed": true,
+    "browser": "159.0.8154.6",
+    "checks": [
+      "manifest_installability_and_subpath_scope",
+      "install_and_launch_standalone",
+      "cold_reload_offline_runtime_without_http_cache",
+      "offline_new_slot_intro_tutorial_and_indexeddb",
+      "offline_context_loading_and_live_battle",
+      "offline_missing_context_friendly_retry",
+      "interrupted_package_not_cached_and_retry_succeeds",
+      "waiting_update_does_not_interrupt_battle",
+      "update_rejected_while_other_tab_is_in_battle",
+      "safe_menu_update_all_tabs_and_save_preserved"
+    ],
+    "installability": {
+      "installabilityErrors": []
+    },
+    "pwa_installed_launched": true,
+    "initial_version": "cf4ccee097a31ddb",
+    "updated_version": "cf4ccee097a31ddb-qa2",
+    "offline_resources": {
+      "runtime": 12,
+      "essential_packs": 29
+    },
+    "storage_estimate": {
+      "quota": 10944285331,
+      "usage": 206867091,
+      "usageDetails": {
+        "caches": 206567424,
+        "indexedDB": 90102,
+        "serviceWorkerRegistrations": 209565
+      }
+    },
+    "errors": []
+  },
+  "mobile": {
+    "passed": true,
+    "checks": [
+      "shop_native_art_inspect_then_purchase",
+      "backpack_native_equip",
+      "backpack_native_ultimate",
+      "altar_native_art_before_after_confirm",
+      "settings_native_slider",
+      "native_intent_card_preview_and_cancel",
+      "native_ultimate_confirmation",
+      "native_hand_and_reward_confirmation",
+      "rotation_safe_pause_resume",
+      "native_intro_and_tutorial_touch",
+      "native_final_boss_and_epilogue"
+    ],
+    "screens": [
+      "menu",
+      "saves",
+      "mapa",
+      "loja",
+      "mochila",
+      "ultimates_mochila",
+      "altar",
+      "configuracoes",
+      "combate",
+      "intencao",
+      "recompensa",
+      "quadrinhos_intro",
+      "tutorial",
+      "epilogo"
+    ],
+    "errors": [],
+    "physical_canvas": [
+      1280,
+      720
+    ]
+  },
+  "hospedagem": {
+    "file_count": 93,
+    "total_bytes": 391020849,
+    "largest_file": [
+      "packs/cutscene_intro-0-8811273825cc.tar.gz",
+      8709625
+    ],
+    "warnings": [],
+    "sources": {
+      "cloudflare": "https://developers.cloudflare.com/pages/platform/limits/",
+      "itch": "https://itch.io/docs/creators/html5#zip-file-requirements"
+    },
+    "limits_checked": "2026-11-25",
+    "limits": {
+      "cloudflare_file_bytes": 26214400,
+      "cloudflare_free_files": 20000,
+      "itch_file_bytes": 200000000,
+      "itch_files": 1000,
+      "itch_total_bytes": 500000000,
+      "itch_path_characters": 240
+    },
+    "note": "Pages não publica limite agregado em bytes nesta página; não inventar um teto total."
+  },
+  "tamanhos": {
+    "initial_bytes": 6896564,
+    "demand_bytes": 376144379,
+    "initial_plus_demand_bytes": 383040943,
+    "distribution_bytes": 391020849,
+    "external_runtime_bytes": 22967309
+  },
+  "arquivos_de_teste": [
+    "tests/test_web_hardening.py (11 novos casos)",
+    "tests/test_storage_backends.py (contratos existentes reexecutados)",
+    "devtools/validate_web_hardening.py (6 verificações Chromium)",
+    "devtools/validate_web_mobile_art.py (14 telas, coleta MEMFS/heap)",
+    "devtools/validate_web_pwa.py (10 verificações existentes reexecutadas)"
+  ],
+  "limites": [
+    "Heap WASM é uma reserva crescente: unlink/gc libera alocações para reutilização, sem reduzir necessariamente o buffer linear.",
+    "Métricas foram coletadas em Chromium no computador. Não foram testados smartphone físico, Safari ou deploy real em Cloudflare/itch.io.",
+    "Rodada com coleta de memória executada simultaneamente ao teste PWA e suíte Python; não utilizar seu FPS/heap JS compartilhado como benchmark controlado.",
+    "Service Worker bloqueado implica ausência de offline/install nesse iframe. IndexedDB, downloads e persistência dependem das permissões do host.",
+    "Exportação/importação já existiam: foram preservadas e verificadas pela interface, sem duplicar lógica nem alterar o save v15.",
+    "Desktop e instalador não tiveram código/configuração alterados; suíte inclui o teste de empacotamento/startup nativo."
+  ]
+}

@@ -518,3 +518,25 @@ Veja o [relatório e limites](docs/validacao_mobile_arte_original.json).
 Os hits ampliados das Configurações devem considerar somente os controles da
 aba ativa; controles ocultos não podem interceptar sliders. Assinaturas de
 preview usam digest da imagem cacheada, evitando serializar base64 a cada frame.
+
+## Blindagens Web de memória e hospedagem
+
+- `web/memfs.py` só limpa animações PNG do MEMFS depois dos loaders. Marcar grupos
+  incompletos e repor os arquivos antes de carregar novamente. Nunca remover
+  OGG em streaming, JSON de manifesto, fontes ou UI/retratos ainda lazy.
+- Extração sequencial: hash/tamanho/inventário verificados, arquivos parciais e
+  temporário removidos também no erro/cancelamento; liberar bytes JS antes de
+  extrair. Não confundir remoção do MEMFS com redução física do heap WASM.
+- Preservar EXPORTAR/IMPORTAR da seleção de saves, schema v15 e confirmação de
+  substituição. Não criar outro formato de save nem duplicar a lógica no JS.
+- Service Worker é opcional. Getter/registro podem falhar em iframe; degradar
+  silenciosamente sem esconder falhas de IndexedDB. Persistência solicitada é
+  consultiva; sem concessão garantida. Downloads dependem da política do host.
+- `devtools/web_hosting.py` audita arquivos reais ao final do build, incluindo
+  auxiliares, e avisa sobre Cloudflare Pages/itch.io. Relatório em build/, jamais
+  fora do inventário de release em dist/. Atualizar limites com fontes oficiais.
+- Ver [contratos e tamanhos medidos](docs/build_web.md).
+
+Blindagens Web de memória/hospedagem validadas: 942 testes, 6 verificações
+iframe/backup, 10 PWA/offline e 14 telas mobile. Nenhum limite auditado excedido.
+Ver [resultados e restrições](docs/validacao_web_blindagens.json).

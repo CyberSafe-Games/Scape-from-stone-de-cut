@@ -105,7 +105,8 @@
           case "read": return await read(args.key);
           case "commit": return await commit(args.changes);
           case "persist":
-            status.persistent = navigator.storage?.persist ? await navigator.storage.persist() : false;
+            status.persistent = window.scapePlatform?.requestPersistence ?
+              await window.scapePlatform.requestPersistence() : false;
             return status.persistent;
           default: throw new Error("Operação de armazenamento desconhecida.");
         }

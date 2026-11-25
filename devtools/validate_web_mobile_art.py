@@ -9,7 +9,7 @@ def main():
     parser.add_argument("--url",default="http://127.0.0.1:8765/")
     args=parser.parse_args()
     out=ROOT/"build/mobile-original-art";out.mkdir(parents=True,exist_ok=True)
-    checks=[];screens=[];samples=[];errors=[]
+    checks=[];screens=[];samples=[];errors=[];memory_samples=[]
     with sync_playwright() as p:
         browser=p.chromium.launch(headless=True)
         context=browser.new_context(viewport=dict(width=844,height=390),is_mobile=True,has_touch=True,device_scale_factor=3)
@@ -40,6 +40,8 @@ def main():
             assert metrics()["render_buffer"]==[1280,720]
             assert page.evaluate("JSON.parse(scapePlatform.renderViewport()).dpr")==1
             assert page.evaluate("getComputedStyle(document.body).backgroundColor")!="rgb(128, 128, 128)"
+            memory=page.evaluate("({wasm:window.python?.HEAPU8?.buffer.byteLength||window.VM?.HEAPU8?.buffer.byteLength||null,js:performance.memory?.usedJSHeapSize||null})")
+            memory_samples.append(dict(screen=name,memfs=metrics().get("memfs"),heap=memory))
             page.screenshot(path=str(out/(name+".png")));screens.append(name)
         def import_save(path,replace=False):
             rect(metrics()["rect_maps"]["backup_buttons"]["import"])
@@ -110,6 +112,8 @@ def main():
             import_save(ROOT/"build/web-stage4/fixtures/1-0.json",replace=True)
             tap(443,520);world=scene("CampaignMap");rect(world["ui"]["play_button"])
             battle=scene("CampaignBattle");snapshot("combate")
+            assert battle["memfs"]["freed_bytes"]>0 and battle["memfs"]["temporary_bytes"]==0
+            assert "player" in battle["memfs"]["pruned_groups"]
             page.wait_for_timeout(1000)
             for _ in range(20):page.wait_for_timeout(150);samples.append(metrics()["fps"])
             result=dict(combat_fps_median=statistics.median(samples),frame_cost_ms=metrics()["frame_cost_ms"],
@@ -169,7 +173,7 @@ def main():
             scene("CampaignCutscene");snapshot("epilogo")
             checks.append("native_final_boss_and_epilogue")
             # Todas as cenas usam a mesma camada: garantir ausência do painel paralelo.
-            result.update(passed=True,checks=checks,screens=screens,errors=errors,
+            result.update(memory_samples=memory_samples,passed=True,checks=checks,screens=screens,errors=errors,
                 viewport=[844,390],device_dpr=3,mobile_dpr=1,physical_canvas=[1280,720])
             (out/"result.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
             print(json.dumps(result,ensure_ascii=True),flush=True)

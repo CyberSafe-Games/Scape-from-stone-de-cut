@@ -380,6 +380,8 @@ async def main():
                     frames=application.frames,active=application._active,fps=application.clock.get_fps(),
                     loading_label=assets.label,loading_progress=assets.progress,context=assets.active_context,resident=sorted(assets.resident),transfer_bytes=assets.transfer_bytes,
                     data=data,preferences=preferences.values)
+        report["memfs"]=dict(freed_bytes=assets.memfs_freed_bytes,temporary_bytes=assets.pack_temporary_bytes,
+            pruned_groups=sorted(assets.pruned_groups))
         report["compact"]=scenes.mobile.layout.compact
         report["portrait_blocked"]=scenes.mobile.layout.portrait_blocked
         report["audio_available"]=audio.available

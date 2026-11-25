@@ -325,3 +325,12 @@ Validação desta correção: **931 testes em 91 módulos, zero falhas**; 14 tel
 11 verificações de toque no Chromium. Combate: 46,3 FPS medianos na emulação;
 comparação controlada: 24,6 → 44,2 FPS. Não equivale a medição no celular físico.
 Veja o [relatório e limites](docs/validacao_mobile_arte_original.json).
+
+A distribuição Web também audita os limites de arquivos do Cloudflare Pages e
+itch.io, libera temporários/animações consumidos do MEMFS e continua online quando
+o Service Worker é bloqueado em iframe. EXPORTAR/IMPORTAR na seleção de jornadas
+permite backup JSON v15 compatível com Desktop. Veja [memória, backup e hospedagem](docs/build_web.md).
+
+Blindagens Web de memória/hospedagem validadas: 942 testes, 6 verificações
+iframe/backup, 10 PWA/offline e 14 telas mobile. Nenhum limite auditado excedido.
+Ver [resultados e restrições](docs/validacao_web_blindagens.json).

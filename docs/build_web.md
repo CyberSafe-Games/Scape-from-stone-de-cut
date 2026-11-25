@@ -178,3 +178,81 @@ Validação desta correção: **931 testes em 91 módulos, zero falhas**; 14 tel
 11 verificações de toque no Chromium. Combate: 46,3 FPS medianos na emulação;
 comparação controlada: 24,6 → 44,2 FPS. Não equivale a medição no celular físico.
 Veja o [relatório e limites](validacao_mobile_arte_original.json).
+
+## Memória, backups e hospedagem restrita
+
+O carregador grava os blocos comprimidos em um temporário do MEMFS e calcula
+SHA-256 incrementalmente. Libera os bytes JavaScript antes da extração sequencial;
+copia cada membro em blocos de 256 KiB e remove o temporário em `finally`. Uma
+falha de inventário remove os arquivos parciais e permite tentar novamente.
+
+Após os loaders de combate/tutorial, PNGs de animação já decodificados (e variantes
+não usadas daquele kit) são removidos do MEMFS. O grupo fica marcado como
+incompleto e é reidratado antes de outro carregamento, usando CacheStorage/cache
+HTTP quando disponível. UI/retratos carregados sob demanda, fontes, JSON e OGG
+com streaming continuam acessíveis. A troca de contexto remove arquivos do
+território anterior. Saves IndexedDB nunca entram nessa limpeza.
+Liberar alocações permite reutilizar memória; não faz o heap linear WASM encolher
+nem garante ausência de `memory.grow` em qualquer aparelho.
+
+Na seleção de jornadas, **EXPORTAR** e **IMPORTAR** abrem a escolha de um dos três
+slots. Exportar baixa JSON v15 compatível com Desktop; importar valida JSON/schema,
+versão/migrações, limite de 5 MiB e pede confirmação antes de substituir. A gravação
+é confirmada pelo IndexedDB antes da mensagem de sucesso, com revisão/rollback
+originais. Faça backups: persistência solicitada não é uma garantia contra limpeza
+do navegador. Em iframe com sandbox, o host deve permitir downloads/upload e
+armazenamento; o jogo não pode remover essas restrições do site hospedeiro.
+
+A bridge solicita `navigator.storage.persist()` quando disponível e compartilha
+a promessa entre PWA/storage. Recusa ou API ausente resulta em `false`, sem
+interromper o jogo. `serviceWorker` inacessível ou registro bloqueado em iframe
+ativa fallback silencioso: sem indicador de erro/offline pronto, com jogo online e
+backups disponíveis. Não prometer instalação/offline nesse contexto. Erros reais
+do IndexedDB continuam recebendo tratamento amigável, sem esconder perda de save.
+
+### Tamanhos e auditoria automática
+
+Cada build completo imprime contagem/tamanho e avisos de hospedagem, além de
+gravar `build/web-hosting-audit.json` (não versionado). Não adiciona arquivos de QA
+a `dist/web/`, preservando o inventário de integridade. Build medido:
+
+| Parcela | Bytes | MiB |
+|---|---:|---:|
+| Pacote inicial Python/assets | 6896564 | 6.58 |
+| 71 pacotes da campanha sob demanda | 376144379 | 358.72 |
+| Inicial + pacotes | 383040943 | 365.30 |
+| Distribuição completa em disco (shell, APK auxiliar, scripts e metadados incluídos) | 391020849 | 372.91 |
+
+São **93 arquivos**, maior arquivo **8.31 MiB**;
+nenhum limite auditado foi excedido. Os valores históricos de ~6,56 MiB +
+~358,72 MiB (~365 MiB) representam apenas inicial + pacotes; não são o tamanho
+completo da pasta distribuída nem o download obrigatório da abertura. O runtime
+externo fixado no lock soma 21.90 MiB e é cacheado
+separadamente pelo navegador; não foi somado ao tamanho do diretório hospedado.
+
+Limites verificados em 25/11/2026:
+
+- [Cloudflare Pages](https://developers.cloudflare.com/pages/platform/limits/):
+  25 MiB por arquivo e 20.000 arquivos no Free (planos pagos permitem 100.000).
+  Não há teto agregado em bytes publicado nessa página; não inventar um limite.
+- [itch.io HTML5](https://itch.io/docs/creators/html5#zip-file-requirements):
+  1.000 arquivos, 240 caracteres por caminho, 200 MB por arquivo e 500 MB no
+  conteúdo extraído do ZIP. O auditor usa MB decimal de forma conservadora.
+
+O aviso não impede build local; corrija os excessos antes de hospedar. Inclua
+`index.html` na raiz do ZIP do itch.io, sem diretório pai. Preserve os bytes dos
+`.tar.gz` e hashes: alguns CDNs aplicam `Content-Encoding: gzip` automaticamente;
+confira os headers no host final para não entregar um tar já descomprimido ao
+carregador que espera gzip. A validação local não comprova um deploy no itch.io
+ou Cloudflare. As regras de HTTPS, caminhos relativos e publicação atômica acima
+continuam valendo.
+
+Validação desta entrega: **942 testes / 92 módulos, zero falhas**; 6 verificações
+iframe/backup, 10 PWA/offline e 14 telas mobile aprovadas no Chromium. Primeiro
+combate: 38.451.166 bytes (36,67 MiB) removidos do MEMFS, temporário já removido.
+Resultados e limites no [relatório das blindagens](validacao_web_blindagens.json).
+
+Para repetir o teste de iframe, mantenha o servidor local de `dist/web` na porta
+8765 e execute `.venv-web/Scripts/python.exe devtools/validate_web_hardening.py`.
+O script cria outra origem HTTP local temporária e perfil Chromium isolado; não
+usa slots pessoais nem publica em serviços externos.

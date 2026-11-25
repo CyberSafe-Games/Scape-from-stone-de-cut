@@ -3,10 +3,12 @@ import asyncio
 import base64
 import gc
 import hashlib
-import io
 import json
 from pathlib import Path
 import tarfile
+import tempfile
+import shutil
+from web.memfs import asset_path, prune_animations
 from src.core.asset_manager import AssetManager
 from src.systems.web_resources import context_groups,working_set
 
@@ -21,10 +23,16 @@ class CampaignAssets(AssetManager):
         self.label=""
         self.transfer_bytes=0
         self.active_context="menu"
+        self.pruned_groups=set()
+        self.memfs_freed_bytes=0
+        self.pack_temporary_bytes=0
     async def download(self,pack):
         import platform
         bridge=platform.window.scapeResources
         token=bridge.begin(pack["url"])
+        temporary=None
+        written=[]
+        released=False
         try:
             while True:
                 value=json.loads(str(bridge.poll(token)))
@@ -32,23 +40,42 @@ class CampaignAssets(AssetManager):
                 self.progress=(self._completed_packs+value["received"]/max(1,value["total"] or pack["bytes"]))/self._total_packs
                 if not value["pending"]:break
                 await asyncio.sleep(0)
-            data=bytearray()
-            for offset in range(0,value["received"],262144):
-                data.extend(base64.b64decode(str(bridge.chunk(token,offset))))
-                await asyncio.sleep(0)
-            if hashlib.sha256(data).hexdigest()!=pack["sha256"]:
+            if value["received"] != pack["bytes"]:
+                raise OSError("Pacote incompleto; tente novamente.")
+            digest=hashlib.sha256()
+            # Uma única cópia comprimida no MEMFS; nunca BytesIO(bytearray inteiro).
+            with tempfile.NamedTemporaryFile(prefix="scape-pack-",suffix=".tmp",delete=False) as output:
+                temporary=Path(output.name)
+                for offset in range(0,value["received"],262144):
+                    chunk=base64.b64decode(str(bridge.chunk(token,offset)))
+                    digest.update(chunk);output.write(chunk)
+                    await asyncio.sleep(0)
+            self.pack_temporary_bytes=temporary.stat().st_size
+            if digest.hexdigest()!=pack["sha256"]:
                 raise OSError("Pacote inválido; recarregue a página.")
-            expected=set(pack["files"])
-            with tarfile.open(fileobj=io.BytesIO(data),mode="r:gz") as archive:
+            # Soltar os bytes JS antes de expandir os membros do tar no WASM.
+            bridge.release(token);released=True
+            expected=set(pack["files"]);seen=set()
+            if len(expected)!=len(pack["files"]):raise OSError("Inventário duplicado.")
+            with tarfile.open(temporary,mode="r:gz") as archive:
                 for index,member in enumerate(archive):
-                    if not member.isfile() or member.name not in expected or ".." in Path(member.name).parts:
+                    if not member.isfile() or member.name not in expected or member.name in seen:
                         raise OSError("Caminho de recurso inválido.")
-                    path=Path(member.name)
+                    path=asset_path(member.name);seen.add(member.name)
                     path.parent.mkdir(parents=True,exist_ok=True)
-                    path.write_bytes(archive.extractfile(member).read())
+                    written.append(path)
+                    with archive.extractfile(member) as source,path.open("wb") as output:
+                        shutil.copyfileobj(source,output,length=262144)
                     if index%8==0:await asyncio.sleep(0)
-            self.transfer_bytes+=len(data)
-        finally:bridge.release(token)
+            if seen!=expected:raise OSError("Inventário de recursos incompleto.")
+            self.transfer_bytes+=value["received"]
+        except BaseException:
+            for path in written:path.unlink(missing_ok=True)
+            raise
+        finally:
+            if not released:bridge.release(token)
+            if temporary is not None:temporary.unlink(missing_ok=True)
+            self.pack_temporary_bytes=0
     def release_surfaces(self):
         for key in ("_enemy_sprites","_enemy_projectiles","_boss_ultimate_sprites","_boss_ultimate_effects",
                     "_boss_original_groups","_boss_original_ultimates","_player_sprites","_card_action_sprites",
@@ -83,6 +110,10 @@ class CampaignAssets(AssetManager):
                     path=Path(name)
                     if path.is_file():path.unlink()
         self.resident.intersection_update(wanted)
+        # Os objetos SDL antigos já foram soltos; repor arquivos consumidos antes dos loaders.
+        if kind in ("battle","tutorial"):
+            self.resident.difference_update(self.pruned_groups)
+        self.pruned_groups.intersection_update(wanted)
         total=sum(len(self.manifest["groups"].get(group,[])) for group in wanted-self.resident)
         self._completed_packs=0
         self._total_packs=max(1,total)
@@ -96,6 +127,7 @@ class CampaignAssets(AssetManager):
                 await self.download(pack)
                 self._completed_packs+=1
             self.resident.add(group)
+            self.pruned_groups.discard(group)
         self.label="Preparando imagens"
         if "management" in wanted:
             self._load_ui_images();self._load_ultimate_images();self._load_coin_icon()
@@ -112,6 +144,10 @@ class CampaignAssets(AssetManager):
             self._load_defeat_poses()
             self._load_territory_backgrounds()
             if kind=="tutorial":self._load_tutorial_background()
+        if kind in ("battle","tutorial"):
+            removed,freed=prune_animations(self.manifest,self.resident)
+            self.pruned_groups.update(removed)
+            self.memfs_freed_bytes+=freed
         self.active_context=kind
         self.progress=1
         gc.collect()

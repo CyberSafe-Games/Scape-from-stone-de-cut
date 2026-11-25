@@ -21,7 +21,21 @@
   button.textContent = "TELA CHEIA";
   button.hidden = !document.fullscreenEnabled;
   document.body.appendChild(button);
+  let persistenceRequest;
   const service = {
+    // A propriedade em si pode lançar SecurityError em iframe com sandbox.
+    serviceWorker: () => { try { return navigator.serviceWorker || null; } catch (_) { return null; } },
+    embedded: window.self !== window.top,
+    requestPersistence: () => {
+      if (!persistenceRequest) persistenceRequest = (async () => {
+        try {
+          const storage = navigator.storage;
+          if (await storage?.persisted?.()) return true;
+          return Boolean(await storage?.persist?.());
+        } catch (_) { return false; }
+      })();
+      return persistenceRequest;
+    },
     lastFullscreenError: null,
     refresh,
     // SDL possui o canvas: somente Python altera o backing buffer via set_mode.
@@ -48,6 +62,7 @@
     if (event.key === "F11") { event.preventDefault(); service.toggleFullscreen(); }
   });
   window.scapePlatform = service;
+  void service.requestPersistence();
   refresh();
 })();
 

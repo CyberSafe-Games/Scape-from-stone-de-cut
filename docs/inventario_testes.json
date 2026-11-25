@@ -1291,6 +1291,22 @@
       ]
     },
     {
+      "file": "tests/test_web_hardening.py",
+      "cases": [
+        "MemfsTests.test_download_releases_bridge_before_stream_extraction_and_removes_temp",
+        "MemfsTests.test_invalid_digest_leaves_no_extracted_or_temporary_files",
+        "MemfsTests.test_inventory_failure_removes_partial_extraction",
+        "MemfsTests.test_prune_keeps_lazy_ui_music_metadata_and_only_drops_animation_png",
+        "MemfsTests.test_pruned_group_is_downloaded_again_before_loading_next_context",
+        "MemfsTests.test_asset_cleanup_rejects_traversal_and_non_asset_paths",
+        "HostingLimitsTests.test_exact_limits_are_accepted",
+        "HostingLimitsTests.test_file_above_25_mib_warns_cloudflare",
+        "HostingLimitsTests.test_itch_total_and_single_file_limits",
+        "HostingLimitsTests.test_count_limits_are_distinct",
+        "HostingLimitsTests.test_long_path_warns_and_metrics_include_all_files"
+      ]
+    },
+    {
       "file": "tests/test_web_proof.py",
       "cases": [
         "WebLoopTests.test_web_yields_between_frames_and_returns_without_exit",
@@ -1395,6 +1411,6 @@
       ]
     }
   ],
-  "modules": 91,
-  "methods": 931
+  "modules": 92,
+  "methods": 942
 }

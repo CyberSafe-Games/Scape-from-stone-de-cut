@@ -158,6 +158,13 @@ def main():
             destination=ROOT/args.dist_dir
             print(json.dumps({"distribution":str(destination),"release":release["version"],
                               "essential_bytes":release["essential_bytes"],"runtime_bytes":release["runtime_bytes"]}))
+        from devtools.web_hosting import audit_hosting
+        audit=audit_hosting(destination)
+        (ROOT/"build/web-hosting-audit.json").write_text(json.dumps(audit,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+        print(json.dumps({"hosting_files":audit["file_count"],"hosting_bytes":audit["total_bytes"],
+                          "hosting_warnings":len(audit["warnings"])},ensure_ascii=True))
+        for warning in audit["warnings"]:
+            print("AVISO DE HOSPEDAGEM: "+warning["message"],file=sys.stderr)
         if args.serve:
             subprocess.run([sys.executable,"-m","http.server","8765","--bind","127.0.0.1",
                             "--directory",str(destination)],cwd=ROOT,check=True)

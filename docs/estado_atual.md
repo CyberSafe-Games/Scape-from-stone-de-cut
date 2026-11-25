@@ -247,3 +247,7 @@ Validação desta correção: **931 testes em 91 módulos, zero falhas**; 14 tel
 11 verificações de toque no Chromium. Combate: 46,3 FPS medianos na emulação;
 comparação controlada: 24,6 → 44,2 FPS. Não equivale a medição no celular físico.
 Veja o [relatório e limites](validacao_mobile_arte_original.json).
+
+Blindagens Web de memória/hospedagem validadas: 942 testes, 6 verificações
+iframe/backup, 10 PWA/offline e 14 telas mobile. Nenhum limite auditado excedido.
+Ver [resultados e restrições](validacao_web_blindagens.json).
