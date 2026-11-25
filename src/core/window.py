@@ -1,5 +1,6 @@
 import pygame
-from src.config.settings import WIDTH, HEIGHT, TITLE, LEGACY_WINDOW_SIZE
+
+from src.config.settings import WIDTH, HEIGHT, TITLE, LEGACY_WINDOW_SIZE, IS_ANDROID
 from src.config.colors import BLACK, BUTTON_BG, BUTTON_HOVER, GOLD, WHITE
 from src.ui import dark_fantasy_theme as theme
 
@@ -22,17 +23,21 @@ class WindowManager:
         self.width = width
         self.height = height
         self.title = title
+        self.is_android = IS_ANDROID
 
-        self.is_fullscreen = False
+        self.is_fullscreen = self.is_android
         # Janela grande (F10): o maior 16:9 que cabe na tela (até 1920x1080).
         self.large_window_size = self._fit_window_size()
         # O jogo abre em janela 1280x720; F11 alterna entre ela e a tela cheia.
         self.windowed_size = tuple(window_size) if window_size else LEGACY_WINDOW_SIZE
         self._mode_changed_at = 0
 
-        self.display_surface = pygame.display.set_mode(
-            self.windowed_size, pygame.RESIZABLE
-        )
+        if self.is_android:
+            self.display_surface = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        else:
+            self.display_surface = pygame.display.set_mode(
+                self.windowed_size, pygame.RESIZABLE
+            )
         pygame.display.set_caption(self.title)
 
         # Superfície interna de tamanho fixo usada por todo o desenho
@@ -90,6 +95,9 @@ class WindowManager:
 
     def apply_display_preferences(self, fullscreen=False, large_window=False):
         """Aplica as preferências de vídeo de forma determinística."""
+        if self.is_android:
+            self.is_fullscreen = True
+            return
         if fullscreen:
             self.set_fullscreen(True)
         else:
@@ -144,10 +152,15 @@ class WindowManager:
 
     def toggle_fullscreen(self):
         """Alterna entre tela cheia (sem barra de título) e a janela 1280x720."""
+        if self.is_android:
+            return
         self.set_fullscreen(not self.is_fullscreen)
 
     def set_fullscreen(self, enabled):
         """Define tela cheia (True) ou janela 1280x720 (False)."""
+        if self.is_android:
+            self.is_fullscreen = True
+            return
         enabled = bool(enabled)
         if self.is_fullscreen == enabled:
             return
@@ -162,6 +175,8 @@ class WindowManager:
         A renderização continua em Full HD; a imagem é ajustada ao tamanho da
         janela. Em tela cheia, sai direto para a janela 1280x720.
         """
+        if self.is_android:
+            return
         if self.is_fullscreen or self.windowed_size != LEGACY_WINDOW_SIZE:
             self.set_window_size(False)
         else:
@@ -169,6 +184,9 @@ class WindowManager:
 
     def set_window_size(self, large):
         """Define a janela grande (True) ou 1280x720 (False), saindo da tela cheia."""
+        if self.is_android:
+            self.is_fullscreen = True
+            return
         target = self.large_window_size if large else LEGACY_WINDOW_SIZE
         if not self.is_fullscreen and self.windowed_size == target:
             return
@@ -193,6 +211,8 @@ class WindowManager:
             return True
 
         if event.type == pygame.KEYDOWN:
+            if self.is_android and event.key in (pygame.K_F10, pygame.K_F11):
+                return True
             if event.key == pygame.K_F11:
                 self.toggle_fullscreen()
                 return True

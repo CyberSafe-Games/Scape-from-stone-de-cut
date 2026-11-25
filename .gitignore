@@ -6,6 +6,9 @@ __pycache__
 build/
 dist/
 ScapeFromStoneDeCut-Setup-*.exe
+android/.buildozer/
+android/bin/
+android/output/
 
 # Saves locais
 saves/

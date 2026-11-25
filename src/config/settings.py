@@ -37,17 +37,21 @@ MINIBOSS_HEAL_PERCENT = 0.30
 # pasta interna do pacote; no modo fonte, os arquivos continuam na raiz do repo.
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(SRC_DIR)
+IS_ANDROID = bool(os.environ.get("ANDROID_ARGUMENT") or os.environ.get("ANDROID_PRIVATE"))
 
 
 def resource_path(*parts):
-    """Resolve um recurso tanto no código-fonte quanto no pacote PyInstaller."""
-    root = getattr(sys, "_MEIPASS", BASE_DIR)
+    """Resolve recursos no código-fonte, PyInstaller ou pacote Android."""
+    root = getattr(sys, "_MEIPASS", os.environ.get("ANDROID_ARGUMENT", BASE_DIR))
     return os.path.join(root, *parts)
 
 
 def user_data_path(*parts):
-    """Resolve dados graváveis; builds ficam no perfil local do usuário."""
-    if getattr(sys, "frozen", False):
+    """Resolve dados graváveis no perfil local ou no diretório privado Android."""
+    android_private = os.environ.get("ANDROID_PRIVATE")
+    if android_private:
+        root = os.path.join(android_private, "ScapeFromStoneDeCut")
+    elif getattr(sys, "frozen", False):
         local_app_data = os.environ.get("LOCALAPPDATA")
         if not local_app_data:
             local_app_data = os.path.join(os.path.expanduser("~"), "AppData", "Local")
