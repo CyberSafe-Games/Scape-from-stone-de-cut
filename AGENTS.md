@@ -428,9 +428,23 @@ As restrições desta seção descrevem --poc; a campanha padrão segue a Etapa 
 - Transições web devem carregar o contexto antes de construir/desenhar cenas que leem imagens. Erros permitem tentar novamente; não prosseguir com arte incompleta silenciosamente.
 - web/campaign.py reutiliza cenas/regras nativas, com confirmação IndexedDB para tutorial, flags, recompensas e nova run. Não introduzir regras alternativas de dano/progressão para a web.
 - InputRouter conserva event.pos nativo; não substituir por coordenadas virtuais e converter novamente na cena. InspectionController não deve capturar cliques dos ícones ao exibir preview.
-- Recursos de mouse, hover, roda, teclado e botões equivalentes continuam no layout desktop proporcional. Não antecipar layout compacto/touch/PWA.
+- Recursos de mouse, hover, roda, teclado e botões equivalentes continuam no layout desktop proporcional. A camada compacta/touch é isolada conforme a Etapa 5; PWA pertence à Etapa 6.
 - QA por checkpoints fica exclusivamente em build/; atributos controlados são explícitos no relatório, nunca aplicados ao jogo normal.
 - Ver [campanha web](docs/web_campaign.md) e [estado atual](docs/estado_atual.md).
 
 - Composições web de fundos/painéis ficam em src/ui/composition_cache.py; preservar equivalência de pixels, transparência de previews e limite de memória. Não aplicar a composição de um painel raiz sobre conteúdo dinâmico.
 - combat_snapshot.restore deve recuperar também level/kind/index; motores temporários de recompensa não podem permanecer no nível padrão 1. A finalização automática de Zanzara confirma o save antes do epílogo.
+
+## 28. Host compacto e toque — Etapa 5
+
+- Checkpoint da Etapa 4: 62de681. A campanha web instala web/mobile.py; o Desktop não instala esse adaptador.
+- responsive_layout.py define os limiares 1000×600 úteis, controles compactos também em tablets com apontador primário touch e o bloqueio em retrato somente nesses dispositivos. O canvas virtual permanece 1920×1080; WebWindowManager usa saída proporcional 960×540 no compacto.
+- web/index.html é um fragmento do host Pygbag, não outro runtime. Preservar safe areas, 100dvh e orientação/foco na bridge.
+- MobileInterface reutiliza cenas, handlers, instâncias reais de cartas e persist_command. Não duplicar regras/transações nos arquivos JavaScript.
+- Primeiro toque inspeciona; JOGAR/COMPRAR/EQUIPAR/REMOVER/APRIMORAR/ESCOLHER confirma. Nenhuma inspeção pode gastar recursos.
+- Época de composição + geração de orientação invalidam comandos antigos. Bloquear durante commit e consumir confirmação uma vez. Cancelar seleção/arraste no blur, pointercancel, rotação e troca de cena.
+- ActiveTimeline afeta apenas o runtime web e congela ticks durante suspensão. Não alterar pygame.time.get_ticks no Desktop.
+- Controles compactos têm mínimo 44×44 CSS, contain/padding, texto via textContent e spotlight sobre elementos reais. Preservar identidade e níveis da arte via AssetManager.
+- Partículas procedurais são limitadas a seis por emissão e 24 por frame no perfil transitório apenas compacto. Caches de imagens do host são limitados e liberados por cena.
+- Ver [contrato mobile](docs/web_mobile.md) e [estado atual](docs/estado_atual.md). Emulação não autoriza alegar desempenho em dispositivos físicos.
+- Fechamento técnico de 25/11/2026: 889 testes em 87 módulos aprovados; 22 verificações Chromium mobile e 11 Web PC aprovadas. O host deve manter uma única meta viewport no head, com viewport-fit=cover. Também foram conferidos tablet touch 1280×800, rotação e Web PC amplo. Relatório: docs/validacao_web_etapa5.json.

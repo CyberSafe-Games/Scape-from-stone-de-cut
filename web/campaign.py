@@ -88,6 +88,15 @@ class CampaignScenes(SceneManager):
         super().push_modal(modal)
     def draw(self,surface):
         import time
+        mobile=getattr(self,"mobile",None)
+        target=self.modal_stack[-1] if self.modal_stack else self.current_scene
+        if mobile and mobile.layout.compact and not isinstance(target,(BattleScene,CutsceneScene)):
+            key=(id(self.current_scene),id(target))
+            now=pygame.time.get_ticks()
+            if key==getattr(self,"_mobile_draw_key",None) and now-getattr(self,"_mobile_draw_at",0)<250:
+                self.draw_profile={"total":0}
+                return
+            self._mobile_draw_key,self._mobile_draw_at=key,now
         self.draw_profile={}
         before=time.perf_counter()
         super().draw(surface)
@@ -352,9 +361,16 @@ async def main():
     try:
         await store.open();install(None)
     except Exception as error:unavailable(error)
+    from web.mobile import MobileInterface
+    scenes.mobile=MobileInterface(scenes,platform.window.scapeMobile)
+    from src.core.active_timeline import ActiveTimeline
+    timeline=ActiveTimeline(pygame.time.get_ticks)
+    pygame.time.get_ticks=timeline.ticks
     app=Application(window,assets,audio,preferences,scenes)
+    app.timeline=timeline
     def observe(application):
         if application.frames%5 and application._active:return
+        scenes.mobile.publish()
         scene=scenes.current_scene
         data=getattr(scene,"save_data",None)
         engine=getattr(scene,"engine",None)
@@ -362,6 +378,8 @@ async def main():
                     frames=application.frames,active=application._active,fps=application.clock.get_fps(),
                     loading_label=assets.label,loading_progress=assets.progress,context=assets.active_context,resident=sorted(assets.resident),transfer_bytes=assets.transfer_bytes,
                     data=data,preferences=preferences.values)
+        report["compact"]=scenes.mobile.layout.compact
+        report["portrait_blocked"]=scenes.mobile.layout.portrait_blocked
         report["audio_available"]=audio.available
         report["missing_sounds"]=sorted(audio._failed_sounds)
         report["music_path"]=str(audio._music_path or "")
@@ -404,5 +422,11 @@ async def main():
             report["guide"]=dict(active=scene.management_guide.active,key=scene.management_guide.key)
         platform.window.webStorageMetrics=json.dumps(report,ensure_ascii=True)
     try:await app.run_web(observe)
+    except Exception:
+        import traceback
+        error=traceback.format_exc()
+        platform.window.webRuntimeError=error
+        platform.window.console.error(error)
+        raise
     finally:audio.shutdown();pygame.quit()
 

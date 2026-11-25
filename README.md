@@ -248,3 +248,6 @@ o piloto anterior sem saves continua em `?render=1`.
 Veja [persistência web e validação](docs/web_storage.md).
 
 A Etapa 4 integra a campanha Web PC com recursos por contexto, cenas nativas e entrada unificada. Consulte [campanha web](docs/web_campaign.md). O build padrão é completo; use --poc para reproduzir a prova anterior.
+
+A Etapa 5 adiciona controles compactos, inspeção por toque e orientação paisagem no host web. Veja [layout e entrada mobile](docs/web_mobile.md). Desktop e Web PC amplo mantêm o layout anterior.
+Validação da Etapa 5: 889 testes Python aprovados, 22 verificações mobile e 11 Web PC. Veja o [relatório completo](docs/validacao_web_etapa5.json).

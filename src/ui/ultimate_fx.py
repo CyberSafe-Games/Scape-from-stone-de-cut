@@ -19,6 +19,8 @@ def _sprite(surface, image, center, scale=1, alpha=255):
 
 
 def _particles(surface, center, color, progress, radius, amount=18):
+    from src.config.visual_quality import particle_amount
+    amount=particle_amount(amount)
     for i in range(amount):
         angle = i*math.tau/amount+progress*2.1
         spread = radius*(.65+.35*math.sin(progress*math.pi+i*.7))

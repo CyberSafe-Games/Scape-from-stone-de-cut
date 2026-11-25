@@ -216,4 +216,6 @@ Ver [regras e validação da Etapa 3](web_storage.md).
 
 ## Campanha Web PC
 
-A Etapa 4 conecta o fluxo completo às cenas e regras nativas, com pacotes por contexto e confirmação IndexedDB. Veja [arquitetura e validação](web_campaign.md). Layout compacto, toque e PWA permanecem para as próximas etapas.
+A Etapa 4 conecta o fluxo completo às cenas e regras nativas, com pacotes por contexto e confirmação IndexedDB. Veja [arquitetura e validação](web_campaign.md). O host compacto e o toque seguem o [contrato da Etapa 5](web_mobile.md); PWA/offline permanecem para a Etapa 6.
+
+Etapa 5 validada em 25/11/2026: 889 testes Python, viewports Android/iPhone com toque e regressão Web PC aprovados. Resultados e limites da emulação no [relatório da Etapa 5](validacao_web_etapa5.json).

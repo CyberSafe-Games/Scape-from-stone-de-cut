@@ -134,10 +134,17 @@ def main():
         shutil.copyfile(ROOT/"web/bridge.js",output/"bridge.js")
         shutil.copyfile(ROOT/"web/storage.js",output/"storage.js")
         shutil.copyfile(ROOT/"web/resources.js",output/"resources.js")
+        shutil.copyfile(ROOT/"web/mobile.js",output/"mobile.js")
         index=output/"index.html"
         html=index.read_text(encoding="utf-8")
         html=html.replace("</head>",'<link rel="stylesheet" href="styles.css"></head>')
         html=html.replace("</body>",'<script src="bridge.js"></script><script src="storage.js"></script><script src="resources.js"></script></body>')
+        import re
+        fragment=(ROOT/"web/index.html").read_text(encoding="utf-8")
+        viewport=re.search(r'<meta name="viewport"[^>]*>',fragment).group()
+        html=re.sub(r'<meta\s+name="viewport"[^>]*>',"",html,flags=re.IGNORECASE)
+        html=html.replace("</head>",viewport+"</head>")
+        html=html.replace("</body>",fragment.replace(viewport,"")+"</body>")
         index.write_text(html,encoding="utf-8")
         if args.serve:
             subprocess.run([sys.executable,"-m","http.server","8765","--bind","127.0.0.1",

@@ -23,6 +23,13 @@ class WebWindowManager:
     def virtual_screen(self):
         return self.screen
 
+    def configure_viewport(self,layout):
+        """Saída leve em tela compacta, preservando a arena virtual 1920×1080."""
+        size=(960,540) if layout.compact else self.windowed_size
+        if self.display_surface.get_size()!=size:
+            self.display_surface=pygame.display.set_mode(size)
+            self.render_cache=RenderCache()
+
     def get_scale_and_offset(self):
         dw, dh = self.display_surface.get_size()
         scale = max(.0001, min(dw/self.width, dh/self.height))

@@ -76,8 +76,10 @@ with sync_playwright() as p:
  tab=metrics()["rect_maps"]["tab_rects"]["video"]
  rect(tab);wait(lambda m:m["active_tab"]=="video")
  rect(metrics()["rect_maps"]["tab_rects"]["audio"])
+ wait(lambda m:m["active_tab"]=="audio")
+ previous_volume=metrics()["preferences"]["master_volume"]
  page.keyboard.press("ArrowLeft")
- volume=wait(lambda m:m["preferences"]["master_volume"]<1)["preferences"]["master_volume"]
+ volume=wait(lambda m:m["preferences"]["master_volume"]<previous_volume-.001)["preferences"]["master_volume"]
  page.screenshot(path=str(OUT/"options.png"))
  page.keyboard.press("Escape");wait(lambda m:m["modal"] is None)
  page.reload();menu=scene("CampaignMenu");rect(menu["ui"]["play_button"]);scene("CampaignSlots");click(443,520);world=scene("CampaignMap")

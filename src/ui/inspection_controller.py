@@ -9,6 +9,14 @@ class InspectionController:
             self.generation+=1
         self.target,self.pinned=target,pinned
         return target
+    def touch_select(self,target):
+        """O primeiro toque nunca confirma uma ação."""
+        return self.inspect(target,pinned=True)
+    def confirm(self,target):
+        """Consome uma seleção explícita uma única vez."""
+        if not self.pinned or self.target!=target:return False
+        self.clear()
+        return True
     def hover(self,targets,position):
         if self.pinned:return self.target
         return self.inspect(next((key for key,rect in targets if rect.collidepoint(position)),None))

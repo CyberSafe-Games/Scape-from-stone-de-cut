@@ -9,13 +9,17 @@ class RoutedInput:
     button: int | None = None
     key: int | None = None
     wheel: tuple = (0,0)
+    touch: bool = False
 
 class InputRouter:
     def __init__(self, window):
         self.window = window
         self.last = None
     def route(self, event):
-        if event.type in (pygame.MOUSEMOTION,pygame.MOUSEBUTTONDOWN,pygame.MOUSEBUTTONUP):
+        if event.type in (pygame.FINGERDOWN,pygame.FINGERUP,pygame.FINGERMOTION):
+            kind={pygame.FINGERDOWN:"down",pygame.FINGERUP:"up",pygame.FINGERMOTION:"move"}[event.type]
+            value=RoutedInput(kind,(event.x*self.window.width,event.y*self.window.height),1,touch=True)
+        elif event.type in (pygame.MOUSEMOTION,pygame.MOUSEBUTTONDOWN,pygame.MOUSEBUTTONUP):
             kind={pygame.MOUSEMOTION:"move",pygame.MOUSEBUTTONDOWN:"down",
                   pygame.MOUSEBUTTONUP:"up"}[event.type]
             value=RoutedInput(kind,self.window.map_to_virtual(event.pos),getattr(event,"button",None))

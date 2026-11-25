@@ -1,7 +1,7 @@
 /* APIs do navegador ficam nesta fronteira, fora de regras/cenas. */
 (() => {
   let focused = document.hasFocus(), resume = 0, lastActive = true;
-  const active = () => !document.hidden && focused;
+  const active = () => !document.hidden && focused && !(window.scapeMobile && JSON.parse(window.scapeMobile.viewport()).blocked);
   const overlay = document.createElement("div");
   overlay.id = "web-paused";
   overlay.textContent = "PAUSADO · VOLTE À JANELA PARA CONTINUAR";
@@ -23,6 +23,7 @@
   document.body.appendChild(button);
   const service = {
     lastFullscreenError: null,
+    refresh,
     snapshot: () => JSON.stringify({ active: active(), resume, fullscreen: Boolean(document.fullscreenElement),
       checkpoint: window.scapeStorage?.status.lifecycle_checkpoint || 0 }),
     toggleFullscreen: () => {

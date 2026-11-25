@@ -314,6 +314,11 @@
       "file": "docs/web_campaign.md",
       "kind": "current",
       "summary": "Campanha Web PC, manifesto por contexto, entrada, memória e metodologia de QA."
+    },
+    {
+      "file": "docs/web_mobile.md",
+      "kind": "current",
+      "summary": "Layout compacto, orientação, entrada touch, confirmação e perfil leve web."
     }
   ]
 }

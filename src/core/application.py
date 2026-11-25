@@ -20,6 +20,11 @@ class Application:
         self._resume_serial = 0
 
     def frame(self, web=False):
+        mobile = vars(self.scenes).get("mobile") if web else None
+        if mobile:
+            mobile.poll()
+            from src.config.visual_quality import begin_frame
+            begin_frame()
         poll = getattr(self.scenes, "poll_pending", None)
         if poll:
             poll()
@@ -27,6 +32,8 @@ class Application:
         active, serial = self.platform.lifecycle_state() if web else (True, 0)
         resumed = web and active and (not self._active or serial != self._resume_serial)
         self._active, self._resume_serial = active, serial
+        timeline=getattr(self,"timeline",None)
+        if timeline:timeline.set_active(active)
         if web:
             checkpoint_serial = self.platform.checkpoint_serial() if hasattr(self.platform,"checkpoint_serial") else 0
             if ((not active and getattr(self, "_was_active_for_checkpoint", True))
@@ -45,6 +52,8 @@ class Application:
                 self.running = False
                 break
             if web and not active:
+                continue
+            if mobile and mobile.layout.compact and event.type in (pygame.FINGERDOWN,pygame.FINGERUP,pygame.FINGERMOTION,pygame.MOUSEBUTTONDOWN,pygame.MOUSEBUTTONUP,pygame.MOUSEMOTION):
                 continue
             if web and event.type in (pygame.MOUSEBUTTONDOWN, pygame.KEYDOWN):
                 self.audio.unlock_after_interaction()
