@@ -1,0 +1,339 @@
+{
+  "stage": 2,
+  "branch": "feat/web-mobile-port",
+  "date": "2026-11-25",
+  "scope": "Isolamento de plataforma e renderização; sem IndexedDB/PWA/layout mobile",
+  "baseline_fps": 28.60411899313511,
+  "combat_fps": 52.083333333333286,
+  "gain_percent": 82.08333333333253,
+  "browser_validation": {
+    "browser": "159.0.8154.6",
+    "mode": "Chromium headless, viewport 1280x720, sem throttling",
+    "navigation_to_menu_seconds": 4.21378839999943,
+    "menu_click_to_battle_seconds": 0.9765453999998499,
+    "network_encoded_bytes": 33783448,
+    "menu": {
+      "platform": true,
+      "active": true,
+      "resume_serial": 0,
+      "scene": "ProofMenu",
+      "frames": 15,
+      "fps": 60.38647342995122,
+      "ready_seconds": 0.29839999900000036,
+      "audio_unlocked": false,
+      "audio_suspended": false,
+      "music_playing": false,
+      "draw_parts_ms": {},
+      "frame_cost_ms": {
+        "update": 0.0,
+        "draw": 2.4000009999998184,
+        "present": 3.199999000000453
+      },
+      "pygame": "2.5.7",
+      "python": "3.12.12",
+      "surfaces_bytes": 0
+    },
+    "first_battle": {
+      "platform": true,
+      "active": true,
+      "resume_serial": 2,
+      "scene": "ProofBattle",
+      "frames": 180,
+      "fps": 53.53319000499847,
+      "ready_seconds": 4.619999999999999,
+      "audio_unlocked": true,
+      "audio_suspended": false,
+      "music_playing": true,
+      "draw_parts_ms": {
+        "_draw_background": 1.5999999999998238,
+        "_draw_combatant_panel": 1.6999999999995907,
+        "_draw_energy_gems": 0.10000099999984968,
+        "_draw_energy_panel": 0.40000100000092687,
+        "_draw_coin_badge": 0.19999899999945114,
+        "_draw_menu_button": 0.10000099999984968,
+        "draw_enemy": 3.399999000000875,
+        "draw_player": 0.2999999999993008,
+        "draw_enemy_projectile": 0.0,
+        "intent": 0.6000010000004607,
+        "_draw_bottom_hud": 0.19999999999953388,
+        "_draw_cemetery_book": 0.8999990000013725,
+        "_draw_cemetery_button": 0.8999990000013725,
+        "_draw_ultimate_counter": 0.19999899999945114,
+        "_draw_end_turn_button": 0.6000010000004607,
+        "_draw_top_message": 0.0
+      },
+      "frame_cost_ms": {
+        "update": 0.20000000000131024,
+        "draw": 15.200001000000185,
+        "present": 1.8999989999990419
+      },
+      "pygame": "2.5.7",
+      "python": "3.12.12",
+      "surfaces_bytes": 40202240,
+      "state": "player_turn",
+      "player_hp": 60,
+      "enemy_hp": 23,
+      "energy": 2,
+      "action": null,
+      "intents": [
+        [
+          1639,
+          234,
+          104,
+          112
+        ]
+      ],
+      "hand": [
+        {
+          "name": "Esfera Protetora",
+          "cost": 1,
+          "rect": [
+            717,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Soco Simples",
+          "cost": 1,
+          "rect": [
+            885,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Soco Simples",
+          "cost": 1,
+          "rect": [
+            1053,
+            795,
+            150,
+            258
+          ]
+        }
+      ]
+    },
+    "victory": {
+      "platform": true,
+      "active": true,
+      "resume_serial": 2,
+      "scene": "ProofBattle",
+      "frames": 905,
+      "fps": 60.532688384170925,
+      "ready_seconds": 19.387599999000003,
+      "audio_unlocked": true,
+      "audio_suspended": false,
+      "music_playing": true,
+      "draw_parts_ms": {
+        "_draw_background": 1.40000000000029,
+        "_draw_combatant_panel": 1.6000009999999065,
+        "_draw_energy_gems": 0.0,
+        "_draw_energy_panel": 0.30000099999938357,
+        "_draw_coin_badge": 0.399998999998985,
+        "_draw_menu_button": 0.19999899999945114,
+        "draw_enemy": 2.300001000001828,
+        "draw_player": 0.2999999999993008,
+        "draw_enemy_projectile": 0.0,
+        "intent": 0.0,
+        "_draw_bottom_hud": 0.2999989999992181,
+        "_draw_cemetery_book": 0.9000000000014552,
+        "_draw_cemetery_button": 1.0000000000012221,
+        "_draw_ultimate_counter": 0.0999989999996842,
+        "_draw_end_turn_button": 0.5999999999986017,
+        "_draw_top_message": 0.0
+      },
+      "frame_cost_ms": {
+        "update": 0.0,
+        "draw": 10.600001000000248,
+        "present": 2.0999990000021285
+      },
+      "pygame": "2.5.7",
+      "python": "3.12.12",
+      "surfaces_bytes": 40202240,
+      "state": "victory",
+      "player_hp": 53,
+      "enemy_hp": 0,
+      "energy": 2,
+      "action": null,
+      "intents": [],
+      "hand": [
+        {
+          "name": "Esfera Protetora",
+          "cost": 1,
+          "rect": [
+            717,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Esfera Protetora",
+          "cost": 1,
+          "rect": [
+            885,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Esfera Protetora",
+          "cost": 1,
+          "rect": [
+            1053,
+            795,
+            150,
+            258
+          ]
+        }
+      ]
+    },
+    "defeat": {
+      "platform": true,
+      "active": true,
+      "resume_serial": 2,
+      "scene": "ProofBattle",
+      "frames": 1970,
+      "fps": 40.6504065040635,
+      "ready_seconds": 42.410299999,
+      "audio_unlocked": true,
+      "audio_suspended": false,
+      "music_playing": false,
+      "draw_parts_ms": {
+        "_draw_background": 2.8000010000042153,
+        "_draw_combatant_panel": 1.599999999996271,
+        "_draw_energy_gems": 0.0,
+        "_draw_energy_panel": 0.20000100000316934,
+        "_draw_coin_badge": 0.19999999999953388,
+        "_draw_menu_button": 0.10000099999984968,
+        "draw_enemy": 3.099998999999798,
+        "draw_player": 0.19999900000300386,
+        "draw_enemy_projectile": 0.0,
+        "intent": 0.0,
+        "_draw_bottom_hud": 0.30000099999938357,
+        "_draw_cemetery_book": 0.7999999999981355,
+        "_draw_cemetery_button": 0.7999999999981355,
+        "_draw_ultimate_counter": 0.30000000000285354,
+        "_draw_end_turn_button": 0.5000000000023874,
+        "_draw_top_message": 0.0,
+        "_draw_game_over": 9.199999999999875
+      },
+      "frame_cost_ms": {
+        "update": 0.0,
+        "draw": 21.399999999999864,
+        "present": 2.0000000000024443
+      },
+      "pygame": "2.5.7",
+      "python": "3.12.12",
+      "surfaces_bytes": 40202240,
+      "state": "game_over",
+      "player_hp": 0,
+      "enemy_hp": 23,
+      "energy": 8,
+      "action": null,
+      "intents": [],
+      "hand": [
+        {
+          "name": "Soco Simples",
+          "cost": 1,
+          "rect": [
+            549,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Esfera Protetora",
+          "cost": 1,
+          "rect": [
+            717,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Soco Simples",
+          "cost": 1,
+          "rect": [
+            885,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Esfera Protetora",
+          "cost": 1,
+          "rect": [
+            1053,
+            795,
+            150,
+            258
+          ]
+        },
+        {
+          "name": "Esfera Protetora",
+          "cost": 1,
+          "rect": [
+            1221,
+            795,
+            150,
+            258
+          ]
+        }
+      ]
+    },
+    "fps_median_combat": 52.083333333333286,
+    "fps_min_sample": 31.90810465858313,
+    "attack_clicks": 5,
+    "minimum_player_hp_during_win": 53,
+    "storage": {
+      "localStorageKeys": [],
+      "wasm_heap_bytes": 386662400,
+      "js_heap": 68000000
+    },
+    "fullscreen": {
+      "supported": true,
+      "entered": true,
+      "exited": true
+    },
+    "focus": {
+      "paused_frames": 103,
+      "resumed_serial": 2,
+      "background_tab": {
+        "state": "visible",
+        "active": true,
+        "headless_visibility_emulated": true
+      },
+      "passed": true
+    },
+    "web_exit_returned_home": true,
+    "passed": true
+  },
+  "python_validation": {
+    "total": 808,
+    "modules": 84,
+    "failures": 0,
+    "complete": true,
+    "resumed": false,
+    "seconds": 202.5
+  },
+  "preserved": [
+    "src/systems/save_manager.py",
+    "scape_from_stone.spec",
+    "installer/build_installer.bat",
+    ".github/workflows/build-windows.yml"
+  ],
+  "limits": [
+    "Chromium headless; não é teste de Safari/mobile",
+    "Visibilidade de aba emulada no DOM quando o host headless mantém abas visíveis",
+    "52 FPS medianos não garantem 60 constantes",
+    "Bandeja RGB otimizada apenas para o Slime da prova, com fallback nas Ultimates"
+  ]
+}

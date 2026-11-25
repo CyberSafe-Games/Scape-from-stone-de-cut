@@ -793,6 +793,29 @@
       ]
     },
     {
+      "file": "tests/test_platform_services.py",
+      "cases": [
+        "CapabilityTests.test_detects_wasm_and_native_without_guessing_from_screen_size",
+        "CapabilityTests.test_runtime_detection",
+        "CapabilityTests.test_desktop_resources_preserve_meipass",
+        "CapabilityTests.test_desktop_writable_data_never_use_meipass",
+        "CapabilityTests.test_unfrozen_data_stay_in_project",
+        "CapabilityTests.test_web_paths_are_posix_and_temporary_without_claiming_persistence",
+        "CapabilityTests.test_web_bridge_reports_visibility_and_resume_generation",
+        "CapabilityTests.test_desktop_exit_is_a_request_not_system_exit",
+        "CapabilityTests.test_web_exit_returns_home_without_ending_interpreter",
+        "CapabilityTests.test_hidden_loop_does_not_advance_and_resume_discards_elapsed_time",
+        "WindowAndRenderTests.test_web_window_never_queries_monitor_and_preserves_mapping",
+        "WindowAndRenderTests.test_desktop_factory_keeps_original_controller",
+        "WindowAndRenderTests.test_web_fullscreen_uses_browser_service",
+        "WindowAndRenderTests.test_destination_surface_is_reused",
+        "WindowAndRenderTests.test_card_scale_cache_preserves_original_smoothscale_pixels",
+        "WindowAndRenderTests.test_cropped_blit_is_pixel_identical_for_alpha_and_premultiplied",
+        "CompositionAndAudioTests.test_audio_suspend_resume_is_idempotent",
+        "CompositionAndAudioTests.test_web_tray_preserves_pixels_during_supported_combat_actions"
+      ]
+    },
+    {
       "file": "tests/test_player_card_art.py",
       "cases": [
         "PlayerCardArtTests.test_all_twenty_cards_have_two_complete_transparent_sprites",
@@ -957,6 +980,34 @@
         "ShopAndCombatTests.test_partial_heal_consumes_one_purchase_but_full_hp_does_not",
         "ShopAndCombatTests.test_new_fight_resets_energy_hand_growth_and_strength",
         "ShopAndCombatTests.test_loading_legacy_progress_starts_at_fight_baseline"
+      ]
+    },
+    {
+      "file": "tests/test_storage_backends.py",
+      "cases": [
+        "DiskContractTests.test_atomic_replace_and_fsync_are_used",
+        "DiskContractTests.test_failed_replace_preserves_previous_document_and_transact_rolls_back",
+        "DiskContractTests.test_export_import_v15_moves_profile_and_run_between_slots",
+        "DiskContractTests.test_invalid_future_import_does_not_replace_slot",
+        "DiskContractTests.test_legacy_read_keeps_backup_and_migrates",
+        "BrowserTransactionTests.test_purchase_is_not_published_until_commit_completes",
+        "BrowserTransactionTests.test_write_failure_rolls_back_entire_document",
+        "BrowserTransactionTests.test_double_command_is_rejected_while_pending",
+        "BrowserTransactionTests.test_stale_tab_cannot_overwrite_newer_revision",
+        "BrowserTransactionTests.test_upgrade_and_guide_use_shared_rules",
+        "BrowserTransactionTests.test_new_slot_is_created_only_after_durable_commit",
+        "BrowserTransactionTests.test_sync_save_cannot_fake_acknowledgment",
+        "BridgeContractTests.test_bridge_yields_while_pending_and_waits_for_confirmation",
+        "BridgeContractTests.test_bridge_reports_revision_conflict_and_preserves_cache",
+        "BridgeContractTests.test_successful_commit_updates_cache_only_with_confirmed_revision",
+        "BridgeContractTests.test_browser_v14_migration_is_normalized_then_written_as_v15",
+        "BridgeContractTests.test_failed_upgrade_preserves_materials_gold_and_levels",
+        "BridgeContractTests.test_failed_death_commit_preserves_active_run",
+        "BridgeContractTests.test_import_replaces_only_after_confirmation_and_creates_new_revision",
+        "BrowserPreferencesTests.test_local_preferences_sanitized_and_survive_new_preferences_instance",
+        "BrowserPreferencesTests.test_restricted_local_storage_uses_defaults_and_reports_failure",
+        "UnicodeWireTests.test_python_to_javascript_uses_ascii_json_without_changing_names",
+        "UnicodeWireTests.test_javascript_ascii_json_decodes_portuguese_names_and_errors"
       ]
     },
     {
@@ -1125,6 +1176,20 @@
       ]
     },
     {
+      "file": "tests/test_web_proof.py",
+      "cases": [
+        "WebLoopTests.test_web_yields_between_frames_and_returns_without_exit",
+        "WebLoopTests.test_desktop_keeps_synchronous_loop",
+        "ProofIsolationTests.test_preferences_never_read_or_write_disk",
+        "ProofIsolationTests.test_manifest_excludes_other_enemies_and_source_art",
+        "ProofIsolationTests.test_menu_does_not_preload_combat",
+        "ProofIsolationTests.test_web_audio_waits_for_gesture_and_preserves_requested_music",
+        "ProofIsolationTests.test_desktop_audio_still_initializes_immediately",
+        "WebRenderCacheTests.test_font_cache_does_not_share_mutable_alpha",
+        "WebRenderCacheTests.test_background_cache_preserves_original_pixels"
+      ]
+    },
+    {
       "file": "tests/test_window_modes.py",
       "cases": [
         "TestWindowModes.test_render_is_full_hd_and_game_opens_in_720p_window",
@@ -1200,6 +1265,6 @@
       ]
     }
   ],
-  "modules": 82,
-  "methods": 781
+  "modules": 85,
+  "methods": 831
 }

@@ -20,3 +20,6 @@ settings/.audio-*.tmp
 /assets/boss_ultimate_effects/twelve_frames/*/reference.png
 /assets/player/twelve_frames/source/*_reference.png
 /_arquivos_antigos_para_deletar/
+
+# Ambiente isolado da prova web
+.venv-web/

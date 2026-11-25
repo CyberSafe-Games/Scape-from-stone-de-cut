@@ -52,6 +52,15 @@ class ManagementGuide:
         self.scene.play_ui_sound('ui.click')
 
     def finish(self):
+        if getattr(self.scene.save_manager,"async_commands",False) is True:
+            def complete(result):
+                if result[0]:
+                    self.active, self.error = False, ""
+                    self.scene.play_ui_sound("ui.confirm")
+                else:
+                    self.error = result[1]
+            self.scene.persist_command(lambda m,d:complete_guide(m,d,self.key),complete)
+            return False
         ok, message = complete_guide(self.scene.save_manager, self.scene.save_data, self.key)
         if ok:
             self.active, self.error = False, ''

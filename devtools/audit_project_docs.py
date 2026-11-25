@@ -51,7 +51,7 @@ def test_inventory(root=ROOT):
     for path in sorted((root/"tests").rglob("*.py")):
         tree = ast.parse(path.read_text(encoding="utf-8-sig"))
         cases = [f"{cls.name}.{node.name}" for cls in ast.walk(tree) if isinstance(cls, ast.ClassDef)
-                 for node in cls.body if isinstance(node, ast.FunctionDef) and node.name.startswith("test_")]
+                 for node in cls.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name.startswith("test_")]
         files.append(dict(file=path.relative_to(root).as_posix(), cases=cases))
     return dict(files=files, modules=sum(bool(f["cases"]) for f in files),
                 methods=sum(len(f["cases"]) for f in files))

@@ -67,7 +67,9 @@ class SaveManager:
     Não depende de Pygame, apenas do Player e do DeckManager.
     """
 
-    def __init__(self, saves_dir=SAVES_DIR):
+    def __init__(self, saves_dir=SAVES_DIR, store=None):
+        from src.storage.disk_store import DiskStore
+        self.store = store if store is not None else DiskStore(saves_dir)
         self.saves_dir = saves_dir
         self._card_catalog = {card.name: card for card in AVAILABLE_CARD_POOL}
 
@@ -136,17 +138,13 @@ class SaveManager:
         return os.path.join(self.saves_dir, save_id + ".json")
 
     def exists(self, name):
-        return os.path.exists(self._path(self._make_id(name)))
+        return self.store.exists_sync(self._make_id(name))
 
     def list_saves(self):
         """Lista resumos dos saves existentes, do mais recente ao mais antigo."""
-        if not os.path.isdir(self.saves_dir):
-            return []
-
         summaries = []
-        for filename in os.listdir(self.saves_dir):
-            if not filename.endswith(".json"):
-                continue
+        for save_id in self.store.keys_sync():
+            filename = save_id + ".json"
             try:
                 data = self._read(os.path.join(self.saves_dir, filename))
             except SaveCorruptedError:
@@ -167,15 +165,15 @@ class SaveManager:
 
     def _read(self, path):
         try:
-            with open(path, encoding="utf-8") as f:
-                data = json.load(f)
+            data = self.store.read_sync(os.path.splitext(os.path.basename(path))[0])
         except (OSError, UnicodeError, json.JSONDecodeError) as exc:
             raise SaveCorruptedError(f"Não foi possível ler '{path}'.") from exc
         if not isinstance(data, dict):
             raise SaveCorruptedError('Estrutura de save inválida.')
         if type(data.get('versao', 0)) is not int:
             raise SaveCorruptedError('Versão de save inválida.')
-        if data.get('versao', 0) < SAVE_VERSION:
+        from src.storage.disk_store import DiskStore
+        if isinstance(self.store, DiskStore) and data.get('versao', 0) < SAVE_VERSION:
             backup = path + f".v{data.get('versao', 0)}.bak"
             if not os.path.exists(backup):
                 import shutil
@@ -331,7 +329,7 @@ class SaveManager:
     def create_save(self, name, display_name=None):
         """Cria um save novo (sem sobrescrever um existente) e o retorna."""
         save_id = self._make_id(name)
-        if os.path.exists(self._path(save_id)):
+        if self.store.exists_sync(save_id):
             raise SaveAlreadyExistsError(f"Já existe um save chamado '{name}'.")
         data = self._new_data(display_name or name.strip(), save_id)
         self.save(data)
@@ -340,7 +338,7 @@ class SaveManager:
     def load_save(self, name):
         """Carrega o progresso de um save existente."""
         path = self._path(self._make_id(name))
-        if not os.path.exists(path):
+        if not self.store.exists_sync(self._make_id(name)):
             raise SaveNotFoundError(f"Save '{name}' não encontrado.")
         return self._read(path)
 
@@ -381,47 +379,55 @@ class SaveManager:
         self.save(data)
         return data
 
-    def save(self, data):
-        """Grava os dados no arquivo do próprio save (e só nele)."""
-        os.makedirs(self.saves_dir, exist_ok=True)
-        data["atualizado_em"] = self._now()
+    def payload(self, data):
+        """Representação v15 compartilhada por disco, IndexedDB e backup manual."""
+        from src.systems.roguelite import PROFILE_FIELDS
+        payload = {k: deepcopy(v) for k,v in data.items() if k != "progresso"}
+        payload["run"] = {k:deepcopy(v) for k,v in data["progresso"].items() if k not in PROFILE_FIELDS}
+        return payload
 
-        # Impede criação de caminhos arbitrários via um dicionário manipulado.
+    def save(self, data):
+        """Valida/migra e confirma atomicamente no backend síncrono."""
+        data["atualizado_em"] = self._now()
         save_id = data.get("id")
-        if not isinstance(save_id, str) or save_id != self._make_id(save_id):
+        if not isinstance(save_id,str) or save_id != self._make_id(save_id):
             raise SaveCorruptedError("Identificador do save inválido.")
-        self._normalize(data, save_id)
-        path = self._path(save_id)
-        revision = 0
-        if os.path.exists(path):
-            with open(path, encoding='utf-8') as current_file:
-                current = json.load(current_file)
-            revision = current.get('revisao', 0)
-            if data.get('revisao', 0) != revision:
-                raise SaveError('Save desatualizado; recarregue o slot antes de continuar.')
-            current_run = current.get('run', current.get('progresso', {}))
-            if (current_run.get('run_id') == data['progresso']['run_id']
-                    and current_run.get('estado') in ('morta', 'concluida')
-                    and data['progresso']['estado'] == 'ativa'):
-                raise SaveError('Esta run já foi encerrada; inicie uma nova jornada.')
-        tmp_path = path + ".tmp"
-        # Grava num arquivo temporário e troca no final, para que um
-        # fechamento inesperado do jogo não corrompa o save.
-        with open(tmp_path, "w", encoding="utf-8") as f:
-            payload = {k: v for k, v in data.items() if k != 'progresso'}
-            from src.systems.roguelite import PROFILE_FIELDS
-            payload['run'] = {k: v for k, v in data['progresso'].items() if k not in PROFILE_FIELDS}
-            payload['revisao'] = revision + 1
-            json.dump(payload, f, indent=4, ensure_ascii=False)
-            f.flush()
-            os.fsync(f.fileno())
-        os.replace(tmp_path, path)
-        data['revisao'] = revision + 1
+        self._normalize(data,save_id)
+        from src.storage.base import StorageError
+        try:
+            revision = self.store.commit_sync(save_id,self.payload(data),data.get("revisao",0))
+        except StorageError as exc:
+            raise SaveError(str(exc)) from exc
+        data["revisao"] = revision
 
     def delete_save(self, name):
-        path = self._path(self._make_id(name))
-        if os.path.exists(path):
-            os.remove(path)
+        self.store.delete_sync(self._make_id(name))
+
+    def export_json(self, name):
+        return json.dumps(self.payload(self.load_save(name)),ensure_ascii=False,indent=4)
+
+    def import_json(self, text, slot, replace=False):
+        """Importa somente JSON validado e preserva revisão/estado do destino."""
+        save_id = self.slot_id(slot)
+        if len(text.encode("utf-8")) > 5*1024*1024:
+            raise SaveCorruptedError("Backup maior que 5 MiB.")
+        try:
+            data = json.loads(text)
+        except (ValueError,UnicodeError) as exc:
+            raise SaveCorruptedError("Backup JSON inválido.") from exc
+        if not isinstance(data,dict) or data.get("modo_teste"):
+            raise SaveCorruptedError("Use um backup de jornada normal.")
+        data = self._normalize(data,save_id)
+        data["id"] = save_id
+        if self.exists(save_id):
+            if not replace:
+                raise SaveAlreadyExistsError("Confirme a substituição do espaço ocupado.")
+            current = self.load_save(save_id)
+            data["revisao"] = current.get("revisao",0)
+        else:
+            data["revisao"] = 0
+        self.save(data)
+        return data
 
     def end_run(self, data, level):
         """Confirma a morte em disco antes de permitir outra jornada."""

@@ -1214,11 +1214,10 @@ class TestMenuExitAudio(unittest.TestCase):
                     )
 
                 with patch("src.scenes.menu_scene.pygame.quit") as mock_quit:
-                    with patch("src.scenes.menu_scene.sys.exit") as mock_exit:
-                        scene.handle_event(event)
+                    scene.handle_event(event)
 
-                mock_quit.assert_called_once_with()
-                mock_exit.assert_called_once_with()
+                mock_quit.assert_not_called()
+                scene.scene_manager.request_exit.assert_called_once_with()
 
                 scene.scene_manager.audio_manager.play_sfx.assert_called_once_with(
                     "ui.click",

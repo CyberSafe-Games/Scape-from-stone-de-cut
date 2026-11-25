@@ -22,7 +22,7 @@ class AudioManager:
     ausentes para que o jogo continue funcionando sem som.
     """
 
-    def __init__(self, assets_dir=None, master_volume=1.0, sfx_volume=1.0, music_volume=0.7, combat_volume=1.0, damage_volume=1.0):
+    def __init__(self, assets_dir=None, master_volume=1.0, sfx_volume=1.0, music_volume=0.7, combat_volume=1.0, damage_volume=1.0, defer_initialization=False):
         self.assets_dir = Path(assets_dir) if assets_dir else Path(ASSETS_DIR) / "audio"
         self._sound_paths = {}
         self._sounds = {}
@@ -38,7 +38,37 @@ class AudioManager:
         self.combat_volume = self._clamp_volume(combat_volume)
         self.damage_volume = self._clamp_volume(damage_volume)
 
+        self._audio_locked = bool(defer_initialization)
+        self._deferred_music = None
+        if not self._audio_locked:
+            self._initialize_mixer()
+
+    def unlock_after_interaction(self):
+        """Desbloqueia áudio após gesto; desktop continua inicializando normalmente."""
+        if not self._audio_locked:
+            return self.available
+        self._audio_locked = False
         self._initialize_mixer()
+        if self._deferred_music is not None:
+            path, loops, start, fade = self._deferred_music
+            self._deferred_music = None
+            self.play_music(path, loops=loops, start=start, fade_ms=fade)
+        return self.available
+
+    def set_suspended(self, suspended):
+        """Pausa canais e trilha sem perder posição, somente quando há transição."""
+        suspended = bool(suspended)
+        if suspended == getattr(self, "_suspended", False):
+            return
+        self._suspended = suspended
+        if not self.available:
+            return
+        if suspended:
+            pygame.mixer.pause()
+            pygame.mixer.music.pause()
+        else:
+            pygame.mixer.unpause()
+            pygame.mixer.music.unpause()
 
     @staticmethod
     def _clamp_volume(value):
@@ -58,7 +88,7 @@ class AudioManager:
     @property
     def available(self):
         """Indica se o mixer está inicializado e pronto para reprodução."""
-        return self._mixer_available and pygame.mixer.get_init() is not None
+        return not self._audio_locked and self._mixer_available and pygame.mixer.get_init() is not None
 
     def register_sound(self, sound_id, relative_path):
         """Registra o caminho de um efeito sem carregá-lo imediatamente.
@@ -136,6 +166,10 @@ class AudioManager:
 
     def play_music(self, relative_path, loops=-1, start=0.0, fade_ms=0):
         """Inicia música de fundo. Por padrão, a música repete continuamente."""
+        if self._audio_locked:
+            self._deferred_music = (relative_path, loops, start, fade_ms)
+            return False
+
         if not self.available:
             return False
         path = Path(relative_path)

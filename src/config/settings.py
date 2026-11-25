@@ -40,21 +40,16 @@ BASE_DIR = os.path.dirname(SRC_DIR)
 
 
 def resource_path(*parts):
-    """Resolve um recurso tanto no código-fonte quanto no pacote PyInstaller."""
-    root = getattr(sys, "_MEIPASS", BASE_DIR)
-    return os.path.join(root, *parts)
+    """Recursos empacotados somente leitura; não armazenar dados do usuário aqui."""
+    from src.platforms import get_platform
+    return get_platform(BASE_DIR).resource_path(*parts)
 
 
 def user_data_path(*parts):
-    """Resolve dados graváveis; builds ficam no perfil local do usuário."""
-    if getattr(sys, "frozen", False):
-        local_app_data = os.environ.get("LOCALAPPDATA")
-        if not local_app_data:
-            local_app_data = os.path.join(os.path.expanduser("~"), "AppData", "Local")
-        root = os.path.join(local_app_data, "ScapeFromStoneDeCut")
-    else:
-        root = BASE_DIR
-    return os.path.join(root, *parts)
+    """Dados locais no desktop; na web, apenas FS temporário de sessão."""
+    from src.platforms import get_platform
+    return get_platform(BASE_DIR).user_data_path(*parts)
+
 
 ASSETS_DIR = resource_path("assets")
 PLAYER_ASSETS_DIR = os.path.join(ASSETS_DIR, "player")

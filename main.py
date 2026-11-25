@@ -8,7 +8,7 @@ from src.config.settings import (
     FPS,
     LEGACY_WINDOW_SIZE,
 )
-from src.core.window import WindowManager
+from src.core.window import create_window_manager
 from src.core.asset_manager import AssetManager
 from src.core.scene_manager import SceneManager
 from src.core.audio_manager import AudioManager
@@ -128,7 +128,7 @@ def main():
     # O jogo abre em janela 1280x720 e renderiza em Full HD (1920x1080).
     # F11 alterna entre tela cheia e a janela 1280x720; F10 alterna a janela
     # entre 1280x720 e o maior tamanho 16:9 que cabe na tela.
-    window_manager = WindowManager(WIDTH, HEIGHT, TITLE)
+    window_manager = create_window_manager(WIDTH, HEIGHT, TITLE)
     preferences.apply_video(window_manager)
     asset_manager = AssetManager()
     audio_manager = AudioManager(music_volume=MUSIC_VOLUME)
@@ -141,41 +141,9 @@ def main():
     # Inicializa a aplicação com a cena do Menu Principal
     scene_manager.change_scene(MenuScene(scene_manager, window_manager, asset_manager))
 
-    running = True
-    while running:
-        dt = clock.tick(FPS)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-                break
-            # Tela cheia (F11), janela 1280x720 (F10) e redimensionamento valem
-            # em qualquer tela, inclusive com modais abertos.
-            is_window_shortcut = event.type == pygame.KEYDOWN and event.key in (pygame.K_F11, pygame.K_F10)
-            if window_manager.handle_window_event(event):
-                if is_window_shortcut:
-                    audio_manager.play_sfx("ui.click", volume=1.0)
-                    preferences.set("fullscreen", window_manager.is_fullscreen)
-                    preferences.set(
-                        "window_size",
-                        "legacy"
-                        if window_manager.windowed_size == LEGACY_WINDOW_SIZE
-                        else "large",
-                    )
-                    try:
-                        preferences.save()
-                    except OSError:
-                        pass
-                continue
-            scene_manager.handle_event(event)
-
-        scene_manager.update(dt)
-
-        # Renderiza a cena atual na resolução virtual fixa e apresenta com escala adaptativa
-        scene_manager.draw(window_manager.virtual_screen)
-        if preferences.get("show_fps"):
-            draw_fps(window_manager.virtual_screen, asset_manager.small_font, clock.get_fps())
-        window_manager.present()
+    from src.core.application import Application
+    app = Application(window_manager, asset_manager, audio_manager, preferences, scene_manager, clock)
+    app.run_desktop()
 
     # Persiste o checkpoint também quando a janela é fechada diretamente.
     active_scene = scene_manager.current_scene
@@ -184,8 +152,14 @@ def main():
 
     audio_manager.shutdown()
     pygame.quit()
-    sys.exit()
+    return
 
 
 if __name__ == "__main__":
-    main()
+    from src.platforms.capabilities import detect_capabilities
+    if detect_capabilities().is_web:
+        import asyncio
+        from web.poc import main as web_main
+        asyncio.run(web_main())
+    else:
+        main()

@@ -229,3 +229,20 @@ A IA foi usada como ferramenta de apoio na criação e aceleração dos sprites 
 ## Licença
 
 <!-- TODO: definir licença -->
+
+## Prova web — Etapa 1
+
+Menu e combate contra Slime em Pygbag, sem saves e sem campanha web.
+O desktop e o instalador continuam independentes. Consulte
+[escopo e execução da prova](docs/web_poc.md).
+
+A Etapa 2 isola serviços desktop/web, saída, viewport e foco; também otimiza
+caches de renderização preservando o desktop. Consulte o
+[contrato de plataformas](docs/web_platforms.md).
+
+A Etapa 3 adiciona persistência híbrida v15: IndexedDB para slots/perfil/run,
+localStorage para preferências, confirmação assíncrona com rollback,
+controle de revisão entre abas, checkpoints e exportação/importação JSON.
+O build padrão inclui as telas reais de gerenciamento e o encontro Slime;
+o piloto anterior sem saves continua em `?render=1`.
+Veja [persistência web e validação](docs/web_storage.md).

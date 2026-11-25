@@ -364,3 +364,55 @@ Resume/recheck são incrementais; não chamá-los de nova suíte integral.
   O texto de HP é centralizado na abertura, não no canvas decorativo inteiro.
 - test_health_bar cobre pontas no HP máximo, proporção parcial, zero, limites,
   preservação dos ornamentos e simetria dos dois lados. A arte PNG não mudou.
+
+## 24. Prova web — Etapa 1
+
+- Branch feat/web-mobile-port a partir de b19cfcf. Entradas web/main.py e web/poc.py,
+  empacotadas por devtools/build_web.py. Não executar a campanha/saves no navegador.
+- Application compartilha um frame: desktop síncrono; web cede com asyncio.sleep(0).
+  Não usar sys.exit no caminho web. Não alterar instalador, schema v15 ou layouts mobile.
+- AssetManager(preload=False) carrega somente fontes e fundo. ProofAssets prepara
+  somente jogador/cartas iniciais/Mana/Slime/HUD em lotes cooperativos.
+- O fallback NotoSansSymbols2/OFL é baixado pelo preparador para o build ignorado;
+  não incluir fontes do Windows no pacote. Desktop mantém a fonte anterior.
+- AudioManager(defer_initialization=True) aguarda gesto e conserva música pendente.
+  O construtor padrão desktop continua inicializando imediatamente.
+- ProofWindow mantém canvas virtual 1920x1080, saída 1280x720 e CSS proporcional, sem
+  alterar a resolução virtual ou sprites. Isso não constitui layout compacto mobile. O cenário estático e os textos usam
+  caches exclusivos da prova; o teste de pixels preserva a composição original.
+- No piloto `?render=1`, preferências vivem só em memória e nenhum slot real é acessado.
+  Bibliotecas/runtime web versionados em requirements-web.txt; ambiente .venv-web separado.
+- Veja [prova web](docs/web_poc.md) e [estado atual](docs/estado_atual.md).
+
+## 25. Isolamento de plataforma — Etapa 2
+
+- src/platforms define capacidades e serviços; não introduzir Pygame em caminhos
+  ou capacidades. Emscripten é detectado em runtime; não inferir pelo tamanho.
+- Resources são separados de user_data_path. Desktop preserva _MEIPASS/
+  LOCALAPPDATA. Web tem FS de sessão e capacidade de IndexedDB (disponibilidade validada ao abrir):
+  não tratar esse diretório como save durável; usar BrowserStore para persistência.
+- Usar SceneManager.request_exit em cenas; não sys.exit/pygame.quit.
+  Main conserva encerramento e save desktop; web volta à home_factory.
+- WindowManager é o controlador desktop original. create_window_manager
+  seleciona WebWindowManager; APIs do browser ficam em web/bridge.js.
+- Pausa web por visibilidade/foco: suspender updates/entrada/áudio e descartar
+  tempo/eventos acumulados. Conferir a geração de retomada, além do booleano.
+- RenderCache usa fontes imutáveis. Não modificar pixels de imagens cacheadas.
+  Blit recortado mantém origem e flags; não recortar o canvas das sprites.
+- Bandeja RGB é uma otimização exclusiva do Slime na prova, com fallback para
+  Ultimates; não aplicar cegamente a bosses/FX que cruzem a mão.
+- [Contrato e validação de plataformas](docs/web_platforms.md).
+
+
+## 26. Persistência web — Etapa 3
+
+- Save JSON permanece v15; IndexedDB v1 tem stores saves e backups. Não incrementar SAVE_VERSION por adicionar backend.
+- DiskStore preserva fsync/replace e caminhos nativos. Nunca usar FS virtual web como save durável.
+- BrowserSaveManager.run/transact_async executam regras numa candidata isolada; somente oncomplete publica a candidata e confirma UI. Não chamar save síncrono do manager web.
+- SceneManager.submit bloqueia entrada duplicada, preservando desenho e cooperação asyncio. Falha descarta candidata; combate restaura snapshot confirmado.
+- Revisão e run de origem verificadas dentro do readwrite IndexedDB. Duas abas não podem sobrescrever silenciosamente o mesmo slot.
+- JSON na fronteira Python/JavaScript deve usar escapes ASCII nos dois sentidos; textos em português precisam sobreviver intactos a múltiplos commits e importações.
+- Preferências leves no localStorage; perfil, run, guias vistos e snapshots no IndexedDB. Mesmas migrações, normalização e validações nativas.
+- Checkpoints lógicos e comandos confirmados são a garantia principal; pagehide/visibilitychange são complementares, sem garantia ao fechar a aba.
+- Backup .json validado e limitado a 5 MiB; substituição de slot exige confirmação. Preservar originais e instalador.
+- Ver [persistência web](docs/web_storage.md) e [estado atual](docs/estado_atual.md). Campanha web completa, mobile e PWA permanecem fora desta etapa.

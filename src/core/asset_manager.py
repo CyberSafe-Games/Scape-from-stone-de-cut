@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import pygame
 from src.systems.common_animation_kits import COMMON_KITS
@@ -49,7 +50,7 @@ class AssetManager:
     CARD_IMAGE_FILES = {s[1]: s[0] + '.png' for s in CARD_SPECS}
     CARD_ACTION_FILES = {s[1]: s[0] for s in CARD_SPECS}
 
-    def __init__(self):
+    def __init__(self, preload=True):
         self._fonts = {}
         self._card_images = {}
         self._card_action_sprites = {}
@@ -76,23 +77,27 @@ class AssetManager:
 
         self._init_fonts()
         self._load_background()
-        self._load_tutorial_background()
-        self._load_territory_backgrounds()
-        self._load_player_sprites()
-        self._load_enemy_sprites()
-        self._load_common_eight_frames()
-        self._load_card_action_sprites()
-        self._load_player_eight_frames()
-        self._load_boss_ultimate_sprites()
-        self._load_boss_eight_frame_sprites()
-        self._load_defeat_poses()
-        self._load_coin_icon()
-        self._load_ui_images()
-        self._load_ultimate_images()
+        if preload:
+            self._load_tutorial_background()
+            self._load_territory_backgrounds()
+            self._load_player_sprites()
+            self._load_enemy_sprites()
+            self._load_common_eight_frames()
+            self._load_card_action_sprites()
+            self._load_player_eight_frames()
+            self._load_boss_ultimate_sprites()
+            self._load_boss_eight_frame_sprites()
+            self._load_defeat_poses()
+            self._load_coin_icon()
+            self._load_ui_images()
+            self._load_ultimate_images()
 
     @staticmethod
     def _pick_font(preferred_names, size, bold=False):
         """Usa uma família instalada; evita fallback silencioso na primeira opção."""
+        from src.config.typography import PACKAGED_SYMBOL_FONT
+        if sys.platform == "emscripten" and os.path.isfile(PACKAGED_SYMBOL_FONT):
+            return pygame.font.Font(PACKAGED_SYMBOL_FONT, size)
         for name in preferred_names:
             path = pygame.font.match_font(name, bold=bold)
             if path:

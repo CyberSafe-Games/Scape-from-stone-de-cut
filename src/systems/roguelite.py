@@ -180,3 +180,10 @@ def purchase_permanent(manager, data, kind):
         profile[kind] += 1
         return 'Melhoria permanente comprada; vale na próxima run.'
     return transact(manager, data, mutate)
+
+
+async def transact_async(manager, data, command):
+    """Executa regras síncronas em candidata e só publica após o commit web."""
+    if getattr(manager, "async_commands", False) is True:
+        return await manager.run(data, command)
+    return command(manager, data)

@@ -101,15 +101,19 @@ class RogueliteScene(BaseScene):
 
     def _purchase_material(self):
         selected = self._selected_copy()
-        if selected and self._notify(purchase_material(
-                self.save_manager, self.save_data, selected["name"])):
-            self.visuals.celebrate(self.material_button)
+        if selected:
+            def complete(result):
+                if self._notify(result):
+                    self.visuals.celebrate(self.material_button)
+            self.persist_command(lambda m,d:purchase_material(m,d,selected["name"]),complete)
 
     def _upgrade_selected(self):
         selected = self._selected_copy()
-        if selected and self._notify(upgrade_copy(
-                self.save_manager, self.save_data, selected["id"])):
-            self.visuals.celebrate(self.after_rect)
+        if selected:
+            def complete(result):
+                if self._notify(result):
+                    self.visuals.celebrate(self.after_rect)
+            self.persist_command(lambda m,d:upgrade_copy(m,d,selected["id"]),complete)
 
     def draw(self, surface):
         self.buttons = []
@@ -232,8 +236,7 @@ class RogueliteScene(BaseScene):
             price = prices[level] if level < len(prices) else None
             self._button(surface, (1200, y - 5, 580, 65),
                          f"COMPRAR · {price} FRAGMENTOS" if price else "LIMITE ATINGIDO",
-                         lambda k=kind: self._notify(purchase_permanent(
-                             self.save_manager, self.save_data, k)),
+                         lambda k=kind: self.persist_command(lambda m,d:purchase_permanent(m,d,k),self._notify),
                          price is not None and profile["fragmentos"] >= price)
         draw_text(surface, "Escolha um tipo extra LV1 para a nova run (não ocupa espaço automaticamente).",
                   a.small_font, GRAY, 100, 660)
@@ -251,12 +254,19 @@ class RogueliteScene(BaseScene):
         self.play_ui_sound("ui.click")
 
     def _choose_preparation(self, name):
-        def mutate():
-            self.save_data["perfil"]["preparada"] = name
-            return f"{name} preparada para a próxima run."
-        self._notify(transact(self.save_manager, self.save_data, mutate))
+        def command(manager, data):
+            def mutate():
+                data["perfil"]["preparada"] = name
+                return f"{name} preparada para a próxima run."
+            return transact(manager,data,mutate)
+        self.persist_command(command,self._notify)
 
     def _new_run(self):
+        if getattr(self.save_manager,"async_commands",False) is True:
+            def complete(result):
+                if self._notify(result):
+                    self.management_back()
+            return self.persist_command(lambda m,d:m.new_run(d),complete)
         result = self.save_manager.new_run(self.save_data)
         self._notify(result)
         if result[0]:
@@ -265,6 +275,8 @@ class RogueliteScene(BaseScene):
                 self.asset_manager, self.save_manager, self.save_data))
 
     def _back(self):
+        if self.management_back():
+            return
         if self.preparation:
             from src.scenes.menu_scene import MenuScene
             scene = MenuScene(self.scene_manager, self.window_manager, self.asset_manager)

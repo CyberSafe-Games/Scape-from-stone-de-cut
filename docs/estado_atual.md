@@ -199,3 +199,17 @@ A barra usa toda a abertura interna da arte hud_health.png, com máscara própri
 transformada pela mesma escala em faixas da moldura. HP máximo vai de ponta a
 ponta do canal; HP parcial é proporcional e HP zero não tem vermelho. A máscara
 protege cabeças de águia/bordas e a composição é idêntica nos dois lados.
+
+## Prova web e plataformas
+
+Há uma prova Pygbag limitada a menu e Slime. A camada src/platforms separa
+recursos/dados e saída desktop/web; o canvas web acompanha foco/visibilidade e
+Fullscreen API sem alterar o controlador nativo. Persistência web v15 implementada no piloto da Etapa 3; PWA/mobile e campanha web completa continuam pendentes. Ver [plataformas](web_platforms.md).
+
+
+## Persistência híbrida v15
+
+Disco nativo preservado; navegador usa IndexedDB para perfil/run/snapshot e
+localStorage apenas para preferências. Confirmação exige commit real com revisão,
+rollback, checkpoint lógico e backup manual JSON.
+Ver [regras e validação da Etapa 3](web_storage.md).

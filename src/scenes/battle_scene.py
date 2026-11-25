@@ -845,6 +845,16 @@ class BattleScene(BaseScene):
         return ok
 
     def _draw_background(self, surface):
+        level = self.selected_level or self.engine.level
+        bg = self.asset_manager.get_battle_background(level)
+        key = (level, surface.get_size(), bg)
+        if key != getattr(self, "_background_key", None):
+            self._background_key = key
+            self._background_layer = pygame.Surface(surface.get_size()).convert(surface)
+            self._render_background(self._background_layer)
+        surface.blit(self._background_layer, (0,0))
+
+    def _render_background(self, surface):
         bg = self.asset_manager.get_battle_background(
             self.selected_level or self.engine.level
         )
