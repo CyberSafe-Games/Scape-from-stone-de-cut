@@ -1,0 +1,721 @@
+{
+  "etapa": 4,
+  "checkpoint_etapa3": "742218f",
+  "branch": "feat/web-mobile-port",
+  "build": {
+    "initial_package_bytes": 6876726,
+    "assets": 2527,
+    "source_bytes": 370073235,
+    "groups": 39,
+    "packs": 71,
+    "context_pack_bytes": 376144379,
+    "bytes_by_group": {
+      "audio": 1875254,
+      "combat_shared": 7632,
+      "cutscene:final": 31056063,
+      "cutscene:intro": 21129272,
+      "cutscene:post": 4239921,
+      "enemy:alvaro_tex": 42469410,
+      "enemy:carrasco_da_vigilia": 11490352,
+      "enemy:centauro": 3235868,
+      "enemy:corpo_seco": 8523791,
+      "enemy:crocodilo": 3467779,
+      "enemy:esqueleto": 2074764,
+      "enemy:goblin_nerd": 19489612,
+      "enemy:golem": 3498728,
+      "enemy:gordofera": 18017573,
+      "enemy:guardiao_da_pedra": 7406706,
+      "enemy:guerreiro_mata": 3257231,
+      "enemy:lagarto": 2251563,
+      "enemy:lutador": 2561860,
+      "enemy:macaco": 2549743,
+      "enemy:mago": 3739570,
+      "enemy:morcego": 2692328,
+      "enemy:putrefato": 3071105,
+      "enemy:slime": 4161681,
+      "enemy:vinimuth": 3685762,
+      "enemy:viniurgo": 946556,
+      "enemy:zanzara": 27836874,
+      "management": 76398694,
+      "music:chefes_jungle_chase_v2.ogg": 2204110,
+      "music:chefes_jungle_tribe_v2.ogg": 2662761,
+      "music:combate_tambores_v1.ogg": 1159661,
+      "music:epilogo_lost_time_v1.ogg": 3464617,
+      "player": 33739201,
+      "territory:1": 3584934,
+      "territory:2": 3157836,
+      "territory:3": 3343810,
+      "territory:5": 3260029,
+      "territory:6": 3330283,
+      "territory:7": 2328081,
+      "tutorial": 2773364
+    }
+  },
+  "python": {
+    "tests": 860,
+    "failures": 0,
+    "modules": 86,
+    "seconds": 187.02
+  },
+  "chromium_campaign": {
+    "passed": true,
+    "browser": "159.0.8154.6",
+    "menu_seconds": 8.8,
+    "fps_median": 33.89830780029297,
+    "fps_min": 5.820721626281738,
+    "memory_samples": [
+      {
+        "level": 1,
+        "encounter": "0",
+        "enemy": "Slime",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 17.18,
+        "fps_median": 39.525691986083984,
+        "memory": {
+          "js": 225000000,
+          "wasm": 463994880
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:slime",
+          "enemy:viniurgo",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:1"
+        ],
+        "transfer_bytes": 291219398
+      },
+      {
+        "level": 1,
+        "encounter": "1",
+        "enemy": "Viniurgo",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 16.96,
+        "fps_median": 36.49635314941406,
+        "memory": {
+          "js": 225000000,
+          "wasm": 463994880
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:slime",
+          "enemy:viniurgo",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:1"
+        ],
+        "transfer_bytes": 299912569
+      },
+      {
+        "level": 1,
+        "encounter": "boss",
+        "enemy": "Guardião da Pedra",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 23.08,
+        "fps_median": 22.172948837280273,
+        "memory": {
+          "js": 225000000,
+          "wasm": 556793856
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:guardiao_da_pedra",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:1"
+        ],
+        "transfer_bytes": 310904209
+      },
+      {
+        "level": 2,
+        "encounter": "0",
+        "enemy": "Macaco Selvagem",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 17.15,
+        "fps_median": 39.370079040527344,
+        "memory": {
+          "js": 225000000,
+          "wasm": 556793856
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:guerreiro_mata",
+          "enemy:macaco",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:2"
+        ],
+        "transfer_bytes": 319869019
+      },
+      {
+        "level": 2,
+        "encounter": "1",
+        "enemy": "Guerreiro da Mata",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 17.46,
+        "fps_median": 39.525691986083984,
+        "memory": {
+          "js": 225000000,
+          "wasm": 556793856
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:guerreiro_mata",
+          "enemy:macaco",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:2"
+        ],
+        "transfer_bytes": 328833829
+      },
+      {
+        "level": 2,
+        "encounter": "boss",
+        "enemy": "Álvaro e Tex",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 36.51,
+        "fps_median": 31.25,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:alvaro_tex",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:2"
+        ],
+        "transfer_bytes": 374461075
+      },
+      {
+        "level": 3,
+        "encounter": "0",
+        "enemy": "Golem das Ruínas",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 14.92,
+        "fps_median": 26.982407569885254,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:golem",
+          "enemy:lagarto",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:3"
+        ],
+        "transfer_bytes": 383555176
+      },
+      {
+        "level": 3,
+        "encounter": "1",
+        "enemy": "Lagarto Couraçado",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 15.96,
+        "fps_median": 37.7358512878418,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:golem",
+          "enemy:lagarto",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:3"
+        ],
+        "transfer_bytes": 392649277
+      },
+      {
+        "level": 3,
+        "encounter": "boss",
+        "enemy": "Goblin Nerd",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 24.4,
+        "fps_median": 33.11258316040039,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:goblin_nerd",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:3"
+        ],
+        "transfer_bytes": 415482699
+      },
+      {
+        "level": 4,
+        "encounter": "0",
+        "enemy": "Putrefato do Pântano",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 18.66,
+        "fps_median": 35.84229278564453,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:crocodilo",
+          "enemy:putrefato",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:4"
+        ],
+        "transfer_bytes": 422021583
+      },
+      {
+        "level": 4,
+        "encounter": "1",
+        "enemy": "Crocodilo Abissal",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 16.5,
+        "fps_median": 39.525691986083984,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:crocodilo",
+          "enemy:putrefato",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:4"
+        ],
+        "transfer_bytes": 428560467
+      },
+      {
+        "level": 4,
+        "encounter": "boss",
+        "enemy": "Gordofera",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 27.56,
+        "fps_median": 30.030029296875,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:gordofera",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:4"
+        ],
+        "transfer_bytes": 446578040
+      },
+      {
+        "level": 5,
+        "encounter": "0",
+        "enemy": "Esqueleto Saqueador",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 17.14,
+        "fps_median": 39.526309967041016,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:esqueleto",
+          "enemy:morcego",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:5"
+        ],
+        "transfer_bytes": 454605161
+      },
+      {
+        "level": 5,
+        "encounter": "1",
+        "enemy": "Morcego Sombrio",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 16.45,
+        "fps_median": 40.0102424621582,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:esqueleto",
+          "enemy:morcego",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:5"
+        ],
+        "transfer_bytes": 462632282
+      },
+      {
+        "level": 5,
+        "encounter": "boss",
+        "enemy": "Corpo Seco",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 27.09,
+        "fps_median": 34.48276138305664,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:corpo_seco",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:5"
+        ],
+        "transfer_bytes": 474416102
+      },
+      {
+        "level": 6,
+        "encounter": "0",
+        "enemy": "Centauro Vigia",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 14.22,
+        "fps_median": 40.983604431152344,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:centauro",
+          "enemy:lutador",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:6"
+        ],
+        "transfer_bytes": 483544113
+      },
+      {
+        "level": 6,
+        "encounter": "1",
+        "enemy": "Lutador Mascarado",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 14.29,
+        "fps_median": 42.553192138671875,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:centauro",
+          "enemy:lutador",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:6"
+        ],
+        "transfer_bytes": 492672124
+      },
+      {
+        "level": 6,
+        "encounter": "boss",
+        "enemy": "Carrasco da Vigília",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 23.91,
+        "fps_median": 28.523366928100586,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:carrasco_da_vigilia",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:6"
+        ],
+        "transfer_bytes": 507492759
+      },
+      {
+        "level": 7,
+        "encounter": "0",
+        "enemy": "Vinimuth",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 22.75,
+        "fps_median": 35.587188720703125,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:mago",
+          "enemy:vinimuth",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:7"
+        ],
+        "transfer_bytes": 517246172
+      },
+      {
+        "level": 7,
+        "encounter": "1",
+        "enemy": "Mago do Santuário",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 19.95,
+        "fps_median": 33.89830780029297,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "audio",
+          "combat_shared",
+          "enemy:mago",
+          "enemy:vinimuth",
+          "management",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "player",
+          "territory:7"
+        ],
+        "transfer_bytes": 526999585
+      },
+      {
+        "level": 7,
+        "encounter": "boss",
+        "enemy": "Zanzara",
+        "audio_available": true,
+        "missing_sounds": [],
+        "load_and_fight_seconds": 38.67,
+        "fps_median": 35.335689544677734,
+        "memory": {
+          "js": 225000000,
+          "wasm": 758644736
+        },
+        "resident": [
+          "cutscene:final",
+          "menu",
+          "music:chefes_jungle_chase_v2.ogg",
+          "music:chefes_jungle_tribe_v2.ogg",
+          "music:combate_tambores_v1.ogg",
+          "music:epilogo_lost_time_v1.ogg"
+        ],
+        "transfer_bytes": 591685220
+      }
+    ],
+    "encounters": [
+      "Slime",
+      "Viniurgo",
+      "Guardião da Pedra",
+      "Macaco Selvagem",
+      "Guerreiro da Mata",
+      "Álvaro e Tex",
+      "Golem das Ruínas",
+      "Lagarto Couraçado",
+      "Goblin Nerd",
+      "Putrefato do Pântano",
+      "Crocodilo Abissal",
+      "Gordofera",
+      "Esqueleto Saqueador",
+      "Morcego Sombrio",
+      "Corpo Seco",
+      "Centauro Vigia",
+      "Lutador Mascarado",
+      "Carrasco da Vigília",
+      "Vinimuth",
+      "Mago do Santuário",
+      "Zanzara"
+    ],
+    "player_ultimates": [
+      "Forças Ancestrais",
+      "Mana Ancestral",
+      "Rugido da Floresta"
+    ],
+    "qa_method": "Tutorial e primeiro encontro sem alteração; 21 checkpoints QA v15, força 36/energia 8 e escudo para exercer Ultimates.",
+    "errors": []
+  },
+  "chromium_management": {
+    "passed": true,
+    "shop_fps_median": 37.951894760131836,
+    "shop_draw_ms_median": 21.749999499999007,
+    "checks": [
+      "shop_purchase",
+      "shop_wheel",
+      "backpack_equipment",
+      "ultimate_equipment",
+      "upgrade_comparison_lv1_lv2",
+      "settings_keyboard",
+      "settings_slider",
+      "settings_tabs",
+      "guides",
+      "indexeddb_reload",
+      "preferences_reload"
+    ]
+  },
+  "memory": {
+    "wasm_heap_peak_bytes": 758644736,
+    "js_heap_peak_bytes": 225000000,
+    "note": "Heap WASM reservado, nao RSS. O runtime pode manter seu tamanho maximo mesmo apos liberar superficies."
+  },
+  "limits": [
+    "Campanha funcional com checkpoints QA v15; nao representa uma run natural de balanceamento.",
+    "FPS varia por encontro e equipamento; nao foi atingido 60 FPS sustentado em toda a campanha.",
+    "Mobile, toque, PWA e validacao em aparelhos reais pertencem as proximas etapas.",
+    "transfer_bytes e materializacao acumulada dos pacotes; pode incluir leituras do cache HTTP."
+  ],
+  "desktop_installer_diff": [],
+  "files": [
+    " M AGENTS.md",
+    " M README.md",
+    " M devtools/build_web.py",
+    " M docs/documentacao_manifest.json",
+    " M docs/estado_atual.md",
+    " M docs/inventario_testes.json",
+    " M docs/web_storage.md",
+    " M src/core/application.py",
+    " M src/core/asset_manager.py",
+    " M src/systems/combat_snapshot.py",
+    " M src/ui/enemy_intent_view.py",
+    " M src/ui/render_cache.py",
+    " M web/main.py",
+    "?? devtools/generate_web_campaign_fixtures.py",
+    "?? devtools/validate_web_campaign.py",
+    "?? devtools/validate_web_management.py",
+    "?? devtools/web_asset_packs.py",
+    "?? docs/validacao_web_etapa4.json",
+    "?? docs/web_campaign.md",
+    "?? src/core/input_router.py",
+    "?? src/systems/web_resources.py",
+    "?? src/ui/composition_cache.py",
+    "?? src/ui/inspection_controller.py",
+    "?? tests/test_web_campaign.py",
+    "?? web/assets.py",
+    "?? web/campaign.py",
+    "?? web/resources.js"
+  ],
+  "documentation": {
+    "documents": 63,
+    "modules": 86,
+    "tests": 860,
+    "broken_local_links": 0,
+    "contract_tests_passed": 9
+  }
+}

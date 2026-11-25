@@ -309,6 +309,11 @@
       "file": "docs/web_storage.md",
       "kind": "current",
       "summary": "Persistencia hibrida v15, confirmacao assincrona, conflito entre abas, checkpoints e backup."
+    },
+    {
+      "file": "docs/web_campaign.md",
+      "kind": "current",
+      "summary": "Campanha Web PC, manifesto por contexto, entrada, memória e metodologia de QA."
     }
   ]
 }

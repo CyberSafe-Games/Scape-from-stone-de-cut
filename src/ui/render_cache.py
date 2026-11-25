@@ -45,3 +45,15 @@ def blit_actor(surface, frame, rect, blend_flags=0):
                             bounds, special_flags=blend_flags)
     return pygame.Rect(rect.topleft, (0,0))
 
+
+
+def clear_context_caches():
+    """O gestor web libera referências de poses ao deixar um contexto."""
+    from src.ui import helpers, pose_playback, enemy_reactions, zanzara_necromancer
+    for module in (helpers,pose_playback,enemy_reactions,zanzara_necromancer):
+        for value in vars(module).values():
+            clear=getattr(value,"cache_clear",None)
+            if callable(clear):clear()
+    _actor_bounds.clear()
+    _scaled_images.clear()
+

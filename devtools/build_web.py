@@ -10,6 +10,7 @@ import tarfile
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
 STAGE = ROOT / "build" / "web-poc"
 
 
@@ -43,7 +44,7 @@ def selected_assets():
 
 def prepare():
     STAGE.mkdir(parents=True, exist_ok=True)
-    allowed={"assets","src","web","build","main.py","desktop_entry.py","proof_manifest.json"}
+    allowed={"assets","src","web","build","main.py","desktop_entry.py","proof_manifest.json","web_manifest.json"}
     unexpected={p.name for p in STAGE.iterdir()}-allowed
     if unexpected:
         raise ValueError("Arquivos estranhos na área de empacotamento: "+str(sorted(unexpected)))
@@ -107,8 +108,16 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prepare-only",action="store_true")
     parser.add_argument("--serve",action="store_true")
+    parser.add_argument("--poc",action="store_true",help="Preserva o piloto das Etapas 1–3.")
     args=parser.parse_args()
     prepare()
+    if args.poc:
+        (STAGE/"web_manifest.json").unlink(missing_ok=True)
+    if not args.poc:
+        from devtools.web_asset_packs import build_packs
+        manifest=build_packs(ROOT,STAGE)
+        print(json.dumps({"full_assets":len(manifest["files"]),"groups":len(manifest["groups"]),
+                          "initial_asset_bytes":manifest["initial_asset_bytes"]}))
     if not args.prepare_only:
         command=[sys.executable,"-m","pygbag","--no_opt","--ume_block","0","--width","1280","--height","720","--title","Scape From Stone — Prova Web"]
         command.append("--build")
@@ -117,17 +126,18 @@ def main():
         with tarfile.open(output/"web-poc.tar.gz","r:gz") as archive:
             names=archive.getnames()
         allowed_prefixes=("assets/assets/","assets/src/","assets/web/")
-        allowed_files={"assets/main.py","assets/desktop_entry.py","assets/proof_manifest.json"}
+        allowed_files={"assets/main.py","assets/desktop_entry.py","assets/proof_manifest.json","assets/web_manifest.json"}
         unexpected=[name for name in names if name not in allowed_files and not name.startswith(allowed_prefixes)]
         if unexpected:
             raise ValueError("Pacote contém arquivos fora da prova: "+str(unexpected[:5]))
         shutil.copyfile(ROOT/"web/styles.css",output/"styles.css")
         shutil.copyfile(ROOT/"web/bridge.js",output/"bridge.js")
         shutil.copyfile(ROOT/"web/storage.js",output/"storage.js")
+        shutil.copyfile(ROOT/"web/resources.js",output/"resources.js")
         index=output/"index.html"
         html=index.read_text(encoding="utf-8")
         html=html.replace("</head>",'<link rel="stylesheet" href="styles.css"></head>')
-        html=html.replace("</body>",'<script src="bridge.js"></script><script src="storage.js"></script></body>')
+        html=html.replace("</body>",'<script src="bridge.js"></script><script src="storage.js"></script><script src="resources.js"></script></body>')
         index.write_text(html,encoding="utf-8")
         if args.serve:
             subprocess.run([sys.executable,"-m","http.server","8765","--bind","127.0.0.1",

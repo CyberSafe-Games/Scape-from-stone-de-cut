@@ -204,7 +204,7 @@ protege cabeças de águia/bordas e a composição é idêntica nos dois lados.
 
 Há uma prova Pygbag limitada a menu e Slime. A camada src/platforms separa
 recursos/dados e saída desktop/web; o canvas web acompanha foco/visibilidade e
-Fullscreen API sem alterar o controlador nativo. Persistência web v15 implementada no piloto da Etapa 3; PWA/mobile e campanha web completa continuam pendentes. Ver [plataformas](web_platforms.md).
+Fullscreen API sem alterar o controlador nativo. Persistência web v15 implementada no piloto da Etapa 3; Naquele piloto a campanha era limitada; a Etapa 4 está descrita abaixo. PWA/mobile continuam pendentes. Ver [plataformas](web_platforms.md).
 
 
 ## Persistência híbrida v15
@@ -213,3 +213,7 @@ Disco nativo preservado; navegador usa IndexedDB para perfil/run/snapshot e
 localStorage apenas para preferências. Confirmação exige commit real com revisão,
 rollback, checkpoint lógico e backup manual JSON.
 Ver [regras e validação da Etapa 3](web_storage.md).
+
+## Campanha Web PC
+
+A Etapa 4 conecta o fluxo completo às cenas e regras nativas, com pacotes por contexto e confirmação IndexedDB. Veja [arquitetura e validação](web_campaign.md). Layout compacto, toque e PWA permanecem para as próximas etapas.

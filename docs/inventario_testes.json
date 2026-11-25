@@ -1176,6 +1176,40 @@
       ]
     },
     {
+      "file": "tests/test_web_campaign.py",
+      "cases": [
+        "ContextManifestTests.test_menu_does_not_depend_on_campaign",
+        "ContextManifestTests.test_boss_phases_share_one_context",
+        "ContextManifestTests.test_common_defeat_has_same_owner_as_animated_poses",
+        "ContextManifestTests.test_cutscenes_have_distinct_contexts",
+        "ContextManifestTests.test_battle_loads_only_requested_enemy_groups",
+        "ContextManifestTests.test_outside_assets_and_traversal_rejected",
+        "ContextManifestTests.test_complete_active_resource_inventory_has_one_owner",
+        "ContextManifestTests.test_native_loaders_default_to_all_characters",
+        "InputRouterTests.test_mouse_uses_virtual_position_and_preserves_original_event",
+        "InputRouterTests.test_wheel_preserves_both_axes",
+        "InputRouterTests.test_keyboard_keeps_escape_and_browser_fullscreen_shortcuts",
+        "InspectionTests.test_hover_finds_first_target_and_clears_outside",
+        "InspectionTests.test_pinned_inspection_is_independent_of_hover_until_explicit_clear",
+        "InspectionTests.test_repeated_hover_does_not_invalidate_generation",
+        "InspectionTests.test_preview_is_bounded_for_landscape_and_small_viewport",
+        "ContextMemoryTests.test_shared_files_reused_but_previous_enemy_is_not_retained",
+        "CompositionPixelTests.test_backdrop_is_pixel_identical_after_cached_draw",
+        "CompositionPixelTests.test_cached_panel_matches_native_over_changing_underlay_and_overlap",
+        "CompositionPixelTests.test_sparse_frame_matches_complete_alpha_blit",
+        "CompositionPixelTests.test_filled_frame_keeps_center_pixels",
+        "CompositionPixelTests.test_memory_bound_is_enforced",
+        "CompositionPixelTests.test_root_panel_cache_preserves_overlapping_previews",
+        "FinalCampaignTransactionTests.test_final_phase_commits_run_before_opening_epilogue",
+        "FinalCampaignTransactionTests.test_failed_final_commit_does_not_open_epilogue",
+        "RealShopPixelTests.test_web_composition_matches_real_shop_including_hover_preview",
+        "SnapshotContextTests.test_temporary_engine_restores_territory_kind_and_index",
+        "ContextReachabilityTests.test_dual_boss_intent_cards_share_loaded_boss_context",
+        "ContextReachabilityTests.test_all_enemy_resource_groups_are_reachable_by_registered_kits",
+        "ContextCacheReleaseTests.test_leaving_context_releases_pose_and_support_lru_references"
+      ]
+    },
+    {
       "file": "tests/test_web_proof.py",
       "cases": [
         "WebLoopTests.test_web_yields_between_frames_and_returns_without_exit",
@@ -1265,6 +1299,6 @@
       ]
     }
   ],
-  "modules": 85,
-  "methods": 831
+  "modules": 86,
+  "methods": 860
 }

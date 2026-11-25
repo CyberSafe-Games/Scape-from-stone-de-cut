@@ -8,6 +8,8 @@ from src.ui.fps_counter import draw_fps
 
 class Application:
     def __init__(self, window, assets, audio, preferences, scenes, clock=None):
+        from src.core.input_router import InputRouter
+        self.input_router = InputRouter(window)
         self.window, self.assets, self.audio = window, assets, audio
         self.preferences, self.scenes = preferences, scenes
         self.clock = clock or pygame.time.Clock()
@@ -57,7 +59,7 @@ class Application:
                     except OSError:
                         pass
                 continue
-            self.scenes.handle_event(event)
+            self.input_router.dispatch(event,self.scenes.handle_event)
         if self.scenes.exit_requested:
             self.running = False
         if not self.running or (web and not active):

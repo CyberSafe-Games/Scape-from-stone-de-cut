@@ -243,6 +243,8 @@ caches de renderização preservando o desktop. Consulte o
 A Etapa 3 adiciona persistência híbrida v15: IndexedDB para slots/perfil/run,
 localStorage para preferências, confirmação assíncrona com rollback,
 controle de revisão entre abas, checkpoints e exportação/importação JSON.
-O build padrão inclui as telas reais de gerenciamento e o encontro Slime;
+O piloto --poc inclui as telas reais de gerenciamento e o encontro Slime;
 o piloto anterior sem saves continua em `?render=1`.
 Veja [persistência web e validação](docs/web_storage.md).
+
+A Etapa 4 integra a campanha Web PC com recursos por contexto, cenas nativas e entrada unificada. Consulte [campanha web](docs/web_campaign.md). O build padrão é completo; use --poc para reproduzir a prova anterior.

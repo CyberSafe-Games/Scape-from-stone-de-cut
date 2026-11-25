@@ -70,7 +70,7 @@ Assets de gerenciamento entram no pacote sob demanda do build; não incluir save
 locais, backups do jogador, ambientes Python ou arte da campanha inteira.
 
 ```powershell
-.venv-web/Scripts/python.exe devtools/build_web.py
+.venv-web/Scripts/python.exe devtools/build_web.py --poc
 .venv-web/Scripts/python.exe -m http.server 8765 --bind 127.0.0.1 --directory build/web-poc/build/web
 # Em outro terminal; Chromium/Playwright no ambiente web:
 .venv-web/Scripts/python.exe devtools/validate_web_storage.py
@@ -101,4 +101,3 @@ A lista completa de arquivos criados/alterados e as evidências por módulo est�
 no [relatório da Etapa 3](validacao_web_etapa3.json). O schema v15, os caminhos
 nativos e os arquivos do instalador foram preservados. Nenhum asset foi movido
 ou excluído nesta etapa. Não houve commit, push ou merge.
-

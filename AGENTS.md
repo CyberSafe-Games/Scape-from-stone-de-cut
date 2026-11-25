@@ -367,6 +367,8 @@ Resume/recheck são incrementais; não chamá-los de nova suíte integral.
 
 ## 24. Prova web — Etapa 1
 
+As restrições desta seção descrevem --poc; a campanha padrão segue a Etapa 4.
+
 - Branch feat/web-mobile-port a partir de b19cfcf. Entradas web/main.py e web/poc.py,
   empacotadas por devtools/build_web.py. Não executar a campanha/saves no navegador.
 - Application compartilha um frame: desktop síncrono; web cede com asyncio.sleep(0).
@@ -416,3 +418,19 @@ Resume/recheck são incrementais; não chamá-los de nova suíte integral.
 - Checkpoints lógicos e comandos confirmados são a garantia principal; pagehide/visibilitychange são complementares, sem garantia ao fechar a aba.
 - Backup .json validado e limitado a 5 MiB; substituição de slot exige confirmação. Preservar originais e instalador.
 - Ver [persistência web](docs/web_storage.md) e [estado atual](docs/estado_atual.md). Campanha web completa, mobile e PWA permanecem fora desta etapa.
+
+
+## 27. Campanha Web PC — Etapa 4
+
+- Checkpoint anterior: 742218f. O build padrão agora usa web/campaign.py e recursos por contexto; --poc preserva a prova anterior.
+- src/systems/web_resources.py e devtools/web_asset_packs.py definem propriedade única, dependências, hashes e pacotes estáticos. Não incluir saves, ambientes ou arte de outros contextos no pacote inicial.
+- CampaignAssets libera arquivos/superfícies de contextos anteriores; os loaders nativos aceitam filtro opcional de nomes, com default None preservando o carregamento Desktop completo.
+- Transições web devem carregar o contexto antes de construir/desenhar cenas que leem imagens. Erros permitem tentar novamente; não prosseguir com arte incompleta silenciosamente.
+- web/campaign.py reutiliza cenas/regras nativas, com confirmação IndexedDB para tutorial, flags, recompensas e nova run. Não introduzir regras alternativas de dano/progressão para a web.
+- InputRouter conserva event.pos nativo; não substituir por coordenadas virtuais e converter novamente na cena. InspectionController não deve capturar cliques dos ícones ao exibir preview.
+- Recursos de mouse, hover, roda, teclado e botões equivalentes continuam no layout desktop proporcional. Não antecipar layout compacto/touch/PWA.
+- QA por checkpoints fica exclusivamente em build/; atributos controlados são explícitos no relatório, nunca aplicados ao jogo normal.
+- Ver [campanha web](docs/web_campaign.md) e [estado atual](docs/estado_atual.md).
+
+- Composições web de fundos/painéis ficam em src/ui/composition_cache.py; preservar equivalência de pixels, transparência de previews e limite de memória. Não aplicar a composição de um painel raiz sobre conteúdo dinâmico.
+- combat_snapshot.restore deve recuperar também level/kind/index; motores temporários de recompensa não podem permanecer no nível padrão 1. A finalização automática de Zanzara confirma o save antes do epílogo.
