@@ -21,8 +21,9 @@ PNG ganham uma carta composta com moldura e retrato originais.
 
 ## Interação sem alterar regras
 
-- Primeiro toque inspeciona. JOGAR, COMPRAR, EQUIPAR, REMOVER, APRIMORAR ou
-  ESCOLHER confirma. A inspeção não gasta energia, ouro ou recompensa.
+- Combate touch: tap <220 ms joga; hold ≥220 ms amplia enquanto pressionado,
+  sem botão JOGAR/CONFIRMAR; soltar só fecha. COMPRAR, EQUIPAR, REMOVER, APRIMORAR
+  e ESCOLHER continuam confirmando nas telas de gerenciamento. A inspeção não gasta energia, ouro ou recompensa.
 - Mochila conserva as abas, slots e coleção originais; a paginação não é
   substituída por outro layout. Altar mantém sua comparação nativa e oferece
   ANTES/DEPOIS na inspeção.
@@ -37,13 +38,13 @@ PNG ganham uma carta composta com moldura e retrato originais.
   discretamente no menu inicial; aplicação da atualização mantém a coordenação
   segura entre abas. O aviso de atualização em curso ainda pode bloquear a UI.
 
-## Renderização real em 1280×720
+## Renderização real em 960×540
 
-A viewport compacta/touch usa MobileCanvas com armazenamento físico **1280×720**
+A viewport compacta/touch usa MobileCanvas com armazenamento físico **960×540** no touch
 e DPR de apresentação **1**. As coordenadas lógicas permanecem 1920×1080 para
 reutilizar integralmente a arte e os handlers. Não desenhar primeiro um quadro
 Full HD para só depois reduzi-lo: blits e primitivas vão diretamente ao buffer
-720p. A apresentação é um blit direto. Web PC conserva o backing por CSS × DPR
+540p. A apresentação é um blit direto. Web PC conserva o backing por CSS × DPR
 limitado a 2/1920×1080; Desktop conserva WindowManager e mixer nativo.
 
 drawing_coordinates adapta primitivas somente durante o draw síncrono mobile e
@@ -81,3 +82,45 @@ Validação desta correção: **931 testes em 91 módulos, zero falhas**; 14 tel
 11 verificações de toque no Chromium. Combate: 46,3 FPS medianos na emulação;
 comparação controlada: 24,6 → 44,2 FPS. Não equivale a medição no celular físico.
 Veja o [relatório e limites](validacao_mobile_arte_original.json).
+
+## Gestos e caches — 26/11/2026
+
+O hold da mão/Ultimate não usa confirmação: mantém o card artístico ampliado com
+pointer-events:none enquanto o dedo está pressionado. Soltar fecha imediatamente
+o DOM e invalida a seleção no Python, sem jogar. Intenções podem ser lidas por hold;
+o toque simples nelas conserva a inspeção sem ação ofensiva. Arrastar mais de
+12 CSS px, segundo dedo, cancelamento, blur e rotação impedem jogadas acidentais.
+A fronteira de 219/220 ms é validada com relógio controlado no Chromium.
+
+O buffer 960×540 usa 518.400 pixels, 43,75% menos que os 921.600 de 1280×720.
+A arte e os alvos lógicos continuam nas mesmas coordenadas 1920×1080. Canvas
+touch usa image-rendering:auto para upscale CSS suave; Web PC não troca seu CSS.
+
+HUD e rótulos usam texto cacheado; HP só recompõe sua camada quando valor/máscara
+mudam. Cartas, ícones, retratos, arena e poses imutáveis reaproveitam escalas.
+Sombras, painéis e FX transitórios usam pool físico com alfa limpo, em vez de
+Surface SRCALPHA descartável por quadro. Cached layers, pool e caches têm limites
+e não substituem as artes por caixas. Primeiro uso de uma variante nova ainda
+prepara sua superfície; não confundir cache miss de mudança de estado com
+reescalar toda a interface a cada frame.
+
+O perfil de diagnóstico registra scale/smoothscale efetivos, rasterizações de
+texto e novos scratch por frame. No trecho aquecido de combate parado, a meta
+é zero nos três contadores. Efeitos que mudam de forma/escala têm preparação
+por variante; não extrapolar a medição de idle a todos os frames de uma Ultimate.
+
+Validadores: `devtools/validate_mobile_gestures.py` (relógio controlado),
+`devtools/validate_web_mobile_art.py` (campanha touch real, hold/tap/Ultimate),
+`devtools/validate_web_quality.py` (DPR/áudio/Web PC).
+
+A entrada de uma cena touch pré-aquece HUD/textos/arte antes da primeira
+apresentação. Novas variantes de estado completam o cache sob demanda.
+
+Validação de 26/11/2026: **955 testes / 93 módulos, zero falhas**; 7 verificações
+de gestos, 15 telas mobile, 11 verificações Web PC e 5 de DPR/áudio aprovadas.
+Benchmark isolado: 48,5 → 59,9 FPS; desenho 17,3 → 9,0 ms. Nas 35 amostras de
+idle aquecido: zero scale/smoothscale, rasterizações e novos scratch. Novas
+variantes de estado/FX ainda podem preparar superfícies; FPS físico não foi medido.
+Ver [método, métricas e limites](validacao_mobile_tap_hold_540.json).
+
+Para repetir a comparação: `.venv-web/Scripts/python.exe devtools/benchmark_web_mobile.py --baseline-ref e7b1ff5`. O build atual deve existir em dist/web e as fixtures de QA em build/web-stage4. Os contextos Chromium são isolados e os arquivos de resultado ficam em build/.

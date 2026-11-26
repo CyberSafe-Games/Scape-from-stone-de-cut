@@ -1,4 +1,5 @@
 """Molduras da batalha com valores e retratos preenchidos em tempo real."""
+from src.ui.render_cache import frame_surface
 import pygame
 
 from src.config.colors import WHITE, GOLD
@@ -54,10 +55,13 @@ class BattleHUD:
         title = self.assets.menu_font
         if title.size(label)[0] > track.width:
             title = self.assets.small_font
-        heading = title.render(label, True, GOLD if boss else WHITE)
+        heading = surface.render_text(title,label,GOLD if boss else WHITE) if hasattr(surface,"render_text") else title.render(label, True, GOLD if boss else WHITE)
         if heading.get_width() > track.width:
             height = round(heading.get_height() * track.width / heading.get_width())
-            heading = pygame.transform.smoothscale(heading, (track.width, height))
+            if hasattr(surface,"freeze"):
+                from src.ui.render_cache import scaled_image
+                heading=scaled_image(heading,(track.width,height));surface.freeze(heading)
+            else:heading = pygame.transform.smoothscale(heading, (track.width, height))
         surface.blit(heading, heading.get_rect(center=(track.centerx, rect.top + 23)))
         bar = self.health_bar(surface, track, hp, maximum)
         health_label = '∞' if getattr(combatant, 'invulnerable', False) else f'{hp}/{maximum}'
@@ -96,14 +100,19 @@ class BattleHUD:
             gold_outline(surface,track)
         mask = self.health_window(track.size)
         bounds = mask.get_bounding_rect(min_alpha=128)
-        layer = pygame.Surface(track.size,pygame.SRCALPHA)
-        layer.fill((29,12,13,255))
-        fill = bounds.copy()
-        fill.width = round(bounds.width*max(0,min(1,hp/max(1,maximum))))
-        if fill.width:
-            pygame.draw.rect(layer,(137,32,30,255),fill)
-            pygame.draw.line(layer,(203,77,52,255),fill.topleft,(fill.right-1,fill.top),2)
-            pygame.draw.line(layer,(72,16,20,255),(fill.left,fill.bottom-1),(fill.right-1,fill.bottom-1),2)
-        layer.blit(mask,(0,0),special_flags=pygame.BLEND_RGBA_MULT)
+        def make_layer():
+            layer = pygame.Surface(track.size,pygame.SRCALPHA)
+            layer.fill((29,12,13,255))
+            fill = bounds.copy()
+            fill.width = round(bounds.width*max(0,min(1,hp/max(1,maximum))))
+            if fill.width:
+                pygame.draw.rect(layer,(137,32,30,255),fill)
+                pygame.draw.line(layer,(203,77,52,255),fill.topleft,(fill.right-1,fill.top),2)
+                pygame.draw.line(layer,(72,16,20,255),(fill.left,fill.bottom-1),(fill.right-1,fill.bottom-1),2)
+            layer.blit(mask,(0,0),special_flags=pygame.BLEND_RGBA_MULT)
+            return layer
+        if hasattr(surface,"cached_layer"):
+            layer=surface.cached_layer(("health",tuple(track.size),hp,maximum,mask),make_layer)
+        else:layer=make_layer()
         surface.blit(layer,track)
         return bounds.move(track.topleft)

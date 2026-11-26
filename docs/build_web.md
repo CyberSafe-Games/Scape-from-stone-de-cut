@@ -145,11 +145,10 @@ Resultados e limites no [relatório final](validacao_multiplataforma_final.json)
 
 A bridge informa tamanho CSS e devicePixelRatio. Apenas SDL/Pygame altera o
 backing buffer Web PC: CSS × DPR limitado a 2 e à arte nativa 1920×1080.
-Mobile usa o perfil físico 1280×720/DPR 1 do contrato abaixo.
+Mobile usa o perfil físico 960×540/DPR 1 no touch (1280×720 no compacto com mouse) do contrato abaixo.
 Não atribuir canvas.width/height por JavaScript, pois isso desincroniza SDL e
-entrada. Não forçar 960×540 no compacto. O último downscale usa smoothscale;
-em 1920×1080 ocorre blit direto, sem redução intermediária. CSS pixelated evita
-interpolação borrada quando há ampliação residual. O Desktop mantém WindowManager.
+entrada. No touch, usar o perfil 960×540 aprovado em 26/11/2026. O último downscale usa smoothscale;
+em 1920×1080 ocorre blit direto, sem redução intermediária. Web PC mantém CSS pixelated; o touch usa upscale CSS suave. O Desktop mantém WindowManager.
 
 Somente em emscripten, preparar mixer antes dos subsistemas com 44100 Hz,
 signed 16-bit, estéreo e buffer 4096. A abertura continua após gesto real;
@@ -167,9 +166,9 @@ aparelhos físicos. [Medições e limites](validacao_web_qualidade.json).
 ## Mobile com a arte original
 
 Todas as telas mobile usam as cenas originais, sem HUD/menu/grid HTML paralelo.
-A camada de toque oferece apenas inspeção artística e confirmação explícita;
+Nas cartas de combate, tap joga e hold de 220 ms só inspeciona; gerenciamento mantém confirmação explícita;
 os hits invisíveis são ampliados para 44×44 CSS. O buffer mobile é realmente
-1280×720, DPR 1, com coordenadas lógicas originais e caches limitados; Web PC e
+960×540 no touch, DPR 1, com coordenadas lógicas originais e caches limitados; Web PC e
 Desktop mantêm seus caminhos. Laterais recebem a ambientação e o indicador
 offline não rouba espaço da cena. Instalação/atualização continua no menu.
 Ver [regras, arquitetura e validação](web_mobile.md).
@@ -272,3 +271,10 @@ A falha original do run 45696249941 foi `FileNotFoundError` em
 `build/ci-web-tests.json`; instalação das dependências passou e o build não
 chegou a executar. Não foi necessário trocar versões das dependências nem
 ignorar testes para corrigir esse erro.
+
+Validação de 26/11/2026: **955 testes / 93 módulos, zero falhas**; 7 verificações
+de gestos, 15 telas mobile, 11 verificações Web PC e 5 de DPR/áudio aprovadas.
+Benchmark isolado: 48,5 → 59,9 FPS; desenho 17,3 → 9,0 ms. Nas 35 amostras de
+idle aquecido: zero scale/smoothscale, rasterizações e novos scratch. Novas
+variantes de estado/FX ainda podem preparar superfícies; FPS físico não foi medido.
+Ver [método, métricas e limites](validacao_mobile_tap_hold_540.json).

@@ -2,14 +2,15 @@
 from collections import OrderedDict
 from contextlib import contextmanager
 import weakref
+import math
 import pygame
 
 
 class MobileCanvas(pygame.Surface):
-    def __new__(cls, logical=(1920,1080), physical=(1280,720)):
+    def __new__(cls, logical=(1920,1080), physical=(960,540), flags=0):
         return super().__new__(cls)
-    def __init__(self, logical=(1920,1080), physical=(1280,720)):
-        super().__init__(physical)
+    def __init__(self, logical=(1920,1080), physical=(960,540), flags=0):
+        super().__init__(physical,flags)
         self.logical=tuple(logical)
         self.mobile_scale=physical[0]/logical[0]
         self.frozen=weakref.WeakSet()
@@ -21,6 +22,10 @@ class MobileCanvas(pygame.Surface):
         self.text_cache=OrderedDict()
         self.text_bytes=0
         self.button_hits=[]
+        self.layers=OrderedDict();self.layer_bytes=0
+        self.pool=OrderedDict();self.pool_bytes=0;self.pool_used={}
+        self.pool_created=0;self.scale_operations=0;self.text_renders=0
+        self.raster_diagnostics=False;self.miss_details=[];self.native_scale_calls=0
     def get_size(self):return self.logical
     def get_width(self):return self.logical[0]
     def get_height(self):return self.logical[1]
@@ -56,14 +61,25 @@ class MobileCanvas(pygame.Surface):
         region=pygame.Rect(area) if area is not None else source.get_rect()
         region=region.clip(source.get_rect())
         if not region.width or not region.height:return pygame.Rect(position,(0,0))
-        size=(max(1,round(region.w*self.mobile_scale)),max(1,round(region.h*self.mobile_scale)))
         parent=source.get_abs_parent()
         immutable=source in self.frozen or parent in self.frozen
-        key=(weakref.ref(parent),tuple(region.move(source.get_abs_offset())),size,special_flags)
+        # Escalar a imagem inteira uma vez também atende recortes animados
+        # (ex.: derrota do Slime), sem reescalar uma tira a cada frame.
+        base=parent if parent in self.frozen else source
+        offset=source.get_abs_offset() if base is parent else (0,0)
+        absolute=region.move(offset)
+        sample=base.get_rect() if immutable else absolute
+        if not immutable:base=source;sample=region;offset=(0,0)
+        size=tuple(max(1,round(v*self.mobile_scale)) for v in sample.size)
+        key=(weakref.ref(base),size,special_flags)
         image=self.scaled.get(key) if immutable else None
         if image is None:
-            image=pygame.transform.smoothscale(source.subsurface(region),size)
-            image.set_alpha(source.get_alpha())
+            image=pygame.transform.smoothscale(base if immutable else source.subsurface(region),size)
+            self.scale_operations+=1
+            if self.raster_diagnostics and len(self.miss_details)<12:
+                import sys
+                caller=sys._getframe(1)
+                self.miss_details.append([caller.f_code.co_name,list(source.get_size()),immutable])
             self.cache_misses+=1
             if immutable:
                 amount=image.get_pitch()*image.get_height()
@@ -75,7 +91,44 @@ class MobileCanvas(pygame.Surface):
         else:
             self.cache_hits+=1;self.scaled.move_to_end(key)
         image.set_alpha(source.get_alpha())
+        if immutable:
+            crop=self.rect(absolute).clip(image.get_rect())
+            origin=self.point((position[0]-region.x-offset[0],position[1]-region.y-offset[1]))
+            destination=(origin[0]+crop.x,origin[1]+crop.y)
+            return self.logical_rect(pygame.Surface.blit(self,image,destination,crop,special_flags))
         return self.logical_rect(pygame.Surface.blit(self,image,self.point(position),special_flags=special_flags))
+    def begin_frame(self):
+        self.pool_used.clear();self.miss_details=[];self.native_scale_calls=0
+        self.scale_operations=0;self.text_renders=0;self.pool_created=0
+    def cached_layer(self,key,factory):
+        image=self.layers.get(key)
+        if image is None:
+            image=factory()
+            amount=image.get_pitch()*image.get_height()
+            while self.layers and self.layer_bytes+amount>8*1024*1024:
+                _,old=self.layers.popitem(last=False);self.layer_bytes-=old.get_pitch()*old.get_height()
+            if amount<=8*1024*1024:self.layers[key]=image;self.layer_bytes+=amount
+            self.freeze(image)
+        else:self.layers.move_to_end(key)
+        return image
+    def scratch(self,size,flags,key,physical=True):
+        size=tuple(map(int,size));slot=self.pool_used.get(key,0);self.pool_used[key]=slot+1
+        cache_key=(key,slot,size,flags,physical)
+        image=self.pool.get(cache_key)
+        if image is None:
+            if physical:
+                target=tuple(max(1,math.ceil(v*self.mobile_scale)) for v in size)
+                image=MobileCanvas(size,target,flags)
+                image.mobile_scale=self.mobile_scale
+            else:image=pygame.Surface(size,flags)
+            amount=image.get_pitch()*pygame.Surface.get_height(image)
+            while self.pool and self.pool_bytes+amount>8*1024*1024:
+                _,old=self.pool.popitem(last=False);self.pool_bytes-=old.get_pitch()*pygame.Surface.get_height(old)
+            if amount<=8*1024*1024:self.pool[cache_key]=image;self.pool_bytes+=amount
+            self.pool_created+=1
+        else:self.pool.move_to_end(cache_key)
+        image.set_clip(None);image.set_alpha(255 if flags & pygame.SRCALPHA else None);image.fill((0,0,0,0))
+        return image
     def begin_owner(self,owner):
         self.button_hits=[]
     def register_hit(self,rect,label):
@@ -85,6 +138,7 @@ class MobileCanvas(pygame.Surface):
         image=self.text_cache.get(key)
         if image is None:
             image=font.render(str(text),True,color)
+            self.text_renders+=1
             amount=image.get_pitch()*image.get_height()
             while self.text_cache and self.text_bytes+amount>8*1024*1024:
                 _,old=self.text_cache.popitem(last=False);self.text_bytes-=old.get_pitch()*old.get_height()
@@ -103,9 +157,17 @@ class MobileCanvas(pygame.Surface):
 
 
 @contextmanager
-def drawing_coordinates():
+def drawing_coordinates(canvas=None):
     """Adapta primitivas apenas durante o draw síncrono; sempre restaura o módulo."""
     originals={}
+    transforms={}
+    if canvas is not None and canvas.raster_diagnostics:
+        for name in ("scale","smoothscale"):
+            original=getattr(pygame.transform,name);transforms[name]=original
+            def measured(*args,_original=original,**kwargs):
+                canvas.native_scale_calls+=1
+                return _original(*args,**kwargs)
+            setattr(pygame.transform,name,measured)
     for name in ("rect","line","lines","aaline","aalines","polygon","circle","ellipse","arc"):
         original=getattr(pygame.draw,name);originals[name]=original
         def draw(surface,color,*args,_name=name,_original=original,**kwargs):
@@ -134,3 +196,4 @@ def drawing_coordinates():
     try:yield
     finally:
         for name,original in originals.items():setattr(pygame.draw,name,original)
+        for name,original in transforms.items():setattr(pygame.transform,name,original)

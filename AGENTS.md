@@ -438,10 +438,10 @@ As restrições desta seção descrevem --poc; a campanha padrão segue a Etapa 
 ## 28. Host compacto e toque — Etapa 5
 
 - Checkpoint da Etapa 4: 62de681. A campanha web instala web/mobile.py; o Desktop não instala esse adaptador.
-- responsive_layout.py define os limiares 1000×600 úteis, controles compactos também em tablets com apontador primário touch e o bloqueio em retrato somente nesses dispositivos. Coordenadas lógicas 1920×1080; MobileCanvas físico 1280×720 e DPR 1. Web PC mantém HiDPI até 1920×1080.
+- responsive_layout.py define os limiares 1000×600 úteis, controles compactos também em tablets com apontador primário touch e o bloqueio em retrato somente nesses dispositivos. Coordenadas lógicas 1920×1080; MobileCanvas físico 960×540 e DPR 1 no touch; compacto com mouse continua 1280×720. Web PC mantém HiDPI até 1920×1080.
 - web/index.html é um fragmento do host Pygbag, não outro runtime. Preservar safe areas, 100dvh e orientação/foco na bridge.
 - MobileInterface reutiliza cenas, handlers, instâncias reais de cartas e persist_command. Não duplicar regras/transações nos arquivos JavaScript.
-- Primeiro toque inspeciona; JOGAR/COMPRAR/EQUIPAR/REMOVER/APRIMORAR/ESCOLHER confirma. Nenhuma inspeção pode gastar recursos.
+- Combate touch: tap curto joga; hold ≥220 ms lê e soltar fecha sem jogar. COMPRAR/EQUIPAR/REMOVER/APRIMORAR/ESCOLHER continuam explícitos no gerenciamento. Nenhuma inspeção pode gastar recursos.
 - Época de composição + geração de orientação invalidam comandos antigos. Bloquear durante commit e consumir confirmação uma vez. Cancelar seleção/arraste no blur, pointercancel, rotação e troca de cena.
 - ActiveTimeline afeta apenas o runtime web e congela ticks durante suspensão. Não alterar pygame.time.get_ticks no Desktop.
 - Controles compactos têm mínimo 44×44 CSS, contain/padding, texto via textContent e spotlight sobre elementos reais. Preservar identidade e níveis da arte via AssetManager.
@@ -480,11 +480,10 @@ Resultados e limites no [relatório final](docs/validacao_multiplataforma_final.
 
 A bridge informa tamanho CSS e devicePixelRatio. Apenas SDL/Pygame altera o
 backing buffer Web PC: CSS × DPR limitado a 2 e à arte nativa 1920×1080;
-mobile usa o perfil físico 1280×720/DPR 1 descrito abaixo.
+mobile usa o perfil físico 960×540/DPR 1 no touch (1280×720 no compacto com mouse) descrito abaixo.
 Não atribuir canvas.width/height por JavaScript, pois isso desincroniza SDL e
-entrada. Não forçar 960×540 no compacto. O último downscale usa smoothscale;
-em 1920×1080 ocorre blit direto, sem redução intermediária. CSS pixelated evita
-interpolação borrada quando há ampliação residual. O Desktop mantém WindowManager.
+entrada. No touch, usar o perfil 960×540 aprovado em 26/11/2026. O último downscale usa smoothscale;
+em 1920×1080 ocorre blit direto, sem redução intermediária. Web PC mantém CSS pixelated; o touch usa upscale CSS suave. O Desktop mantém WindowManager.
 
 Somente em emscripten, preparar mixer antes dos subsistemas com 44100 Hz,
 signed 16-bit, estéreo e buffer 4096. A abertura continua após gesto real;
@@ -497,9 +496,9 @@ A medição de PCM no Chromium não substitui escuta em dispositivos físicos.
 ## Mobile com a arte original
 
 Todas as telas mobile usam as cenas originais, sem HUD/menu/grid HTML paralelo.
-A camada de toque oferece apenas inspeção artística e confirmação explícita;
+Nas cartas de combate, tap joga e hold de 220 ms só inspeciona; gerenciamento mantém confirmação explícita;
 os hits invisíveis são ampliados para 44×44 CSS. O buffer mobile é realmente
-1280×720, DPR 1, com coordenadas lógicas originais e caches limitados; Web PC e
+960×540 no touch, DPR 1, com coordenadas lógicas originais e caches limitados; Web PC e
 Desktop mantêm seus caminhos. Laterais recebem a ambientação e o indicador
 offline não rouba espaço da cena. Instalação/atualização continua no menu.
 Ver [regras, arquitetura e validação](docs/web_mobile.md).
@@ -508,7 +507,7 @@ Não reintroduzir a antiga mobile-header/mobile-grid/mobile-footer em nenhuma
 cena. MobileCanvas adapta primitivas só no draw síncrono e restaura o módulo;
 nunca alterar globalmente o renderizador nativo. Congelar somente superfícies
 imutáveis: LRU de arte 24 MiB, textos 8 MiB. Limpar composições na troca de perfil.
-A regra 1280×720 mobile substitui a adoção anterior de backing HiDPI nesse perfil.
+O touch usa 960×540, substituindo os perfis anteriores 1280×720/HiDPI; compacto com mouse mantém 1280×720.
 
 Validação desta correção: **931 testes em 91 módulos, zero falhas**; 14 telas e
 11 verificações de toque no Chromium. Combate: 46,3 FPS medianos na emulação;
@@ -540,3 +539,36 @@ preview usam digest da imagem cacheada, evitando serializar base64 a cada frame.
 Blindagens Web de memória/hospedagem validadas: 942 testes, 6 verificações
 iframe/backup, 10 PWA/offline e 14 telas mobile. Nenhum limite auditado excedido.
 Ver [resultados e restrições](docs/validacao_web_blindagens.json).
+
+## Touch e renderização 540p — decisão de 26/11/2026
+
+- Estas regras substituem a confirmação intermediária apenas na mão/Ultimate do
+  combate touch. Tap <220 ms sem mover >12 CSS px joga imediatamente. Hold ≥220 ms
+  inspeciona até soltar; não dispara jogada e não possui botão intermediário.
+- Hold tem identificador de dedo/gesto e geração de viewport. Release fecha o
+  mesmo gesto mesmo após mudança de epoch; pointercancel, blur, rotação, movimento
+  e segundo dedo cancelam. Não reutilizar callback de uma carta já retirada.
+- Desktop e Web PC conservam mouse/hover e entradas anteriores. Gerenciamento
+  conserva suas confirmações. Só coarse/touch recebe canvas 960×540/DPR 1; compacto
+  com mouse continua 1280×720. Coordenadas lógicas 1920×1080 e toda a arte persistem.
+- MobileCanvas recicla temporários em pool limitado de 8 MiB; separar slots por
+  chamada e por frame, limpar RGBA/clip/alpha antes do reúso. Não congelar scratch
+  mutável. Cached layers têm 8 MiB; manter LRU de arte 24 MiB e textos 8 MiB.
+- frame_surface retorna Surface convencional para destinos nativos; não alterar
+  a semântica Desktop. Camadas persistentes (background) não podem usar scratch.
+- Flags physical=False são necessários quando um efeito precisa de rotação ou
+  coordenadas bitmap nativas; não escalar duas vezes superfícies MobileCanvas.
+- drawing_coordinates restaura draw e os contadores opcionais de transform em
+  finally. Diagnóstico de scaling só em profile=1, sem await dentro desse escopo.
+- Clock.tick(0) + await asyncio.sleep(0) continuam no Web; não usar tick_busy_loop
+  ou sleep bloqueante. Medição em Chromium emulado não comprova FPS no aparelho.
+
+Preaquecer cenas touch com WebWindowManager.prime_scene antes de apresentar.
+Não reutilizar scratch como camada persistente ou bitmap destinado a rotação.
+
+Validação de 26/11/2026: **955 testes / 93 módulos, zero falhas**; 7 verificações
+de gestos, 15 telas mobile, 11 verificações Web PC e 5 de DPR/áudio aprovadas.
+Benchmark isolado: 48,5 → 59,9 FPS; desenho 17,3 → 9,0 ms. Nas 35 amostras de
+idle aquecido: zero scale/smoothscale, rasterizações e novos scratch. Novas
+variantes de estado/FX ainda podem preparar superfícies; FPS físico não foi medido.
+Ver [método, métricas e limites](docs/validacao_mobile_tap_hold_540.json).

@@ -1,4 +1,5 @@
 """Camadas das ultimates: selos no chão, espíritos e projétil independente."""
+from src.ui.render_cache import frame_surface
 import math
 import pygame
 
@@ -13,9 +14,14 @@ def _sprite(surface, image, center, scale=1, alpha=255):
     # Quadros em tamanho nativo do arquivo: amplia para a resolução de referência.
     scale *= UI_SCALE
     size = (max(1, round(image.get_width()*scale)), max(1, round(image.get_height()*scale)))
-    sprite = pygame.transform.smoothscale(image, size) if size != image.get_size() else image.copy()
+    if hasattr(surface,"freeze"):
+        from src.ui.render_cache import scaled_image
+        sprite=scaled_image(image,size);surface.freeze(sprite)
+    else:sprite = pygame.transform.smoothscale(image, size) if size != image.get_size() else image.copy()
+    old_alpha=sprite.get_alpha()
     sprite.set_alpha(max(0, min(255, round(alpha))))
     surface.blit(sprite, sprite.get_rect(center=(round(center[0]), round(center[1]))))
+    if hasattr(surface,"freeze"):sprite.set_alpha(old_alpha)
 
 
 def _particles(surface, center, color, progress, radius, amount=18):
@@ -55,10 +61,10 @@ def draw_ultimate_fx(surface, view, behind=False):
 
 
 def _draw_back(surface, view, spec, p, frames, fade):
-    veil = pygame.Surface((surface.get_width(), 600), pygame.SRCALPHA)
+    veil = frame_surface(surface,(surface.get_width(), 600), pygame.SRCALPHA,key="src/ui/ultimate_fx.py:_draw_back:58",physical=True)
     veil.fill((3, 12, 17, round(45*fade)))
     surface.blit(veil, (0, 174))
-    seal = pygame.Surface((360, 108), pygame.SRCALPHA)
+    seal = frame_surface(surface,(360, 108), pygame.SRCALPHA,key="src/ui/ultimate_fx.py:_draw_back:61",physical=True)
     pulse = 1+math.sin(p*math.tau*2)*.06
     for radius, opacity in ((150, 35), (119, 110), (98, 200)):
         rect = pygame.Rect(180-round(radius*pulse), 54-round(radius*.20),
@@ -113,7 +119,7 @@ def _draw_front(surface, view, spec, p, frames, fade):
             impact = (p-spec.impact)/(1-spec.impact)
             index = player_effect_frame(p,spec,len(frames)) if len(frames) in (8,12) else len(frames)-1
             _sprite(surface, frames[index], (ENEMY_X-15, PLAYER_GROUND_Y-128), 1+impact*.35, 255*(1-impact))
-            ring = pygame.Surface((360, 315), pygame.SRCALPHA)
+            ring = frame_surface(surface,(360, 315), pygame.SRCALPHA,key="src/ui/ultimate_fx.py:_draw_front:116",physical=True)
             for i in range(3):
                 radius = round(35+impact*125+i*20)
                 color = (134, 247, 151, round(180*(1-impact)))

@@ -1,3 +1,4 @@
+from src.ui.render_cache import frame_surface
 import pygame
 from copy import deepcopy
 
@@ -863,12 +864,12 @@ class BattleScene(BaseScene):
         else:
             surface.fill(BG)
 
-        shade = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        shade = frame_surface(surface,(WIDTH, HEIGHT), pygame.SRCALPHA,key="src/scenes/battle_scene.py:_render_background:866",physical=True)
         shade.fill((5, 11, 10, 35 if (self.selected_level or self.engine.level) == 7 else 135))
         surface.blit(shade, (0, 0))
         draw_vignette(surface, WIDTH, HEIGHT, alpha=88)
 
-        ground = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        ground = frame_surface(surface,(WIDTH, HEIGHT), pygame.SRCALPHA,key="src/scenes/battle_scene.py:_render_background:871",physical=True)
         pygame.draw.ellipse(
             ground, (0, 0, 0, 72), pygame.Rect(PLAYER_X - 138, 633, 270, 54)
         )
@@ -960,7 +961,7 @@ class BattleScene(BaseScene):
         return None
 
     def _draw_ultimate_hand_card(self, surface, rect, hovered=False):
-        shadow = pygame.Surface((rect.width + 21, rect.height + 21), pygame.SRCALPHA)
+        shadow = frame_surface(surface,(rect.width + 21, rect.height + 21), pygame.SRCALPHA,key="src/scenes/battle_scene.py:_draw_ultimate_hand_card:963",physical=True)
         pygame.draw.rect(
             shadow, (0, 0, 0, 120), (11, 11, rect.width, rect.height), border_radius=21
         )
@@ -970,7 +971,10 @@ class BattleScene(BaseScene):
         draw_rect = rect.move(0, -18 if hovered else 0)
         if image is not None:
             fitted = image.get_rect().fit(draw_rect)
-            scaled = pygame.transform.smoothscale(image, fitted.size)
+            if hasattr(surface,"freeze"):
+                from src.ui.render_cache import scaled_image
+                scaled=scaled_image(image,fitted.size);surface.freeze(scaled)
+            else:scaled = pygame.transform.smoothscale(image, fitted.size)
             surface.blit(scaled, fitted)
         else:
             draw_panel(
@@ -1006,9 +1010,9 @@ class BattleScene(BaseScene):
                     draw_rect.centery + 15 + i * 21,
                     center=True,
                 )
-        glow = pygame.Surface(
+        glow = frame_surface(surface,
             (draw_rect.width + 27, draw_rect.height + 27), pygame.SRCALPHA
-        )
+        ,key="src/scenes/battle_scene.py:_draw_ultimate_hand_card:1009",physical=True)
         pygame.draw.rect(
             glow,
             (*self.engine.active_ultimate_color, 70),
@@ -1021,7 +1025,7 @@ class BattleScene(BaseScene):
     def _draw_end_turn_button(self, surface, enabled=True):
         cx, cy = self.end_turn_rect.center
         radius = self.end_turn_rect.width // 2
-        shadow = pygame.Surface((radius * 2 + 36, radius * 2 + 36), pygame.SRCALPHA)
+        shadow = frame_surface(surface,(radius * 2 + 36, radius * 2 + 36), pygame.SRCALPHA,key="src/scenes/battle_scene.py:_draw_end_turn_button:1024",physical=True)
         pygame.draw.circle(shadow, (0, 0, 0, 120), (radius + 18, radius + 18), radius)
         surface.blit(shadow, (cx - radius - 18, cy - radius - 12))
         outer_fill = (58, 43, 32) if enabled else (34, 34, 40)
@@ -1297,7 +1301,10 @@ class BattleScene(BaseScene):
             shadow=False,
         )
         if self.asset_manager.coin_icon is not None:
-            icon = pygame.transform.smoothscale(self.asset_manager.coin_icon, (24, 24))
+            if hasattr(surface,"freeze"):
+                from src.ui.render_cache import scaled_image
+                icon=scaled_image(self.asset_manager.coin_icon,(24,24));surface.freeze(icon)
+            else:icon = pygame.transform.smoothscale(self.asset_manager.coin_icon, (24, 24))
             surface.blit(icon, (x + 12, y + 9))
         draw_text(
             surface,
@@ -1315,7 +1322,10 @@ class BattleScene(BaseScene):
             self.engine.active_ultimate_id, energy_cost=self.engine.ultimate.energy_cost)
         if card_img is not None:
             fitted = card_img.get_rect().fit(card_rect)
-            scaled = pygame.transform.smoothscale(card_img, fitted.size)
+            if hasattr(surface,"freeze"):
+                from src.ui.render_cache import scaled_image
+                scaled=scaled_image(card_img,fitted.size);surface.freeze(scaled)
+            else:scaled = pygame.transform.smoothscale(card_img, fitted.size)
             surface.blit(scaled, fitted)
         else:
             draw_panel(
@@ -1349,13 +1359,13 @@ class BattleScene(BaseScene):
         ) or self.asset_manager.get_ui_image("battle_hud_frame_alt")
         base_y = HEIGHT - 243
         base_rect = pygame.Rect(0, base_y + 36, WIDTH, 207)
-        base = pygame.Surface(base_rect.size, pygame.SRCALPHA)
+        base = frame_surface(surface,base_rect.size, pygame.SRCALPHA,key="src/scenes/battle_scene.py:_draw_bottom_hud:1352",physical=False)
         base.fill((10, 14, 14, 206))
         surface.blit(base, base_rect.topleft)
         if frame is not None:
             scaled = pygame.transform.scale(frame, (WIDTH, 213))
             surface.blit(scaled, (0, base_y))
-            darken = pygame.Surface((WIDTH, 213), pygame.SRCALPHA)
+            darken = frame_surface(surface,(WIDTH, 213), pygame.SRCALPHA,key="src/scenes/battle_scene.py:_draw_bottom_hud:1358",physical=False)
             darken.fill((0, 0, 0, 18))
             surface.blit(darken, (0, base_y))
         pygame.draw.line(
@@ -1382,7 +1392,7 @@ class BattleScene(BaseScene):
         hovered = enabled and rect.collidepoint(
             self.window_manager.get_virtual_mouse_pos()
         )
-        shadow = pygame.Surface((rect.width + 15, rect.height + 15), pygame.SRCALPHA)
+        shadow = frame_surface(surface,(rect.width + 15, rect.height + 15), pygame.SRCALPHA,key="src/scenes/battle_scene.py:_draw_action_button:1385",physical=True)
         pygame.draw.rect(
             shadow, (0, 0, 0, 80), (9, 9, rect.width, rect.height), border_radius=18
         )
@@ -1718,7 +1728,7 @@ class BattleScene(BaseScene):
         )
 
     def _draw_game_over(self, surface):
-        overlay = pygame.Surface((WIDTH, HEIGHT))
+        overlay = frame_surface(surface,(WIDTH, HEIGHT),key="src/scenes/battle_scene.py:_draw_game_over:1721",physical=True)
         overlay.set_alpha(210)
         overlay.fill(BLACK)
         surface.blit(overlay, (0, 0))
@@ -1797,7 +1807,7 @@ class BattleScene(BaseScene):
 
     def _draw_pending_save(self, surface):
         """Recuperação caso falhe a gravação do desbloqueio após a vitória."""
-        overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        overlay = frame_surface(surface,(WIDTH, HEIGHT), pygame.SRCALPHA,key="src/scenes/battle_scene.py:_draw_pending_save:1800",physical=True)
         overlay.fill((7, 6, 14, 224))
         surface.blit(overlay, (0, 0))
         draw_text(

@@ -1,4 +1,5 @@
 """Projéteis independentes dos quadros do personagem."""
+from src.ui.render_cache import frame_surface
 import math
 import pygame
 from src.config.layout import PLAYER_X, ENEMY_X, PLAYER_GROUND_Y
@@ -68,7 +69,7 @@ def draw_player_projectile(surface, view):
         if sprite is not None:
             surface.blit(sprite, sprite.get_rect(midright=(round(x) + 30, round(y))))
             return
-        flame = pygame.Surface((150, 87), pygame.SRCALPHA)
+        flame = frame_surface(surface,(150, 87), pygame.SRCALPHA,key="src/ui/card_fx.py:draw_player_projectile:71",physical=False)
         pygame.draw.ellipse(flame, (255, 99, 16, 50), (0, 0, 150, 87))
         pygame.draw.polygon(flame, (200, 40, 10), [(6, 26), (72, 21), (41, 9), (116, 18), (141, 44), (108, 71), (32, 72), (65, 54), (0, 50), (63, 38)])
         pygame.draw.circle(flame, (255, 124, 16), (110, 44), 27)
@@ -76,7 +77,7 @@ def draw_player_projectile(surface, view):
         pygame.draw.circle(flame, (255, 251, 199), (120, 41), 9)
         surface.blit(flame, (round(x) - 110, round(y) - 44))
     elif name in ('Poção Venenosa', 'Poção Fragilizante'):
-        potion = pygame.Surface((42, 51), pygame.SRCALPHA)
+        potion = frame_surface(surface,(42, 51), pygame.SRCALPHA,key="src/ui/card_fx.py:draw_player_projectile:79",physical=False)
         color = (113, 217, 54) if name == 'Poção Venenosa' else (244, 155, 40)
         pygame.draw.ellipse(potion, (25, 19, 29), (3, 15, 36, 35))
         pygame.draw.ellipse(potion, color, (8, 23, 27, 23))

@@ -10,7 +10,7 @@ de combate/cartas/saves dos demais contratos.
 |---|---|---|---|
 | Desktop nativo | main.py, Pygame, loop síncrono | Canvas 1920×1080; mouse/teclado, F10/F11 | JSON v15 em disco |
 | Web PC | web/main.py → web/campaign.py, Pygbag/WASM e asyncio | Mesmo layout proporcional; hover, roda, teclado e botão fullscreen | IndexedDB v15; preferências no localStorage |
-| Web mobile/PWA | Mesmo build web com host compacto | Coordenadas 1920×1080, buffer físico 1280×720/DPR 1, arte original, toque/inspeção e paisagem | Mesmo IndexedDB; CacheStorage somente para recursos |
+| Web mobile/PWA | Mesmo build web com host compacto | Coordenadas 1920×1080, buffer físico 960×540/DPR 1 no touch (1280×720 no compacto com mouse), arte original, toque/inspeção e paisagem | Mesmo IndexedDB; CacheStorage somente para recursos |
 
 O Desktop não instala Pygbag nem Playwright para executar ou empacotar.
 O instalador usa assets originais; não inclui dist/web nem seu runtime/cache.

@@ -26,6 +26,7 @@ class WebWindowManager:
         self.display_surface = pygame.display.set_mode(self.windowed_size)
         self.screen = pygame.Surface((width, height)).convert()
         self.compact = False
+        self.mobile_profile = False
         self.touch_position = None
         self.is_large_window = False
         self.render_cache = RenderCache()
@@ -40,16 +41,29 @@ class WebWindowManager:
 
     def configure_viewport(self,layout):
         """O layout não força downscale; o buffer acompanha CSS × DPR limitado."""
-        if bool(layout.compact)!=self.compact:
+        profile=bool(layout.compact and layout.coarse)
+        if bool(layout.compact)!=self.compact or profile!=self.mobile_profile:
             self.compact=bool(layout.compact)
+            self.mobile_profile=profile
             from src.core.mobile_canvas import MobileCanvas
-            self.screen=MobileCanvas((self.width,self.height),(1280,720)) if self.compact else pygame.Surface((self.width,self.height)).convert()
+            self.screen=MobileCanvas((self.width,self.height),(960,540) if profile else (1280,720)) if self.compact else pygame.Surface((self.width,self.height)).convert()
             self._mobile_context=None
         self._sync_backing_size()
+
+    def prime_scene(self,scene):
+        """Prepara arte/textos antes da primeira apresentação, só no perfil touch."""
+        if not self.mobile_profile:return
+        from src.core.mobile_canvas import drawing_coordinates
+        self.screen.begin_frame()
+        for value in vars(scene.asset_manager).values():self.screen.remember(value)
+        with drawing_coordinates(self.screen):scene.draw(self.screen)
+        self._mobile_context=None
 
     def draw_scene(self,scenes):
         if not self.compact:return scenes.draw(self.screen)
         from src.core.mobile_canvas import drawing_coordinates
+        self.screen.begin_frame()
+        self.screen.raster_diagnostics=bool(getattr(scenes,"profiling",False))
         context=(id(scenes.current_scene),getattr(getattr(scenes.current_scene,"asset_manager",None),"active_context",None))
         if context!=self._mobile_context:
             self._mobile_context=context
@@ -63,12 +77,12 @@ class WebWindowManager:
             for value in vars(hud).values():self.screen.remember(value)
         for layer in (scene,*scenes.modal_stack):
             self.screen.remember(getattr(getattr(layer,"visuals",None),"scaled",{}))
-        with drawing_coordinates():scenes.draw(self.screen)
+        with drawing_coordinates(self.screen):scenes.draw(self.screen)
 
     def _sync_backing_size(self):
         try:
             viewport=self.platform.render_viewport()
-            size=(1280,720) if self.compact else backing_size(viewport["width"],viewport["height"],viewport["dpr"],
+            size=((960,540) if self.mobile_profile else (1280,720)) if self.compact else backing_size(viewport["width"],viewport["height"],viewport["dpr"],
                               (self.width,self.height))
         except (AttributeError,TypeError,ValueError,KeyError):
             # Pilotos/bridges antigos não expõem a densidade.

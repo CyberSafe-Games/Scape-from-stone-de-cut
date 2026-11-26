@@ -15,6 +15,7 @@ class MobileInterface:
         self.layout=resolve_layout(1920,1080)
         self.inspection=InspectionController()
         self.selection=None
+        self.hold_gesture=None
         self.callbacks={}
         self.images=OrderedDict()
         self.image_tokens={}
@@ -28,6 +29,7 @@ class MobileInterface:
         self.edge_key=None
 
     def cancel(self):
+        self.hold_gesture=None
         self.selection=None
         self.inspection.clear()
         if hasattr(self.scenes.window,"touch_position"):self.scenes.window.touch_position=None
@@ -67,13 +69,17 @@ class MobileInterface:
         if changed:
             self.last_model=None
         for command in commands:
+            if command.get("id")=="native-hold-end":
+                if command.get("generation")==self.generation and isinstance(command.get("value"),dict) and command["value"].get("gesture")==self.hold_gesture:
+                    self.selection=None;self.hold_gesture=None;self.inspection.clear()
+                continue
             if (command.get("epoch")!=str(self.epoch) or
                 command.get("generation")!=self.generation or self.scenes.saving):continue
             callback=self.callbacks.get(command["id"])
             if callback:
                 self.scenes.audio_manager.unlock_after_interaction()
                 callback(command.get("value"))
-                if command["id"].startswith("variant-"):continue
+                if command["id"].startswith("variant-") or command["id"]=="native-hold-start":continue
                 # Um gesto confirmado invalida a lista anterior, inclusive duplo clique.
                 self.callbacks.clear()
                 break
@@ -181,8 +187,10 @@ class MobileInterface:
                     selected["callback"]()
                 buttons.insert(0,self.button(selected["label"],confirm,key="confirm-inspection"))
             model["selection"]={k:selected[k] for k in ("title","text","image")}
-            model["selection"]["actions"]=buttons
+            model["selection"]["actions"]=[] if selected.get("holding") else buttons
+            model["selection"]["holding"]=bool(selected.get("holding"))
         self.callbacks["native-tap"]=lambda value:self.tap(scene,value)
+        self.callbacks["native-hold-start"]=lambda value:self.hold(scene,value)
         model["native"]=self.native_controls(scene)
         model["scene"]=type(scene).__name__
         model["sliders"]=[list(r) for r in getattr(scene,"sliders",{}).values()] if getattr(scene,"tab",None)=="audio" else []
@@ -353,6 +361,8 @@ class MobileInterface:
             m["actions"]=[self.button("NOVA RUN",lambda:self.key(s,pygame.K_r)),
                           self.button("MENU",lambda:self.key(s,pygame.K_ESCAPE))]
             return
+        m["combat_touch"]=bool(self.layout.coarse)
+        m["hold_targets"]=[list(r) for r in s._get_battle_hand_rects()]+[list(r) for r,_ in s.intent_view.entries]
         from src.systems.enemy_intents import preview_intents
         for i,intent in enumerate(preview_intents(e)):
             key=("intent",e.enemy.name,intent.description)
@@ -378,13 +388,21 @@ class MobileInterface:
                 if index<len(e.hand) and e.hand[index] is original:
                     rect=s._get_battle_hand_rects()[index]
                     self.click(s,rect)
-            m["items"].append(self.item(f"hand-{i}",f"{card.name} · {card.cost} E",card.description,
-                self.card_image(card),play,"JOGAR"))
+            if self.layout.coarse:
+                item=self.button(f"{card.name} · {card.cost} E",play,key=f"hand-{i}")
+                item["image"]=self.card_image(card)
+            else:item=self.item(f"hand-{i}",f"{card.name} · {card.cost} E",card.description,self.card_image(card),play,"JOGAR")
+            m["items"].append(item)
         if s._ultimate_in_hand():
             uid=e.player.ultimate_id if hasattr(e.player,"ultimate_id") else s.save_data["progresso"]["ultimate_equipada"]
             art=self.scenes.assets.get_ultimate_image(uid,energy_cost=2)
-            m["items"].append(self.item("ultimate",e.active_ultimate_name,e.active_ultimate_description,
-                self.image(art,("ultimate",uid)),lambda:self.click(s,s._get_battle_hand_rects()[-1]),"JOGAR ULTIMATE"))
+            play=lambda:self.click(s,s._get_battle_hand_rects()[-1])
+            if self.layout.coarse:
+                item=self.button(e.active_ultimate_name,play,key="ultimate")
+                item["image"]=self.image(art,("ultimate",uid))
+            else:item=self.item("ultimate",e.active_ultimate_name,e.active_ultimate_description,
+                self.image(art,("ultimate",uid)),play,"JOGAR ULTIMATE")
+            m["items"].append(item)
         m["actions"]=[self.button("CEMITÉRIO",lambda:self.click(s,s.cemetery_button_rect),
             disabled=e.state!="player_turn"),self.button("FIM DO TURNO",lambda:self.click(s,s.end_turn_rect),
             disabled=e.state!="player_turn" or s.entity_view.player_action is not None)]
@@ -567,6 +585,32 @@ class MobileInterface:
             self.scenes.window.touch_position=rect.center
             return self.click(scene,rect)
         return self.click(scene,pygame.Rect(point,(1,1)))
+
+    def hold(self,scene,value):
+        from src.scenes.battle_scene import BattleScene
+        if (not isinstance(scene,BattleScene) or not self.model.get("combat_touch")
+                or self.scenes.modal_stack or self.scenes.saving or not isinstance(value,dict)):return
+        point=value.get("point",())
+        if len(point)!=2:return
+        for i,rect in reversed(list(enumerate(scene._get_battle_hand_rects()))):
+            if not rect.collidepoint(point):continue
+            if i<len(scene.engine.hand):
+                card=scene.engine.hand[i];self.select(card.name,card.description,self.card_image(card))
+            elif scene._ultimate_in_hand():
+                uid=scene.engine.active_ultimate_id
+                self.select(scene.engine.active_ultimate_name,scene.engine.active_ultimate_description,
+                    self.image(self.scenes.assets.get_ultimate_image(uid,energy_cost=2),("ultimate",uid)))
+            else:return
+            break
+        else:
+            for i,(rect,intent) in enumerate(scene.intent_view.entries):
+                if rect.collidepoint(point):
+                    self.select(intent.action.name,intent.description,self.image(self.intent_art(scene,intent),
+                        ("intent",scene.engine.enemy.name,intent.description)));break
+            else:return
+        self.hold_gesture=value.get("gesture")
+        self.selection["holding"]=True
+        self.scenes.window.touch_position=(-1000,-1000)
 
     def confirm_native(self,scene,rect,title,message):
         from src.scenes.confirmation_modal import ConfirmationModal

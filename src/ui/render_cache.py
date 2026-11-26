@@ -58,3 +58,10 @@ def clear_context_caches():
     _actor_bounds.clear()
     _scaled_images.clear()
 
+
+
+def frame_surface(reference,size,flags=0,*,key="scratch",physical=True):
+    """Camadas transitórias recicladas no mobile; Surface nativa nos demais modos."""
+    if hasattr(reference,"scratch"):
+        return reference.scratch(size,flags,key,physical)
+    return pygame.Surface(size,flags)

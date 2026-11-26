@@ -15,13 +15,15 @@ JADE = (150, 212, 173)
 def text_in_rect(surface, text, font, color, rect, centered=False):
     """Ajusta um rótulo de uma linha ao espaço sem mudar a fonte do jogo."""
     rect = pygame.Rect(rect)
-    image = font.render(text, True, color)
+    image = surface.render_text(font,text,color) if hasattr(surface,"render_text") else font.render(text, True, color)
     ratio = min(1, rect.width / max(1, image.get_width()),
                 rect.height / max(1, image.get_height()))
     if ratio < 1:
-        image = pygame.transform.smoothscale(
-            image, (max(1, round(image.get_width() * ratio)),
-                    max(1, round(image.get_height() * ratio))))
+        size=(max(1,round(image.get_width()*ratio)),max(1,round(image.get_height()*ratio)))
+        if hasattr(surface,"freeze"):
+            from src.ui.render_cache import scaled_image
+            image=scaled_image(image,size);surface.freeze(image)
+        else:image=pygame.transform.smoothscale(image,size)
     target = image.get_rect(centery=rect.centery)
     target.centerx = rect.centerx if centered else rect.left + target.width // 2
     surface.blit(image, target)

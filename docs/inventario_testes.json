@@ -733,14 +733,19 @@
     {
       "file": "tests/test_mobile_native_canvas.py",
       "cases": [
-        "ReducedCanvasTests.test_physical_storage_is_720p_with_original_logical_coordinates",
+        "ReducedCanvasTests.test_physical_storage_is_540p_with_original_logical_coordinates",
         "ReducedCanvasTests.test_native_primitives_and_alpha_blits_keep_positions",
         "ReducedCanvasTests.test_static_scaled_art_is_cached_but_mutable_layers_are_not",
         "ReducedCanvasTests.test_drawing_scope_restores_native_functions_on_failure",
         "ReducedCanvasTests.test_mobile_output_ignores_high_dpr_and_desktop_returns_to_native_path",
         "ReducedCanvasTests.test_cached_art_tracks_global_alpha_without_stale_pixels",
         "ReducedCanvasTests.test_text_cache_preserves_native_font_pixels",
-        "ReducedCanvasTests.test_clipping_is_mapped_without_changing_logical_bounds"
+        "ReducedCanvasTests.test_clipping_is_mapped_without_changing_logical_bounds",
+        "ReducedCanvasTests.test_transparent_scratch_is_reused_without_black_rectangle",
+        "ReducedCanvasTests.test_fine_pointer_compact_web_pc_keeps_720p_profile",
+        "ReducedCanvasTests.test_warm_frame_has_zero_resize_raster_and_scratch_allocations",
+        "ReducedCanvasTests.test_profiler_restores_transform_functions_on_failure",
+        "ReducedCanvasTests.test_changing_crop_reuses_full_immutable_image_scale"
       ]
     },
     {
@@ -778,7 +783,13 @@
         "RealCompactSceneTests.test_native_shop_price_button_opens_inspection_without_spending",
         "RealCompactSceneTests.test_altar_exposes_both_level_art_variants",
         "RealCompactSceneTests.test_tablet_with_primary_touch_uses_safe_controls",
-        "ParticleBudgetTests.test_compact_frame_budget_is_bounded_and_resets"
+        "ParticleBudgetTests.test_compact_frame_budget_is_bounded_and_resets",
+        "CombatTapHoldTests.test_short_tap_plays_once_without_selection_or_confirmation",
+        "CombatTapHoldTests.test_hold_only_inspects_and_release_closes_without_play",
+        "CombatTapHoldTests.test_start_and_release_in_same_batch_cannot_leave_preview_open",
+        "CombatTapHoldTests.test_old_finger_release_cannot_close_another_hold",
+        "CombatTapHoldTests.test_pending_transaction_rejects_hold",
+        "CombatTapHoldTests.test_cancellation_clears_active_finger_and_art"
       ]
     },
     {
@@ -1419,5 +1430,5 @@
     }
   ],
   "modules": 93,
-  "methods": 944
+  "methods": 955
 }

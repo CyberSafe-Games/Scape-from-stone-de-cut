@@ -1,3 +1,4 @@
+from src.ui.render_cache import frame_surface
 import math
 import pygame
 from src.ui.render_cache import blit_actor, actor_bounds, scaled_image
@@ -456,7 +457,7 @@ class EntityView:
         if self.enemy_action == "atk1":
             if self._screwdriver_sprite is None:
                 # Sprite vetorial em resolução nativa: cabo, haste e ponta chata.
-                tool = pygame.Surface((44, 14), pygame.SRCALPHA)
+                tool = frame_surface(surface,(44, 14), pygame.SRCALPHA,key="src/ui/entity_view.py:draw_enemy_projectile:459",physical=False)
                 pygame.draw.polygon(tool, (35, 28, 24), [(0, 7), (7, 3), (25, 4), (25, 10), (7, 11)])
                 pygame.draw.polygon(tool, (177, 193, 193), [(1, 7), (8, 5), (26, 5), (26, 8), (8, 8)])
                 pygame.draw.rect(tool, (49, 28, 18), (24, 1, 19, 12), border_radius=3)
@@ -468,7 +469,7 @@ class EntityView:
             surface.blit(tool, tool.get_rect(center=(round(x), round(y))))
         else:
             # Descarga azul, na mesma paleta da arma nos frames de atk2.
-            glow = pygame.Surface((135, 60), pygame.SRCALPHA)
+            glow = frame_surface(surface,(135, 60), pygame.SRCALPHA,key="src/ui/entity_view.py:draw_enemy_projectile:471",physical=False)
             pygame.draw.ellipse(glow, (35, 133, 255, 45), (0, 6, 131, 48))
             pygame.draw.ellipse(glow, (55, 170, 255, 95), (3, 15, 99, 30))
             pygame.draw.lines(glow, (63, 182, 255), False,
@@ -772,7 +773,7 @@ class EntityView:
         elapsed = (progress - cls.BAT_LANDING_FRACTION) / (1 - cls.BAT_LANDING_FRACTION)
         if not 0 <= elapsed < 1:
             return
-        dust = pygame.Surface((240, 75), pygame.SRCALPHA)
+        dust = frame_surface(surface,(240, 75), pygame.SRCALPHA,key="src/ui/entity_view.py:_draw_bat_landing:775",physical=True)
         for index in range(12):
             drift = elapsed * (32 + index % 4 * 10)
             x = 120 + (-1 if index % 2 else 1) * (12 + index * 4 + drift)
@@ -858,6 +859,7 @@ class EntityView:
                             trail.set_alpha(opacity)
                         surface.blit(trail, rect.move(offset), special_flags=blend_flags)
                 hurt = self.enemy_flash if self.phase_transition_timer is None else 0
+                if hasattr(surface,"freeze") and not hurt:surface.freeze(frame)
                 # Recuo somente horizontal: nunca gira, achata ou muda a escala.
                 surface.blit(impact_tint(frame, hurt) if hurt else frame,
                              rect.move(round(knockback(hurt)) if hurt else 0, 0),

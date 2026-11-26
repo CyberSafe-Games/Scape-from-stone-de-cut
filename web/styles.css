@@ -55,3 +55,7 @@ padding:16px;border:2px solid #ac8a4f;color:#ecd7a8;background:#111b17ee}
 .compact[data-mobile-scene="CampaignMenu"].pwa-actions #pwa-status:not(.updating){
 display:flex;top:calc(var(--safe-top) + 6px);bottom:auto;left:auto;right:calc(var(--safe-right) + 6px);background:none;border:0;padding:0}
 .compact[data-mobile-scene="CampaignMenu"] #pwa-status:not(.updating)>span{display:none}
+
+/* Leitura por hold não recebe eventos nem oferece confirmação de jogada. */
+.hold-inspection{pointer-events:none}
+.touch-mobile #canvas{image-rendering:auto!important;-webkit-touch-callout:none;user-select:none}

@@ -1,3 +1,4 @@
+from src.ui.render_cache import frame_surface
 from functools import lru_cache
 import weakref
 
@@ -72,7 +73,7 @@ def draw_panel(surface, rect, fill=(18, 18, 28, 220), border=(122, 104, 62),
     """Desenha um painel dark com borda dupla, brilho superior e sombra."""
     rect = pygame.Rect(rect)
     if shadow:
-        shadow_surf = pygame.Surface((rect.width + 18, rect.height + 18), pygame.SRCALPHA)
+        shadow_surf = frame_surface(surface,(rect.width + 18, rect.height + 18), pygame.SRCALPHA,key="src/ui/helpers.py:draw_panel:75",physical=True)
         pygame.draw.rect(
             shadow_surf,
             (0, 0, 0, shadow_alpha),
@@ -81,10 +82,10 @@ def draw_panel(surface, rect, fill=(18, 18, 28, 220), border=(122, 104, 62),
         )
         surface.blit(shadow_surf, (rect.x + shadow_offset[0] - 9, rect.y + shadow_offset[1] - 9))
 
-    panel = pygame.Surface(rect.size, pygame.SRCALPHA)
+    panel = frame_surface(surface,rect.size, pygame.SRCALPHA,key="src/ui/helpers.py:draw_panel:84",physical=True)
     pygame.draw.rect(panel, fill, panel.get_rect(), border_radius=radius)
 
-    sheen = pygame.Surface(rect.size, pygame.SRCALPHA)
+    sheen = frame_surface(surface,rect.size, pygame.SRCALPHA,key="src/ui/helpers.py:draw_panel:87",physical=True)
     pygame.draw.rect(sheen, (255, 255, 255, 16), pygame.Rect(3, 3, rect.width - 6, max(12, rect.height // 3)), border_radius=max(12, radius - 3))
     panel.blit(sheen, (0, 0))
 
@@ -122,7 +123,7 @@ def draw_health_bar(surface, x, y, width, height, current, maximum, color,
 
 def draw_vignette(surface, width, height, alpha=110):
     """Aplica uma vinheta simples para escurecer as bordas da cena."""
-    overlay = pygame.Surface((width, height), pygame.SRCALPHA)
+    overlay = frame_surface(surface,(width, height), pygame.SRCALPHA,key="src/ui/helpers.py:draw_vignette:125",physical=True)
     steps = 8
     for i in range(steps):
         inset_x = int(i * width * 0.018)

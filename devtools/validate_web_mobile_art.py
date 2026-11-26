@@ -36,8 +36,8 @@ def main():
         def snapshot(name):
             page.wait_for_timeout(250)
             assert page.locator(".mobile-header,.combat-header,.mobile-grid,.mobile-footer").count()==0
-            assert metrics()["physical_canvas"]==[1280,720]
-            assert metrics()["render_buffer"]==[1280,720]
+            assert metrics()["physical_canvas"]==[960,540]
+            assert metrics()["render_buffer"]==[960,540]
             assert page.evaluate("JSON.parse(scapePlatform.renderViewport()).dpr")==1
             assert page.evaluate("getComputedStyle(document.body).backgroundColor")!="rgb(128, 128, 128)"
             memory=page.evaluate("({wasm:window.python?.HEAPU8?.buffer.byteLength||window.VM?.HEAPU8?.buffer.byteLength||null,js:performance.memory?.usedJSHeapSize||null})")
@@ -123,19 +123,32 @@ def main():
             assert page.get_by_role("button",name="JOGAR",exact=True).count()==0
             snapshot("intencao");action("FECHAR")
             energy=metrics()["energy"]
-            rect(metrics()["hand"][0]["rect"]);action("FECHAR")
-            assert metrics()["energy"]==energy
-            checks.append("native_intent_card_preview_and_cancel")
-            rect(metrics()["ui"]["ultimate_hand_rect"]);action("JOGAR ULTIMATE")
+            hand_before=len(metrics()["hand"])
+            card_rect=metrics()["hand"][0]["rect"]
+            box=page.locator("#canvas").bounding_box()
+            x=box["x"]+(card_rect[0]+card_rect[2]/2)*box["width"]/1920
+            y=box["y"]+(card_rect[1]+card_rect[3]/2)*box["height"]/1080
+            touch=page.context.new_cdp_session(page)
+            touch.send("Input.dispatchTouchEvent",{"type":"touchStart","touchPoints":[{"x":x,"y":y,"id":1}]})
+            wait(lambda m:page.locator(".hold-inspection img").count()==1)
+            assert page.locator(".hold-inspection button").count()==0
+            assert metrics()["energy"]==energy and len(metrics()["hand"])==hand_before
+            snapshot("carta_segurada")
+            touch.send("Input.dispatchTouchEvent",{"type":"touchEnd","touchPoints":[]});touch.detach()
+            wait(lambda m:page.locator(".art-inspection").count()==0)
+            assert metrics()["energy"]==energy and len(metrics()["hand"])==hand_before
+            checks.append("hold_reads_and_release_never_plays")
+            rect(metrics()["ui"]["ultimate_hand_rect"])
             wait(lambda m:m["data"]["progresso"]["combat_snapshot"]["player"]["ultimate_charge"]==0)
-            checks.append("native_ultimate_confirmation")
+            assert page.get_by_role("button",name="JOGAR ULTIMATE",exact=True).count()==0
+            checks.append("short_tap_ultimate_without_confirmation")
             wait(lambda m:m["action"] is None)
-            rect(metrics()["hand"][0]["rect"]);action("JOGAR")
+            rect(metrics()["hand"][0]["rect"])
             wait(lambda m:m.get("victory_ready"));snapshot("recompensa")
             if metrics()["reward_offers"]:
                 rect(metrics()["reward_offers"][0]["rect"]);action("ESCOLHER")
             else:tap(900,953)
-            scene("CampaignMap");checks.append("native_hand_and_reward_confirmation")
+            scene("CampaignMap");checks.append("instant_hand_play_and_reward_confirmation")
             page.set_viewport_size(dict(width=390,height=844));wait(lambda m:m["portrait_blocked"] and not m["active"])
             page.set_viewport_size(dict(width=844,height=390));wait(lambda m:not m["portrait_blocked"] and m["active"])
             checks.append("rotation_safe_pause_resume")
@@ -164,7 +177,7 @@ def main():
                 if not metrics().get("boss_dialogue"):break
                 tap(960,530);page.wait_for_timeout(200)
             wait(lambda m:m.get("state")=="player_turn")
-            rect(metrics()["hand"][0]["rect"]);action("JOGAR")
+            rect(metrics()["hand"][0]["rect"])
             wait(lambda m:m.get("victory_ready") or m["scene"]=="CampaignCutscene")
             if metrics()["scene"]!="CampaignCutscene":
                 if metrics()["reward_offers"]:
@@ -174,7 +187,7 @@ def main():
             checks.append("native_final_boss_and_epilogue")
             # Todas as cenas usam a mesma camada: garantir ausência do painel paralelo.
             result.update(memory_samples=memory_samples,passed=True,checks=checks,screens=screens,errors=errors,
-                viewport=[844,390],device_dpr=3,mobile_dpr=1,physical_canvas=[1280,720])
+                viewport=[844,390],device_dpr=3,mobile_dpr=1,physical_canvas=[960,540])
             (out/"result.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
             print(json.dumps(result,ensure_ascii=True),flush=True)
         except Exception:

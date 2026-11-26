@@ -236,9 +236,9 @@ Resultados e limites no [relatório final](validacao_multiplataforma_final.json)
 ## Mobile com a arte original
 
 Todas as telas mobile usam as cenas originais, sem HUD/menu/grid HTML paralelo.
-A camada de toque oferece apenas inspeção artística e confirmação explícita;
+Nas cartas de combate, tap joga e hold de 220 ms só inspeciona; gerenciamento mantém confirmação explícita;
 os hits invisíveis são ampliados para 44×44 CSS. O buffer mobile é realmente
-1280×720, DPR 1, com coordenadas lógicas originais e caches limitados; Web PC e
+960×540 no touch, DPR 1, com coordenadas lógicas originais e caches limitados; Web PC e
 Desktop mantêm seus caminhos. Laterais recebem a ambientação e o indicador
 offline não rouba espaço da cena. Instalação/atualização continua no menu.
 Ver [regras, arquitetura e validação](web_mobile.md).
@@ -251,3 +251,10 @@ Veja o [relatório e limites](validacao_mobile_arte_original.json).
 Blindagens Web de memória/hospedagem validadas: 942 testes, 6 verificações
 iframe/backup, 10 PWA/offline e 14 telas mobile. Nenhum limite auditado excedido.
 Ver [resultados e restrições](validacao_web_blindagens.json).
+
+Validação de 26/11/2026: **955 testes / 93 módulos, zero falhas**; 7 verificações
+de gestos, 15 telas mobile, 11 verificações Web PC e 5 de DPR/áudio aprovadas.
+Benchmark isolado: 48,5 → 59,9 FPS; desenho 17,3 → 9,0 ms. Nas 35 amostras de
+idle aquecido: zero scale/smoothscale, rasterizações e novos scratch. Novas
+variantes de estado/FX ainda podem preparar superfícies; FPS físico não foi medido.
+Ver [método, métricas e limites](validacao_mobile_tap_hold_540.json).

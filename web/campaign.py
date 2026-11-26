@@ -81,6 +81,8 @@ class CampaignScenes(SceneManager):
                     return measured
                 setattr(scene.visuals,name,instrument(original,name))
         super().change_scene(scene)
+        if getattr(self.window,"mobile_profile",False) is True and not isinstance(scene,LoadingScene):
+            self.window.prime_scene(scene)
     def push_modal(self,modal):
         if hasattr(modal,"visuals"):
             from src.ui.composition_cache import optimize_visuals
@@ -391,7 +393,13 @@ async def main():
         report["render_buffer"]=list(window.display_surface.get_size())
         report["physical_canvas"]=list(pygame.Surface.get_size(window.screen))
         report["mobile_render_cache"]=dict(bytes=getattr(window.screen,"cache_bytes",0),
-            hits=getattr(window.screen,"cache_hits",0),misses=getattr(window.screen,"cache_misses",0))
+            hits=getattr(window.screen,"cache_hits",0),misses=getattr(window.screen,"cache_misses",0),
+            scales_this_frame=getattr(window.screen,"scale_operations",0),
+            text_renders_this_frame=getattr(window.screen,"text_renders",0),
+            scratch_created_this_frame=getattr(window.screen,"pool_created",0),
+            scratch_bytes=getattr(window.screen,"pool_bytes",0),
+            miss_details=getattr(window.screen,"miss_details",[]),
+            native_scale_calls=getattr(window.screen,"native_scale_calls",0))
         report["missing_sounds"]=sorted(audio._failed_sounds)
         report["music_path"]=str(audio._music_path or "")
         report["draw_profile"]=scenes.draw_profile

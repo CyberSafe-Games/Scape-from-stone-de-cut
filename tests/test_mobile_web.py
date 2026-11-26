@@ -228,3 +228,50 @@ class ParticleBudgetTests(unittest.TestCase):
             begin_frame()
             self.assertEqual(particle_amount(20),3)
         finally:set_compact_effects(False)
+
+
+class CombatTapHoldTests(unittest.TestCase):
+    def setUp(self):
+        from src.scenes.battle_scene import BattleScene
+        self.scene=object.__new__(BattleScene)
+        self.card=SimpleNamespace(name="Soco Simples",description="Causa 6 de dano.")
+        self.scene.engine=SimpleNamespace(hand=[self.card],state="player_turn")
+        self.scene.boss_dialogue=None;self.scene._outcome_elapsed=None
+        self.rect=pygame.Rect(700,760,200,290)
+        self.scene._get_battle_hand_rects=lambda:[self.rect]
+        self.bridge=Mock();self.bridge.viewport.return_value=json.dumps(dict(width=844,height=390,coarse=True,generation=1))
+        self.bridge.drain.return_value="[]"
+        self.scenes=SimpleNamespace(current_scene=self.scene,modal_stack=[],saving=False,window=Mock(),audio_manager=Mock())
+        self.ui=MobileInterface(self.scenes,self.bridge);self.ui.poll()
+        self.ui.model={"combat_touch":True};self.ui.card_image=Mock(return_value="art")
+        self.ui.click=Mock()
+        self.ui.callbacks={"hand-0":lambda _:self.ui.click(self.scene,self.rect),
+            "native-hold-start":lambda value:self.ui.hold(self.scene,value)}
+    def tearDown(self):set_compact_effects(False)
+    def test_short_tap_plays_once_without_selection_or_confirmation(self):
+        self.ui.tap(self.scene,self.rect.center)
+        self.ui.click.assert_called_once_with(self.scene,self.rect)
+        self.assertIsNone(self.ui.selection)
+    def test_hold_only_inspects_and_release_closes_without_play(self):
+        self.ui.hold(self.scene,{"point":self.rect.center,"gesture":12})
+        self.assertTrue(self.ui.selection["holding"])
+        self.assertIsNone(self.ui.selection["callback"])
+        self.ui.epoch=9
+        self.bridge.drain.return_value=json.dumps([dict(id="native-hold-end",epoch="old",generation=1,value={"gesture":12})])
+        self.ui.poll();self.assertIsNone(self.ui.selection);self.ui.click.assert_not_called()
+    def test_start_and_release_in_same_batch_cannot_leave_preview_open(self):
+        self.bridge.drain.return_value=json.dumps([dict(id=key,epoch="0",generation=1,
+            value={"gesture":1,"point":self.rect.center}) for key in ("native-hold-start","native-hold-end")])
+        self.ui.poll();self.assertIsNone(self.ui.selection);self.ui.click.assert_not_called()
+    def test_old_finger_release_cannot_close_another_hold(self):
+        self.ui.hold(self.scene,{"point":self.rect.center,"gesture":2})
+        self.bridge.drain.return_value=json.dumps([dict(id="native-hold-end",epoch="0",generation=1,value={"gesture":1})])
+        self.ui.poll();self.assertTrue(self.ui.selection["holding"]);self.ui.click.assert_not_called()
+    def test_pending_transaction_rejects_hold(self):
+        self.scenes.saving=True
+        self.ui.hold(self.scene,{"point":self.rect.center,"gesture":1})
+        self.assertIsNone(self.ui.selection)
+    def test_cancellation_clears_active_finger_and_art(self):
+        self.ui.hold(self.scene,{"point":self.rect.center,"gesture":1})
+        self.ui.cancel();self.assertIsNone(self.ui.hold_gesture);self.assertIsNone(self.ui.selection)
+        self.ui.click.assert_not_called()

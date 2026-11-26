@@ -48,7 +48,8 @@ def panel(surface, rect, highlighted=False, fill=None, border=None):
     rect = pygame.Rect(rect)
     shadow = rect.move(6, 9)
     pygame.draw.polygon(surface, (3, 6, 6), _bevel_polygon(shadow, 17))
-    layer = pygame.Surface(rect.size, pygame.SRCALPHA)
+    from src.ui.render_cache import frame_surface
+    layer = frame_surface(surface,rect.size,pygame.SRCALPHA,key="theme-panel")
     local = pygame.Rect(0, 0, rect.width, rect.height)
     bg = fill if fill is not None else (14, 21, 21, 238)
     edge = border or (BRONZE_LIGHT if highlighted else BRONZE_DARK)

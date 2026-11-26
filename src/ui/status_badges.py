@@ -50,7 +50,11 @@ def draw_status_badges(surface, combatant, x, y, width, assets, mouse):
         if name == 'shock' or name in STACK_STATUS_DAMAGE:
             count = potency
         if icon is not None:
-            surface.blit(pygame.transform.smoothscale(icon, (32, 32)), rect.move(2, 2))
+            if hasattr(surface,"freeze"):
+                from src.ui.render_cache import scaled_image
+                icon=scaled_image(icon,(32,32));surface.freeze(icon)
+                surface.blit(icon,rect.move(2,2))
+            else:surface.blit(pygame.transform.smoothscale(icon, (32, 32)), rect.move(2, 2))
         elif name == 'shock':
             pygame.draw.polygon(surface, (123, 209, 255), [
                 (rect.x + dx, rect.y + dy)

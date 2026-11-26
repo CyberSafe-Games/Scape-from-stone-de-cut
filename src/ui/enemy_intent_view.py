@@ -130,6 +130,7 @@ class EnemyIntentView:
                 illustration = self._rule_art[key]
             art_area = pygame.Rect(rect.x+5, rect.y+5, rect.width-10, 78)
             art = self._preview(illustration, art_area.size) if illustration else self.icon(intent.family)
+            if hasattr(surface,"freeze"):surface.freeze(art)
             if intent.state == 'done':
                 art = art.copy()
                 art.set_alpha(65)

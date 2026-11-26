@@ -1,3 +1,4 @@
+from src.ui.render_cache import frame_surface
 import math
 import random
 import pygame
@@ -75,9 +76,9 @@ class CoinParticle:
             return
         radius = PARTICLE_RADIUS
         size = radius * 2 + 6
-        tmp = pygame.Surface((size, size), pygame.SRCALPHA)
+        tmp = frame_surface(surface,(size, size), pygame.SRCALPHA,key="src/ui/coin_hud.py:draw:78",physical=True)
         cx, cy = size // 2, size // 2
-        shadow_surf = pygame.Surface((size, size), pygame.SRCALPHA)
+        shadow_surf = frame_surface(surface,(size, size), pygame.SRCALPHA,key="src/ui/coin_hud.py:draw:80",physical=True)
         pygame.draw.circle(shadow_surf, (0, 0, 0, 80), (cx + 2, cy + 3), radius)
         tmp.blit(shadow_surf, (0, 0))
         pygame.draw.circle(tmp, (*PARTICLE_COLOR, self.alpha), (cx, cy), radius)
@@ -149,10 +150,10 @@ class CoinHUD:
         y = self.anchor_y
 
         # Painel de fundo semi-transparente
-        shadow = pygame.Surface((HUD_PANEL_W + 15, HUD_PANEL_H + 15), pygame.SRCALPHA)
+        shadow = frame_surface(surface,(HUD_PANEL_W + 15, HUD_PANEL_H + 15), pygame.SRCALPHA,key="src/ui/coin_hud.py:draw:152",physical=False)
         pygame.draw.rect(shadow, (0, 0, 0, 85), (9, 9, HUD_PANEL_W, HUD_PANEL_H), border_radius=18)
         surface.blit(shadow, (x - 12, y - 9))
-        panel = pygame.Surface((HUD_PANEL_W, HUD_PANEL_H), pygame.SRCALPHA)
+        panel = frame_surface(surface,(HUD_PANEL_W, HUD_PANEL_H), pygame.SRCALPHA,key="src/ui/coin_hud.py:draw:155",physical=False)
         pygame.draw.rect(panel, (15, 16, 26, 228), (0, 0, HUD_PANEL_W, HUD_PANEL_H), border_radius=18)
         pygame.draw.rect(panel, (228, 191, 88, 210), (0, 0, HUD_PANEL_W, HUD_PANEL_H), 3, border_radius=18)
         surface.blit(panel, (x - 6, y - 6))

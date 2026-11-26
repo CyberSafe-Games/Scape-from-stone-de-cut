@@ -22,6 +22,12 @@ class FloatingText:
 
     def draw(self, surface, font):
         alpha = max(0, min(255, int(255 * (self.life / self.max_life))))
+        if hasattr(surface,"render_text"):
+            text_surface=surface.render_text(font,self.text,self.color)
+            old=text_surface.get_alpha();text_surface.set_alpha(alpha)
+            try:surface.blit(text_surface,text_surface.get_rect(center=(int(self.x),int(self.y))))
+            finally:text_surface.set_alpha(old)
+            return
         text_surface = font.render(str(self.text), True, self.color)
 
         alpha_surface = pygame.Surface(text_surface.get_size(), pygame.SRCALPHA)

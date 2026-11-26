@@ -1,0 +1,487 @@
+{
+  "data": "2026-11-26",
+  "branch": "feat/web-mobile-port",
+  "baseline": "e7b1ff578173d1489a678fd651e483390e5533b8",
+  "release": "92be8234978d91fe",
+  "gestos": {
+    "threshold_ms": 220,
+    "drag_cancel_css_px": 12,
+    "rapido": "Joga no release curto; sem confirmar.",
+    "hold": "Só inspeciona enquanto pressionado; release fecha o DOM imediatamente e nunca joga.",
+    "exclusivo": "Mão e Ultimate no combate touch. Gerenciamento e mouse conservam seus fluxos.",
+    "validacao": {
+      "passed": true,
+      "checks": [
+        "tap_at_219ms_is_immediate_single_command",
+        "hold_at_220ms_has_no_confirm_and_release_never_taps",
+        "drag_cancels_hold_and_does_not_play",
+        "pointercancel_cannot_play",
+        "second_finger_cancels_without_duplicate_action",
+        "blur_invalidates_gesture",
+        "pending_commit_blocks_touch"
+      ]
+    }
+  },
+  "testes": {
+    "total": 955,
+    "modulos": 93,
+    "falhas": 0,
+    "segundos": 225.08
+  },
+  "chromium_mobile": {
+    "passed": true,
+    "checks": [
+      "shop_native_art_inspect_then_purchase",
+      "backpack_native_equip",
+      "backpack_native_ultimate",
+      "altar_native_art_before_after_confirm",
+      "settings_native_slider",
+      "hold_reads_and_release_never_plays",
+      "short_tap_ultimate_without_confirmation",
+      "instant_hand_play_and_reward_confirmation",
+      "rotation_safe_pause_resume",
+      "native_intro_and_tutorial_touch",
+      "native_final_boss_and_epilogue"
+    ],
+    "screens": [
+      "menu",
+      "saves",
+      "mapa",
+      "loja",
+      "mochila",
+      "ultimates_mochila",
+      "altar",
+      "configuracoes",
+      "combate",
+      "intencao",
+      "carta_segurada",
+      "recompensa",
+      "quadrinhos_intro",
+      "tutorial",
+      "epilogo"
+    ],
+    "errors": [],
+    "physical_canvas": [
+      960,
+      540
+    ],
+    "memory_samples": [
+      {
+        "screen": "menu",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 268435456,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "saves",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 268435456,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "mapa",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 268435456,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "loja",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 268435456,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "mochila",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 268435456,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "ultimates_mochila",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 268435456,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "altar",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 322174976,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "configuracoes",
+        "memfs": {
+          "freed_bytes": 0,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 322174976,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "combate",
+        "memfs": {
+          "freed_bytes": 38451166,
+          "temporary_bytes": 0,
+          "pruned_groups": [
+            "enemy:slime",
+            "enemy:viniurgo",
+            "player"
+          ]
+        },
+        "heap": {
+          "wasm": 386662400,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "intencao",
+        "memfs": {
+          "freed_bytes": 38451166,
+          "temporary_bytes": 0,
+          "pruned_groups": [
+            "enemy:slime",
+            "enemy:viniurgo",
+            "player"
+          ]
+        },
+        "heap": {
+          "wasm": 463994880,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "carta_segurada",
+        "memfs": {
+          "freed_bytes": 38451166,
+          "temporary_bytes": 0,
+          "pruned_groups": [
+            "enemy:slime",
+            "enemy:viniurgo",
+            "player"
+          ]
+        },
+        "heap": {
+          "wasm": 463994880,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "recompensa",
+        "memfs": {
+          "freed_bytes": 38451166,
+          "temporary_bytes": 0,
+          "pruned_groups": [
+            "enemy:slime",
+            "enemy:viniurgo",
+            "player"
+          ]
+        },
+        "heap": {
+          "wasm": 662372352,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "quadrinhos_intro",
+        "memfs": {
+          "freed_bytes": 38451166,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 662372352,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "tutorial",
+        "memfs": {
+          "freed_bytes": 76902332,
+          "temporary_bytes": 0,
+          "pruned_groups": [
+            "enemy:slime",
+            "enemy:viniurgo",
+            "player"
+          ]
+        },
+        "heap": {
+          "wasm": 662372352,
+          "js": 50400000
+        }
+      },
+      {
+        "screen": "epilogo",
+        "memfs": {
+          "freed_bytes": 58052968,
+          "temporary_bytes": 0,
+          "pruned_groups": []
+        },
+        "heap": {
+          "wasm": 556793856,
+          "js": 410000000
+        }
+      }
+    ]
+  },
+  "chromium_pc": {
+    "passed": true,
+    "checks": [
+      "shop_purchase",
+      "shop_wheel",
+      "backpack_equipment",
+      "ultimate_equipment",
+      "upgrade_comparison_lv1_lv2",
+      "settings_keyboard",
+      "settings_slider",
+      "settings_tabs",
+      "guides",
+      "indexeddb_reload",
+      "preferences_reload"
+    ]
+  },
+  "qualidade": {
+    "passed": true,
+    "density": [
+      {
+        "buffer": [
+          1600,
+          900
+        ],
+        "css": [
+          1280,
+          720
+        ],
+        "dpr": 1.25,
+        "rendering": "pixelated"
+      },
+      {
+        "buffer": [
+          1920,
+          1080
+        ],
+        "css": [
+          1280,
+          720
+        ],
+        "dpr": 1.5,
+        "rendering": "pixelated"
+      },
+      {
+        "buffer": [
+          1920,
+          1080
+        ],
+        "css": [
+          1280,
+          720
+        ],
+        "dpr": 2,
+        "rendering": "pixelated"
+      },
+      {
+        "buffer": [
+          960,
+          540
+        ],
+        "css": [
+          693.328125,
+          389.984375
+        ],
+        "dpr": 3,
+        "rendering": "auto"
+      }
+    ],
+    "checks": [
+      "windows_125_150_200_percent_backing_and_css",
+      "hidpi_mouse_mapping_and_gesture_audio",
+      "real_music_and_card_sfx_pcm_without_clipping",
+      "repeated_unlock_focus_no_duplicate_audio_output",
+      "mobile_dpr3_uses_fixed_540p_and_dpr_one"
+    ],
+    "before_gesture": {
+      "format": null,
+      "channels": 0,
+      "music_volume": 0,
+      "max_sfx_gain": 0
+    },
+    "combat_fps_median": 29.940120697021484,
+    "frame_cost_ms": {
+      "update": 0.39999999999906777,
+      "draw": 35.6000000000023,
+      "present": 6.700000000002149
+    },
+    "render_buffer": [
+      1920,
+      1080
+    ],
+    "audio": {
+      "samples": 506,
+      "audible_samples": 152,
+      "peak": 0.0587310791015625,
+      "clipped_samples": 0,
+      "mix": {
+        "format": [
+          48000,
+          -16,
+          2
+        ],
+        "channels": 4,
+        "music_volume": 0.25,
+        "max_sfx_gain": 0.09375
+      },
+      "connections": 1,
+      "browser_buffers": [
+        {
+          "buffer": 4096,
+          "sampleRate": 48000
+        }
+      ]
+    },
+    "errors": []
+  },
+  "comparacao": {
+    "baseline": {
+      "fps": 48.5436897277832,
+      "buffer": [
+        1280,
+        720
+      ],
+      "physical_canvas": [
+        1280,
+        720
+      ],
+      "cache": {
+        "bytes": 11486928,
+        "hits": 24565,
+        "misses": 13963
+      },
+      "frame_ms": {
+        "draw": 17.300000999998844,
+        "present": 1.100000000000989,
+        "update": 0.20000099999961662
+      }
+    },
+    "current": {
+      "fps": 59.88024139404297,
+      "buffer": [
+        960,
+        540
+      ],
+      "physical_canvas": [
+        960,
+        540
+      ],
+      "cache": {
+        "bytes": 10271076,
+        "hits": 38496,
+        "misses": 296,
+        "scales_this_frame": 0,
+        "text_renders_this_frame": 0,
+        "scratch_created_this_frame": 0,
+        "scratch_bytes": 2297096,
+        "miss_details": [],
+        "native_scale_calls": 0
+      },
+      "frame_ms": {
+        "draw": 8.999999999993236,
+        "present": 0.6999989999982859,
+        "update": 0.20000099999961662
+      }
+    }
+  },
+  "metodo": "Mesmo Chromium, checkpoint Slime e packs de assets; 844x390 touch/DPR físico 3, apresentação DPR 1; 5 s de aquecimento e 35 amostras de 200 ms; sem testes ou outros browsers simultâneos, prefetch PWA desativado nos dois builds. Script devtools/benchmark_web_mobile.py --baseline-ref e7b1ff5.",
+  "auditoria_idle": {
+    "samples": 35,
+    "native_scale_calls_all_zero": true,
+    "text_renders_all_zero": true,
+    "scratch_allocations_all_zero": true
+  },
+  "pixels": {
+    "anterior": 921600,
+    "atual": 518400,
+    "reducao_percentual": 43.75
+  },
+  "pipeline": [
+    "HUD, fontes, custo e rótulos: caches por valor/estado; renderização nativa de texto reaproveitada.",
+    "Imagens imutáveis e recortes variáveis compartilham a escala da imagem completa; atlas/frames preservados.",
+    "Pool físico RGBA reutiliza slots por chamada/frame com alfa/clip limpos; temporários que exigem rotação/bitmap usam espaço nativo.",
+    "Entrada da cena touch pré-aquece HUD/textos/arte antes de apresentar; novas variantes completam cache sob demanda.",
+    "Web PC mantém HiDPI/CSS pixelated; compacto com mouse mantém 1280x720. Touch usa CSS auto suave e 960x540.",
+    "Clock.tick(0) e await asyncio.sleep(0) continuam cooperativos; nenhum busy-wait foi adicionado."
+  ],
+  "limites": [
+    "Emulação no computador não comprova FPS em smartphone físico ou Safari/iOS.",
+    "Zero scaling/raster/alocação foi medido em idle aquecido; mudanças de estado e efeitos com geometria/escala animada podem preparar novas variantes. Não extrapolar o resultado a cada frame de todas as Ultimates.",
+    "A rodada completa de screenshots foi executada junto de verificações automatizadas; o benchmark isolado acima é a comparação de desempenho.",
+    "A memória linear WASM não necessariamente encolhe após liberar superfícies. Caches e pool são limitados.",
+    "Nenhum asset foi alterado ou substituído, nem schema de save/instalador/controles Desktop."
+  ],
+  "hospedagem": {
+    "file_count": 93,
+    "total_bytes": 391028578,
+    "largest_file": [
+      "packs/cutscene_intro-0-8811273825cc.tar.gz",
+      8709625
+    ],
+    "warnings": [],
+    "sources": {
+      "cloudflare": "https://developers.cloudflare.com/pages/platform/limits/",
+      "itch": "https://itch.io/docs/creators/html5#zip-file-requirements"
+    },
+    "limits_checked": "2026-11-25",
+    "limits": {
+      "cloudflare_file_bytes": 26214400,
+      "cloudflare_free_files": 20000,
+      "itch_file_bytes": 200000000,
+      "itch_files": 1000,
+      "itch_total_bytes": 500000000,
+      "itch_path_characters": 240
+    },
+    "note": "Pages não publica limite agregado em bytes nesta página; não inventar um teto total."
+  }
+}

@@ -1,3 +1,4 @@
+from src.ui.render_cache import frame_surface
 import pygame
 from src.ui.render_cache import scaled_image
 from src.ui.frames import gold_outline
@@ -28,7 +29,7 @@ class CardView:
     def draw_card(surface, rect, card, asset_manager, hovered=False):
         """Desenha a arte PNG completa da carta; caso não exista, desenha um fallback com borda colorida."""
         draw_rect = rect.move(0, -18 if hovered else 0)
-        shadow = pygame.Surface((draw_rect.width + 15, draw_rect.height + 15), pygame.SRCALPHA)
+        shadow = frame_surface(surface,(draw_rect.width + 15, draw_rect.height + 15), pygame.SRCALPHA,key="src/ui/card_view.py:draw_card:31",physical=True)
         pygame.draw.rect(shadow, (0, 0, 0, 110), (8, 8, draw_rect.width, draw_rect.height), border_radius=18)
         surface.blit(shadow, (draw_rect.x - 8, draw_rect.y - 5))
 

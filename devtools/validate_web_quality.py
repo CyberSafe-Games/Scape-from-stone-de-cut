@@ -66,13 +66,13 @@ def main():
             bounds=page.locator("#canvas").bounding_box()
             page.mouse.click(bounds["x"]+x/1920*bounds["width"],bounds["y"]+y/1080*bounds["height"])
         def rect(r):click(r[0]+r[2]/2,r[1]+r[3]/2)
-        def density(dpr,expected):
+        def density(dpr,expected,rendering="pixelated"):
             wait(lambda m:m["render_buffer"]==list(expected))
             canvas=page.evaluate("""()=>{const c=document.querySelector('#canvas'),r=c.getBoundingClientRect();
                 return {buffer:[c.width,c.height],css:[r.width,r.height],dpr:devicePixelRatio,
                     rendering:getComputedStyle(c).imageRendering};}""")
             assert canvas["buffer"]==list(expected),canvas
-            assert canvas["rendering"]=="pixelated",canvas
+            assert canvas["rendering"]==rendering,canvas
             result["density"].append(canvas)
         try:
             page.goto(args.url)
@@ -140,10 +140,10 @@ def main():
             page.on("pageerror",lambda e:errors.append(str(e)))
             page.goto(args.url);scene("CampaignMenu")
             canvas=page.locator("#canvas").bounding_box()
-            expected=(1280,720)
+            expected=(960,540)
             assert page.evaluate("JSON.parse(scapePlatform.renderViewport()).dpr")==1
-            density(3,expected)
-            result["checks"].append("mobile_dpr3_uses_fixed_720p_and_dpr_one")
+            density(3,expected,rendering="auto")
+            result["checks"].append("mobile_dpr3_uses_fixed_540p_and_dpr_one")
             page.screenshot(path=str(out/"mobile-dpr3.png"))
             result["errors"]=errors
             result["passed"]=True
